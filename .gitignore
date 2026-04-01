@@ -1,0 +1,9 @@
+# 프로젝트 이슈 DB (각 프로젝트마다 독립 생성됨)
+project/.claude/issue-db/registry.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 백업
+*.backup
