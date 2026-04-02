@@ -61,7 +61,7 @@ if in_progress:
         "agent-harness": "opus", "meta-agent": "opus",
         "test-harness": "sonnet", "eval-harness": "sonnet",
         "cicd-harness": "sonnet", "ux-harness": "sonnet",
-        "qa-reviewer": "sonnet", "biz-validator": "sonnet", "hook-router": "haiku",
+        "qa-reviewer": "sonnet", "biz-validator": "sonnet", "design-critic": "opus", "hook-router": "haiku",
     }
     model = MODEL_MAP.get(iss.get("assign_to", ""), "sonnet")
     print(f"\n⚠️  중단된 작업 즉시 재개:")
@@ -89,7 +89,7 @@ if ready and not in_progress:
         "agent-harness": "opus", "meta-agent": "opus",
         "test-harness": "sonnet", "eval-harness": "sonnet",
         "cicd-harness": "sonnet", "ux-harness": "sonnet",
-        "qa-reviewer": "sonnet", "biz-validator": "sonnet", "hook-router": "haiku",
+        "qa-reviewer": "sonnet", "biz-validator": "sonnet", "design-critic": "opus", "hook-router": "haiku",
     }
     model = MODEL_MAP.get(next_iss.get("assign_to", ""), "sonnet")
     print(f"\n[자동 실행 지시]")

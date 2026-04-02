@@ -281,6 +281,48 @@ elif issue_type in ('UI_REVIEW', 'UX_FIX'):
             'UX_FIX', 'P1', 'agent-harness',
             {'ux_issues': ux_issues, 'source_issue': issue_id, 'action': 'fix_ux'}
         )
+    else:
+        # UX 규칙 통과 → 디자인 감각 리뷰 진행
+        ui_files = target_issue.get('payload', {}).get('files', [])
+        add_issue(
+            f"[Plan:디자인리뷰] {issue_id} 시각적 완성도 검증",
+            'DESIGN_REVIEW', 'P1', 'design-critic',
+            {'files': ui_files, 'source_issue': issue_id}
+        )
+
+elif issue_type in ('DESIGN_REVIEW', 'VISUAL_AUDIT'):
+    # 디자인 감각 리뷰 결과 분석
+    total_score = result.get('total_score', 0)
+    critical_issues = result.get('critical_issues', [])
+    ai_slop = result.get('ai_slop_detected', False)
+
+    if ai_slop:
+        add_issue(
+            f"[Plan:AI슬롭제거] AI 생성 느낌 제거",
+            'DESIGN_FIX', 'P0', 'agent-harness',
+            {'reason': 'ai_slop', 'source_issue': issue_id, 'action': 'fix_ai_slop'}
+        )
+    elif total_score < 42 or critical_issues:
+        for ci in critical_issues[:3]:
+            add_issue(
+                f"[Plan:디자인수정] {ci.get('dimension', '')} — {ci.get('problem', '')[:40]}",
+                'DESIGN_FIX', 'P1', 'agent-harness',
+                {
+                    'design_issue': ci,
+                    'source_issue': issue_id,
+                    'action': 'fix_design'
+                }
+            )
+    else:
+        # 디자인 통과 → SCORE로 진행
+        print(f"[Plan] 디자인 리뷰 통과 ({total_score}/70)")
+        if total_score >= 63:
+            registry.setdefault('knowledge', {}).setdefault('success_patterns', []).append({
+                'pattern': f'design_score_{total_score}',
+                'context': f'{issue_id} excellent design',
+                'frequency': 1,
+                'discovered_at': now
+            })
 
 elif issue_type in ('SYSTEMIC_ISSUE', 'PATTERN_ANALYSIS'):
     # Meta Agent 분석 결과 → 구체적 실행 이슈 생성

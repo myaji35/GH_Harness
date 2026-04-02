@@ -73,6 +73,9 @@ CREATED → READY → IN_PROGRESS → DONE → LEARNED
 | DEPLOY_READY | cicd-harness | 배포 |
 | ROLLBACK | cicd-harness | 롤백 |
 | BIZ_VALIDATE | biz-validator | 비즈니스 로직 검증 |
+| DESIGN_REVIEW | design-critic | 디자인 감각 리뷰 |
+| DESIGN_FIX | agent-harness | 디자인 수정 |
+| VISUAL_AUDIT | design-critic | 시각적 일관성 감사 |
 | SCENARIO_GAP | biz-validator | 시나리오 갭 재검증 |
 | EDGE_CASE_REVIEW | biz-validator | 엣지 케이스 검증 |
 | BIZ_FIX | agent-harness | 비즈니스 로직 수정 |

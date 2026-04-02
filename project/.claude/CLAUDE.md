@@ -32,7 +32,8 @@
 | agent-harness | opus | 코드 생성/수정 | GENERATE_CODE, REFACTOR, FIX_BUG, BIZ_FIX |
 | meta-agent | opus | 관찰/진화 | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
 | biz-validator | sonnet | 비즈니스 로직 검증 | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
-| ux-harness | sonnet | UX 검증 | UI_REVIEW, UX_FIX |
+| design-critic | opus | 디자인 감각 검증 | DESIGN_REVIEW, DESIGN_FIX, VISUAL_AUDIT |
+| ux-harness | sonnet | UX 규칙 검증 | UI_REVIEW, UX_FIX |
 | test-harness | sonnet | 테스트 실행 | RUN_TESTS, RETEST, COVERAGE_CHECK |
 | eval-harness | sonnet | 품질 측정 | SCORE, REGRESSION_CHECK |
 | cicd-harness | sonnet | 배포 | DEPLOY_READY, ROLLBACK |
@@ -86,6 +87,10 @@
 | BIZ_VALIDATE | coverage < 70% | SYSTEMIC_ISSUE (설계 문제 의심) |
 | BIZ_VALIDATE | 통과 | SCORE (빠른 경로) |
 | UI_REVIEW | UX fail | UX_FIX (이슈 목록 포함) |
+| UI_REVIEW | UX 통과 | DESIGN_REVIEW (디자인 감각 리뷰) |
+| DESIGN_REVIEW | score < 60% 또는 critical | DESIGN_FIX P0/P1 (수정 방향 포함) |
+| DESIGN_REVIEW | AI slop 감지 | DESIGN_FIX P0 (AI 느낌 제거) |
+| DESIGN_REVIEW | score ≥ 80% | 통과 (학습 기록) |
 | DEPLOY_READY | 배포 완료 | 없음 (사이클 종료 + 학습 기록) |
 | ROLLBACK | 롤백 완료 | FIX_BUG (원인 분석) |
 

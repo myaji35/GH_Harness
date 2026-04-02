@@ -32,6 +32,7 @@ MODEL_MAP = {
     "ux-harness":     "sonnet",
     "qa-reviewer":    "sonnet",
     "biz-validator":  "sonnet",
+    "design-critic":  "opus",
     "hook-router":    "haiku",
 }
 
