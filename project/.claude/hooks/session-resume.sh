@@ -54,19 +54,28 @@ print(f"""
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📊 전체: {len(issues)}개 | ✅ 완료: {len(done)} | 🔄 진행중: {len(in_progress)} | 📋 대기: {len(ready)} | ❌ 실패: {len(failed)} | ⚠️ 에스컬레이션: {len(escalated)}""".strip())
 
-# IN_PROGRESS 이슈 (중단된 작업)
+# IN_PROGRESS 이슈 → 즉시 재개 (질문하지 않음)
 if in_progress:
-    print(f"\n⚠️  중단된 작업 (IN_PROGRESS):")
-    for iss in in_progress:
-        print(f"  → {iss['id']} ({iss['type']}) — {iss['title']} → {iss['assign_to']}")
-    print(f"\n[자동 복원 지시]")
-    print(f"IN_PROGRESS 이슈가 있습니다. 이전 세션에서 중단된 작업입니다.")
-    print(f"선택지:")
-    print(f"  1. 이어서 처리 → 해당 에이전트 재스폰")
-    print(f"  2. 실패 처리 → on_fail.sh 실행 후 재시도/에스컬레이션")
-    print(f"  3. 완료 처리 → on_complete.sh 실행 후 파생 이슈 생성")
+    iss = in_progress[0]
+    MODEL_MAP = {
+        "agent-harness": "opus", "meta-agent": "opus",
+        "test-harness": "sonnet", "eval-harness": "sonnet",
+        "cicd-harness": "sonnet", "ux-harness": "sonnet",
+        "qa-reviewer": "sonnet", "hook-router": "haiku",
+    }
+    model = MODEL_MAP.get(iss.get("assign_to", ""), "sonnet")
+    print(f"\n⚠️  중단된 작업 즉시 재개:")
+    print(f"  → {iss['id']} ({iss['type']}) — {iss['title']} → {iss['assign_to']}")
+    print(f"\n[자동 실행 지시]")
+    print(f"중단된 이슈를 즉시 이어서 처리합니다. 질문하지 마라.")
+    print(f"  이슈: {iss['id']} ({iss['type']})")
+    print(f"  제목: {iss['title']}")
+    print(f"  담당: {iss['assign_to']} (model: {model})")
+    print(f"  1. {iss['assign_to']} 에이전트를 model={model}로 즉시 스폰")
+    print(f"  2. 처리 완료 후 on_complete.sh 호출")
+    sys.exit(2)  # asyncRewake
 
-# READY 이슈 (대기 중인 작업)
+# READY 이슈 → 즉시 실행 (질문하지 않음)
 if ready and not in_progress:
     print(f"\n📋 대기 중인 작업 (READY):")
     for iss in ready[:5]:
@@ -84,12 +93,13 @@ if ready and not in_progress:
     }
     model = MODEL_MAP.get(next_iss.get("assign_to", ""), "sonnet")
     print(f"\n[자동 실행 지시]")
-    print(f"다음 이슈를 처리해야 합니다:")
+    print(f"질문하지 마라. 즉시 실행하라.")
     print(f"  이슈: {next_iss['id']} ({next_iss['type']})")
     print(f"  제목: {next_iss['title']}")
     print(f"  담당: {next_iss['assign_to']} (model: {model})")
     print(f"  1. registry.json에서 {next_iss['id']}의 status를 IN_PROGRESS로 변경")
-    print(f"  2. {next_iss['assign_to']} 에이전트를 model={model}로 스폰")
+    print(f"  2. {next_iss['assign_to']} 에이전트를 model={model}로 즉시 스폰")
+    sys.exit(2)  # asyncRewake
 
 if not in_progress and not ready:
     print(f"\n✅ 모든 이슈 처리 완료! 새 작업을 시작하세요.")

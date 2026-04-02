@@ -67,22 +67,21 @@ issue_title = issue.get("title", "")
 payload = json.dumps(issue.get("payload", {}), ensure_ascii=False)
 remaining = len(ready_issues) - 1
 
-# 지시문 출력 — Claude Code가 이것을 읽고 Agent 도구로 스폰
+# 지시문 출력 — Claude Code가 이것을 읽고 즉시 실행
 print(f"""
-🔄 [Harness Auto-Dispatch] READY 이슈 감지 ({len(ready_issues)}개)
+🔄 [Harness Auto-Dispatch] READY {len(ready_issues)}개 — 즉시 실행
 
-다음 이슈를 처리해야 합니다:
+[자동 실행 지시] 질문하지 마라. 즉시 실행하라.
 - 이슈: {issue_id} ({issue_type})
 - 제목: {issue_title}
 - 담당: {agent} (model: {model})
 - 페이로드: {payload}
 - 대기 중: {remaining}개
 
-[자동 실행 지시]
+실행 순서:
 1. registry.json에서 {issue_id}의 status를 "IN_PROGRESS"로 변경
-2. {agent} 에이전트를 model={model}로 스폰
-3. 이슈 처리 완료 후 on_complete.sh 또는 on_fail.sh 실행
-4. dispatch-ready.sh 재실행하여 다음 이슈 확인
+2. {agent} 에이전트를 model={model}로 즉시 스폰
+3. 처리 완료 후 on_complete.sh 호출 (result JSON 포함)
 """.strip())
 
 # exit 2 = rewake signal
