@@ -72,7 +72,13 @@ CREATED → READY → IN_PROGRESS → DONE → LEARNED
 | REGRESSION_CHECK | eval-harness | 회귀 분석 |
 | DEPLOY_READY | cicd-harness | 배포 |
 | ROLLBACK | cicd-harness | 롤백 |
-| BIZ_VALIDATE | biz-validator | 비즈니스 로직 검증 |
+| DOMAIN_ANALYZE | domain-analyst | 도메인 분석/규칙 도출 |
+| RULE_EXTRACT | domain-analyst | 비즈니스 규칙 추출 |
+| SCENARIO_GENERATE | domain-analyst | 시나리오 자동 생성 |
+| BIZ_VALIDATE | biz-validator | 비즈니스 로직 정적 검증 |
+| SCENARIO_PLAY | scenario-player | 시나리오 E2E 실행 |
+| E2E_VERIFY | scenario-player | E2E 흐름 검증 |
+| SCENARIO_FIX | agent-harness | 시나리오 실패 수정 |
 | DESIGN_REVIEW | design-critic | 디자인 감각 리뷰 |
 | DESIGN_FIX | agent-harness | 디자인 수정 |
 | VISUAL_AUDIT | design-critic | 시각적 일관성 감사 |

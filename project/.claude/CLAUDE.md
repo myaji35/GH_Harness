@@ -31,7 +31,9 @@
 |---------|-------|------|---------|
 | agent-harness | opus | 코드 생성/수정 | GENERATE_CODE, REFACTOR, FIX_BUG, BIZ_FIX |
 | meta-agent | opus | 관찰/진화 | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
-| biz-validator | sonnet | 비즈니스 로직 검증 | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
+| domain-analyst | opus | 도메인/규칙/시나리오 도출 | DOMAIN_ANALYZE, RULE_EXTRACT, SCENARIO_GENERATE |
+| biz-validator | sonnet | 비즈니스 로직 정적 검증 | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
+| scenario-player | sonnet | 시나리오 E2E 실행 | SCENARIO_PLAY, E2E_VERIFY, FLOW_REPLAY |
 | design-critic | opus | 디자인 감각 검증 | DESIGN_REVIEW, DESIGN_FIX, VISUAL_AUDIT |
 | ux-harness | sonnet | UX 규칙 검증 | UI_REVIEW, UX_FIX |
 | test-harness | sonnet | 테스트 실행 | RUN_TESTS, RETEST, COVERAGE_CHECK |
@@ -76,7 +78,10 @@
 
 | 완료된 이슈 | result 조건 | 자동 생성 Plan |
 |-----------|-----------|--------------|
-| GENERATE_CODE/FIX_BUG/BIZ_FIX | 항상 | RUN_TESTS + BIZ_VALIDATE + UI_REVIEW (UI파일 있으면) |
+| GENERATE_CODE/FIX_BUG/BIZ_FIX | 항상 | RUN_TESTS + DOMAIN_ANALYZE + UI_REVIEW (UI파일 있으면) |
+| DOMAIN_ANALYZE | 항상 | BIZ_VALIDATE (정적) + SCENARIO_PLAY (동적) |
+| SCENARIO_PLAY | FAIL 있음 | SCENARIO_FIX P0 (실패 상세 포함) |
+| SCENARIO_PLAY | 전체 PASS | 학습 기록 |
 | RUN_TESTS | 테스트 실패 | FIX_BUG (실패 테스트 목록 포함) |
 | RUN_TESTS | 통과 + 커버리지 < 80% | IMPROVE_COVERAGE + SCORE |
 | RUN_TESTS | 전체 통과 | SCORE |

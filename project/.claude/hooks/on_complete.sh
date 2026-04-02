@@ -92,8 +92,8 @@ target_issue['result'] = result
 
 print(f"\n[분석] {issue_type} 결과 기반 Plan 수립:")
 
-if issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT', 'BIZ_FIX'):
-    # 코드 변경 완료 → 테스트 + 비즈니스 검증 + UX 리뷰 병렬
+if issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT', 'BIZ_FIX', 'SCENARIO_FIX', 'DESIGN_FIX'):
+    # 코드 변경 완료 → 테스트 + 도메인 분석 + UX 리뷰 병렬
     files_changed = target_issue.get('payload', {}).get('files_changed', [])
     files = target_issue.get('payload', {}).get('files', [])
     all_files = list(set(files_changed + files))
@@ -104,10 +104,10 @@ if issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT',
         {'files': all_files, 'source_issue': issue_id, 'scope': 'changed'}
     )
 
-    # 비즈니스 로직 검증 (항상)
+    # 도메인 분석 → 비즈니스 검증 → 시나리오 실행 체인
     add_issue(
-        f"[Plan:비즈니스검증] {issue_id} 시나리오 완성도 검증",
-        'BIZ_VALIDATE', 'P1', 'biz-validator',
+        f"[Plan:도메인분석] {issue_id} 비즈니스 규칙/시나리오 도출",
+        'DOMAIN_ANALYZE', 'P1', 'domain-analyst',
         {'files': all_files, 'source_issue': issue_id}
     )
 
@@ -161,6 +161,74 @@ elif issue_type in ('RUN_TESTS', 'RETEST'):
                 },
                 'source_issue': issue_id
             }
+        )
+
+elif issue_type == 'DOMAIN_ANALYZE':
+    # 도메인 분석 완료 → biz-validator + scenario-player에 결과 전달
+    rules = result.get('rules', [])
+    scenarios = result.get('scenarios', [])
+    domain = result.get('domain', 'unknown')
+
+    # 정적 검증: biz-validator
+    add_issue(
+        f"[Plan:비즈니스검증] {domain} 규칙 {len(rules)}개 정적 검증",
+        'BIZ_VALIDATE', 'P1', 'biz-validator',
+        {
+            'rules': rules,
+            'scenarios': scenarios,
+            'domain': domain,
+            'source_issue': issue_id
+        }
+    )
+
+    # 동적 검증: scenario-player (시나리오 10개 이상이면)
+    if len(scenarios) > 0:
+        add_issue(
+            f"[Plan:시나리오실행] {domain} 시나리오 {len(scenarios)}개 E2E 실행",
+            'SCENARIO_PLAY', 'P1', 'scenario-player',
+            {
+                'scenarios': scenarios,
+                'domain': domain,
+                'source_issue': issue_id
+            }
+        )
+
+elif issue_type in ('SCENARIO_PLAY', 'E2E_VERIFY', 'FLOW_REPLAY'):
+    # 시나리오 실행 결과 분석
+    total = result.get('total_scenarios', 0)
+    passed = result.get('passed', 0)
+    failed = result.get('failed', 0)
+    results_list = result.get('results', [])
+
+    failed_scenarios = [r for r in results_list if r.get('status') == 'FAIL']
+
+    if failed_scenarios:
+        for fs in failed_scenarios[:3]:
+            fail_detail = fs.get('failed_at', {})
+            add_issue(
+                f"[Plan:시나리오수정] {fs.get('name', 'unknown')} 실패",
+                'SCENARIO_FIX', 'P0', 'agent-harness',
+                {
+                    'scenario': fs,
+                    'error': fail_detail,
+                    'source_issue': issue_id,
+                    'action': 'fix_scenario_failure'
+                }
+            )
+    elif total > 0 and passed == total:
+        print(f"[Plan] 시나리오 전체 통과 ({passed}/{total})")
+        registry.setdefault('knowledge', {}).setdefault('success_patterns', []).append({
+            'pattern': f'e2e_all_pass_{total}',
+            'context': f'{issue_id} all scenarios passed',
+            'frequency': 1,
+            'discovered_at': now
+        })
+
+    if total > 0 and failed / total > 0.5:
+        add_issue(
+            f"[Plan:근본분석] 시나리오 실패율 {failed}/{total} — 근본 원인 분석",
+            'SYSTEMIC_ISSUE', 'P1', 'meta-agent',
+            {'pass_rate': passed/total, 'source_issue': issue_id}
         )
 
 elif issue_type in ('BIZ_VALIDATE', 'SCENARIO_GAP'):
