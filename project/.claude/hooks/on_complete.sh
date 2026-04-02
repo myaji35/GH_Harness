@@ -1,6 +1,11 @@
 #!/bin/bash
 # on_complete Hook 핸들러
-# 이슈 완료 시 자동으로 파생 이슈 생성 및 다음 하네스 알림
+# 이슈 완료 시: 결과 분석 → Plan 수립 → 파생 이슈 자동 생성 → 디스패치
+#
+# 핵심 원리:
+#   단순 1:1 매핑이 아니라, result 데이터를 분석하여 "다음에 뭘 해야 하는지" 판단
+#   테스트 실패 → FIX_BUG Plan / 커버리지 부족 → IMPROVE_COVERAGE Plan
+#   점수 낮음 → QUALITY_IMPROVEMENT Plan / 점수 높음 → DEPLOY_READY Plan
 
 REGISTRY=".claude/issue-db/registry.json"
 ISSUE_ID="$1"
@@ -9,8 +14,7 @@ RESULT="$3"
 
 echo "[Hook:on_complete] 이슈 완료: $ISSUE_ID ($ISSUE_TYPE)"
 
-# Python으로 registry 업데이트 및 파생 이슈 생성
-python3 << EOF
+python3 << PYEOF
 import json, datetime, sys
 
 try:
@@ -22,68 +26,250 @@ except:
 
 issue_id = '$ISSUE_ID'
 issue_type = '$ISSUE_TYPE'
+result_raw = '''$RESULT'''
 
-# 이슈 상태 업데이트
+now = datetime.datetime.now().isoformat()
+new_issues = []
+next_num = registry['stats']['total_issues'] + 1
+
+def add_issue(title, itype, priority, assign_to, payload=None):
+    global next_num
+    # 중복 체크
+    for iss in registry['issues']:
+        if iss.get('title') == title and iss.get('status') in ('READY', 'IN_PROGRESS'):
+            return
+    iss = {
+        'id': f'ISS-{next_num:03d}',
+        'title': title,
+        'type': itype,
+        'status': 'READY',
+        'priority': priority,
+        'assign_to': assign_to,
+        'depth': target_issue.get('depth', 0) + 1,
+        'retry_count': 0,
+        'parent_id': issue_id,
+        'depends_on': [],
+        'created_at': now,
+        'payload': payload or {},
+        'result': None,
+        'spawn_rules': []
+    }
+    if iss['depth'] <= 3:
+        new_issues.append(iss)
+        next_num += 1
+        print(f"[Plan] {iss['id']} [{priority}] {itype} — {title} → {assign_to}")
+    else:
+        print(f"[깊이 제한] {title} (depth={iss['depth']})")
+
+# 완료 이슈 찾기
+target_issue = None
 for issue in registry['issues']:
     if issue['id'] == issue_id:
-        issue['status'] = 'DONE'
-        issue['completed_at'] = datetime.datetime.now().isoformat()
-        registry['stats']['completed'] += 1
+        target_issue = issue
+        break
 
-        # spawn_rules 평가 (단순화된 버전)
-        spawn_rules = issue.get('spawn_rules', [])
-        next_id = f"ISS-{registry['stats']['total_issues'] + 1:03d}"
+if not target_issue:
+    print(f"[오류] {issue_id} 찾을 수 없음")
+    sys.exit(1)
 
-        # 타입별 기본 파생 이슈
-        spawn_map = {
-            'GENERATE_CODE': {'type': 'RUN_TESTS', 'assign_to': 'test-harness'},
-            'FIX_BUG':       {'type': 'RUN_TESTS', 'assign_to': 'test-harness'},
-            'RUN_TESTS':     {'type': 'SCORE',     'assign_to': 'eval-harness'},
-            'SCORE':         {'type': 'DEPLOY_READY', 'assign_to': 'cicd-harness'},
-        }
+# 이슈 상태 업데이트
+target_issue['status'] = 'DONE'
+target_issue['completed_at'] = now
+registry['stats']['completed'] = registry['stats'].get('completed', 0) + 1
 
-        if issue_type in spawn_map:
-            spawn = spawn_map[issue_type]
-            new_issue = {
-                'id': next_id,
-                'title': f"[파생] {spawn['type']} from {issue_id}",
-                'type': spawn['type'],
-                'status': 'READY',
-                'priority': 'P1',
-                'assign_to': spawn['assign_to'],
-                'depth': issue.get('depth', 0) + 1,
-                'retry_count': 0,
-                'parent_id': issue_id,
-                'depends_on': [],
-                'created_at': datetime.datetime.now().isoformat(),
-                'payload': {},
-                'result': None,
-                'spawn_rules': []
+# result 파싱 시도
+result = {}
+try:
+    result = json.loads(result_raw) if result_raw.strip() else {}
+except:
+    result = {'raw': result_raw}
+
+target_issue['result'] = result
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 결과 분석 → Plan 수립 → 파생 이슈 생성
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+print(f"\n[분석] {issue_type} 결과 기반 Plan 수립:")
+
+if issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT'):
+    # 코드 변경 완료 → 테스트 + UX 리뷰 병렬
+    files_changed = target_issue.get('payload', {}).get('files_changed', [])
+    files = target_issue.get('payload', {}).get('files', [])
+    all_files = list(set(files_changed + files))
+
+    add_issue(
+        f"[Plan:테스트] {issue_id} 변경사항 검증",
+        'RUN_TESTS', 'P1', 'test-harness',
+        {'files': all_files, 'source_issue': issue_id, 'scope': 'changed'}
+    )
+
+    # UI 관련 파일이면 UX 리뷰도 추가
+    ui_files = [f for f in all_files if any(ext in f for ext in ['.tsx', '.jsx', '.vue', '.html', '.css', '.svelte'])]
+    if ui_files:
+        add_issue(
+            f"[Plan:UX리뷰] {issue_id} UI 변경 검증",
+            'UI_REVIEW', 'P1', 'ux-harness',
+            {'files': ui_files, 'source_issue': issue_id}
+        )
+
+elif issue_type in ('RUN_TESTS', 'RETEST'):
+    # 테스트 결과 분석 → 실패면 FIX, 성공이면 SCORE
+    test_passed = result.get('passed', True)
+    test_total = result.get('total', 0)
+    test_failed_count = result.get('failed_count', 0)
+    failed_tests = result.get('failed_tests', [])
+    coverage = result.get('coverage', None)
+
+    if not test_passed or test_failed_count > 0:
+        # 테스트 실패 → FIX_BUG Plan
+        add_issue(
+            f"[Plan:버그수정] 테스트 실패 {test_failed_count}건 수정",
+            'FIX_BUG', 'P0', 'agent-harness',
+            {
+                'failed_tests': failed_tests,
+                'source_issue': issue_id,
+                'action': 'fix_failing_tests'
             }
+        )
+    else:
+        # 테스트 전체 통과
+        if coverage is not None and coverage < 80:
+            # 커버리지 부족 → 커버리지 개선 Plan
+            add_issue(
+                f"[Plan:커버리지] {coverage}% → 80% 달성",
+                'IMPROVE_COVERAGE', 'P2', 'test-harness',
+                {'current_coverage': coverage, 'target': 80, 'source_issue': issue_id}
+            )
 
-            # 깊이 제한 체크
-            if new_issue['depth'] <= 3:
-                registry['issues'].append(new_issue)
-                registry['stats']['total_issues'] += 1
-                print(f"[파생 이슈 생성] {next_id}: {spawn['type']} → {spawn['assign_to']}")
-            else:
-                print(f"[깊이 제한] 파생 이슈 생성 안 함 (depth={new_issue['depth']})")
+        # 점수 평가 진행
+        add_issue(
+            f"[Plan:품질평가] {issue_id} 품질 점수 산출",
+            'SCORE', 'P1', 'eval-harness',
+            {
+                'test_result': {
+                    'passed': test_passed,
+                    'total': test_total,
+                    'coverage': coverage
+                },
+                'source_issue': issue_id
+            }
+        )
 
-        # Hook 이력 기록
-        registry['hooks']['on_complete'].append({
-            'issue_id': issue_id,
-            'timestamp': datetime.datetime.now().isoformat()
+elif issue_type == 'SCORE':
+    # 점수 결과 분석
+    score = result.get('score', 0)
+    prev_score = result.get('prev_score', None)
+    breakdown = result.get('breakdown', {})
+
+    if score >= 70:
+        # 배포 가능
+        add_issue(
+            f"[Plan:배포] 품질 {score}점 — 배포 준비",
+            'DEPLOY_READY', 'P1', 'cicd-harness',
+            {'score': score, 'breakdown': breakdown, 'source_issue': issue_id}
+        )
+        if score >= 90:
+            # 고품질 → 성공 패턴 학습
+            registry.setdefault('knowledge', {}).setdefault('success_patterns', []).append({
+                'pattern': f'score_{score}',
+                'context': f'{issue_id} chain',
+                'frequency': 1,
+                'discovered_at': now
+            })
+            print(f"[학습] 고품질 패턴 기록 (score={score})")
+    else:
+        # 품질 부족 → 개선 Plan
+        worst = min(breakdown.items(), key=lambda x: x[1]) if breakdown else ('unknown', 0)
+        add_issue(
+            f"[Plan:품질개선] 점수 {score}점 — {worst[0]} 집중 개선",
+            'QUALITY_IMPROVEMENT', 'P0', 'agent-harness',
+            {
+                'score': score,
+                'worst_area': worst[0] if breakdown else None,
+                'breakdown': breakdown,
+                'source_issue': issue_id,
+                'action': 'improve_quality'
+            }
+        )
+
+    # 회귀 감지
+    if prev_score is not None and score < prev_score - 10:
+        add_issue(
+            f"[Plan:회귀분석] 점수 {prev_score}→{score} (-{prev_score - score})",
+            'REGRESSION_CHECK', 'P0', 'eval-harness',
+            {'prev_score': prev_score, 'current_score': score, 'source_issue': issue_id}
+        )
+
+elif issue_type == 'DEPLOY_READY':
+    # 배포 완료 → 파이프라인 종료, 학습 기록
+    print(f"[Plan:완료] 배포 성공 — 파이프라인 사이클 종료")
+    registry.setdefault('knowledge', {}).setdefault('success_patterns', []).append({
+        'pattern': 'full_pipeline_success',
+        'context': f'{issue_id} deploy completed',
+        'frequency': 1,
+        'discovered_at': now
+    })
+
+elif issue_type in ('UI_REVIEW', 'UX_FIX'):
+    # UX 리뷰 결과 분석
+    ux_passed = result.get('passed', True)
+    ux_issues = result.get('issues', [])
+
+    if not ux_passed and ux_issues:
+        add_issue(
+            f"[Plan:UX수정] UX 이슈 {len(ux_issues)}건 수정",
+            'UX_FIX', 'P1', 'agent-harness',
+            {'ux_issues': ux_issues, 'source_issue': issue_id, 'action': 'fix_ux'}
+        )
+
+elif issue_type in ('SYSTEMIC_ISSUE', 'PATTERN_ANALYSIS'):
+    # Meta Agent 분석 결과 → 구체적 실행 이슈 생성
+    recommendations = result.get('recommendations', [])
+    for rec in recommendations[:3]:
+        rec_type = rec.get('type', 'REFACTOR')
+        rec_title = rec.get('title', f'[Meta] {issue_id} 권고 실행')
+        rec_assign = rec.get('assign_to', 'agent-harness')
+        add_issue(rec_title, rec_type, 'P1', rec_assign, {
+            'source_issue': issue_id,
+            'recommendation': rec
         })
 
-        break
+elif issue_type == 'ROLLBACK':
+    # 롤백 후 → 원인 분석 Plan
+    add_issue(
+        f"[Plan:원인분석] 롤백 원인 분석 및 재수정",
+        'FIX_BUG', 'P0', 'agent-harness',
+        {'source_issue': issue_id, 'action': 'fix_after_rollback'}
+    )
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Plan 요약 출력
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+if new_issues:
+    print(f"\n📋 Plan 수립 완료: {len(new_issues)}개 이슈 생성")
+    for ni in new_issues:
+        registry['issues'].append(ni)
+        registry['stats']['total_issues'] = registry['stats'].get('total_issues', 0) + 1
+else:
+    print(f"\n✅ 파이프라인 사이클 완료 — 추가 이슈 없음")
+
+# Hook 이력 기록
+registry.setdefault('hooks', {}).setdefault('on_complete', []).append({
+    'issue_id': issue_id,
+    'issue_type': issue_type,
+    'plan_created': len(new_issues),
+    'timestamp': now
+})
 
 with open('$REGISTRY', 'w') as f:
     json.dump(registry, f, indent=2, ensure_ascii=False)
 
 print(f"[on_complete] 처리 완료")
-EOF
+PYEOF
 
-# 파생 이슈 생성 후 자동 디스패치
+# Plan 생성 후 자동 디스패치
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "[on_complete] → dispatch-ready 실행"
 bash "$SCRIPT_DIR/dispatch-ready.sh" "$REGISTRY"

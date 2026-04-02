@@ -33,50 +33,62 @@
 2. **READY 이슈만 있음** → "자동 실행 지시"에 따라 즉시 다음 에이전트 스폰
 3. **이슈 없음** → `harness 시작`으로 초기화 안내
 
-## 자동 반복 실행 루프 (핵심)
+## Harness 엔진 핵심: 결과 분석 → 자동 Plan → 실행 루프
 
 ```
-이슈 처리 완료
-  → on_complete.sh (파생 이슈 생성 + registry.json 업데이트)
+코드 생성 완료
+  → on_complete.sh (결과 분석 → Plan 수립 → 파생 이슈 생성)
+    ├─ 테스트 실패? → [Plan:버그수정] FIX_BUG P0 → agent-harness
+    ├─ 커버리지 부족? → [Plan:커버리지] IMPROVE_COVERAGE P2 → test-harness
+    ├─ 점수 < 70? → [Plan:품질개선] QUALITY_IMPROVEMENT P0 → agent-harness
+    ├─ 점수 ≥ 70? → [Plan:배포] DEPLOY_READY P1 → cicd-harness
+    ├─ UX fail? → [Plan:UX수정] UX_FIX P1 → agent-harness
+    └─ 점수 회귀? → [Plan:회귀분석] REGRESSION_CHECK P0 → eval-harness
   → dispatch-ready.sh (READY 이슈 감지 + 다음 에이전트 스폰 지시)
-  → Claude Code가 지시를 읽고 Agent 도구로 다음 에이전트 스폰
-  → 반복
+  → Claude Code가 Agent 도구로 다음 에이전트 스폰
+  → 반복 ♻️
 ```
 
-### 자동 실행 Hook 연결
-- **SubagentStop**: 서브에이전트 완료 → on-agent-complete.sh → dispatch-ready.sh (asyncRewake)
-- **Stop**: 메인 에이전트 완료 → on-agent-complete.sh → dispatch-ready.sh (asyncRewake)
-- **PostToolUse (Write|Edit)**: 코드 변경 → post-code-change.sh (파일 추적)
+### on_complete.sh — 결과 기반 Plan 엔진
+단순 1:1 매핑이 아님. **result 데이터를 분석**하여 다음 Plan을 자동 수립:
 
-### dispatch-ready.sh 동작
-1. registry.json에서 READY 이슈 탐색
-2. 우선순위 정렬 (P0 > P1 > P2 > P3)
-3. 다음 에이전트 스폰 지시 출력
-4. exit 2 (asyncRewake) → Claude Code 자동 깨어남
+| 완료된 이슈 | result 조건 | 자동 생성 Plan |
+|-----------|-----------|--------------|
+| GENERATE_CODE/FIX_BUG | 항상 | RUN_TESTS + UI_REVIEW (UI파일 있으면) |
+| RUN_TESTS | 테스트 실패 | FIX_BUG (실패 테스트 목록 포함) |
+| RUN_TESTS | 통과 + 커버리지 < 80% | IMPROVE_COVERAGE + SCORE |
+| RUN_TESTS | 전체 통과 | SCORE |
+| SCORE | 점수 ≥ 70 | DEPLOY_READY |
+| SCORE | 점수 < 70 | QUALITY_IMPROVEMENT (최약 영역 포함) |
+| SCORE | 점수 -10% 이상 하락 | REGRESSION_CHECK |
+| UI_REVIEW | UX fail | UX_FIX (이슈 목록 포함) |
+| DEPLOY_READY | 배포 완료 | 없음 (사이클 종료 + 학습 기록) |
+| ROLLBACK | 롤백 완료 | FIX_BUG (원인 분석) |
 
-### 실행 규칙
-- dispatch-ready.sh 출력에 "자동 실행 지시"가 포함되면 **즉시 실행**
-- registry.json에서 이슈 status를 IN_PROGRESS로 변경 후 에이전트 스폰
-- 에이전트 스폰 시 model 파라미터 필수 지정
-- 처리 완료 후 반드시 on_complete.sh 또는 on_fail.sh 호출
+### 에이전트 result 기록 규칙 (필수)
+에이전트는 on_complete.sh 호출 시 **JSON result를 3번째 인자로 전달**해야 한다:
 
-## Meta Agent 관찰 & 리뷰 코멘트
+```bash
+# 테스트 에이전트 예시
+bash .claude/hooks/on_complete.sh ISS-003 RUN_TESTS '{"passed":true,"total":42,"failed_count":0,"coverage":84}'
 
-Stop hook에서 `meta-review.sh`가 자동 실행된다.
-이 스크립트는 registry.json을 분석하고 아래를 수행한다:
+# 코드 에이전트 예시
+bash .claude/hooks/on_complete.sh ISS-001 GENERATE_CODE '{"files_created":["src/auth.py"]}'
 
-1. **5가지 패턴 탐지**: 반복실패, 이슈폭발, 에스컬레이션 누적, 에이전트 핑퐁, 장기미해결
-2. **리뷰 코멘트 출력**: 현황 + 발견된 패턴 + 전략 제안
-3. **개선 이슈 자동 생성**: 패턴 발견 시 REFACTOR/PATTERN_ANALYSIS/SYSTEMIC_ISSUE 이슈 생성 (주기당 최대 5개)
-4. **knowledge DB 업데이트**: meta_observations에 관찰 이력 기록
+# Eval 에이전트 예시
+bash .claude/hooks/on_complete.sh ISS-005 SCORE '{"score":82,"prev_score":79,"breakdown":{"quality":85,"coverage":80,"performance":78,"docs":85}}'
+```
 
-### 리뷰 결과에 따른 행동
-- 새 이슈 생성됨 → exit 2 (asyncRewake) → dispatch-ready.sh → 자동 스폰
-- 모든 이슈 처리 완료 → "새로운 기능/개선 작업을 기획하세요" 제안
-- 패턴 없음 → "정상 운영" 코멘트
+### Hook 연결
+- **Stop**: on-agent-complete.sh (디스패치) + meta-review.sh (패턴 분석)
+- **SubagentStop**: on-agent-complete.sh (디스패치) + meta-review.sh (패턴 분석)
+- **PostToolUse (Write|Edit)**: post-code-change.sh (파일 추적)
 
-### 수동 실행
-`bash .claude/hooks/meta-review.sh`로 언제든 수동 실행 가능.
+### meta-review.sh — 패턴 분석 & 전략 제안
+Stop/SubagentStop마다 자동 실행:
+1. **7가지 패턴 탐지** → 개선 이슈 자동 생성 (주기당 최대 5개)
+2. **리뷰 코멘트** → 현황 + 에이전트별 현황 + 전략 제안
+3. **모든 이슈 완료 시** → "새로운 기능/개선 작업을 기획하세요" 제안
 
 ## 운영 원칙
 - 성공 출력 → 핵심 수치만 (컨텍스트 절약)
