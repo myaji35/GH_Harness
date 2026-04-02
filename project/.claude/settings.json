@@ -45,6 +45,13 @@
             "timeout": 15,
             "statusMessage": "Checking next issue...",
             "asyncRewake": true
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/meta-review.sh",
+            "timeout": 30,
+            "statusMessage": "Meta Agent reviewing...",
+            "asyncRewake": true
           }
         ]
       }

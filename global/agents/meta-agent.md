@@ -18,13 +18,24 @@
 
 ---
 
-## 관찰 주기: 30분
+## 관찰 실행 방법
 
-매 주기마다 meta-evolution 스킬을 읽고:
-1. registry.json 전체 분석
-2. 패턴 탐지 (아래 5가지)
-3. 개선 이슈 생성 (주기당 최대 5개)
-4. 지식 DB 업데이트
+### 자동 실행 (Stop hook)
+매 Stop 이벤트마다 `meta-review.sh`가 자동 실행된다.
+- registry.json 전체 분석 → 패턴 탐지 → 리뷰 코멘트 → 개선 이슈 생성
+- 새 이슈 생성 시 exit 2 (asyncRewake) → dispatch-ready.sh → 자동 스폰
+
+### 수동 실행
+`bash .claude/hooks/meta-review.sh`
+
+### 패턴 탐지 (7가지)
+1. 반복 실패 — 같은 파일 FIX_BUG 3회+
+2. 이슈 폭발 — 백로그 30개 초과
+3. 에스컬레이션 누적 — 3개+
+4. 에이전트 핑퐁 — 같은 parent에서 3회+ 왕복
+5. 장기 미해결 — READY 2시간+
+6. UX fail 반복 — 같은 규칙 3회+ (ux-agenda 연동)
+7. 성능 저하 — Eval 점수 3주기 연속 하락
 
 ## 즉시 반응 트리거
 ```
@@ -35,12 +46,12 @@
 
 ## 처리 절차 (관찰 주기)
 
-1. meta-evolution 스킬 읽기
-2. registry.json의 completed 이슈 전체 스캔
+1. meta-review.sh 실행 (자동/수동)
+2. registry.json 전체 스캔
 3. 패턴 탐지 실행
-4. 발견된 패턴 → 개선 이슈 생성
-5. knowledge 섹션 업데이트
-6. 다음 주기 예약
+4. 리뷰 코멘트 출력 (사용자에게 현황 보고)
+5. 발견된 패턴 → 개선 이슈 자동 생성
+6. knowledge.meta_observations에 관찰 이력 기록
 
 ## 출력 원칙
 - 관찰만: "🧠 Meta [N주기] | 패턴: N개 | 새 이슈: N개"

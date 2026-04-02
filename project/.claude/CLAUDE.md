@@ -60,6 +60,24 @@
 - 에이전트 스폰 시 model 파라미터 필수 지정
 - 처리 완료 후 반드시 on_complete.sh 또는 on_fail.sh 호출
 
+## Meta Agent 관찰 & 리뷰 코멘트
+
+Stop hook에서 `meta-review.sh`가 자동 실행된다.
+이 스크립트는 registry.json을 분석하고 아래를 수행한다:
+
+1. **5가지 패턴 탐지**: 반복실패, 이슈폭발, 에스컬레이션 누적, 에이전트 핑퐁, 장기미해결
+2. **리뷰 코멘트 출력**: 현황 + 발견된 패턴 + 전략 제안
+3. **개선 이슈 자동 생성**: 패턴 발견 시 REFACTOR/PATTERN_ANALYSIS/SYSTEMIC_ISSUE 이슈 생성 (주기당 최대 5개)
+4. **knowledge DB 업데이트**: meta_observations에 관찰 이력 기록
+
+### 리뷰 결과에 따른 행동
+- 새 이슈 생성됨 → exit 2 (asyncRewake) → dispatch-ready.sh → 자동 스폰
+- 모든 이슈 처리 완료 → "새로운 기능/개선 작업을 기획하세요" 제안
+- 패턴 없음 → "정상 운영" 코멘트
+
+### 수동 실행
+`bash .claude/hooks/meta-review.sh`로 언제든 수동 실행 가능.
+
 ## 운영 원칙
 - 성공 출력 → 핵심 수치만 (컨텍스트 절약)
 - 실패 출력 → 전체 오류 상세
