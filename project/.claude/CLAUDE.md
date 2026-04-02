@@ -29,8 +29,9 @@
 ## 에이전트 팀 (모델 차등 배치)
 | 에이전트 | Model | 역할 | 담당 이슈 |
 |---------|-------|------|---------|
-| agent-harness | opus | 코드 생성/수정 | GENERATE_CODE, REFACTOR, FIX_BUG |
+| agent-harness | opus | 코드 생성/수정 | GENERATE_CODE, REFACTOR, FIX_BUG, BIZ_FIX |
 | meta-agent | opus | 관찰/진화 | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
+| biz-validator | sonnet | 비즈니스 로직 검증 | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
 | ux-harness | sonnet | UX 검증 | UI_REVIEW, UX_FIX |
 | test-harness | sonnet | 테스트 실행 | RUN_TESTS, RETEST, COVERAGE_CHECK |
 | eval-harness | sonnet | 품질 측정 | SCORE, REGRESSION_CHECK |
@@ -74,13 +75,16 @@
 
 | 완료된 이슈 | result 조건 | 자동 생성 Plan |
 |-----------|-----------|--------------|
-| GENERATE_CODE/FIX_BUG | 항상 | RUN_TESTS + UI_REVIEW (UI파일 있으면) |
+| GENERATE_CODE/FIX_BUG/BIZ_FIX | 항상 | RUN_TESTS + BIZ_VALIDATE + UI_REVIEW (UI파일 있으면) |
 | RUN_TESTS | 테스트 실패 | FIX_BUG (실패 테스트 목록 포함) |
 | RUN_TESTS | 통과 + 커버리지 < 80% | IMPROVE_COVERAGE + SCORE |
 | RUN_TESTS | 전체 통과 | SCORE |
 | SCORE | 점수 ≥ 70 | DEPLOY_READY |
 | SCORE | 점수 < 70 | QUALITY_IMPROVEMENT (최약 영역 포함) |
 | SCORE | 점수 -10% 이상 하락 | REGRESSION_CHECK |
+| BIZ_VALIDATE | CRITICAL 갭 | BIZ_FIX P0 (갭별 개별 이슈) |
+| BIZ_VALIDATE | coverage < 70% | SYSTEMIC_ISSUE (설계 문제 의심) |
+| BIZ_VALIDATE | 통과 | SCORE (빠른 경로) |
 | UI_REVIEW | UX fail | UX_FIX (이슈 목록 포함) |
 | DEPLOY_READY | 배포 완료 | 없음 (사이클 종료 + 학습 기록) |
 | ROLLBACK | 롤백 완료 | FIX_BUG (원인 분석) |

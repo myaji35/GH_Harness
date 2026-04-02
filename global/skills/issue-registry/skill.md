@@ -72,6 +72,10 @@ CREATED → READY → IN_PROGRESS → DONE → LEARNED
 | REGRESSION_CHECK | eval-harness | 회귀 분석 |
 | DEPLOY_READY | cicd-harness | 배포 |
 | ROLLBACK | cicd-harness | 롤백 |
+| BIZ_VALIDATE | biz-validator | 비즈니스 로직 검증 |
+| SCENARIO_GAP | biz-validator | 시나리오 갭 재검증 |
+| EDGE_CASE_REVIEW | biz-validator | 엣지 케이스 검증 |
+| BIZ_FIX | agent-harness | 비즈니스 로직 수정 |
 | SYSTEMIC_ISSUE | meta-agent | 반복 문제 근본 분석 |
 | PATTERN_ANALYSIS | meta-agent | 패턴 분석 |
 

@@ -92,8 +92,8 @@ target_issue['result'] = result
 
 print(f"\n[분석] {issue_type} 결과 기반 Plan 수립:")
 
-if issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT'):
-    # 코드 변경 완료 → 테스트 + UX 리뷰 병렬
+if issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT', 'BIZ_FIX'):
+    # 코드 변경 완료 → 테스트 + 비즈니스 검증 + UX 리뷰 병렬
     files_changed = target_issue.get('payload', {}).get('files_changed', [])
     files = target_issue.get('payload', {}).get('files', [])
     all_files = list(set(files_changed + files))
@@ -102,6 +102,13 @@ if issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT')
         f"[Plan:테스트] {issue_id} 변경사항 검증",
         'RUN_TESTS', 'P1', 'test-harness',
         {'files': all_files, 'source_issue': issue_id, 'scope': 'changed'}
+    )
+
+    # 비즈니스 로직 검증 (항상)
+    add_issue(
+        f"[Plan:비즈니스검증] {issue_id} 시나리오 완성도 검증",
+        'BIZ_VALIDATE', 'P1', 'biz-validator',
+        {'files': all_files, 'source_issue': issue_id}
     )
 
     # UI 관련 파일이면 UX 리뷰도 추가
@@ -155,6 +162,58 @@ elif issue_type in ('RUN_TESTS', 'RETEST'):
                 'source_issue': issue_id
             }
         )
+
+elif issue_type in ('BIZ_VALIDATE', 'SCENARIO_GAP'):
+    # 비즈니스 로직 검증 결과 분석
+    biz_coverage = result.get('coverage_rate', 0)
+    gaps = result.get('gaps', [])
+    critical_gaps = [g for g in gaps if g.get('level') == 'CRITICAL']
+    major_gaps = [g for g in gaps if g.get('level') == 'MAJOR']
+
+    if critical_gaps:
+        # CRITICAL 갭 → 즉시 수정
+        for gap in critical_gaps:
+            add_issue(
+                f"[Plan:비즈수정] {gap.get('scenario', 'unknown')}",
+                'BIZ_FIX', 'P0', 'agent-harness',
+                {
+                    'gap': gap,
+                    'source_issue': issue_id,
+                    'action': 'fix_business_logic'
+                }
+            )
+    elif major_gaps and len(major_gaps) >= 3:
+        # MAJOR 갭 다수 → 재검증 필요
+        add_issue(
+            f"[Plan:시나리오갭] MAJOR 갭 {len(major_gaps)}건 일괄 수정",
+            'BIZ_FIX', 'P1', 'agent-harness',
+            {
+                'gaps': major_gaps,
+                'source_issue': issue_id,
+                'action': 'fix_major_gaps'
+            }
+        )
+    elif biz_coverage < 70:
+        # 커버리지 낮음 → 설계 문제 의심
+        add_issue(
+            f"[Plan:설계검토] 비즈니스 시나리오 커버리지 {biz_coverage}%",
+            'SYSTEMIC_ISSUE', 'P1', 'meta-agent',
+            {'biz_coverage': biz_coverage, 'source_issue': issue_id}
+        )
+    else:
+        # 비즈니스 검증 통과 → SCORE로 진행
+        add_issue(
+            f"[Plan:품질평가] {issue_id} 비즈니스 검증 통과 — 점수 산출",
+            'SCORE', 'P1', 'eval-harness',
+            {'biz_coverage': biz_coverage, 'source_issue': issue_id}
+        )
+        if biz_coverage >= 90:
+            registry.setdefault('knowledge', {}).setdefault('success_patterns', []).append({
+                'pattern': f'biz_coverage_{biz_coverage}',
+                'context': f'{issue_id} full scenario coverage',
+                'frequency': 1,
+                'discovered_at': now
+            })
 
 elif issue_type == 'SCORE':
     # 점수 결과 분석

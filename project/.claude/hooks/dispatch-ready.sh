@@ -31,6 +31,7 @@ MODEL_MAP = {
     "cicd-harness":   "sonnet",
     "ux-harness":     "sonnet",
     "qa-reviewer":    "sonnet",
+    "biz-validator":  "sonnet",
     "hook-router":    "haiku",
 }
 
