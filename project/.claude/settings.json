@@ -32,9 +32,9 @@
       "Bash(rails *)",
       "Bash(bundle *)",
       "Bash(bin/*)",
-      "Read",
-      "Write",
-      "Edit",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
       "Glob",
       "Grep",
       "Agent"
