@@ -66,3 +66,8 @@ with open('$REGISTRY', 'w') as f:
 
 print(f"[on_fail] 처리 완료")
 EOF
+
+# 재시도/에스컬레이션 이슈 생성 후 자동 디스패치
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "[on_fail] → dispatch-ready 실행"
+bash "$SCRIPT_DIR/dispatch-ready.sh" "$REGISTRY"

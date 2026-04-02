@@ -82,3 +82,8 @@ with open('$REGISTRY', 'w') as f:
 
 print(f"[on_complete] 처리 완료")
 EOF
+
+# 파생 이슈 생성 후 자동 디스패치
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "[on_complete] → dispatch-ready 실행"
+bash "$SCRIPT_DIR/dispatch-ready.sh" "$REGISTRY"

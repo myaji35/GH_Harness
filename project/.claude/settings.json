@@ -1,0 +1,54 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(bash .claude/hooks/*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-code-change.sh",
+            "timeout": 10,
+            "statusMessage": "Tracking code change..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/on-agent-complete.sh",
+            "timeout": 15,
+            "statusMessage": "Checking next issue...",
+            "asyncRewake": true
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/on-agent-complete.sh",
+            "timeout": 15,
+            "statusMessage": "Dispatching next agent...",
+            "asyncRewake": true
+          }
+        ]
+      }
+    ]
+  }
+}

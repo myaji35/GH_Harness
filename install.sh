@@ -75,6 +75,12 @@ for hook in "$SCRIPT_DIR/project/.claude/hooks/"*; do
   echo -e "  ${GREEN}✓ hooks/$filename${NC}"
 done
 
+# settings.json 복사 (hooks 등록)
+if [ -f "$SCRIPT_DIR/project/.claude/settings.json" ]; then
+  cp "$SCRIPT_DIR/project/.claude/settings.json" "$PROJECT_DIR/settings.json"
+  echo -e "  ${GREEN}✓ settings.json (hooks 자동 실행 등록)${NC}"
+fi
+
 # issue-db 초기화
 cat > "$PROJECT_DIR/issue-db/registry.json" << 'EOF'
 {
@@ -122,13 +128,15 @@ echo -e "${BLUE}╚════════════════════�
 echo ""
 echo -e "${GREEN}전역 설치 위치:${NC} ~/.claude/"
 echo -e "  agents/  → agent-harness, test-harness, eval-harness,"
-echo -e "             cicd-harness, meta-agent, qa-reviewer"
+echo -e "             cicd-harness, meta-agent, qa-reviewer,"
+echo -e "             ux-harness, hook-router"
 echo -e "  skills/  → harness-orchestrator, hook-registry,"
 echo -e "             issue-registry, progressive-disclosure, meta-evolution"
 echo ""
 echo -e "${GREEN}프로젝트 설치 위치:${NC} ./.claude/"
 echo -e "  CLAUDE.md      → 시스템 진입점"
-echo -e "  hooks/         → Hook 이벤트 핸들러"
+echo -e "  settings.json  → Hooks 자동 실행 설정"
+echo -e "  hooks/         → Hook 이벤트 핸들러 (자동 반복 루프 포함)"
 echo -e "  issue-db/      → 이슈 레지스트리"
 echo ""
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
