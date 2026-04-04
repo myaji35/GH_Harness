@@ -32,7 +32,7 @@ issue.assign_to == "design-critic" && issue.status == "READY"
 
 ---
 
-## 검증 7가지 차원
+## 검증 8가지 차원
 
 ### 1. 시각적 위계 (Visual Hierarchy)
 ```
@@ -90,6 +90,20 @@ issue.assign_to == "design-critic" && issue.status == "READY"
 - 사용자가 신뢰감을 느끼는 디자인인가
 ```
 
+### 8. 어포던스 (Affordance)
+```
+- 클릭 가능 요소가 클릭 가능해 보이는가 (버튼 입체감, 링크 밑줄/색상, cursor: pointer)
+- 클릭 불가 요소가 클릭 가능처럼 보이지 않는가 (False Affordance 방지)
+- 입력 필드가 편집 가능해 보이는가 (테두리, 배경색, placeholder로 입력 유도)
+- 드래그 가능 요소에 grip/handle 시각 단서가 있는가
+- disabled 상태가 "사용 불가"임을 명확히 전달하는가 (opacity, 색상 변화, cursor 변경)
+- 숨겨진 기능이 없는가 (Hidden Affordance — 존재하지만 발견 불가능한 인터랙션)
+- hover/focus 상태가 "이것은 상호작용 가능합니다"를 암시하는가
+- 스크롤 가능 영역에 스크롤 힌트(그라데이션, 스크롤바, 화살표)가 있는가
+- 토글/스위치가 현재 상태(on/off)를 명확히 보여주는가
+- 전체적으로 "보면 알 수 있는 UI"인가 (설명서 없이 조작 가능)
+```
+
 ---
 
 ## 검증 절차
@@ -98,8 +112,8 @@ issue.assign_to == "design-critic" && issue.status == "READY"
 가능하면 Chrome DevTools MCP로 페이지 스크린샷을 촬영하여 시각적 분석.
 스크린샷 불가 시 코드 기반 정적 분석.
 
-### Step 2: 7차원 점수 매기기
-각 차원을 0-10점으로 평가. 총점 70점 만점.
+### Step 2: 8차원 점수 매기기
+각 차원을 0-10점으로 평가. 총점 80점 만점.
 
 ### Step 3: 구체적 피드백
 점수가 낮은 차원에 대해 **구체적인 수정 방향** 제시.
@@ -111,8 +125,8 @@ issue.assign_to == "design-critic" && issue.status == "READY"
 
 ```json
 {
-  "total_score": 52,
-  "max_score": 70,
+  "total_score": 59,
+  "max_score": 80,
   "dimensions": {
     "visual_hierarchy": { "score": 8, "comment": "CTA가 명확하고 제목 단차 좋음" },
     "spacing_rhythm": { "score": 5, "comment": "카드 간 여백 불균등, 섹션 간격 과도" },
@@ -120,7 +134,8 @@ issue.assign_to == "design-critic" && issue.status == "READY"
     "typography": { "score": 8, "comment": "행간 편안, 줄 길이 적절" },
     "consistency": { "score": 6, "comment": "버튼 스타일 2종 혼재" },
     "micro_interaction": { "score": 7, "comment": "hover 상태 자연스러움" },
-    "professional_feel": { "score": 6, "comment": "그림자 불일관, 아이콘 정렬 약간 어긋남" }
+    "professional_feel": { "score": 6, "comment": "그림자 불일관, 아이콘 정렬 약간 어긋남" },
+    "affordance": { "score": 7, "comment": "버튼 어포던스 양호, disabled 상태 구분 미흡" }
   },
   "critical_issues": [
     {
@@ -140,11 +155,11 @@ issue.assign_to == "design-critic" && issue.status == "READY"
 ## 파생 이슈 생성 규칙
 
 ```
-total_score < 42 (60% 미만)  → DESIGN_FIX P0 이슈 (agent-harness)
+total_score < 48 (60% 미만)  → DESIGN_FIX P0 이슈 (agent-harness)
 critical_issues 있음         → DESIGN_FIX P1 이슈 (항목별)
 ai_slop_detected            → DESIGN_FIX P0 이슈 ("AI slop 제거")
-total_score >= 56 (80% 이상) → 없음 (통과, 학습 기록)
-total_score >= 63 (90% 이상) → 없음 (우수, 성공 패턴 기록)
+total_score >= 64 (80% 이상) → 없음 (통과, 학습 기록)
+total_score >= 72 (90% 이상) → 없음 (우수, 성공 패턴 기록)
 ```
 
 ## 이슈 파이프라인 내 위치
@@ -154,12 +169,12 @@ ux-harness 통과 후 → DESIGN_REVIEW 이슈 생성 → design-critic
   design-critic:
     1. 스크린샷/코드 분석
     2. 7차원 점수 매기기
-    3. total_score >= 56 → on_complete (통과)
-       total_score < 56  → DESIGN_FIX 이슈 → agent-harness
+    3. total_score >= 64 → on_complete (통과)
+       total_score < 64  → DESIGN_FIX 이슈 → agent-harness
 ```
 
 ## 출력 원칙
-- 성공: "디자인 리뷰 52/70 | 위계 8 여백 5 색상 7 타이포 8 일관 6 인터 7 전문 6 | critical: 1"
+- 성공: "디자인 리뷰 59/80 | 위계 8 여백 5 색상 7 타이포 8 일관 6 인터 7 전문 6 어포 7 | critical: 1"
 - 실패: 차원별 문제 + 구체적 수정 방향
 
 ## 절대 금지
