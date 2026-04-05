@@ -148,6 +148,98 @@ if os.path.exists("Gemfile"):
     except:
         pass
 
+# ── 7. 브라우저 콘솔 에러 패턴 스캔 (정적 분석) ────
+try:
+    # console.error / console.warn 잔재 (프로덕션 코드에 남아있으면 문제)
+    console_err = subprocess.run(["grep", "-rn",
+                          "--include=*.ts", "--include=*.tsx", "--include=*.js", "--include=*.jsx",
+                          "-E", r"console\.(error|warn)\(",  ".",
+                          "--exclude-dir=node_modules", "--exclude-dir=.next",
+                          "--exclude-dir=dist", "--exclude-dir=build",
+                          "--exclude-dir=.git", "--exclude-dir=__tests__",
+                          "--exclude-dir=test", "--exclude-dir=tests",
+                          "--exclude=*.test.*", "--exclude=*.spec.*"],
+                        capture_output=True, text=True, timeout=15)
+    console_lines = [l for l in (console_err.stdout or "").split("\n") if l.strip()]
+    scan_results["console_error_warn"] = len(console_lines)
+    if len(console_lines) > 5:
+        findings.append({
+            "type": "CODE_SMELL",
+            "priority": "P2",
+            "title": f"console.error/warn 잔재 {len(console_lines)}개 — 프로덕션 코드 정리 필요",
+            "assign_to": "code-quality",
+            "detail": "\n".join(console_lines[:5])
+        })
+
+    # 미처리 에러: catch 블록이 비어있거나 console.log만 있는 패턴
+    empty_catch = subprocess.run(["grep", "-rn",
+                          "--include=*.ts", "--include=*.tsx", "--include=*.js", "--include=*.jsx",
+                          "-E", r"catch\s*\([^)]*\)\s*\{\s*\}",  ".",
+                          "--exclude-dir=node_modules", "--exclude-dir=.next",
+                          "--exclude-dir=dist", "--exclude-dir=.git"],
+                        capture_output=True, text=True, timeout=15)
+    empty_catch_lines = [l for l in (empty_catch.stdout or "").split("\n") if l.strip()]
+    scan_results["empty_catch"] = len(empty_catch_lines)
+    if len(empty_catch_lines) > 0:
+        findings.append({
+            "type": "CODE_SMELL",
+            "priority": "P1",
+            "title": f"빈 catch 블록 {len(empty_catch_lines)}개 — 에러 삼킴 위험",
+            "assign_to": "code-quality",
+            "detail": "\n".join(empty_catch_lines[:5])
+        })
+
+    # window.onerror / addEventListener('error') 없이 unhandled rejection 위험
+    if os.path.exists("src") or os.path.exists("app"):
+        unhandled = subprocess.run(["grep", "-rn",
+                          "--include=*.ts", "--include=*.tsx", "--include=*.js", "--include=*.jsx",
+                          "-E", r"throw\s+new\s+Error|Promise\.reject|reject\(",  ".",
+                          "--exclude-dir=node_modules", "--exclude-dir=.next",
+                          "--exclude-dir=dist", "--exclude-dir=.git"],
+                        capture_output=True, text=True, timeout=15)
+        throw_lines = [l for l in (unhandled.stdout or "").split("\n") if l.strip()]
+        # Error boundary 존재 여부 체크
+        err_boundary = subprocess.run(["grep", "-rl",
+                          "--include=*.ts", "--include=*.tsx", "--include=*.js", "--include=*.jsx",
+                          "-E", r"ErrorBoundary|error\.tsx|componentDidCatch|onError",  ".",
+                          "--exclude-dir=node_modules", "--exclude-dir=.next"],
+                        capture_output=True, text=True, timeout=10)
+        has_boundary = bool(err_boundary.stdout.strip())
+        scan_results["throw_count"] = len(throw_lines)
+        scan_results["error_boundary"] = has_boundary
+        if len(throw_lines) > 3 and not has_boundary:
+            findings.append({
+                "type": "CODE_SMELL",
+                "priority": "P2",
+                "title": f"throw/reject {len(throw_lines)}개인데 ErrorBoundary 없음 — 미처리 에러 위험",
+                "assign_to": "code-quality",
+                "detail": "ErrorBoundary 또는 글로벌 에러 핸들러 추가 권장"
+            })
+
+    # .next 빌드 에러 로그 스캔
+    next_log = None
+    for log_path in [".next/trace", ".next/build-error.log"]:
+        if os.path.exists(log_path):
+            next_log = log_path
+            break
+    if next_log:
+        try:
+            with open(next_log, 'r') as f:
+                content = f.read()
+            if "error" in content.lower():
+                scan_results["next_build_errors"] = True
+                findings.append({
+                    "type": "LINT_CHECK",
+                    "priority": "P0",
+                    "title": f"Next.js 빌드 에러 감지 ({next_log})",
+                    "assign_to": "code-quality",
+                    "detail": content[:300]
+                })
+        except:
+            pass
+except:
+    pass
+
 # ── 결과 출력 ───────────────────────────────────────
 print(f"""
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -161,7 +253,12 @@ for key, val in scan_results.items():
         "lint_errors": "린트 에러",
         "todo_count": "TODO/FIXME",
         "security_vulns": "보안 취약점",
-        "rubocop_offenses": "Rubocop 위반"
+        "rubocop_offenses": "Rubocop 위반",
+        "console_error_warn": "console.error/warn",
+        "empty_catch": "빈 catch 블록",
+        "throw_count": "throw/reject",
+        "error_boundary": "ErrorBoundary",
+        "next_build_errors": "Next.js 빌드 에러"
     }.get(key, key)
     icon = "✅" if val == 0 else "⚠️"
     print(f"  {icon} {label}: {val}")
