@@ -53,7 +53,8 @@
 
 ### 자동 트리거 (묻지 않고 실행)
 - 세션 시작 시 `.claude/issue-db/registry.json`에 READY/IN_PROGRESS 이슈 존재
-- 대표님이 기능 추가/버그 수정/리팩토링 요청 시 → 이슈 생성 후 파이프라인 시작
+- 대표님이 **기능 추가** 요청 시 → FEATURE_PLAN 이슈 생성 → product-manager 스폰
+- 대표님이 **버그 수정/리팩토링** 요청 시 → FIX_BUG/REFACTOR 이슈 → agent-harness 직행
 - `git diff --stat`에 변경 파일 10개 이상 → 자동 테스트 이슈 생성
 - 대표님이 "확인해봐", "점검해", "상태 보여줘" 등 요청 시 → 헬스체크 → 이슈 자동 생성
 
@@ -74,13 +75,14 @@
 ## 에이전트 팀 (모델 차등 배치)
 | 에이전트 | Model | 역할 | 담당 이슈 |
 |---------|-------|------|---------|
+| product-manager | opus | 기획/스토리/스코프 | FEATURE_PLAN, USER_STORY, SCOPE_DEFINE, PRIORITY_RANK |
 | agent-harness | opus | 코드 생성/수정 | GENERATE_CODE, REFACTOR, FIX_BUG, BIZ_FIX |
 | meta-agent | opus | 관찰/진화 | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
 | domain-analyst | opus | 도메인/규칙/시나리오 도출 | DOMAIN_ANALYZE, RULE_EXTRACT, SCENARIO_GENERATE |
 | biz-validator | sonnet | 비즈니스 로직 정적 검증 | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
 | scenario-player | sonnet | 시나리오 E2E 실행 | SCENARIO_PLAY, E2E_VERIFY, FLOW_REPLAY |
 | design-critic | opus | 디자인 감각 검증 | DESIGN_REVIEW, DESIGN_FIX, VISUAL_AUDIT |
-| ux-harness | sonnet | UX 규칙 검증 | UI_REVIEW, UX_FIX |
+| ux-harness | sonnet | UX 검증 + 설계 | UI_REVIEW, UX_FIX, UX_DESIGN, UX_FLOW |
 | code-quality | sonnet | 코드 문법/품질 정적 분석 | LINT_CHECK, TYPE_CHECK, CODE_SMELL, DEAD_CODE, COMPLEXITY_REVIEW, STYLE_FIX |
 | test-harness | sonnet | 테스트 실행 | RUN_TESTS, RETEST, COVERAGE_CHECK |
 | eval-harness | sonnet | 품질 측정 | SCORE, REGRESSION_CHECK |
@@ -132,6 +134,11 @@
 
 | 완료된 이슈 | result 조건 | 자동 생성 Plan |
 |-----------|-----------|--------------|
+| FEATURE_PLAN | 항상 | USER_STORY x N개 (또는 DOMAIN_ANALYZE) |
+| USER_STORY | UI 필요 | UX_DESIGN → ux-harness |
+| USER_STORY | 단순 구현 | GENERATE_CODE → agent-harness |
+| UX_DESIGN | 항상 | GENERATE_CODE (설계 결과 포함) → agent-harness |
+| UX_FLOW | 항상 | UX_DESIGN (플로우 기반 컴포넌트 설계) |
 | GENERATE_CODE/FIX_BUG/BIZ_FIX | 항상 | LINT_CHECK + RUN_TESTS + DOMAIN_ANALYZE + UI_REVIEW (UI파일 있으면) |
 | DOMAIN_ANALYZE | 항상 | BIZ_VALIDATE (정적) + SCENARIO_PLAY (동적) |
 | SCENARIO_PLAY | FAIL 있음 | SCENARIO_FIX P0 (실패 상세 포함) |

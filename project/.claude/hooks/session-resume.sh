@@ -58,6 +58,7 @@ print(f"""
 if in_progress:
     iss = in_progress[0]
     MODEL_MAP = {
+        "product-manager": "opus",
         "agent-harness": "opus", "meta-agent": "opus",
         "code-quality": "sonnet",
         "test-harness": "sonnet", "eval-harness": "sonnet",
@@ -87,6 +88,7 @@ if ready and not in_progress:
     # 다음 실행 대상
     next_iss = ready[0]
     MODEL_MAP = {
+        "product-manager": "opus",
         "agent-harness": "opus", "meta-agent": "opus",
         "code-quality": "sonnet",
         "test-harness": "sonnet", "eval-harness": "sonnet",

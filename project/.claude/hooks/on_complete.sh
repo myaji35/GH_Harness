@@ -92,7 +92,74 @@ target_issue['result'] = result
 
 print(f"\n[분석] {issue_type} 결과 기반 Plan 수립:")
 
-if issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT', 'BIZ_FIX', 'SCENARIO_FIX', 'DESIGN_FIX'):
+if issue_type == 'FEATURE_PLAN':
+    # 기획 완료 → 사용자 스토리별 이슈 생성
+    stories = result.get('stories', [])
+    if stories:
+        for story in stories:
+            s_type = story.get('type', 'GENERATE_CODE')
+            s_assign = story.get('assign_to', 'agent-harness')
+            s_priority = story.get('priority', 'P1')
+            s_title = story.get('title', 'User Story')
+            add_issue(
+                f"[Story] {s_title}",
+                s_type, s_priority, s_assign,
+                {
+                    'acceptance_criteria': story.get('acceptance_criteria', []),
+                    'source_issue': issue_id,
+                    'feature': result.get('feature_name', '')
+                }
+            )
+    else:
+        # 스토리가 없으면 도메인 분석으로
+        add_issue(
+            f"[Plan:도메인분석] {result.get('feature_name', issue_id)}",
+            'DOMAIN_ANALYZE', 'P1', 'domain-analyst',
+            {'source_issue': issue_id, 'feature': result.get('feature_name', '')}
+        )
+
+elif issue_type == 'USER_STORY':
+    # 사용자 스토리 완료 → UI 필요 여부에 따라 분기
+    needs_ui = result.get('needs_ui', False)
+    if needs_ui:
+        add_issue(
+            f"[Plan:UX설계] {result.get('title', issue_id)} UI 설계",
+            'UX_DESIGN', 'P1', 'ux-harness',
+            {'source_issue': issue_id, 'acceptance_criteria': result.get('acceptance_criteria', [])}
+        )
+    else:
+        add_issue(
+            f"[Plan:구현] {result.get('title', issue_id)}",
+            'GENERATE_CODE', 'P1', 'agent-harness',
+            {'source_issue': issue_id, 'acceptance_criteria': result.get('acceptance_criteria', [])}
+        )
+
+elif issue_type == 'UX_DESIGN':
+    # UX 설계 완료 → 코드 생성
+    add_issue(
+        f"[Plan:구현] {issue_id} UX 설계 기반 구현",
+        'GENERATE_CODE', 'P1', 'agent-harness',
+        {
+            'source_issue': issue_id,
+            'ux_design': result.get('components', []),
+            'layout': result.get('page_layout', ''),
+            'action': 'implement_from_ux_design'
+        }
+    )
+
+elif issue_type == 'UX_FLOW':
+    # 플로우 설계 완료 → UX_DESIGN으로 컴포넌트화
+    add_issue(
+        f"[Plan:UX설계] {issue_id} 플로우 기반 컴포넌트 설계",
+        'UX_DESIGN', 'P1', 'ux-harness',
+        {
+            'source_issue': issue_id,
+            'flow': result.get('steps', []),
+            'edge_cases': result.get('edge_cases', [])
+        }
+    )
+
+elif issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT', 'BIZ_FIX', 'SCENARIO_FIX', 'DESIGN_FIX'):
     # 코드 변경 완료 → 테스트 + 도메인 분석 + UX 리뷰 병렬
     files_changed = target_issue.get('payload', {}).get('files_changed', [])
     files = target_issue.get('payload', {}).get('files', [])
