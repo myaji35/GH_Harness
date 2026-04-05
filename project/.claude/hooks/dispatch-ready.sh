@@ -86,6 +86,8 @@ print(f"""
 1. registry.json에서 {issue_id}의 status를 "IN_PROGRESS"로 변경
 2. {agent} 에이전트를 model={model}로 즉시 스폰
 3. 처리 완료 후 on_complete.sh 호출 (result JSON 포함)
+
+⚠️ 경고: "진행할까요?" "다음 단계로?" 등의 질문은 파이프라인 중단 사유. 즉시 실행만 하라.
 """.strip())
 
 # exit 2 = rewake signal

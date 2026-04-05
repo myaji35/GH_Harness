@@ -438,7 +438,10 @@ with open('$REGISTRY', 'w') as f:
 print(f"[on_complete] 처리 완료")
 PYEOF
 
-# Plan 생성 후 자동 디스패치
+# Plan 생성 후 자동 디스패치 — 질문 없이 즉시 실행
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "[on_complete] → dispatch-ready 실행"
 bash "$SCRIPT_DIR/dispatch-ready.sh" "$REGISTRY"
+echo ""
+echo "[자동 진행 지시] 질문하지 마라. dispatch-ready 결과에 따라 다음 에이전트를 즉시 스폰하라."
+echo "  '다음 단계로 진행하시겠습니까?' 같은 질문은 금지. 바로 실행하라."

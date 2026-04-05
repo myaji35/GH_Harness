@@ -17,12 +17,64 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GLOBAL_DIR="$HOME/.claude"
 PROJECT_DIR="$(pwd)/.claude"
 
-echo ""
-echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║     GH_Harness 설치 시작              ║${NC}"
-echo -e "${BLUE}║     Self-Evolving Harness System      ║${NC}"
-echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
-echo ""
+# ── 모드 감지 ─���────────────────────────────────────────
+UPDATE_MODE=false
+BATCH_MODE=false
+BATCH_BASE=""
+
+for arg in "$@"; do
+  case "$arg" in
+    --update) UPDATE_MODE=true ;;
+    --batch) BATCH_MODE=true ;;
+    --batch-dir=*) BATCH_MODE=true; BATCH_BASE="${arg#*=}" ;;
+  esac
+done
+
+# ── 일괄 업데이트 모드 ─────────────────────────────────
+if [ "$BATCH_MODE" = true ]; then
+  BATCH_BASE="${BATCH_BASE:-$(dirname "$(pwd)")}"
+  echo ""
+  echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
+  echo -e "${BLUE}║     GH_Harness 일괄 업데이트          ║${NC}"
+  echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
+  echo ""
+  echo -e "${YELLOW}대상 디렉토리: $BATCH_BASE${NC}"
+  echo ""
+
+  updated=0
+  skipped=0
+  for proj_dir in "$BATCH_BASE"/*/; do
+    if [ -d "$proj_dir/.claude/issue-db" ] || [ -d "$proj_dir/.claude/hooks" ]; then
+      proj_name=$(basename "$proj_dir")
+      echo -e "${BLUE}━━━ $proj_name ━━━${NC}"
+      (cd "$proj_dir" && bash "$SCRIPT_DIR/install.sh" --update)
+      updated=$((updated + 1))
+    else
+      skipped=$((skipped + 1))
+    fi
+  done
+
+  echo ""
+  echo -e "${GREEN}일괄 업데이트 완료: ${updated}개 프로젝트 업데이트, ${skipped}개 스킵${NC}"
+  exit 0
+fi
+
+# ── 업데이트 모드 헤더 ─────────────────────────────────
+if [ "$UPDATE_MODE" = true ]; then
+  echo ""
+  echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
+  echo -e "${BLUE}║     GH_Harness 업데이트               ║${NC}"
+  echo -e "${BLUE}║     CLAUDE.md + hooks 최신화          ║${NC}"
+  echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
+  echo ""
+else
+  echo ""
+  echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
+  echo -e "${BLUE}║     GH_Harness 설치 시작              ║${NC}"
+  echo -e "${BLUE}║     Self-Evolving Harness System      ║${NC}"
+  echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
+  echo ""
+fi
 
 # ── 1. 전역 설치 ───────────────────────────────────────
 echo -e "${YELLOW}[1/2] 전역 설치 → ~/.claude/${NC}"
@@ -81,8 +133,12 @@ if [ -f "$SCRIPT_DIR/project/.claude/settings.json" ]; then
   echo -e "  ${GREEN}✓ settings.json (hooks 자동 실행 등록)${NC}"
 fi
 
-# issue-db 초기화
-cat > "$PROJECT_DIR/issue-db/registry.json" << 'EOF'
+# issue-db 초기화 (업데이트 모드에서는 기존 DB 보존)
+if [ "$UPDATE_MODE" = true ] && [ -f "$PROJECT_DIR/issue-db/registry.json" ]; then
+  echo -e "  ${YELLOW}⊘ issue-db/registry.json (기존 DB 보존)${NC}"
+else
+  mkdir -p "$PROJECT_DIR/issue-db"
+  cat > "$PROJECT_DIR/issue-db/registry.json" << 'EOF'
 {
   "version": "1.0.0",
   "created_at": "",
@@ -107,8 +163,8 @@ cat > "$PROJECT_DIR/issue-db/registry.json" << 'EOF'
   }
 }
 EOF
-# 생성 시각 삽입
-python3 -c "
+  # 생성 시각 삽입
+  python3 -c "
 import json, datetime
 with open('$PROJECT_DIR/issue-db/registry.json', 'r') as f:
     data = json.load(f)
@@ -116,15 +172,22 @@ data['created_at'] = datetime.datetime.now().isoformat()
 with open('$PROJECT_DIR/issue-db/registry.json', 'w') as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
 " 2>/dev/null || true
-echo -e "  ${GREEN}✓ issue-db/registry.json (초기화)${NC}"
+  echo -e "  ${GREEN}✓ issue-db/registry.json (초기화)${NC}"
+fi
 
 echo -e "${GREEN}  → 프로젝트 설치 완료${NC}"
 echo ""
 
 # ── 완료 메시지 ─────────────────────────────────────────
-echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║     설치 완료!                        ║${NC}"
-echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
+if [ "$UPDATE_MODE" = true ]; then
+  echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
+  echo -e "${BLUE}║     업데이트 완료!                    ║${NC}"
+  echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
+else
+  echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
+  echo -e "${BLUE}║     설치 완료!                        ║${NC}"
+  echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
+fi
 echo ""
 echo -e "${GREEN}전역 설치 위치:${NC} ~/.claude/"
 echo -e "  agents/  → agent-harness, test-harness, eval-harness,"

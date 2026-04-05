@@ -59,6 +59,7 @@ if in_progress:
     iss = in_progress[0]
     MODEL_MAP = {
         "agent-harness": "opus", "meta-agent": "opus",
+        "code-quality": "sonnet",
         "test-harness": "sonnet", "eval-harness": "sonnet",
         "cicd-harness": "sonnet", "ux-harness": "sonnet",
         "qa-reviewer": "sonnet", "biz-validator": "sonnet", "scenario-player": "sonnet", "domain-analyst": "opus", "design-critic": "opus", "hook-router": "haiku",
@@ -87,6 +88,7 @@ if ready and not in_progress:
     next_iss = ready[0]
     MODEL_MAP = {
         "agent-harness": "opus", "meta-agent": "opus",
+        "code-quality": "sonnet",
         "test-harness": "sonnet", "eval-harness": "sonnet",
         "cicd-harness": "sonnet", "ux-harness": "sonnet",
         "qa-reviewer": "sonnet", "biz-validator": "sonnet", "scenario-player": "sonnet", "domain-analyst": "opus", "design-critic": "opus", "hook-router": "haiku",
@@ -102,7 +104,8 @@ if ready and not in_progress:
     sys.exit(2)  # asyncRewake
 
 if not in_progress and not ready:
-    print(f"\n✅ 모든 이슈 처리 완료! 새 작업을 시작하세요.")
+    print(f"\n✅ 모든 이슈 처리 완료 — 능동 스캔 모드 진입")
+    print(f"[자동 실행 지시] bash .claude/hooks/proactive-scan.sh 실행하라.")
 
 # Knowledge 요약
 knowledge = registry.get("knowledge", {})

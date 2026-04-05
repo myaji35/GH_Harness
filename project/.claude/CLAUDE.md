@@ -10,6 +10,34 @@
 - 선택지 제시하지 마라 → 최선의 판단으로 하나만 실행하라
 - 보고는 실행 후에 하라 → "X를 했습니다" (O) / "X를 할까요?" (X)
 
+### 금지 문장 패턴 (이 문장을 출력하면 규칙 위반이다)
+아래 패턴을 **절대 출력하지 마라**. 출력하면 파이프라인이 멈추고 대표님의 시간을 낭비한다:
+```
+❌ "다음 단계로 진행하시겠습니까?"
+❌ "진행할까요?" / "진행하시겠습니까?"
+❌ "어떻게 할까요?" / "어떻게 하시겠습니까?"
+❌ "확인해주시겠습니까?" / "확인 부탁드립니다"
+❌ "선택해주세요" / "어떤 것을 원하시나요?"
+❌ "먼저 ... 을 확인하고 싶습니다"
+❌ "계속하기 전에 확인이 필요합니다"
+❌ "다음 중 어떤 것을 원하시나요?"
+❌ "A를 할까요, B를 할까요?"
+```
+
+### 대신 이렇게 하라 (올바른 패턴)
+```
+✅ "X를 실행합니다." → 즉시 실행
+✅ "X 완료. Y를 시작합니다." → 다음 단계 즉시 진행
+✅ "X 완료. dispatch-ready.sh 결과에 따라 Y 에이전트를 스폰합니다."
+✅ 판단 불가 시 → 우선순위 규칙 따라 최선의 선택을 실행하고 결과 보고
+```
+
+### 자동 진행 규칙 (멈춤 방지)
+- **이슈 처리 완료 시**: on_complete.sh 호출 → 파생 이슈 생성 → dispatch-ready.sh 호출 → 다음 에이전트 스폰. **이 과정에서 질문 금지.**
+- **에이전트 종료 시**: 다음 READY 이슈가 있으면 즉시 다음 에이전트 스폰. **"다음 이슈를 처리할까요?" 금지.**
+- **모든 이슈 완료 시**: proactive-scan.sh 실행. **"스캔을 실행할까요?" 금지.**
+- **에러 발생 시**: on_fail.sh 호출 후 자동 재시도 또는 에스컬레이션. **"어떻게 처리할까요?" 금지.**
+
 ### 판단 기준 (질문 대신 이것을 따르라)
 - 보안(P0) > 버그(P0) > 테스트(P1) > 품질(P1) > 커버리지(P2) > 문서(P3)
 - 실패 이슈 > 신규 이슈 (실패 먼저 해결)
@@ -21,10 +49,27 @@
 - 프로젝트 방향 전환 (기능 삭제, 아키텍처 변경)
 
 ## 트리거
-아래 문장을 받으면 즉시 `harness-orchestrator` 스킬을 읽고 시스템을 초기화하라:
+아래 조건 중 하나라도 해당되면 harness-orchestrator 스킬을 읽고 시스템을 가동하라:
+
+### 자동 트리거 (묻지 않고 실행)
+- 세션 시작 시 `.claude/issue-db/registry.json`에 READY/IN_PROGRESS 이슈 존재
+- 대표님이 기능 추가/버그 수정/리팩토링 요청 시 → 이슈 생성 후 파이프라인 시작
+- `git diff --stat`에 변경 파일 10개 이상 → 자동 테스트 이슈 생성
+- 대표님이 "확인해봐", "점검해", "상태 보여줘" 등 요청 시 → 헬스체크 → 이슈 자동 생성
+
+### 명시적 트리거 (종래 방식)
 - "Harness 개념으로 프로젝트를 실행하자"
-- "harness 시작"
-- "harness init"
+- "harness 시작" / "harness init"
+
+### 업데이트 트리거
+- "harness 업데이트" / "harness 업데이트해줘" / "harness update"
+  → `bash /Volumes/E_SSD/02_GitHub.nosync/GH_Harness/install.sh --batch --batch-dir=/Volumes/E_SSD/02_GitHub.nosync` 실행
+  → 모든 harness 설치 프로젝트의 CLAUDE.md + hooks + agents 최신화 (이슈 DB 보존)
+
+### 능동 스캔 트리거
+- "점검해" / "확인해봐" / "상태 보여줘" / "코드 스캔" / "proactive scan"
+  → `bash .claude/hooks/proactive-scan.sh` 실행
+  → 코드베이스 스캔 후 발견된 이슈 자동 생성
 
 ## 에이전트 팀 (모델 차등 배치)
 | 에이전트 | Model | 역할 | 담당 이슈 |
@@ -36,6 +81,7 @@
 | scenario-player | sonnet | 시나리오 E2E 실행 | SCENARIO_PLAY, E2E_VERIFY, FLOW_REPLAY |
 | design-critic | opus | 디자인 감각 검증 | DESIGN_REVIEW, DESIGN_FIX, VISUAL_AUDIT |
 | ux-harness | sonnet | UX 규칙 검증 | UI_REVIEW, UX_FIX |
+| code-quality | sonnet | 코드 문법/품질 정적 분석 | LINT_CHECK, TYPE_CHECK, CODE_SMELL, DEAD_CODE, COMPLEXITY_REVIEW, STYLE_FIX |
 | test-harness | sonnet | 테스트 실행 | RUN_TESTS, RETEST, COVERAGE_CHECK |
 | eval-harness | sonnet | 품질 측정 | SCORE, REGRESSION_CHECK |
 | cicd-harness | sonnet | 배포 | DEPLOY_READY, ROLLBACK |
@@ -55,13 +101,21 @@
 
 1. **IN_PROGRESS 이슈 있음** → 중단된 작업을 즉시 이어서 처리 (해당 에이전트 재스폰)
 2. **READY 이슈만 있음** → 우선순위 최상위 이슈 즉시 처리 시작
-3. **이슈 없음** → "이슈 없음. 새 작업을 시작합니다." 출력 후 대기
+3. **이슈 없음** → 능동 스캔 모드 진입:
+   `bash .claude/hooks/proactive-scan.sh` 자동 실행 → 아래 항목 스캔:
+   a. `git diff` → 미커밋 변경 있으면 CODE_SMELL 이슈 생성
+   b. `npx tsc --noEmit` → 타입 에러 있으면 LINT_CHECK P0 이슈 생성
+   c. ESLint → lint 에러 > 5개면 LINT_CHECK P1 이슈 생성
+   d. TODO/FIXME/HACK 검색 → 3개 이상이면 CODE_SMELL P3 이슈 생성
+   e. `npm audit` → critical/high 취약점 → LINT_CHECK P0 이슈 생성
+   f. 전부 클린 → "프로젝트 정상. 새 기능 또는 개선 작업을 기획하세요." 출력
 
 ## Harness 엔진 핵심: 결과 분석 → 자동 Plan → 실행 루프
 
 ```
 코드 생성 완료
   → on_complete.sh (결과 분석 → Plan 수립 → 파생 이슈 생성)
+    ├─ lint/타입 에러? → [Plan:코드품질] STYLE_FIX P0 → agent-harness
     ├─ 테스트 실패? → [Plan:버그수정] FIX_BUG P0 → agent-harness
     ├─ 커버리지 부족? → [Plan:커버리지] IMPROVE_COVERAGE P2 → test-harness
     ├─ 점수 < 70? → [Plan:품질개선] QUALITY_IMPROVEMENT P0 → agent-harness
@@ -78,7 +132,7 @@
 
 | 완료된 이슈 | result 조건 | 자동 생성 Plan |
 |-----------|-----------|--------------|
-| GENERATE_CODE/FIX_BUG/BIZ_FIX | 항상 | RUN_TESTS + DOMAIN_ANALYZE + UI_REVIEW (UI파일 있으면) |
+| GENERATE_CODE/FIX_BUG/BIZ_FIX | 항상 | LINT_CHECK + RUN_TESTS + DOMAIN_ANALYZE + UI_REVIEW (UI파일 있으면) |
 | DOMAIN_ANALYZE | 항상 | BIZ_VALIDATE (정적) + SCENARIO_PLAY (동적) |
 | SCENARIO_PLAY | FAIL 있음 | SCENARIO_FIX P0 (실패 상세 포함) |
 | SCENARIO_PLAY | 전체 PASS | 학습 기록 |
@@ -88,6 +142,10 @@
 | SCORE | 점수 ≥ 70 | DEPLOY_READY |
 | SCORE | 점수 < 70 | QUALITY_IMPROVEMENT (최약 영역 포함) |
 | SCORE | 점수 -10% 이상 하락 | REGRESSION_CHECK |
+| LINT_CHECK | 타입 에러 있음 | STYLE_FIX P0 (에러 목록 포함) |
+| LINT_CHECK | lint 에러 > 10 | STYLE_FIX P1 (자동 수정 가능 항목 표시) |
+| LINT_CHECK | 미사용 의존성 > 3 | DEAD_CODE P2 (depcheck 결과) |
+| LINT_CHECK | 전부 클린 | 학습 기록 |
 | BIZ_VALIDATE | CRITICAL 갭 | BIZ_FIX P0 (갭별 개별 이슈) |
 | BIZ_VALIDATE | coverage < 70% | SYSTEMIC_ISSUE (설계 문제 의심) |
 | BIZ_VALIDATE | 통과 | SCORE (빠른 경로) |
@@ -117,6 +175,7 @@ bash .claude/hooks/on_complete.sh ISS-005 SCORE '{"score":82,"prev_score":79,"br
 - **Stop**: on-agent-complete.sh (디스패치) + meta-review.sh (패턴 분석)
 - **SubagentStop**: on-agent-complete.sh (디스패치) + meta-review.sh (패턴 분석)
 - **PostToolUse (Write|Edit)**: post-code-change.sh (파일 추적)
+- **SessionStart**: session-resume.sh (세션 복원 → 이슈 없으면 proactive-scan.sh 자동 호출)
 
 ### meta-review.sh — 패턴 분석 & 전략 제안
 Stop/SubagentStop마다 자동 실행:
@@ -132,6 +191,6 @@ Stop/SubagentStop마다 자동 실행:
 - Meta Agent 이슈 생성 주기당 최대 5개
 
 ## Scale Mode
-- Full: 8 에이전트 전체 (hook-router, ux-harness 포함)
-- Reduced: agent + test + meta + hook-router
+- Full: 전체 에이전트 (hook-router, ux-harness, code-quality 포함)
+- Reduced: agent + code-quality + test + meta + hook-router
 - Single: agent만 (긴급)
