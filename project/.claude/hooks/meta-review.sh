@@ -62,9 +62,14 @@ def make_issue(title, issue_type, priority, assign_to, payload=None):
     global next_id_num
     if len(new_issues) >= 5:
         return  # 주기당 최대 5개
-    # 유사 이슈 중복 체크
-    for iss in issues:
-        if iss.get("title") == title and iss.get("status") in ("READY", "IN_PROGRESS"):
+    # 유사 이슈 중복 체크 — DONE 포함 (완료된 동일 분석 재생성 방지)
+    for iss in issues + new_issues:
+        if iss.get("title") == title:
+            return
+        # type+payload 기반 중복 체크 (제목 미세 차이 방지)
+        if (iss.get("type") == issue_type and
+            payload and iss.get("payload", {}).get("parent_id") == payload.get("parent_id") and
+            payload.get("parent_id") is not None):
             return
     iss = {
         "id": f"ISS-{next_id_num:03d}",
