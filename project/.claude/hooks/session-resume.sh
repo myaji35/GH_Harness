@@ -59,7 +59,7 @@ if in_progress:
     iss = in_progress[0]
     MODEL_MAP = {
         "product-manager": "opus",
-        "agent-harness": "opus", "meta-agent": "opus",
+        "agent-harness": "sonnet", "meta-agent": "sonnet",
         "code-quality": "sonnet",
         "test-harness": "sonnet", "eval-harness": "sonnet",
         "cicd-harness": "sonnet", "ux-harness": "sonnet",
@@ -89,7 +89,7 @@ if ready and not in_progress:
     next_iss = ready[0]
     MODEL_MAP = {
         "product-manager": "opus",
-        "agent-harness": "opus", "meta-agent": "opus",
+        "agent-harness": "sonnet", "meta-agent": "sonnet",
         "code-quality": "sonnet",
         "test-harness": "sonnet", "eval-harness": "sonnet",
         "cicd-harness": "sonnet", "ux-harness": "sonnet",

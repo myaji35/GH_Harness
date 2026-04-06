@@ -76,8 +76,8 @@
 | 에이전트 | Model | 역할 | 담당 이슈 |
 |---------|-------|------|---------|
 | product-manager | opus | 기획/스토리/스코프 | FEATURE_PLAN, USER_STORY, SCOPE_DEFINE, PRIORITY_RANK |
-| agent-harness | opus | 코드 생성/수정 | GENERATE_CODE, REFACTOR, FIX_BUG, BIZ_FIX |
-| meta-agent | opus | 관찰/진화 | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
+| agent-harness | sonnet | 코드 생성/수정 | GENERATE_CODE, REFACTOR, FIX_BUG, BIZ_FIX |
+| meta-agent | sonnet | 관찰/진화 | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
 | domain-analyst | opus | 도메인/규칙/시나리오 도출 | DOMAIN_ANALYZE, RULE_EXTRACT, SCENARIO_GENERATE |
 | biz-validator | sonnet | 비즈니스 로직 정적 검증 | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
 | scenario-player | sonnet | 시나리오 E2E 실행 | SCENARIO_PLAY, E2E_VERIFY, FLOW_REPLAY |

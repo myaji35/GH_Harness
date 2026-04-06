@@ -24,8 +24,8 @@ except Exception:
 
 # 에이전트 → 모델 매핑
 MODEL_MAP = {
-    "agent-harness":  "opus",
-    "meta-agent":     "opus",
+    "agent-harness":  "sonnet",
+    "meta-agent":     "sonnet",
     "test-harness":   "sonnet",
     "eval-harness":   "sonnet",
     "cicd-harness":   "sonnet",
