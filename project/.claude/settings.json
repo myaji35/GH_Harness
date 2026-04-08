@@ -32,6 +32,9 @@
       "Bash(rails *)",
       "Bash(bundle *)",
       "Bash(bin/*)",
+      "Bash(jq *)",
+      "Bash(rm /tmp/harness-freeze.env)",
+      "Bash(/Users/gangseungsig/.claude/skills/gstack/browse/dist/browse *)",
       "Read(*)",
       "Write(*)",
       "Edit(*)",
@@ -49,6 +52,19 @@
             "command": "bash .claude/hooks/session-resume.sh",
             "timeout": 10,
             "statusMessage": "Restoring harness state..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/freeze-guard.sh",
+            "timeout": 5,
+            "statusMessage": "Checking freeze boundary..."
           }
         ]
       }

@@ -1,0 +1,18 @@
+{
+  "_comment": "이 파일은 빈 템플릿입니다. 'brand 정의해줘' 라고 말하면 brand-guardian이 코드베이스/git/README 분석으로 자동 초안을 작성합니다.",
+  "project": "",
+  "agenda": "",
+  "brand_voice": "",
+  "emotional_tone": [],
+  "design_metaphors": [],
+  "hero_color": "",
+  "secondary_colors": [],
+  "typography": {
+    "display": "",
+    "body": ""
+  },
+  "anti_patterns": [],
+  "primary_action_per_screen": "MUST_EXIST",
+  "user_decision_clarity": "0.5초 룰 — 첫 시선 0.5초 안에 다음 행동 식별 가능해야 함",
+  "_status": "uninitialized"
+}

@@ -77,30 +77,51 @@ FEATURE_PLAN 완료
 | SCOPE_DEFINE | 항상 | FEATURE_PLAN (스코프 반영) |
 | PRIORITY_RANK | 항상 | 기존 READY 이슈 우선순위 재조정 |
 
-## 출력 형식
+## 출력 형식 (v2 — agenda_link 필수)
 
 ```json
 {
   "feature_name": "보험 약관 비교",
+  "agenda_link": "이 기능이 brand-dna.agenda를 어떻게 구현하는가의 한 문장 설명",
+  "problem": "사용자가 풀고 싶은 구체 문제",
+  "target_user": "이름까지 지목 가능한 첫 사용자 1명",
+  "success_signals": ["관찰 가능한 측정 지표 1", "관찰 가능한 측정 지표 2"],
   "stories": [
     {
       "title": "약관 텍스트 업로드",
       "priority": "P0",
       "type": "GENERATE_CODE",
       "assign_to": "agent-harness",
-      "acceptance_criteria": ["PDF 업로드", "텍스트 추출", "DB 저장"]
+      "acceptance_criteria": ["PDF 업로드", "텍스트 추출", "DB 저장"],
+      "primary_action": "PDF 업로드 버튼 (Hero CTA)"
     },
     {
       "title": "약관 비교 UI",
       "priority": "P1",
       "type": "UX_DESIGN",
       "assign_to": "ux-harness",
-      "acceptance_criteria": ["사이드바이사이드 뷰", "차이점 하이라이트"]
+      "acceptance_criteria": ["사이드바이사이드 뷰", "차이점 하이라이트"],
+      "primary_action": "차이점 자동 강조 토글"
     }
   ],
   "total_stories": 2,
   "estimated_complexity": "medium"
 }
+```
+
+## v2 필수 필드
+- **agenda_link**: brand-dna.json의 agenda와 이 기능을 잇는 한 문장 (없으면 plan-ceo-reviewer가 REJECT)
+- **target_user**: 추상적 페르소나 X — 이름까지 지목 가능해야 함
+- **success_signals**: 관찰 가능한 측정 지표 (vague한 "사용성 향상" 금지)
+- **stories[].primary_action**: 각 스토리의 Primary Action 1개 명시 (brand-guardian 검증 대비)
+
+## v2 파이프라인 (FEATURE_PLAN 후)
+```
+FEATURE_PLAN 완료
+  → PLAN_CEO_REVIEW (plan-ceo-reviewer, opus) ─┐ 병렬
+  → PLAN_ENG_REVIEW (plan-eng-reviewer, sonnet)─┘
+    → 양쪽 통과 시에만 USER_STORY 생성
+    → 한쪽이라도 REJECT 시 → FEATURE_PLAN 재작성 (P0)
 ```
 
 ## on_complete 호출 예시

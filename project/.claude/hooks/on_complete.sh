@@ -93,30 +93,72 @@ target_issue['result'] = result
 print(f"\n[분석] {issue_type} 결과 기반 Plan 수립:")
 
 if issue_type == 'FEATURE_PLAN':
-    # 기획 완료 → 사용자 스토리별 이슈 생성
-    stories = result.get('stories', [])
-    if stories:
-        for story in stories:
-            s_type = story.get('type', 'GENERATE_CODE')
-            s_assign = story.get('assign_to', 'agent-harness')
-            s_priority = story.get('priority', 'P1')
-            s_title = story.get('title', 'User Story')
-            add_issue(
-                f"[Story] {s_title}",
-                s_type, s_priority, s_assign,
-                {
-                    'acceptance_criteria': story.get('acceptance_criteria', []),
-                    'source_issue': issue_id,
-                    'feature': result.get('feature_name', '')
-                }
-            )
-    else:
-        # 스토리가 없으면 도메인 분석으로
+    # 기획 완료 → CEO + Eng 2중 검토 병렬 진행 (USER_STORY 직행 X)
+    feature_name = result.get('feature_name', issue_id)
+    add_issue(
+        f"[Plan:CEO검토] {feature_name} 전략 검토",
+        'PLAN_CEO_REVIEW', 'P1', 'plan-ceo-reviewer',
+        {'source_issue': issue_id, 'source_plan': result, 'feature': feature_name}
+    )
+    add_issue(
+        f"[Plan:Eng검토] {feature_name} 실행가능성 검토",
+        'PLAN_ENG_REVIEW', 'P1', 'plan-eng-reviewer',
+        {'source_issue': issue_id, 'source_plan': result, 'feature': feature_name}
+    )
+
+elif issue_type in ('PLAN_CEO_REVIEW', 'PLAN_ENG_REVIEW'):
+    # 검토 결과 분석 → REJECT면 재기획, AUGMENT/SCOPE_EXPANSION이면 보강 후 USER_STORY, APPROVE/HOLD면 USER_STORY 직행
+    verdict = result.get('verdict', 'APPROVE')
+    passed = result.get('passed', True)
+    source_plan = target_issue.get('payload', {}).get('source_plan', {})
+    feature = target_issue.get('payload', {}).get('feature', issue_id)
+
+    if verdict == 'REJECT' or not passed:
+        # 재기획 트리거
         add_issue(
-            f"[Plan:도메인분석] {result.get('feature_name', issue_id)}",
-            'DOMAIN_ANALYZE', 'P1', 'domain-analyst',
-            {'source_issue': issue_id, 'feature': result.get('feature_name', '')}
+            f"[Plan:재기획] {feature} — {verdict} 사유로 재작성",
+            'FEATURE_PLAN', 'P0', 'product-manager',
+            {'source_issue': issue_id, 'rejection_reason': result, 'previous_plan': source_plan}
         )
+    else:
+        # 통과 → 양쪽 검토가 모두 끝났는지 확인
+        parent_plan_id = target_issue.get('payload', {}).get('source_issue')
+        sibling_done = False
+        other_type = 'PLAN_ENG_REVIEW' if issue_type == 'PLAN_CEO_REVIEW' else 'PLAN_CEO_REVIEW'
+        for iss in registry['issues']:
+            if (iss.get('payload', {}).get('source_issue') == parent_plan_id
+                and iss.get('type') == other_type
+                and iss.get('status') == 'DONE'):
+                sibling_done = True
+                break
+
+        if sibling_done:
+            # 양쪽 검토 통과 → 보강 항목 + 원본 스토리로 USER_STORY 생성
+            stories = source_plan.get('stories', [])
+            extra_stories = result.get('suggested_stories', []) + result.get('augmentations', [])
+            for story in stories:
+                s_type = story.get('type', 'USER_STORY')
+                s_assign = story.get('assign_to', 'agent-harness')
+                s_priority = story.get('priority', 'P1')
+                s_title = story.get('title', 'User Story')
+                add_issue(
+                    f"[Story] {s_title}",
+                    s_type, s_priority, s_assign,
+                    {
+                        'acceptance_criteria': story.get('acceptance_criteria', []),
+                        'source_issue': parent_plan_id,
+                        'feature': source_plan.get('feature_name', feature),
+                        'reviewed': True
+                    }
+                )
+            for ex in extra_stories[:2]:  # 보강은 최대 2개만
+                add_issue(
+                    f"[Story:보강] {ex.get('title', ex.get('add', 'augmentation'))}",
+                    'USER_STORY', 'P2', 'agent-harness',
+                    {'source_issue': parent_plan_id, 'augmentation': ex}
+                )
+        else:
+            print(f"[Plan] {issue_type} 통과 — 형제 검토 대기 중")
 
 elif issue_type == 'USER_STORY':
     # 사용자 스토리 완료 → UI 필요 여부에 따라 분기
@@ -178,13 +220,25 @@ elif issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT
         {'files': all_files, 'source_issue': issue_id}
     )
 
-    # UI 관련 파일이면 UX 리뷰도 추가
+    # UI 관련 파일이면 UX 리뷰 + Brand Guard + Browser QA 추가
     ui_files = [f for f in all_files if any(ext in f for ext in ['.tsx', '.jsx', '.vue', '.html', '.css', '.svelte'])]
     if ui_files:
         add_issue(
             f"[Plan:UX리뷰] {issue_id} UI 변경 검증",
             'UI_REVIEW', 'P1', 'ux-harness',
             {'files': ui_files, 'source_issue': issue_id}
+        )
+        # Brand Guard — 프로젝트 아젠다 표현 + Action Clarity 검증
+        add_issue(
+            f"[Plan:브랜드검증] {issue_id} 아젠다 표현 + Action Clarity",
+            'BRAND_GUARD', 'P1', 'brand-guardian',
+            {'files': ui_files, 'source_issue': issue_id}
+        )
+        # Browser QA — gstack browse로 실제 콘솔 에러 캡처
+        add_issue(
+            f"[Plan:브라우저QA] {issue_id} 콘솔 에러 + 스크린샷 검증",
+            'BROWSER_QA', 'P1', 'agent-harness',
+            {'files': ui_files, 'source_issue': issue_id, 'action': 'run_browse_qa'}
         )
 
 elif issue_type in ('RUN_TESTS', 'RETEST'):
@@ -229,6 +283,12 @@ elif issue_type in ('RUN_TESTS', 'RETEST'):
                 'source_issue': issue_id
             }
         )
+        # 발산 엔진은 DEPLOY_READY에서 단일 발화 (비용 절감) — RUN_TESTS는 누적만
+        registry.setdefault('pending_opportunity_signals', []).append({
+            'source_issue': issue_id,
+            'source_type': 'RUN_TESTS',
+            'result': {'passed': test_passed, 'total': test_total, 'coverage': coverage}
+        })
 
 elif issue_type == 'DOMAIN_ANALYZE':
     # 도메인 분석 완료 → biz-validator + scenario-player에 결과 전달
@@ -342,6 +402,12 @@ elif issue_type in ('BIZ_VALIDATE', 'SCENARIO_GAP'):
             'SCORE', 'P1', 'eval-harness',
             {'biz_coverage': biz_coverage, 'source_issue': issue_id}
         )
+        # 발산 엔진은 DEPLOY_READY에서 단일 발화 — BIZ_VALIDATE는 누적만
+        registry.setdefault('pending_opportunity_signals', []).append({
+            'source_issue': issue_id,
+            'source_type': 'BIZ_VALIDATE',
+            'result': {'biz_coverage': biz_coverage}
+        })
         if biz_coverage >= 90:
             registry.setdefault('knowledge', {}).setdefault('success_patterns', []).append({
                 'pattern': f'biz_coverage_{biz_coverage}',
@@ -404,6 +470,93 @@ elif issue_type == 'DEPLOY_READY':
         'frequency': 1,
         'discovered_at': now
     })
+    # 발산 엔진 — 배포 완료 시 누적된 모든 통과 신호를 한 번에 분석 (단일 발화)
+    pending = registry.get('pending_opportunity_signals', [])
+    add_issue(
+        f"[Plan:기회발굴] {issue_id} 배포 완료 — 누적 신호 {len(pending)}개 종합 분석",
+        'OPPORTUNITY_SCOUT', 'P2', 'opportunity-scout',
+        {
+            'source_issue': issue_id,
+            'source_type': 'DEPLOY_READY',
+            'source_result': {'deployed': True},
+            'accumulated_signals': pending  # RUN_TESTS + BIZ_VALIDATE 통과 신호 누적
+        }
+    )
+    # 누적 시그널 초기화
+    registry['pending_opportunity_signals'] = []
+
+elif issue_type == 'OPPORTUNITY_SCOUT':
+    # 기회 발굴 결과 → OPPORTUNITY 이슈들을 product-manager로 위임
+    opportunities = result.get('opportunities', [])
+    if not opportunities:
+        # 강제 산출 위반 → 재시도
+        add_issue(
+            f"[Plan:재발산] {issue_id} 기회 0개 — 발산 재시도 필수",
+            'OPPORTUNITY_SCOUT', 'P2', 'opportunity-scout',
+            {
+                'source_issue': target_issue.get('payload', {}).get('source_issue'),
+                'source_type': target_issue.get('payload', {}).get('source_type'),
+                'retry': True
+            }
+        )
+    else:
+        for opp in opportunities[:3]:
+            add_issue(
+                f"[기회] {opp.get('title', 'opportunity')}",
+                'FEATURE_PLAN', opp.get('priority', 'P2'), 'product-manager',
+                {
+                    'opportunity': opp,
+                    'source_issue': issue_id,
+                    'lens': opp.get('lens'),
+                    'success_signal': opp.get('success_signal'),
+                    'auto_discovered': True
+                }
+            )
+
+elif issue_type == 'BROWSER_QA':
+    # 브라우저 QA 결과 → 콘솔 에러 있으면 FIX_BUG, 없으면 통과
+    console_errors = result.get('console_errors', [])
+    network_errors = result.get('network_errors', [])
+    screenshot_diff = result.get('screenshot_diff', None)
+
+    if console_errors or network_errors:
+        add_issue(
+            f"[Plan:브라우저버그] 콘솔 {len(console_errors)} + 네트워크 {len(network_errors)} 에러",
+            'FIX_BUG', 'P0', 'agent-harness',
+            {
+                'console_errors': console_errors,
+                'network_errors': network_errors,
+                'source_issue': issue_id,
+                'action': 'fix_browser_errors'
+            }
+        )
+    else:
+        print(f"[Plan] 브라우저 QA 통과 — 콘솔/네트워크 클린")
+
+elif issue_type == 'BRAND_GUARD':
+    # 브랜드 검증 결과 → 점수 미달 시 BRAND_VIOLATION (재작성)
+    brand_score = result.get('brand_score', 0)
+    agenda_score = result.get('agenda_expression', 0)
+    action_clarity = result.get('action_clarity', 0)
+    anti_patterns_found = result.get('anti_patterns_found', [])
+
+    if brand_score < 14 or agenda_score < 6 or action_clarity < 6 or anti_patterns_found:
+        add_issue(
+            f"[Plan:브랜드재작성] 아젠다 {agenda_score}/10 · Action {action_clarity}/10",
+            'DESIGN_FIX', 'P0', 'agent-harness',
+            {
+                'reason': 'brand_violation',
+                'brand_score': brand_score,
+                'agenda_expression': agenda_score,
+                'action_clarity': action_clarity,
+                'anti_patterns': anti_patterns_found,
+                'fix_directives': result.get('fix_directives', []),
+                'source_issue': issue_id,
+                'action': 'fix_brand_violation'
+            }
+        )
+    else:
+        print(f"[Plan] 브랜드 검증 통과 (브랜드:{brand_score}/20, 아젠다:{agenda_score}/10, Action:{action_clarity}/10)")
 
 elif issue_type in ('UI_REVIEW', 'UX_FIX'):
     # UX 리뷰 결과 분석

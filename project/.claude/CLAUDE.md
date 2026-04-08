@@ -61,22 +61,51 @@
 ### 명시적 트리거 (종래 방식)
 - "Harness 개념으로 프로젝트를 실행하자"
 - "harness 시작" / "harness init"
+- **"harness 시작하자"** ⭐ (업그레이드 기능 적용 진입점)
+  → SessionStart 핸들러가 자동으로:
+  → 1. brand-dna.json 존재 여부 확인 → 없으면 BRAND_DEFINE 이슈 자동 생성
+  → 2. registry.json READY/IN_PROGRESS 이슈 즉시 처리
+  → 3. 없으면 proactive-scan.sh 실행
+  → 4. 다음 기능 추가/검증 시 자동으로 plan-ceo-reviewer + plan-eng-reviewer 2중 검토 적용
+  → 5. UI 변경 시 brand-guardian + browser-qa 자동 검증
+  → 6. 통과 시 opportunity-scout가 발전적 이슈 자동 도출
+  → 7. 이슈 처리 중 freeze-guard로 편집 범위 자동 제한
+
+### 업그레이드 기능 (v2)
+v2 업그레이드로 다음 기능이 자동 활성화됩니다:
+1. **2중 Plan 검토** — product-manager 산출 → plan-ceo-reviewer (전략) + plan-eng-reviewer (실행) 병렬 검토 후에만 USER_STORY 진행
+2. **브라우저 QA** — UI 변경 시 gstack browse CLI로 콘솔/네트워크 에러 자동 캡처 → FIX_BUG 자동 spawn
+3. **편집 범위 자동 잠금** — 이슈 payload의 scope_dir 또는 files 공통 부모 디렉터리만 편집 허용 (freeze-guard)
+4. **기회 발굴 (발산 엔진)** — RUN_TESTS/BIZ_VALIDATE/DEPLOY_READY 통과 시 opportunity-scout가 4 렌즈로 1~3개 새 이슈 강제 도출
+5. **브랜드 정체성 수호** — UI 산출물에 대해 brand-guardian이 agenda expression + action clarity + anti-pattern 검증. 미달 시 DESIGN_FIX P0 자동 생성
 
 ### 업데이트 트리거
 - "harness 업데이트" / "harness 업데이트해줘" / "harness update"
   → `bash /Volumes/E_SSD/02_GitHub.nosync/GH_Harness/install.sh --batch --batch-dir=/Volumes/E_SSD/02_GitHub.nosync` 실행
   → 모든 harness 설치 프로젝트의 CLAUDE.md + hooks + agents 최신화 (이슈 DB 보존)
+- **"harness 업그레이드 해줘"** ⭐ (v2 업그레이드 전파)
+  → 위와 동일하나 추가로 새 에이전트(plan-ceo-reviewer, plan-eng-reviewer, opportunity-scout, brand-guardian) 및 새 hooks(browse-qa.sh, freeze-guard.sh) + brand-dna.json 템플릿이 모든 하위 프로젝트에 배포됨
+  → settings.json의 PreToolUse freeze hook도 자동 등록
+
+### 브랜드 트리거
+- **"brand 정의해줘"** / "brand-dna 만들어줘"
+  → brand-guardian이 코드베이스 + git log + README 분석으로 brand-dna.json 자동 초안
+  → 대표님 검토 후 확정
 
 ### 능동 스캔 트리거
 - "점검해" / "확인해봐" / "상태 보여줘" / "코드 스캔" / "proactive scan"
   → `bash .claude/hooks/proactive-scan.sh` 실행
   → 코드베이스 스캔 후 발견된 이슈 자동 생성
 
-## 에이전트 팀 (모델 차등 배치)
+## 에이전트 팀 (모델 차등 배치) — v2
 | 에이전트 | Model | 역할 | 담당 이슈 |
 |---------|-------|------|---------|
 | product-manager | opus | 기획/스토리/스코프 | FEATURE_PLAN, USER_STORY, SCOPE_DEFINE, PRIORITY_RANK |
-| agent-harness | sonnet | 코드 생성/수정 | GENERATE_CODE, REFACTOR, FIX_BUG, BIZ_FIX |
+| **plan-ceo-reviewer** ⭐ | opus | 전략 검토 (CEO 시선) | PLAN_CEO_REVIEW |
+| **plan-eng-reviewer** ⭐ | opus | 실행 가능성 검토 (Eng Lead) | PLAN_ENG_REVIEW |
+| **opportunity-scout** ⭐ | opus | 발산 엔진 (통과 후 기회 발굴) | OPPORTUNITY_SCOUT, OPPORTUNITY |
+| **brand-guardian** ⭐ | opus | 브랜드 정체성 수호 | BRAND_GUARD, BRAND_DEFINE |
+| agent-harness | sonnet | 코드 생성/수정 | GENERATE_CODE, REFACTOR, FIX_BUG, BIZ_FIX, BROWSER_QA |
 | meta-agent | sonnet | 관찰/진화 | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
 | domain-analyst | opus | 도메인/규칙/시나리오 도출 | DOMAIN_ANALYZE, RULE_EXTRACT, SCENARIO_GENERATE |
 | biz-validator | sonnet | 비즈니스 로직 정적 검증 | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |

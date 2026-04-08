@@ -35,6 +35,12 @@ MODEL_MAP = {
     "scenario-player": "sonnet",
     "domain-analyst": "opus",
     "design-critic":  "opus",
+    "product-manager": "opus",
+    "plan-ceo-reviewer": "opus",
+    "plan-eng-reviewer": "sonnet",
+    "opportunity-scout": "sonnet",
+    "brand-guardian":  "sonnet",
+    "code-quality":   "sonnet",
     "hook-router":    "haiku",
 }
 
@@ -68,8 +74,37 @@ model = MODEL_MAP.get(agent, "sonnet")
 issue_id = issue.get("id", "UNKNOWN")
 issue_type = issue.get("type", "UNKNOWN")
 issue_title = issue.get("title", "")
-payload = json.dumps(issue.get("payload", {}), ensure_ascii=False)
+payload_obj = issue.get("payload", {})
+payload = json.dumps(payload_obj, ensure_ascii=False)
 remaining = len(ready_issues) - 1
+
+# ── 자동 freeze 설정 ─────────────────────────────────
+# 이슈 payload에 scope_dir 있거나 files에서 공통 dir 추출 가능하면 freeze
+import os
+freeze_dir = payload_obj.get("scope_dir")
+if not freeze_dir:
+    files = payload_obj.get("files") or payload_obj.get("files_changed") or []
+    if files and len(files) > 0:
+        # 모든 파일의 공통 부모 디렉터리
+        common = os.path.commonpath([os.path.dirname(f) or "." for f in files])
+        if common and common != "." and common != "/":
+            freeze_dir = common
+
+if freeze_dir:
+    try:
+        with open("/tmp/harness-freeze.env", "w") as f:
+            f.write(f'FREEZE_DIR="{freeze_dir}"\n')
+            f.write(f'FREEZE_ISSUE="{issue_id}"\n')
+        print(f"🔒 [Freeze] {freeze_dir} (이슈 {issue_id} 한정)")
+    except Exception:
+        pass
+else:
+    # freeze 해제 (이슈 범위 알 수 없음)
+    try:
+        if os.path.exists("/tmp/harness-freeze.env"):
+            os.remove("/tmp/harness-freeze.env")
+    except Exception:
+        pass
 
 # 지시문 출력 — Claude Code가 이것을 읽고 즉시 실행
 print(f"""

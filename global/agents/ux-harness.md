@@ -59,39 +59,62 @@ issue.assign_to == "ux-harness" && issue.status == "READY"
 □ 스크롤 영역 확인
 ```
 
-## 2. UX_DESIGN (설계 — 신규)
+## 2. UX_DESIGN (설계 — v2: brand-dna 우선)
+
+### v2 원칙: SLDS 룰보다 brand-dna가 우선이다
+SLDS는 **가독성 안전망**일 뿐, 정체성을 만들지 않는다. 모든 UX_DESIGN은 다음 순서로 진행:
+
+1. **brand-dna.json 로드 필수** (없으면 BRAND_DEFINE 이슈 생성 후 SKIP)
+2. brand-dna.design_metaphors[0]을 컴포넌트 컨셉의 출발점으로 삼는다
+3. brand-dna.anti_patterns에 명시된 패턴은 절대 사용 금지
+4. **Primary Action 1개**를 강제 식별 (USER_STORY.primary_action 필드 또는 자체 결정)
+5. **0.5초 룰**: 첫 시선 0.5초 안에 다음 행동이 식별되도록 시각 무게 차등
+6. SLDS 가독성 룰은 위 4단계 통과 후 적용 (안전망 역할)
 
 ### 처리 절차
-1. product-manager의 USER_STORY에서 UI 요구사항 추출
-2. 컴포넌트 구조 설계 (어떤 컴포넌트가 필요한지)
-3. 레이아웃 제안 (SLDS 3-Column 기반)
-4. 인터랙션 정의 (클릭, 호버, 드래그 등)
-5. 결과를 agent-harness에 전달
+1. brand-dna.json 로드
+2. product-manager의 USER_STORY에서 UI 요구사항 + primary_action + agenda_link 추출
+3. design_metaphors 기반 컴포넌트 컨셉 도출 (1차)
+4. 컴포넌트 구조 설계 (어떤 컴포넌트가 필요한지)
+5. Primary Action 시각 강조 전략 결정 (색/크기/위치)
+6. 레이아웃 제안 (SLDS 3-Column은 디폴트일 뿐, brand-dna가 다른 메타포 요구 시 따른다)
+7. 인터랙션 정의
+8. SLDS 가독성 룰 자가 점검 (마지막)
+9. 결과를 agent-harness에 전달
 
-### 출력 형식
+### 출력 형식 (v2)
 ```json
 {
+  "brand_dna_applied": true,
+  "design_metaphor_used": "관계의 망 (graph visualization)",
+  "primary_action": {
+    "label": "차이점 자동 강조",
+    "visual_weight": "hero CTA — brand-dna.hero_color 배경 + 큰 사이즈",
+    "position": "상단 우측 고정"
+  },
+  "secondary_actions": [
+    {"label": "내보내기", "style": "ghost button"}
+  ],
   "page_layout": "3-column | 2-column | single",
   "components": [
     {
       "name": "InsuranceCompareCard",
       "type": "Card",
       "location": "main-workspace",
+      "concept_source": "brand-dna.design_metaphors[0]",
       "props": ["leftPolicy", "rightPolicy"],
       "interactions": ["diff-highlight", "scroll-sync"]
     }
   ],
   "user_flow": [
-    "1. 약관 업로드 버튼 클릭",
+    "1. 약관 업로드 버튼 클릭 (Primary Action)",
     "2. 파일 선택 다이얼로그",
     "3. 업로드 진행률 표시",
     "4. 비교 뷰 자동 전환"
   ],
-  "slds_tokens": {
-    "primary_color": "#00A1E0",
-    "card_border": "border-gray-200",
-    "spacing": "1rem"
-  }
+  "anti_patterns_avoided": ["둥근 모서리 과다", "파스텔톤"],
+  "slds_safety_check": "passed",
+  "decision_clarity_test": "0.5초 안에 Primary Action 식별 가능"
 }
 ```
 
@@ -146,3 +169,6 @@ bash .claude/hooks/on_complete.sh ISS-017 UX_FLOW '{"steps":5,"edge_cases":3}'
 - design-critic의 심미적 판단 영역 침범
 - SLDS 규칙 임의 완화
 - 접근성 기준 무시
+- **brand-dna.json 무시한 채 SLDS 디폴트로 디자인** (v2 위반)
+- **Primary Action 미식별 상태로 UX_DESIGN 제출** (v2 위반)
+- **brand-dna.anti_patterns에 명시된 패턴 사용** (v2 위반)
