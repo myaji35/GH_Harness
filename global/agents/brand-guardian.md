@@ -101,7 +101,11 @@ Duncan Rogoff "5 Levels of Design" Level 5:
 
 ### 진입 조건
 - 이슈 payload에 `scrape_url`(필수), `scrape_purpose`(선택) 존재
-- Firecrawl MCP 설치 확인 (미설치 시 T2 BUDGET 또는 T2 EXPLICIT으로 사용자에게 설치 요청)
+- **CLI 우선 원칙 적용** — 도구 탐색 순서:
+  1. Firecrawl MCP 가용 → MCP 사용
+  2. MCP 없음 → Firecrawl CLI (`npx firecrawl scrape <url>`) 시도
+  3. CLI도 없음 → `curl` + `WebFetch` fallback (기본 메타데이터만 추출)
+  4. 전부 없음 → T2 EXPLICIT 컨펌 (도구 설치 요청)
 
 ### 처리 절차
 1. Firecrawl MCP 가용성 확인 (`/mcp` 설정 또는 `mcp list`)

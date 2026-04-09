@@ -129,8 +129,12 @@ v2 업그레이드로 다음 기능이 자동 활성화됩니다:
 - "harness 업데이트" / "harness 업데이트해줘" / "harness update"
   → `bash /Volumes/E_SSD/02_GitHub.nosync/GH_Harness/install.sh --batch --batch-dir=/Volumes/E_SSD/02_GitHub.nosync` 실행
   → 모든 harness 설치 프로젝트의 CLAUDE.md + hooks + agents 최신화 (이슈 DB 보존)
-- **"harness 업그레이드 해줘"** ⭐ (v2 업그레이드 전파)
-  → 위와 동일하나 추가로 새 에이전트(plan-ceo-reviewer, plan-eng-reviewer, opportunity-scout, brand-guardian) 및 새 hooks(browse-qa.sh, freeze-guard.sh) + brand-dna.json 템플릿이 모든 하위 프로젝트에 배포됨
+- **"harness 업그레이드 해줘"** ⭐ (v3 업그레이드 전파)
+  → 위와 동일하나 추가로:
+  → v2 에이전트 + v3 신규 에이전트(hermes, advisor, audience-researcher)
+  → v3 hooks(hermes-escalate.sh, request-user-confirm.sh, user-confirm-response.sh, opus-budget-check.sh)
+  → v3 디렉터리(docs/audience, docs/ui-snapshots, docs/brand, components/)
+  → registry.json v3 필수 필드 자동 마이그레이션(hermes_state, opus_budget_state, issue_budget, proactive_scan_state)
   → settings.json의 PreToolUse freeze hook도 자동 등록
 
 ### 브랜드 트리거
@@ -274,6 +278,7 @@ Stop/SubagentStop마다 자동 실행:
 - 에이전트 간 직접 호출 금지 → Hook 경유 필수
 - 이슈 깊이 최대 3단계
 - Meta Agent 이슈 생성 주기당 최대 5개
+- **CLI 우선 원칙 (v3)**: MCP 서버보다 CLI 도구(bash, curl, jq, gh, gstack 등)를 우선한다. MCP는 세션 상태 유지/양방향 스트리밍이 필수인 경우에만 정당화. MCP 의존 시 반드시 CLI fallback 경로를 확보할 것.
 
 ## Scale Mode
 - Full: 전체 에이전트 (hook-router, ux-harness, code-quality 포함)

@@ -143,14 +143,67 @@ if [ -f "$SCRIPT_DIR/project/.claude/brand-dna.json" ]; then
   fi
 fi
 
+# v3 필수 디렉터리 생성
+mkdir -p "$PROJECT_DIR/../docs/audience"
+mkdir -p "$PROJECT_DIR/../docs/ui-snapshots"
+mkdir -p "$PROJECT_DIR/../docs/brand"
+mkdir -p "$PROJECT_DIR/../components"
+echo -e "  ${GREEN}✓ docs/audience, docs/ui-snapshots, docs/brand, components/ (v3 디렉터리)${NC}"
+
 # issue-db 초기화 (업데이트 모드에서는 기존 DB 보존)
 if [ "$UPDATE_MODE" = true ] && [ -f "$PROJECT_DIR/issue-db/registry.json" ]; then
   echo -e "  ${YELLOW}⊘ issue-db/registry.json (기존 DB 보존)${NC}"
+  # v3 필수 필드 자동 마이그레이션 (기존 DB 구조 보존)
+  python3 -c "
+import json
+with open('$PROJECT_DIR/issue-db/registry.json', 'r') as f:
+    data = json.load(f)
+
+migrated = []
+
+# hermes_state 추가
+if 'hermes_state' not in data:
+    data['hermes_state'] = {
+        'invocations_by_issue': {},
+        'daily_log': [],
+        'total_invocations': 0
+    }
+    migrated.append('hermes_state')
+
+# opus_budget_state 추가
+if 'opus_budget_state' not in data:
+    data['opus_budget_state'] = {
+        'daily': {'date': '', 'cost_usd': 0.0, 'calls': 0},
+        'monthly': {'month': '', 'cost_usd': 0.0, 'calls': 0},
+        'demotion_active': False
+    }
+    migrated.append('opus_budget_state')
+
+# issue_budget 추가
+if 'issue_budget' not in data:
+    data['issue_budget'] = {'date': '', 'created_today': 0}
+    migrated.append('issue_budget')
+
+# proactive_scan_state 추가
+if 'proactive_scan_state' not in data:
+    data['proactive_scan_state'] = {'date': '', 'count': 0}
+    migrated.append('proactive_scan_state')
+
+# version 갱신
+data['version'] = '3.0.0'
+
+if migrated:
+    with open('$PROJECT_DIR/issue-db/registry.json', 'w') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    print(f'  v3 마이그레이션: {', '.join(migrated)} 추가됨')
+else:
+    print('  v3 필드 이미 존재')
+" 2>/dev/null || true
 else
   mkdir -p "$PROJECT_DIR/issue-db"
   cat > "$PROJECT_DIR/issue-db/registry.json" << 'EOF'
 {
-  "version": "1.0.0",
+  "version": "3.0.0",
   "created_at": "",
   "issues": [],
   "hooks": {
@@ -200,35 +253,59 @@ else
 fi
 echo ""
 echo -e "${GREEN}전역 설치 위치:${NC} ~/.claude/"
-echo -e "  agents/  → agent-harness, test-harness, eval-harness,"
+echo -e "  agents/  → 21개 에이전트 (v3)"
+echo -e "             기존: agent-harness, test-harness, eval-harness,"
 echo -e "             cicd-harness, meta-agent, qa-reviewer,"
 echo -e "             ux-harness, hook-router, biz-validator,"
 echo -e "             design-critic, scenario-player, domain-analyst,"
 echo -e "             product-manager, code-quality,"
-echo -e "             ${BLUE}plan-ceo-reviewer, plan-eng-reviewer (v2)${NC},"
-echo -e "             ${BLUE}opportunity-scout, brand-guardian (v2)${NC}"
+echo -e "             plan-ceo-reviewer, plan-eng-reviewer,"
+echo -e "             opportunity-scout, brand-guardian"
+echo -e "             ${BLUE}hermes, advisor, audience-researcher (v3)${NC}"
 echo -e "  skills/  → harness-orchestrator, hook-registry,"
 echo -e "             issue-registry, progressive-disclosure, meta-evolution"
 echo ""
 echo -e "${GREEN}프로젝트 설치 위치:${NC} ./.claude/"
-echo -e "  CLAUDE.md      → 시스템 진입점"
+echo -e "  CLAUDE.md      → 시스템 진입점 (v3: 3-Tier 컨펌 + Opus 예산)"
 echo -e "  settings.json  → Hooks 자동 실행 설정"
-echo -e "  hooks/         → Hook 이벤트 핸들러 (자동 반복 루프 + 세션 복원)"
-echo -e "  issue-db/      → 이슈 레지스트리"
+echo -e "  hooks/         → Hook 이벤트 핸들러 (v3: 13개)"
+echo -e "  issue-db/      → 이슈 레지스트리 (v3: hermes_state/opus_budget 자동 마이그레이션)"
+echo ""
+echo -e "${GREEN}프로젝트 디렉터리:${NC}"
+echo -e "  docs/audience/       → 오디언스 리서치 결과"
+echo -e "  docs/ui-snapshots/   → UI 레벨 승급 전후 스냅샷"
+echo -e "  docs/brand/          → 브랜드 스크레이핑 결과"
+echo -e "  components/          → 21st.dev 등 컴포넌트 프롬프트"
 echo ""
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${GREEN}v2 시작 방법:${NC}"
+echo -e "${GREEN}v3 시작 방법:${NC}"
 echo -e "  Claude Code 실행 후 아래 문장 중 하나를 입력하세요:"
 echo ""
-echo -e "  ${BLUE}\"harness 시작하자\"${NC}        ⭐ v2 업그레이드 기능 자동 적용"
-echo -e "  ${BLUE}\"harness 업그레이드 해줘\"${NC}  ⭐ 모든 하위 프로젝트에 v2 전파"
-echo -e "  ${BLUE}\"brand 정의해줘\"${NC}          ⭐ 프로젝트 brand-dna 자동 초안"
+echo -e "  ${BLUE}\"harness 시작하자\"${NC}            v3 전체 기능 자동 적용"
+echo -e "  ${BLUE}\"harness 업그레이드 해줘\"${NC}      모든 하위 프로젝트에 v3 전파"
+echo -e "  ${BLUE}\"brand 정의해줘\"${NC}              brand-dna 자동 초안 (Firecrawl 지원)"
 echo ""
-echo -e "${GREEN}v2 핵심 기능:${NC}"
-echo -e "  1. Plan 2중 검토 (CEO + Eng) — 잘못된 문제 풀기 방지"
-echo -e "  2. 브라우저 QA — gstack browse로 실제 콘솔 에러 캡처"
-echo -e "  3. 편집 범위 자동 잠금 (freeze-guard)"
-echo -e "  4. 발산 엔진 (opportunity-scout) — 통과 시 새 기회 자동 도출"
-echo -e "  5. 브랜드 정체성 수호 (brand-guardian) — 획일화 방지"
+echo -e "${GREEN}v3 신규 기능 (v2 위에 추가):${NC}"
+echo -e "  ${BLUE}Advisor Strategy${NC}"
+echo -e "    6. Hermes 에스컬레이션 중개자 — executor 막힘 시 Opus 자문"
+echo -e "    7. Advisor Opus 자문관 — Circuit Breaker 내장"
+echo ""
+echo -e "  ${BLUE}3-Tier 컨펌 정책${NC}"
+echo -e "    8. T0 침묵 자동 / T1 내부 자문 / T2 사용자 컨펌"
+echo -e "    9. AWAITING_USER 상태 — 개별 이슈만 멈추고 파이프라인은 계속"
+echo -e "   10. Opus 예산 관리 — Soft \$10 / Hard \$20 / 월 \$250 / 자동 강등"
+echo ""
+echo -e "  ${BLUE}디자인 5 Levels 파이프라인${NC}"
+echo -e "   11. Audience Researcher — 타겟 고객 언어/페인포인트 조사"
+echo -e "   12. UI Level 1-5 단계적 승급 — basic → brand+testimonial"
+echo -e "   13. 21st.dev 컴포넌트 카탈로그 규약"
+echo -e "   14. BRAND_SCRAPE — Firecrawl/CLI로 브랜드 자산 자동 추출"
+echo -e "   15. AI slop 진단 4항목 (A~D) — 원인 분류 + 자동 해결 라우팅"
+echo ""
+echo -e "  ${BLUE}부작용 방어 4종${NC}"
+echo -e "   16. 이슈 폭발 방지 (일일 cap 30 + opportunity 발화 제외)"
+echo -e "   17. Freeze x Hermes 충돌 방어 (scope 확장/해제)"
+echo -e "   18. meta x Hermes 레이스 방어 (lock 파일)"
+echo -e "   19. CLI 우선 원칙 — MCP보다 CLI 도구 우선"
 echo ""
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
