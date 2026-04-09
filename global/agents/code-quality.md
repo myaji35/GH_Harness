@@ -128,8 +128,26 @@ lint 에러 > 10개     → STYLE_FIX P1 (자동 수정 가능 항목 표시)
 bash .claude/hooks/on_complete.sh ISS-010 LINT_CHECK '{"type_errors":0,"lint_errors":3,"lint_warnings":12,"auto_fixable":8,"manual_fix_needed":7}'
 ```
 
+## Hermes 에스컬레이션 프로토콜 (분석 도구 실패 시)
+
+아래 조건에서 `hermes-escalate.sh` 호출:
+
+| 조건 | reason_code |
+|---|---|
+| tsc/eslint/rubocop 등이 2회 연속 같은 에러로 실패 | REPEAT_FAIL |
+| 기존 규칙셋으로 판정 불가한 새 패턴 (예: 처음 보는 AST 구조) | UNKNOWN_ERROR |
+| 복잡도 리팩토링 방향 결정 필요 (추출/인라인/분리 트레이드오프) | ARCH_DECISION |
+
+호출 예:
+```bash
+bash .claude/hooks/hermes-escalate.sh <이슈ID> ARCH_DECISION "src/parser.ts:calculate CC=24, 3가지 리팩토링 옵션 판단 필요"
+```
+
+Hermes/Advisor plan 수신 후 → STYLE_FIX 이슈 생성 시 payload에 plan을 포함하여 agent-harness가 구조 그대로 실행하게 한다.
+
 ## 절대 금지
 - 코드 직접 수정 (분석 + 이슈 생성만)
 - lint 규칙 임의 비활성화
 - 경고를 무시하고 "클린" 보고
 - eval-harness의 점수화 영역 침범
+- advisor 직접 호출 (반드시 Hermes 경유)

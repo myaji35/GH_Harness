@@ -42,6 +42,9 @@ MODEL_MAP = {
     "brand-guardian":  "sonnet",
     "code-quality":   "sonnet",
     "hook-router":    "haiku",
+    "hermes":         "sonnet",
+    "advisor":        "opus",
+    "audience-researcher": "sonnet",
 }
 
 # 에이전트 → 이슈 타입 매핑 (유효성 검증용)
@@ -54,6 +57,18 @@ AGENT_TYPES = {
     "meta-agent":     ["SYSTEMIC_ISSUE", "PATTERN_ANALYSIS", "INFRA_REVIEW", "ARCHITECTURE_REVIEW"],
 }
 
+# ── 일일 이슈 생성 총량 Cap (이슈 폭발 방지) ─────────────
+import datetime as _dt
+today_str = _dt.date.today().isoformat()
+registry.setdefault("issue_budget", {"date": today_str, "created_today": 0})
+if registry["issue_budget"]["date"] != today_str:
+    registry["issue_budget"] = {"date": today_str, "created_today": 0}
+DAILY_ISSUE_CAP = 30  # 일일 신규 이슈 최대 30개
+if registry["issue_budget"]["created_today"] >= DAILY_ISSUE_CAP:
+    # 하드 캡 — 신규 스폰 대신 경고
+    print(f"⚠️ [Budget] 일일 이슈 생성 cap 초과 ({registry['issue_budget']['created_today']}/{DAILY_ISSUE_CAP}). 기존 READY만 처리.")
+    # cap은 생성만 막고 처리는 계속 (아래로 진행)
+
 # READY 이슈 찾기 (FIFO: 가장 오래된 것부터)
 ready_issues = [
     iss for iss in registry.get("issues", [])
@@ -62,6 +77,15 @@ ready_issues = [
 
 if not ready_issues:
     sys.exit(0)
+
+# ── 백로그 과다 시 P3 이슈 처리 유보 (폭발 방지) ────────
+if len(ready_issues) > 20:
+    before = len(ready_issues)
+    ready_issues = [i for i in ready_issues if i.get("priority", "P3") != "P3"]
+    if len(ready_issues) < before:
+        print(f"⚠️ [Backlog] {before}개 과다 → P3 이슈 {before - len(ready_issues)}개 유보")
+    if not ready_issues:
+        sys.exit(0)
 
 # 우선순위 정렬: P0 > P1 > P2 > P3
 priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
@@ -72,6 +96,31 @@ issue = ready_issues[0]
 agent = issue.get("assign_to", "agent-harness")
 model = MODEL_MAP.get(agent, "sonnet")
 issue_id = issue.get("id", "UNKNOWN")
+
+# ── Opus 예산 체크 + 자동 강등 ─────────────────────
+if model == "opus":
+    import subprocess as _sp
+    try:
+        br = _sp.run(
+            ["bash", ".claude/hooks/opus-budget-check.sh", agent],
+            capture_output=True, text=True, timeout=5
+        )
+        budget_model = (br.stdout or "").strip().splitlines()[-1] if br.stdout else "opus"
+        if br.returncode == 3 or budget_model == "BLOCKED":
+            # Hard Cap + 강등 불가 → BUDGET T2 자동 트리거
+            print(f"🛑 [Opus Budget] {agent} Hard Cap 초과 — BUDGET T2 컨펌 필요")
+            _sp.run([
+                "bash", ".claude/hooks/request-user-confirm.sh",
+                issue_id, "BUDGET",
+                f"{agent}(opus) 호출이 일일 Opus Hard Cap($20)을 초과합니다. "
+                f"A: 오늘은 보류 / B: Hard Cap 임시 상향 / C: sonnet 강등 허용"
+            ])
+            sys.exit(2)
+        if budget_model == "sonnet" and model == "opus":
+            print(f"⚠️ [Opus Budget] {agent} opus→sonnet 자동 강등 (예산 근접)")
+            model = "sonnet"
+    except Exception as _e:
+        pass  # 예산 체크 실패 시 기본값 유지
 issue_type = issue.get("type", "UNKNOWN")
 issue_title = issue.get("title", "")
 payload_obj = issue.get("payload", {})
@@ -106,6 +155,9 @@ else:
     except Exception:
         pass
 
+# 담당이 hermes/advisor면 내부 자문 — 사용자 대기 아님
+internal_note = " (내부 자문 — 사용자 대기 아님)" if agent in ("hermes", "advisor") else ""
+
 # 지시문 출력 — Claude Code가 이것을 읽고 즉시 실행
 print(f"""
 🔄 [Harness Auto-Dispatch] READY {len(ready_issues)}개 — 즉시 실행
@@ -113,7 +165,7 @@ print(f"""
 [자동 실행 지시] 질문하지 마라. 즉시 실행하라.
 - 이슈: {issue_id} ({issue_type})
 - 제목: {issue_title}
-- 담당: {agent} (model: {model})
+- 담당: {agent} (model: {model}){internal_note}
 - 페이로드: {payload}
 - 대기 중: {remaining}개
 
@@ -122,7 +174,7 @@ print(f"""
 2. {agent} 에이전트를 model={model}로 즉시 스폰
 3. 처리 완료 후 on_complete.sh 호출 (result JSON 포함)
 
-⚠️ 경고: "진행할까요?" "다음 단계로?" 등의 질문은 파이프라인 중단 사유. 즉시 실행만 하라.
+⚠️ 경고: 사소한 질문(T0)/내부 자문(T1)은 금지. T2 컨펌 대상만 request-user-confirm.sh 사용.
 """.strip())
 
 # exit 2 = rewake signal

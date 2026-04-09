@@ -77,6 +77,38 @@ target_issue['status'] = 'DONE'
 target_issue['completed_at'] = now
 registry['stats']['completed'] = registry['stats'].get('completed', 0) + 1
 
+# ── Hermes가 확장한 freeze 범위 해제 (v2+) ──────────
+# 이 이슈 한정으로 FREEZE_DIR이 확장되었다면 복원 또는 해제
+import os as _os
+freeze_path = "/tmp/harness-freeze.env"
+if _os.path.exists(freeze_path):
+    try:
+        env_data = {}
+        with open(freeze_path, 'r') as _ff:
+            for _line in _ff:
+                if '=' in _line:
+                    _k, _v = _line.strip().split('=', 1)
+                    env_data[_k] = _v.strip('"')
+        if env_data.get("FREEZE_ISSUE") == issue_id and env_data.get("FREEZE_EXPANDED_BY_HERMES") == "true":
+            _os.remove(freeze_path)
+            print(f"[freeze] Hermes 확장 범위 해제 (이슈 {issue_id} 완료)")
+    except Exception:
+        pass
+
+# Hermes 호출 기록이 있는 이슈의 hermes_state 누적 청소 (부작용 #9 방어)
+if target_issue.get('hermes_invocations', 0) > 0:
+    hs = registry.get('hermes_state', {})
+    if 'invocations_by_issue' in hs and issue_id in hs['invocations_by_issue']:
+        del hs['invocations_by_issue'][issue_id]
+    # Hermes lock 파일 해제 (부작용 #4 레이스 방어)
+    lock_path = f"/tmp/harness-hermes-{issue_id}.lock"
+    try:
+        if _os.path.exists(lock_path):
+            _os.remove(lock_path)
+            print(f"[hermes-lock] {lock_path} 해제 (이슈 {issue_id} 완료)")
+    except Exception:
+        pass
+
 # result 파싱 시도
 result = {}
 try:

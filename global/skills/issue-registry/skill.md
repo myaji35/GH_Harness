@@ -87,6 +87,42 @@ CREATED → READY → IN_PROGRESS → DONE → LEARNED
 | BIZ_FIX | agent-harness | 비즈니스 로직 수정 |
 | SYSTEMIC_ISSUE | meta-agent | 반복 문제 근본 분석 |
 | PATTERN_ANALYSIS | meta-agent | 패턴 분석 |
+| HERMES_CONSULT | hermes | executor 막힘 실시간 중재 자문 |
+| ADVISOR_CONSULT | advisor | Opus 수준 심층 자문 (Hermes 경유 전용) |
+| AUDIENCE_RESEARCH | audience-researcher | 타겟 오디언스 언어/페인/드림아웃컴 조사 |
+| AUDIENCE_REFRESH | audience-researcher | 오디언스 리서치 주기 재조사 |
+| BRAND_SCRAPE | brand-guardian | Firecrawl 등으로 브랜드 자산 자동 스크레이핑 |
+| UI_LEVEL_UPGRADE | ux-harness | UI 품질 레벨 1→5 단계적 승급 |
+
+---
+
+## Hermes 상태 구조 (v2+)
+
+registry.json 루트에 `hermes_state` 필드가 자동 생성됨:
+
+```json
+{
+  "hermes_state": {
+    "invocations_by_issue": { "ISS-042": 2 },
+    "daily_log": [
+      { "date": "2026-04-10", "count": 7, "cost_usd": 0.35 }
+    ],
+    "total_invocations": 14
+  }
+}
+```
+
+이슈 객체에는 선택적으로 다음 필드 추가됨:
+- `hermes_invocations`: 이 이슈에 대한 Hermes 호출 횟수
+- `hermes_consults`: 생성된 HERMES_CONSULT 이슈 ID 목록
+- `payload.hermes_plan`: Hermes/Advisor가 주입한 실행 plan
+
+## Circuit Breaker 임계치 (`hermes-escalate.sh` 내장)
+- 이슈당 최대 3회
+- 일일 전체 최대 20회
+- 일일 비용 최대 $5
+
+초과 시 → meta-agent에 `SYSTEMIC_ISSUE P0` 자동 생성 (origin: "hermes_circuit_breaker")
 
 ---
 

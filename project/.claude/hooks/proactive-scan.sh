@@ -30,6 +30,22 @@ except:
     print("[ProactiveScan] registry.json 읽기 실패")
     sys.exit(0)
 
+# ── 백로그 과다 시 스캔 스킵 (이슈 폭발 방지) ──────────
+pending_ready = sum(1 for i in registry.get("issues", []) if i.get("status") == "READY")
+if pending_ready > 10:
+    print(f"[ProactiveScan] 백로그 {pending_ready}개 과다 — 스캔 스킵 (READY < 10 이하일 때 재개)")
+    sys.exit(0)
+
+# 오늘 이미 스캔을 많이 돌렸으면 스킵
+today = datetime.date.today().isoformat()
+scan_state = registry.setdefault("proactive_scan_state", {"date": today, "count": 0})
+if scan_state.get("date") != today:
+    scan_state.update({"date": today, "count": 0})
+if scan_state["count"] >= 5:
+    print(f"[ProactiveScan] 일일 스캔 한도 초과 ({scan_state['count']}/5) — 스킵")
+    sys.exit(0)
+scan_state["count"] += 1
+
 findings = []
 scan_results = {}
 

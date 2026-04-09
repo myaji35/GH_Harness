@@ -14,6 +14,7 @@ SLDS 규칙 기반 UI 검증 + UX 설계 제안을 담당하는 에이전트.
 ### 설계 (신규)
 - UX_DESIGN (컴포넌트 구조/레이아웃 제안)
 - UX_FLOW (사용자 플로우 설계)
+- UI_LEVEL_UPGRADE (UI 품질 레벨 1→5 단계적 승급, v2+)
 
 ## Trigger (내 이슈)
 issue.assign_to == "ux-harness" && issue.status == "READY"
@@ -143,6 +144,175 @@ SLDS는 **가독성 안전망**일 뿐, 정체성을 만들지 않는다. 모든
 }
 ```
 
+## 4. UI_LEVEL 1~5 단계적 승급 (v2+, Duncan Rogoff 5 Levels 방법론)
+
+### 개념
+같은 "랜딩 페이지 만들기" 이슈라도 **한 번에 완벽을 노리지 않는다**.
+5단계로 승급시키며 각 단계의 가치를 확보한다. 이슈 payload의 `ui_level` 필드로 지정.
+
+### 단계 정의
+
+| Level | 이름 | 핵심 작업 | 선행 조건 | 산출물 |
+|---|---|---|---|---|
+| **1** | basic-prompt | Claude Code 기본 프롬프트 | 없음 | 최소 동작하는 레이아웃 |
+| **2** | prompt-engineering | LLM으로 프롬프트 재생성 (브랜드/섹션/카피 상세화) | brand-dna.json | 구조 개선된 레이아웃 |
+| **3** | skills + audience | frontend-design skill + audience-research 병렬 주입 | Level 2 + docs/audience/{slug}.md | 타겟 언어 반영 + 차별화된 미학 |
+| **4** | components | 21st.dev 등 검증된 컴포넌트 조립 + Plan Mode 강제 | Level 3 + components/*.md | 프로페셔널 컴포넌트 통합 |
+| **5** | brand + testimonial | Firecrawl MCP로 자사 브랜드 자산/실제 후기 스크레이핑 | Level 4 + Firecrawl MCP | 완전 브랜드 일관성 + 실제 사회적 증거 |
+
+### 처리 절차 (UI_LEVEL_UPGRADE 이슈 수신 시)
+
+1. payload.current_level 과 payload.target_level 읽기
+2. **현재 레벨에서 다음 레벨로 한 단계씩만 승급** (Level 1 → 3 건너뛰기 금지)
+3. 선행 조건 확인:
+   - Level 3 선행: `docs/audience/{slug}.md` 존재 → 없으면 AUDIENCE_RESEARCH 이슈 생성 후 대기
+   - Level 4 선행: `components/` 폴더 + 필요 컴포넌트 prompt 파일 → 없으면 컴포넌트 수집 이슈 생성
+   - Level 5 선행: Firecrawl MCP 설치 확인 + brand-dna.json 존재
+4. 현재 구현물 스냅샷 저장 (`docs/ui-snapshots/{slug}/level-{n}.html`)
+   - 이유: 영상 통찰 "중간 버전이 더 좋을 수 있다" — 회귀 비교용
+5. 승급 작업 수행 (아래 레벨별 상세)
+6. design-critic에 UI_LEVEL_COMPARE 이슈 생성 → 이전/현재 레벨 비교 리뷰
+7. on_complete 호출
+
+### 레벨별 상세 작업
+
+#### Level 1 → 2 (prompt-engineering)
+- brand-dna.json + product-manager USER_STORY 로드
+- **Claude에게 "UI 개발자용 프롬프트를 생성해줘" 요청** (meta-prompt)
+- 결과 프롬프트로 현재 페이지 재설계
+- Plan Mode 사용
+
+#### Level 2 → 3 (skills + audience)
+- **병렬 실행**: audience-researcher 아직 없으면 생성, 있으면 로드
+- frontend-design skill 활성화 (또는 동급 스킬)
+- audience 파일의 pain points / dream outcomes / raw quotes를 카피에 **직접 인용**
+- 금지어 목록(`docs/audience/{slug}.md`의 forbidden_phrases) 검증
+- 결과: "오디언스가 자기 자신을 페이지에서 본다"
+
+#### Level 3 → 4 (components)
+- 필요 컴포넌트 식별 (hero, pricing, testimonial, features 등)
+- `components/{name}.md`에 21st.dev 등에서 가져온 프롬프트 저장
+- **Plan Mode 강제** — 통합 전 전체 컴포넌트 조립 계획 선제시 → 사용자 컨펌(T1 hermes 또는 T0)
+- agent-harness에 "components/ 폴더의 프롬프트를 통합 구현" 지시
+- 컴포넌트 간 시각 일관성 검증
+
+#### Level 4 → 5 (brand + testimonial)
+- Firecrawl MCP 호출: 자사 또는 참조 사이트 URL → 브랜드 정보 추출
+  - 로고/컬러/폰트/타이포/스페이싱
+- brand-guardian에게 BRAND_SCRAPE 이슈 위임
+- `/testimonials` 경로 스크레이핑 → 실제 고객 인용문 수집
+- 추출된 브랜드 자산을 현재 페이지에 적용
+- **"AI generic look" 최종 탈출 검증** (design-critic의 AI slop 4항목 진단 통과 필수)
+
+### 출력 형식 (UI_LEVEL_UPGRADE)
+```json
+{
+  "feature_slug": "masterclass-landing",
+  "previous_level": 3,
+  "new_level": 4,
+  "snapshot_before": "docs/ui-snapshots/masterclass-landing/level-3.html",
+  "snapshot_after": "docs/ui-snapshots/masterclass-landing/level-4.html",
+  "changes": [
+    "components/hero-section.md 통합 (21st.dev interactive robot)",
+    "components/testimonials.md 통합 (scrolling wall)",
+    "components/pricing.md 통합 (outer glow)"
+  ],
+  "prerequisites_met": true,
+  "plan_mode_used": true,
+  "ai_slop_diagnosis": "passed",
+  "next_upgrade_candidate": 5,
+  "comparison_verdict_pending": "design-critic에 위임"
+}
+```
+
+### 절대 금지 (UI_LEVEL 관련)
+- 레벨 건너뛰기 (1 → 3 금지, 한 단계씩만)
+- 선행 조건 미충족 상태에서 승급
+- 스냅샷 미저장 (회귀 비교 불가)
+- Level 4 이상에서 Plan Mode 생략
+- Level 5 도달 후 design-critic 4항목 진단 미수행
+
+## 5. 검증된 컴포넌트 카탈로그 규약 (v2+, 21st.dev 등)
+
+### 철학
+"AI가 맨땅에서 UI를 그리지 말고, 검증된 컴포넌트를 가져와 조립하라."
+(Duncan Rogoff 5 Levels — Level 4)
+
+### 디렉터리 구조 표준
+```
+components/
+├── hero-section.md          # 히어로 섹션 prompt
+├── pricing.md               # 가격 카드 prompt
+├── testimonials.md          # 테스티모니얼 월 prompt
+├── features.md              # 기능 그리드 prompt
+├── footer.md                # 푸터 prompt
+└── _sources.json            # 각 컴포넌트의 출처/라이선스/가격 추적
+```
+
+### 각 컴포넌트 파일 구조 (`components/{name}.md`)
+```markdown
+# Component: Hero Section (Interactive Robot)
+
+## 출처
+- 카탈로그: 21st.dev
+- URL: https://21st.dev/components/hero-interactive-robot
+- 라이선스: MIT (2026-04 확인)
+- 저자/커뮤니티: @community-author
+- 추가일: 2026-04-10
+
+## 원본 Prompt (Copy prompt for Claude Code)
+> [21st.dev에서 복사한 원본 prompt 그대로]
+
+## 커스터마이징 노트
+- brand-dna.hero_color 적용 필요
+- 오디언스 pain 문구 "almost right code problem"을 헤드라인에 통합
+
+## 통합 시 의존성
+- Tailwind 설정 요구: ...
+- 필요 라이브러리: framer-motion
+```
+
+### `components/_sources.json` 스키마
+```json
+{
+  "components": [
+    {
+      "name": "hero-section",
+      "catalog": "21st.dev",
+      "url": "https://21st.dev/...",
+      "license": "MIT",
+      "price_usd": 0,
+      "added_at": "2026-04-10",
+      "used_in": ["masterclass-landing"]
+    }
+  ]
+}
+```
+
+### 처리 절차 (UI_LEVEL 4 도달 시)
+1. 이슈 payload에서 필요 컴포넌트 목록 식별 (USER_STORY에서 추출)
+2. `components/_sources.json` 확인 → 이미 있는 컴포넌트는 재사용
+3. 없는 컴포넌트는 **검색 전략 결정**:
+   - 21st.dev MCP 가용 → 바로 조회
+   - MCP 없음 → 사용자에게 T2 EXPLICIT으로 "원하는 스타일/출처" 질의
+4. 각 컴포넌트를 `components/{name}.md`로 저장 (원본 prompt + 커스터마이징 노트)
+5. `_sources.json`에 등록
+6. **Plan Mode 강제** — 전체 조립 계획 먼저 제시
+7. agent-harness에 GENERATE_CODE 이슈 생성, payload에 `component_files: ["components/*.md"]` 전달
+8. 통합 완료 후 design-critic에 DESIGN_REVIEW 이슈 생성 (컴포넌트 간 시각 일관성 검증)
+
+### 카탈로그 우선순위 (권장)
+1. **21st.dev** — 커뮤니티 기반, 무료/유료 혼합, Claude Code prompt 제공
+2. **shadcn/ui** — 무료, 표준화, 커스터마이징 쉬움
+3. **Magic UI** — 애니메이션 특화
+4. **Aceternity UI** — 프리미엄 룩
+5. **커스텀 자사 컴포넌트** — 기존 프로젝트 재사용
+
+### 안전장치
+- **라이선스 필수 확인** — MIT/Apache/공개 도메인 외에는 `_sources.json.license`에 명시 + 대표님 T2 컨펌
+- **저작권 경계** — "prompt 복사"는 허용, "컴파일된 자산 무단 복제"는 금지
+- **종속성 체크** — 새 라이브러리 도입 시 plan-eng-reviewer 호출
+
 ## 파생 이슈 생성 규칙
 
 | 완료 이슈 | 조건 | 자동 생성 |
@@ -151,6 +321,9 @@ SLDS는 **가독성 안전망**일 뿐, 정체성을 만들지 않는다. 모든
 | UI_REVIEW | UX 통과 | DESIGN_REVIEW → design-critic |
 | UX_DESIGN | 항상 | GENERATE_CODE (설계 결과 포함) → agent-harness |
 | UX_FLOW | 항상 | UX_DESIGN (플로우 기반 컴포넌트 설계) → ux-harness |
+| UI_LEVEL_UPGRADE | 승급 완료 | UI_LEVEL_COMPARE → design-critic (이전/현재 비교) |
+| UI_LEVEL_UPGRADE | Level 3 선행 누락 | AUDIENCE_RESEARCH → audience-researcher |
+| UI_LEVEL_UPGRADE | Level 5 선행 누락 | BRAND_SCRAPE → brand-guardian |
 
 ## on_complete 호출 예시
 ```bash

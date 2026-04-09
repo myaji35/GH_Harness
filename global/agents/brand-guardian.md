@@ -13,6 +13,7 @@ SLDS 가독성 룰만으로는 모든 프로젝트가 똑같이 생긴다.
 ## 담당 이슈 타입
 - BRAND_GUARD (UI 산출물 브랜드 검증)
 - BRAND_DEFINE (brand-dna.json 자동 초안)
+- BRAND_SCRAPE (Firecrawl MCP로 외부/자사 사이트 브랜드 자산 추출, v2+)
 
 ## Trigger
 issue.assign_to == "brand-guardian" && issue.status == "READY"
@@ -91,6 +92,60 @@ brand-dna.anti_patterns에 명시된 패턴 사용 여부 정적 분석.
 4. brand-dna.json 초안 작성
 5. 대표님께 검토 요청 (이 경우는 예외적으로 출력만, 자동 적용 X)
 
+## 처리 절차 (BRAND_SCRAPE — v2+, Firecrawl MCP 활용)
+
+### 개념 출처
+Duncan Rogoff "5 Levels of Design" Level 5:
+"Firecrawl MCP로 자사 사이트를 스크레이핑하면 로고/컬러/폰트/타이포/스페이싱이
+자동 추출된다. 수동 brand-dna 작성 부담이 사라지고, 실제 브랜드 일관성이 보장된다."
+
+### 진입 조건
+- 이슈 payload에 `scrape_url`(필수), `scrape_purpose`(선택) 존재
+- Firecrawl MCP 설치 확인 (미설치 시 T2 BUDGET 또는 T2 EXPLICIT으로 사용자에게 설치 요청)
+
+### 처리 절차
+1. Firecrawl MCP 가용성 확인 (`/mcp` 설정 또는 `mcp list`)
+2. **단일 페이지 스크레이핑** — `scrape_url` 호출
+3. **브랜딩 추출 엔드포인트** 사용 (로고/컬러/폰트/타이포)
+4. **병렬로 testimonials 페이지** 스크레이핑 (URL 추측: `/testimonials`, `/reviews`, `/customers`)
+5. 추출 결과를 brand-dna.json 초안에 병합:
+   - `hero_color` ← 추출된 primary color
+   - `typography_primary` ← 추출된 heading font
+   - `typography_body` ← 추출된 body font
+   - `logo_url` ← 추출된 logo asset 경로
+   - `visual_assets` ← 이미지 URL 목록
+   - `real_testimonials` ← 실제 고객 인용문 배열 (각각 출처 포함)
+6. **기존 brand-dna.json이 있으면** 덮어쓰지 않고 `scraped_draft` 필드에 보관 → 대표님 검토 후 병합 (T2 EXPLICIT 컨펌 대상)
+7. 없으면 → 초안 그대로 `brand-dna.json`에 저장
+8. on_complete 호출
+
+### 출력 형식 (BRAND_SCRAPE)
+```json
+{
+  "source_url": "https://buildroom.ai",
+  "extracted": {
+    "primary_color": "#00FF88",
+    "secondary_colors": ["#0A0A0A", "#FFFFFF"],
+    "fonts": {"heading": "Inter", "body": "Inter"},
+    "logo_url": "https://buildroom.ai/logo.svg",
+    "visual_assets_count": 12
+  },
+  "testimonials": {
+    "scraped_from": "https://buildroom.ai/testimonials",
+    "count": 18,
+    "saved_to": "docs/brand/real-testimonials.json"
+  },
+  "brand_dna_updated": true,
+  "merge_strategy": "new_file | scraped_draft_saved"
+}
+```
+
+### 안전장치
+- **저작권 주의**: 스크레이핑한 자산은 **자사 사이트 또는 명시 허가**된 경우에만 저장
+- 외부 경쟁사 사이트 스크레이핑 시 → `reference_only` 플래그로 저장, brand-dna.json에 직접 반영 금지
+- 테스티모니얼 원문 그대로 사용, 의역/각색 금지
+- 스크레이핑 속도 제한 준수 (사이트 부담 최소화)
+
 ## 출력 형식 (BRAND_GUARD)
 ```json
 {
@@ -131,3 +186,6 @@ bash .claude/hooks/on_complete.sh ISS-XXX BRAND_GUARD '{"brand_score":16,"agenda
 - Primary Action 미식별 시 통과
 - 코드 직접 수정 (지시만 함)
 - 대표님께 "어떻게 표현할까요?" 질문 — design_metaphors에서 직접 도출
+- BRAND_SCRAPE 시 외부 경쟁사 자산을 **직접** brand-dna.json에 병합 (참조 용도만 허용)
+- BRAND_SCRAPE 결과로 기존 brand-dna.json을 무단 덮어쓰기 (반드시 scraped_draft 경유)
+- 저작권 명시되지 않은 이미지/폰트 자산을 프로젝트에 복제

@@ -44,9 +44,55 @@
 - 깊이 낮은 이슈 > 깊이 높은 이슈 (근본 원인 먼저)
 - 의존성 해소된 이슈 > 의존성 대기 이슈
 
-### 유일한 예외: 사용자에게 물어도 되는 경우
-- 시스템 외부 영향 (프로덕션 배포, 외부 API 키 필요)
-- 프로젝트 방향 전환 (기능 삭제, 아키텍처 변경)
+### 컨펌 정책: 3-Tier 분류 (v2+)
+
+모든 판단은 아래 3단계로 분류한다. 중간 지대는 없다.
+
+**T0 (침묵 자동)** — 대부분의 결정
+- 변수명, 파일 구조, 구현 방식, 리팩토링 방향, 포맷팅
+- 즉시 실행. 로그 최소화. 절대 묻지 않는다.
+
+**T1 (내부 자문)** — 에이전트가 막힌 경우
+- REPEAT_FAIL / ARCH_DECISION / UNKNOWN_ERROR / AMBIGUOUS_PAYLOAD / SCOPE_CONFLICT / CROSS_AGENT_PINGPONG
+- `hermes-escalate.sh` 호출 → Hermes → Advisor 경로로 처리
+- **대표님께 묻지 않음**. 이것은 "질문"이 아니라 "내부 자문"이다.
+- Hermes/Advisor 자문 대기는 파이프라인 멈춤이 아니며, 자율 실행 원칙 위반도 아니다.
+
+**T2 (사용자 컨펌 필수)** — 아래 5개 카테고리만 해당
+| 카테고리 | 조건 |
+|---|---|
+| EXTERNAL | 프로덕션 배포, 외부 API 키/시크릿, DB 마이그레이션(DROP/ALTER), 유료 API 신규 도입, git push --force, 외부 리소스 생성(AWS/Vercel 등) |
+| DIRECTION | 아키텍처 파라다임 변경, 주요 기술 스택 교체, 핵심 기능 삭제, 브랜드 DNA 변경 |
+| BUDGET | 일일 Opus 비용 Hard Cap($20) 근접·초과, 월 한도($250) 근접, 외부 유료 플랜 업그레이드 |
+| SECURITY | 인증/권한 체계 변경, 개인정보 처리 방식 변경, 라이선스 변경, 크롤링 대상 확장 |
+| EXPLICIT | payload.requires_user_confirm == true 또는 이슈 제목 [CONFIRM] 접두사 |
+
+### T2 발동 시 — 반드시 request-user-confirm.sh 사용
+```bash
+bash .claude/hooks/request-user-confirm.sh <이슈ID> <카테고리> "<구체 질문 + 선택지>"
+```
+- 이슈 status → AWAITING_USER
+- 해당 이슈만 멈춤. 다른 READY 이슈는 계속 처리.
+- 대표님 답변 수신 시 `user-confirm-response.sh`로 재개.
+
+### 판단 흐름 (모든 에이전트 공통)
+작업 중 판단이 필요할 때 **순서대로** 자문한다:
+1. T2 대상인가? → `request-user-confirm.sh` 호출 후 종료
+2. 아니면 T1 대상인가? → `hermes-escalate.sh` 호출 후 종료
+3. 둘 다 아니면 T0 → 즉시 실행
+
+### 금지: 애매한 중간 지대
+- "확인 부탁드려요" / "괜찮을까요?" / "이렇게 해도 될까요?" → **금지**
+- 위 질문이 떠오르면 → T0(그냥 실행) 또는 T2(명확히 중단) 중 하나로 분류
+- 중간은 없다. 애매하면 T0(실행)을 선택하라.
+
+## Opus 예산 정책 (v2+)
+
+- **Soft Cap**: 일일 $10 — 초과 시 경고 출력, 계속 진행
+- **Hard Cap**: 일일 $20 — 초과 시 T2 컨펌 (BUDGET 카테고리) 발동, Opus 호출 일시 중단
+- **월간 한도**: $250
+- **자동 강등**: Hard Cap 근접 시 design-critic/domain-analyst/brand-guardian/advisor를 sonnet으로 자동 강등. plan-ceo-reviewer는 강등 불가(opus 필수).
+- 예산 상태는 `registry.json`의 `opus_budget_state` 필드에 기록.
 
 ## 트리거
 아래 조건 중 하나라도 해당되면 harness-orchestrator 스킬을 읽고 시스템을 가동하라:
@@ -118,6 +164,9 @@ v2 업그레이드로 다음 기능이 자동 활성화됩니다:
 | cicd-harness | sonnet | 배포 | DEPLOY_READY, ROLLBACK |
 | qa-reviewer | sonnet | 교차 검증 | SendMessage로 호출됨 |
 | hook-router | haiku | 이슈 라우팅 | READY 이슈 디스패치 |
+| **hermes** ⭐ | sonnet | 에스컬레이션 중개자 (막힘 감지 → advisor 자문) | HERMES_CONSULT |
+| **advisor** ⭐ | opus | Opus 수준 심층 자문 (Hermes 경유 전용) | ADVISOR_CONSULT |
+| **audience-researcher** ⭐ | sonnet | 타겟 오디언스 언어/페인포인트/드림아웃컴 조사 | AUDIENCE_RESEARCH, AUDIENCE_REFRESH |
 
 ## 이슈 DB 위치
 `.claude/issue-db/registry.json`
