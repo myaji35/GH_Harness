@@ -59,8 +59,13 @@ issue.assign_to == "brand-guardian" && issue.status == "READY"
       "border_width": "1px | 2px"
     },
     "motion": {
-      "style": "none | subtle(150ms) | smooth(300ms) | playful(500ms+bounce)",
-      "page_transition": "none | fade | slide | scale"
+      "style": "none | subtle(150ms) | smooth(300ms) | playful(500ms+bounce) | cinematic(600ms+ease-out)",
+      "page_transition": "none | fade | slide | scale | morph",
+      "scroll_animation": "none | fade-up | slide-in | parallax | stagger | reveal",
+      "hover_effect": "none | lift | glow | scale | color-shift | underline-draw",
+      "loading_animation": "none | skeleton | pulse | spinner | progress-bar | shimmer",
+      "micro_interaction": "none | button-press | toggle-spring | card-flip | count-up | confetti",
+      "entrance_style": "none | fade-in | slide-up | scale-in | blur-in | typewriter"
     },
     "layout": {
       "density": "compact | default | spacious",
