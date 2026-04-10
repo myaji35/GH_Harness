@@ -29,7 +29,12 @@
     },
     "motion": {
       "style": "subtle",
-      "page_transition": "fade"
+      "page_transition": "fade",
+      "scroll_animation": "fade-up",
+      "hover_effect": "lift",
+      "loading_animation": "skeleton",
+      "micro_interaction": "button-press",
+      "entrance_style": "fade-in"
     },
     "layout": {
       "density": "default",
