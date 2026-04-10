@@ -74,14 +74,21 @@ SLDS는 **가독성 안전망**일 뿐, 정체성을 만들지 않는다. 모든
 
 ### 처리 절차
 1. brand-dna.json 로드
-2. product-manager의 USER_STORY에서 UI 요구사항 + primary_action + agenda_link 추출
-3. design_metaphors 기반 컴포넌트 컨셉 도출 (1차)
-4. 컴포넌트 구조 설계 (어떤 컴포넌트가 필요한지)
-5. Primary Action 시각 강조 전략 결정 (색/크기/위치)
-6. 레이아웃 제안 (SLDS 3-Column은 디폴트일 뿐, brand-dna가 다른 메타포 요구 시 따른다)
-7. 인터랙션 정의
-8. SLDS 가독성 룰 자가 점검 (마지막)
-9. 결과를 agent-harness에 전달
+2. **design_tokens 섹션 확인** — 없으면 BRAND_DEFINE 이슈 생성 후 SKIP
+3. product-manager의 USER_STORY에서 UI 요구사항 + primary_action + agenda_link 추출
+4. design_metaphors 기반 컴포넌트 컨셉 도출 (1차)
+5. **design_tokens 매핑 결정** — 각 컴포넌트에 어떤 토큰이 적용되는지 명시:
+   - 배경: `design_tokens.colors.surface` / `surface_alt`
+   - CTA: `design_tokens.colors.hero`
+   - 카드: `design_tokens.shape.radius` + `card_shadow`
+   - 전환: `design_tokens.motion.style`
+   - 레이아웃: `design_tokens.layout.grid` + `density`
+6. 컴포넌트 구조 설계 (어떤 컴포넌트가 필요한지)
+7. Primary Action 시각 강조 전략 결정 (색/크기/위치 — `design_tokens.colors.hero` 사용)
+8. 레이아웃 제안 (`design_tokens.layout.grid`가 우선, SLDS 3-Column은 레거시 디폴트)
+9. 인터랙션 정의 (`design_tokens.motion` 참조)
+10. SLDS 가독성 룰 자가 점검 (마지막, 안전망 역할)
+11. 결과를 agent-harness에 전달 (**design_tokens 매핑 포함**)
 
 ### 출력 형식 (v2)
 ```json

@@ -51,12 +51,15 @@ issue.assign_to == "design-critic" && issue.status == "READY"
 - 여백이 콘텐츠 그룹핑을 명확히 표현하는가
 ```
 
-### 3. 색상 조화 (Color Harmony)
+### 3. 색상 조화 (Color Harmony) + Design Token 준수 (v3+)
 ```
 - 주색/보조색/강조색의 비율이 60/30/10 원칙에 가까운가
 - 배경과 텍스트의 대비가 편안한가 (규칙이 아닌 느낌)
 - 상태 색상(성공/경고/에러)이 직관적인가
 - 전체 톤이 브랜드/도메인에 어울리는가
+- [v3] brand-dna.design_tokens.colors가 실제 코드에 반영되었는가
+- [v3] Tailwind 디폴트(blue-500, gray-100 등)가 토큰 대신 사용되고 있지 않은가
+- [v3] design_tokens.personality.mood와 실제 시각적 인상이 일치하는가
 ```
 
 ### 4. 타이포그래피 (Typography)

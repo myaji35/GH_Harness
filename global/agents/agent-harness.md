@@ -24,10 +24,18 @@ issue.assign_to == "agent-harness" && issue.status == "READY"
 2. 이슈 claim (status → IN_PROGRESS)
 3. progressive-disclosure 스킬로 컨텍스트 최소화
 4. 관련 파일만 로드 (전체 프로젝트 X)
-5. 코드 생성/수정
-6. qa-reviewer에게 SendMessage로 교차 검증 요청
-7. 검증 통과 시 on_complete 발화
-8. registry.json에 결과 기록
+5. **UI 파일 생성/수정 시 반드시** `brand-dna.json`의 `design_tokens` 참조:
+   - `colors` → Tailwind 디폴트 금지, 토큰 색상 사용 (bg-[#hex], text-[#hex])
+   - `typography.font_heading/body` → tailwind.config 또는 인라인 font-family 적용
+   - `shape.radius` → rounded 계열 토큰에 맞춤
+   - `motion.style` → transition duration 맞춤
+   - `layout.density/grid` → 레이아웃 구조 결정
+   - `personality.mood` → 전체 톤 (dark/light/warm 등)
+   - **design_tokens 미존재 시**: CLAUDE.md 전역 SLDS 디폴트 사용 (하지만 BRAND_DEFINE 이슈 자동 생성)
+6. 코드 생성/수정
+7. qa-reviewer에게 SendMessage로 교차 검증 요청
+8. 검증 통과 시 on_complete 발화
+9. registry.json에 결과 기록
 
 ## 파생 이슈 생성 규칙
 ```

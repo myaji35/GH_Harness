@@ -36,12 +36,96 @@ issue.assign_to == "brand-guardian" && issue.status == "READY"
   "brand_voice": "...",
   "emotional_tone": [...],
   "design_metaphors": [...],
-  "hero_color": "#hex",
+
+  "design_tokens": {
+    "colors": {
+      "hero": "#hex (주 행동 색 — CTA, Primary Action)",
+      "surface": "#hex (배경 — 전체 톤 결정)",
+      "surface_alt": "#hex (카드/섹션 배경 — surface와 대비)",
+      "text_primary": "#hex",
+      "text_secondary": "#hex",
+      "accent": "#hex (보조 강조 — 배지, 알림, 진행률)",
+      "border": "#hex (카드/입력 테두리)"
+    },
+    "typography": {
+      "font_heading": "Pretendard | Inter | Noto Sans KR | ...",
+      "font_body": "Pretendard | Inter | ...",
+      "font_mono": "JetBrains Mono | Fira Code | ...",
+      "scale": "default | compact | spacious"
+    },
+    "shape": {
+      "radius": "none(0) | subtle(4px) | moderate(8px) | round(12px) | pill(9999px)",
+      "card_shadow": "none | sm | md | lg | glow",
+      "border_width": "1px | 2px"
+    },
+    "motion": {
+      "style": "none | subtle(150ms) | smooth(300ms) | playful(500ms+bounce)",
+      "page_transition": "none | fade | slide | scale"
+    },
+    "layout": {
+      "density": "compact | default | spacious",
+      "max_width": "1024px | 1280px | 1440px | full",
+      "grid": "sidebar-main | centered | dashboard-3col"
+    },
+    "personality": {
+      "mood": "professional | warm | playful | bold | minimal | dark-studio",
+      "icon_style": "feather-outline | lucide | heroicons-solid | custom-svg",
+      "illustration_style": "none | line-art | 3d-isometric | photo-based"
+    }
+  },
+
+  "hero_color": "#hex (레거시 호환 — design_tokens.colors.hero와 동일값)",
   "anti_patterns": [...],
   "primary_action_per_screen": "MUST_EXIST",
   "user_decision_clarity": "0.5초 룰"
 }
 ```
+
+### Design Token 활용 원칙 (v3+ 필수)
+1. **agent-harness가 코드 생성 시** `design_tokens`를 반드시 참조. Tailwind 디폴트 사용 금지.
+2. **ux-harness의 UX_DESIGN 산출물**에 `design_tokens` 매핑 포함 (어떤 토큰이 어디에 적용되는지).
+3. **design-critic이 DESIGN_REVIEW 시** `design_tokens` 준수 여부를 8차원 점수에 반영.
+4. **anti_patterns에 SLDS 공통 규칙은 넣지 않음** — SLDS 가독성 규칙은 CLAUDE.md 전역에서 이미 강제됨. anti_patterns에는 **해당 프로젝트만의 금지 사항**만 넣을 것.
+
+### 프로젝트별 Design Token 예시
+
+#### InsureGraph Pro (보험 분석 — 전문가 도구)
+```json
+"design_tokens": {
+  "colors": { "hero": "#2563EB", "surface": "#F8FAFC", "surface_alt": "#FFFFFF", "accent": "#10B981" },
+  "typography": { "font_heading": "Pretendard", "font_body": "Pretendard", "scale": "default" },
+  "shape": { "radius": "subtle", "card_shadow": "sm", "border_width": "1px" },
+  "motion": { "style": "subtle", "page_transition": "fade" },
+  "layout": { "density": "compact", "max_width": "1440px", "grid": "dashboard-3col" },
+  "personality": { "mood": "professional", "icon_style": "feather-outline", "illustration_style": "none" }
+}
+```
+
+#### OmniVibePro (마케팅 영상 — 크리에이터 도구)
+```json
+"design_tokens": {
+  "colors": { "hero": "#A855F7", "surface": "#0A0A0A", "surface_alt": "#1A1A2E", "accent": "#22D3EE" },
+  "typography": { "font_heading": "Inter", "font_body": "Inter", "scale": "spacious" },
+  "shape": { "radius": "moderate", "card_shadow": "glow", "border_width": "1px" },
+  "motion": { "style": "smooth", "page_transition": "scale" },
+  "layout": { "density": "spacious", "max_width": "1280px", "grid": "centered" },
+  "personality": { "mood": "dark-studio", "icon_style": "lucide", "illustration_style": "3d-isometric" }
+}
+```
+
+#### Townin (지역 커뮤니티 — 따뜻한 공공성)
+```json
+"design_tokens": {
+  "colors": { "hero": "#00A1E0", "surface": "#FEFCE8", "surface_alt": "#FFFFFF", "accent": "#F59E0B" },
+  "typography": { "font_heading": "Noto Sans KR", "font_body": "Noto Sans KR", "scale": "default" },
+  "shape": { "radius": "round", "card_shadow": "md", "border_width": "1px" },
+  "motion": { "style": "smooth", "page_transition": "slide" },
+  "layout": { "density": "default", "max_width": "1024px", "grid": "centered" },
+  "personality": { "mood": "warm", "icon_style": "feather-outline", "illustration_style": "line-art" }
+}
+```
+
+**이 3개만 봐도** — InsureGraph는 밝고 밀도 높은 대시보드, OmniVibePro는 어두운 편집실, Townin은 따뜻한 동네 게시판. 같은 harness에서 **전혀 다른 UI가 나옵니다**.
 
 ---
 
@@ -89,8 +173,23 @@ brand-dna.anti_patterns에 명시된 패턴 사용 여부 정적 분석.
 1. 코드베이스 스캔 (package.json, README, 기존 UI 파일)
 2. git log 최근 50건에서 도메인 키워드 추출
 3. 아젠다 가설 3개 도출 → 가장 자주 등장하는 것 선택
-4. brand-dna.json 초안 작성
-5. 대표님께 검토 요청 (이 경우는 예외적으로 출력만, 자동 적용 X)
+4. **design_tokens 자동 결정** (v3 필수):
+   - 기존 UI 파일에서 사용 중인 색상/폰트/라운딩 추출 → 토큰 초안
+   - 없으면 도메인/아젠다 기반 추론:
+     - 금융/보험/의료 → `mood: professional`, `radius: subtle`, `shadow: sm`
+     - 크리에이터/미디어 → `mood: dark-studio`, `radius: moderate`, `shadow: glow`
+     - 커뮤니티/교육 → `mood: warm`, `radius: round`, `shadow: md`
+     - SaaS/도구 → `mood: minimal`, `radius: moderate`, `shadow: sm`
+   - 색상: hero_color + surface/surface_alt/accent/text 7가지 모두 결정
+   - 폰트: 한국어 프로젝트 → Pretendard 또는 Noto Sans KR 추천
+5. brand-dna.json 초안 작성 (**design_tokens 포함 필수**)
+6. 대표님께 검토 요청 (이 경우는 예외적으로 출력만, 자동 적용 X)
+
+### BRAND_DEFINE 시 "개성 없음" 방지 원칙
+- **SLDS 공통 규칙(border-gray, text-sm 등)은 anti_patterns에 넣지 않는다** — 이미 CLAUDE.md 전역에서 강제됨
+- anti_patterns에는 **해당 프로젝트만의 금지 사항**만 넣을 것 (예: "OmniVibePro에서 밝은 테마 금지")
+- design_tokens의 **mood, radius, shadow, motion**이 프로젝트마다 다르면 UI가 자연스럽게 달라짐
+- 같은 Tailwind를 써도 **토큰이 다르면 결과가 완전히 다르다**
 
 ## 처리 절차 (BRAND_SCRAPE — v2+, Firecrawl MCP 활용)
 
