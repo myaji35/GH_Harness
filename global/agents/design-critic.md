@@ -62,6 +62,16 @@ issue.assign_to == "design-critic" && issue.status == "READY"
 - [v3] design_tokens.personality.mood와 실제 시각적 인상이 일치하는가
 ```
 
+### 3-1. 다크 배경 가독성 (Dark Surface Readability)
+```
+- 다크 배경(#0f172a, #16325C 등) 위 텍스트가 white/60 이상인가
+- nav 링크가 text-gray-300 이하로 안 보이지 않는가 (최소 text-white/80)
+- ghost 버튼(border-only)의 border opacity가 /30 이상인가
+- 배지/라벨의 배경 대비가 충분한가 (bg-white/15 이상)
+- 지표 라벨 등 보조 텍스트가 text-gray-500 이하가 아닌가 (최소 text-gray-400)
+- 서브헤딩/설명 텍스트가 text-gray-400 이상인가 (text-gray-500은 다크 배경에서 거의 안 보임)
+```
+
 ### 4. 타이포그래피 (Typography)
 ```
 - 폰트 조합이 조화로운가 (제목/본문)
