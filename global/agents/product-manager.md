@@ -48,13 +48,24 @@ issue.assign_to == "product-manager" && issue.status == "READY"
 
 ### Step 2: 사용자 스토리 분해 (INVEST 원칙)
 ```
-As a [사용자 유형],
+As a [사용자 유형: Admin | User | Guest],
 I want [기능],
 So that [가치/목적].
 
 수락 기준:
 - Given [전제], When [행동], Then [결과]
 ```
+
+**v3 필수: 역할별 스토리 분해**
+모든 FEATURE_PLAN에서 아래 3개 역할의 스토리를 **반드시 도출**:
+- **Admin 스토리**: 이 기능을 관리/운영/모니터링하기 위해 Admin이 필요한 화면과 기능
+- **User 스토리**: 이 기능을 실제 사용하기 위한 회원의 핵심 행동
+- **Guest 스토리**: 비회원이 이 기능의 가치를 인식하고 가입을 결정하게 만드는 접점
+
+**역할 커버리지 규칙**:
+- Admin 스토리 0개 → plan-eng-reviewer가 REJECT ("운영 불가")
+- Guest 스토리 0개 → plan-ceo-reviewer가 REJECT ("획득 경로 없음")
+- 각 스토리에 `role: "admin" | "user" | "guest"` 필드 필수
 
 ### Step 3: 이슈 체인 생성
 기능 하나를 실행 가능한 이슈들로 분해:

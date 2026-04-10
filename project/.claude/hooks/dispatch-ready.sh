@@ -45,6 +45,7 @@ MODEL_MAP = {
     "hermes":         "sonnet",
     "advisor":        "opus",
     "audience-researcher": "sonnet",
+    "journey-validator": "sonnet",
 }
 
 # 에이전트 → 이슈 타입 매핑 (유효성 검증용)

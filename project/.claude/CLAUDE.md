@@ -183,6 +183,7 @@ v2 업그레이드로 다음 기능이 자동 활성화됩니다:
 | **hermes** ⭐ | sonnet | 에스컬레이션 중개자 (막힘 감지 → advisor 자문) | HERMES_CONSULT |
 | **advisor** ⭐ | opus | Opus 수준 심층 자문 (Hermes 경유 전용) | ADVISOR_CONSULT |
 | **audience-researcher** ⭐ | sonnet | 타겟 오디언스 언어/페인포인트/드림아웃컴 조사 | AUDIENCE_RESEARCH, AUDIENCE_REFRESH |
+| **journey-validator** ⭐ | sonnet | 사용자 여정 검증 (역할별/인팩트/온보딩/안내 품질) | JOURNEY_VALIDATE, ROLE_AUDIT, ONBOARDING_CHECK, IMPACT_REVIEW |
 
 ## 이슈 DB 위치
 `.claude/issue-db/registry.json`
@@ -233,7 +234,7 @@ v2 업그레이드로 다음 기능이 자동 활성화됩니다:
 | USER_STORY | 단순 구현 | GENERATE_CODE → agent-harness |
 | UX_DESIGN | 항상 | GENERATE_CODE (설계 결과 포함) → agent-harness |
 | UX_FLOW | 항상 | UX_DESIGN (플로우 기반 컴포넌트 설계) |
-| GENERATE_CODE/FIX_BUG/BIZ_FIX | 항상 | LINT_CHECK + RUN_TESTS + DOMAIN_ANALYZE + UI_REVIEW (UI파일 있으면) |
+| GENERATE_CODE/FIX_BUG/BIZ_FIX | 항상 | LINT_CHECK + RUN_TESTS + DOMAIN_ANALYZE + UI_REVIEW (UI파일 있으면) + JOURNEY_VALIDATE (v3) |
 | DOMAIN_ANALYZE | 항상 | BIZ_VALIDATE (정적) + SCENARIO_PLAY (동적) |
 | SCENARIO_PLAY | FAIL 있음 | SCENARIO_FIX P0 (실패 상세 포함) |
 | SCENARIO_PLAY | 전체 PASS | 학습 기록 |

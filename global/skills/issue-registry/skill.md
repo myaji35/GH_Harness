@@ -93,6 +93,10 @@ CREATED → READY → IN_PROGRESS → DONE → LEARNED
 | AUDIENCE_REFRESH | audience-researcher | 오디언스 리서치 주기 재조사 |
 | BRAND_SCRAPE | brand-guardian | Firecrawl 등으로 브랜드 자산 자동 스크레이핑 |
 | UI_LEVEL_UPGRADE | ux-harness | UI 품질 레벨 1→5 단계적 승급 |
+| JOURNEY_VALIDATE | journey-validator | 사용자 여정 전체 검증 (역할별/인팩트/온보딩) |
+| ROLE_AUDIT | journey-validator | Admin/User/Guest 역할별 화면 접근 감사 |
+| ONBOARDING_CHECK | journey-validator | 첫 사용 경험 5단계 검증 |
+| IMPACT_REVIEW | journey-validator | 화면별 행동 유도력 검증 |
 
 ---
 

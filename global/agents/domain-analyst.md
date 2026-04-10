@@ -54,6 +54,17 @@ scenario-player (동적 검증)
 | auth, login, session, JWT | 인증 | 세션 만료, 동시 로그인 제한, 비밀번호 정책 |
 | payment, cart, order, price | 결제/이커머스 | 결제 한도, 재고 차감, 환불 정책, 중복 결제 방지 |
 | role, permission, admin | 권한 관리 | RBAC 규칙, 권한 없는 접근 차단, 권한 상속 |
+
+**v3 필수: 역할별 규칙 분리**
+모든 규칙은 아래 3개 역할 중 하나 이상에 매핑해야 한다:
+- **admin**: 관리자 운영 행위 (사용자 관리, 컨텐츠 승인, 통계 조회, 설정 변경)
+- **user**: 회원 핵심 행위 (기능 사용, 데이터 CRUD, 결제, 프로필)
+- **guest**: 비회원 접근 행위 (랜딩 조회, 미리보기, 가입)
+
+규칙 도출 시 자동 점검:
+- admin 전용 규칙이 0개면 → `ROLE_GAP: admin` 경고 포함
+- guest 전용 규칙이 0개면 → `ROLE_GAP: guest` 경고 포함
+- 역할 매핑 없는 규칙은 반환 금지 (반드시 `roles: ["admin", "user"]` 식으로 명시)
 | upload, file, storage, bucket | 파일 관리 | 용량 제한, 형식 제한, 바이러스 스캔 |
 | notification, email, push | 알림 | 발송 실패 재시도, 구독 해제, 대량 발송 제한 |
 | schedule, cron, booking, reservation | 예약 | 중복 예약 방지, 취소 정책, 시간대 처리 |
