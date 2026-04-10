@@ -154,6 +154,30 @@ v2 업그레이드로 다음 기능이 자동 활성화됩니다:
   → brand-guardian이 코드베이스 + git log + README 분석으로 brand-dna.json 자동 초안
   → 대표님 검토 후 확정
 
+### 비즈니스 로직 점검 트리거 (v3+)
+- **"비즈니스 로직 점검하자!"** / "비즈니스 점검" / "biz check" / "로직 점검" / "전체 점검"
+  → 아래 4개 검증을 **병렬 이슈로 동시 생성** 후 즉시 디스패치:
+
+  | # | 이슈 타입 | 담당 에이전트 | 검증 내용 |
+  |---|---|---|---|
+  | 1 | DOMAIN_ANALYZE | domain-analyst (opus) | 도메인 규칙 도출 + 역할별(admin/user/guest) 시나리오 생성 |
+  | 2 | VIEW_AUDIT (LINT_CHECK) | code-quality (sonnet) | 뷰 구조 감사 — 레이아웃/파셜/라우트-뷰 매핑/자산 누락 |
+  | 3 | JOURNEY_VALIDATE | journey-validator (sonnet) | 사용자 여정 — 역할 커버리지/인팩트/온보딩/안내 품질 |
+  | 4 | BIZ_VALIDATE | biz-validator (sonnet) | 비즈니스 로직 갭 — 시나리오 커버리지/CRITICAL 갭/엣지 케이스 |
+
+  실행 순서:
+  1. 4개 이슈를 registry.json에 동시 생성 (priority: P1)
+  2. domain-analyst가 먼저 완료되면 결과(규칙+시나리오)를 biz-validator/journey-validator에 전달
+  3. 4개 모두 완료 후 → **통합 보고서** 자동 출력:
+     ```
+     ━━━ 비즈니스 로직 점검 결과 ━━━
+     도메인 규칙: N개 (admin:X user:Y guest:Z)
+     뷰 구조: CRITICAL N / HIGH N / MEDIUM N
+     사용자 여정: N/40점 (역할:N 인팩트:N 온보딩:N 안내:N)
+     비즈니스 갭: N/N 시나리오 커버 (CRITICAL:N MAJOR:N)
+     ```
+  4. CRITICAL/P0 이슈가 있으면 즉시 agent-harness로 수정 체인 시작
+
 ### 능동 스캔 트리거
 - "점검해" / "확인해봐" / "상태 보여줘" / "코드 스캔" / "proactive scan"
   → `bash .claude/hooks/proactive-scan.sh` 실행

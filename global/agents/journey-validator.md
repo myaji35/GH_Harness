@@ -81,6 +81,8 @@ issue.assign_to == "journey-validator" && issue.status == "READY"
 - **"미로 화면"**: CTA가 3개 이상, 모두 동등한 시각적 무게
 - **"공허 화면"**: 데이터 0건일 때 "데이터가 없습니다"만 표시
 - **"비밀 기능"**: 중요 기능이 메뉴 깊숙이 숨어있어 발견 어려움
+- **"길 잃은 화면"**: navbar/sidebar 없이 독립된 페이지 (layout false 남용, 사용자가 다른 페이지로 이동 불가)
+- **"유령 네비"**: navbar는 있지만 현재 위치 표시(active state)가 없어 사용자가 어디에 있는지 모름
 
 ### 3. ONBOARDING_FLOW (첫 사용 경험) — 10점
 

@@ -56,6 +56,10 @@ AGENT_TYPES = {
     "cicd-harness":   ["DEPLOY_READY", "ROLLBACK", "PIPELINE_CHECK"],
     "ux-harness":     ["UI_REVIEW", "UX_FIX", "ACCESSIBILITY_CHECK", "RESPONSIVE_CHECK"],
     "meta-agent":     ["SYSTEMIC_ISSUE", "PATTERN_ANALYSIS", "INFRA_REVIEW", "ARCHITECTURE_REVIEW"],
+    "code-quality":   ["LINT_CHECK", "TYPE_CHECK", "CODE_SMELL", "DEAD_CODE", "COMPLEXITY_REVIEW", "STYLE_FIX", "VIEW_AUDIT"],
+    "journey-validator": ["JOURNEY_VALIDATE", "ROLE_AUDIT", "ONBOARDING_CHECK", "IMPACT_REVIEW"],
+    "biz-validator":  ["BIZ_VALIDATE", "SCENARIO_GAP", "EDGE_CASE_REVIEW"],
+    "domain-analyst": ["DOMAIN_ANALYZE", "RULE_EXTRACT", "SCENARIO_GENERATE"],
 }
 
 # ── 일일 이슈 생성 총량 Cap (이슈 폭발 방지) ─────────────

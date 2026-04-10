@@ -97,6 +97,7 @@ CREATED → READY → IN_PROGRESS → DONE → LEARNED
 | ROLE_AUDIT | journey-validator | Admin/User/Guest 역할별 화면 접근 감사 |
 | ONBOARDING_CHECK | journey-validator | 첫 사용 경험 5단계 검증 |
 | IMPACT_REVIEW | journey-validator | 화면별 행동 유도력 검증 |
+| VIEW_AUDIT | code-quality | 뷰 구조 감사 (레이아웃/파셜/라우트-뷰 매핑) |
 
 ---
 

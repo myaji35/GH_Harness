@@ -10,6 +10,7 @@ lint/type-check 실행, 코드 스멜 감지, 복잡도 분석, 미사용 코드
 - DEAD_CODE
 - COMPLEXITY_REVIEW
 - STYLE_FIX
+- VIEW_AUDIT (뷰 구조 감사 — 레이아웃/파셜/라우트-뷰 매핑, v3+)
 
 ## Model
 sonnet (정적 분석 특화)
@@ -89,14 +90,85 @@ issue.assign_to == "code-quality" && issue.status == "READY"
 □ currentColor 사용
 ```
 
+### 6. 뷰 구조 감사 (VIEW_AUDIT) — v3+
+
+프레임워크를 자동 감지하여 해당 체크리스트를 실행한다.
+**"비즈니스 로직 점검하자!" 트리거 시 자동 포함.**
+
+#### Rails 감지 시 (Gemfile에 rails 존재)
+```
+□ 모든 컨트롤러 액션에 대응 뷰 파일 존재 (def show → show.html.erb)
+□ layout 선언과 실제 레이아웃 파일 매칭 (layout "admin" → layouts/admin.html.erb)
+□ layout false인 컨트롤러가 독립 HTML 구조 (DOCTYPE + head + CDN/asset) 갖춤
+□ 파셜 render 호출의 대상 파일 존재 (render partial: "card" → _card.html.erb)
+□ yield 블록이 레이아웃에 존재 (<%= yield %> 확인)
+□ routes.rb의 모든 경로에 컨트롤러#액션 매핑
+□ ERB 문법: <% end %> 매칭, 미닫힌 블록
+□ *_path 헬퍼와 routes 이름 일치 (추측 금지 — bin/rails routes 확인)
+
+# ── 공통 UI 요소 중복/소실 감지 (v3+ 핵심) ──────────
+□ navbar/footer가 application.html.erb(레이아웃)에 1번만 존재하고, 개별 뷰에 중복 render 없음
+  → 중복 발견 시: "render 'shared/navbar'를 뷰에서 제거하고 레이아웃에 통합" CRITICAL
+□ 특정 페이지에서 navbar를 숨겨야 할 때 content_for :hide_navbar 패턴 사용 여부
+  → layout false 대신 content_for 조건부 숨김이 표준
+□ 레이아웃 변경 후 전체 페이지에서 공통 요소(navbar/sidebar/footer) 소실 없음
+  → 소실 감지 방법: 라우트 목록 순회 → 각 페이지 HTML에 nav/footer 요소 존재 확인
+□ flash 메시지/토스트가 레이아웃에 통합되어 있음 (개별 뷰 중복 X)
+□ 메타 태그(title, description)가 content_for :title 패턴으로 레이아웃에서 관리됨
+```
+
+#### Next.js 감지 시 (next.config 존재)
+```
+□ app/ 디렉터리의 모든 폴더에 page.tsx 존재
+□ layout.tsx 누락 디렉터리 (부모 layout 상속 확인)
+□ loading.tsx / error.tsx / not-found.tsx 존재 여부
+□ 동적 라우트 [param]의 generateStaticParams 또는 동적 렌더링 확인
+□ 컴포넌트 import 경로가 실제 파일과 매칭
+□ metadata export 존재 (SEO 기본)
+
+# ── 공통 UI 요소 중복/소실 감지 (v3+ 핵심) ──────────
+□ Navbar/Header가 root layout.tsx에 1번만 존재 (각 page.tsx에 중복 import 없음)
+□ 특정 라우트 그룹에서 navbar를 숨겨야 할 때 (route group) 구조 사용
+  → (auth)/layout.tsx에서 navbar 없는 별도 layout 적용이 표준
+□ Footer가 root 또는 적절한 그룹 layout에 통합됨
+□ 공통 Provider(Theme, Auth, Toast)가 layout.tsx에서 래핑 (개별 page에 중복 X)
+□ Suspense boundary가 data fetching 컴포넌트를 감싸고 있음
+```
+
+#### React (CRA/Vite) 감지 시
+```
+□ 라우터 설정의 모든 path에 대응 컴포넌트 존재
+□ 컴포넌트 import 경로 유효성
+□ props 타입과 실제 전달 값 매칭 (TypeScript인 경우)
+□ key prop 누락 (리스트 렌더링)
+□ Suspense/ErrorBoundary 래핑 여부
+```
+
+#### 공통
+```
+□ CSS/JS 자산이 레이아웃/페이지에 포함됨
+□ 이미지/폰트 경로가 실제 파일과 매칭
+□ 미사용 뷰 파일/파셜/컴포넌트 탐지
+□ 환경별 자산 경로 차이 (CDN vs 로컬)
+```
+
+#### VIEW_AUDIT 심각도
+| 심각도 | 기준 | 예시 |
+|--------|------|------|
+| CRITICAL | 뷰 파일 미존재 (500 에러 직결) | def show 있는데 show.html.erb 없음 |
+| CRITICAL | layout 파일 미존재 | layout "admin" 선언, 파일 없음 |
+| HIGH | 파셜 참조 깨짐, CDN/자산 누락 | render partial: "x" 대상 없음 |
+| MEDIUM | 미사용 파셜, layout false 독립성 부족 | _old_card.html.erb 어디서도 미참조 |
+| LOW | loading/error 페이지 미구현 | Next.js error.tsx 없음 |
+
 ## 이슈 분류 기준
 
 | 심각도 | 기준 | 자동 생성 이슈 |
 |--------|------|--------------|
-| CRITICAL | 타입 에러, 컴파일 실패 | STYLE_FIX P0 → agent-harness |
-| HIGH | 보안 취약점, 미처리 에러 | STYLE_FIX P1 → agent-harness |
-| MEDIUM | 코드 스멜, 높은 복잡도 | STYLE_FIX P2 → agent-harness |
-| LOW | 스타일 불일치, TODO 잔재 | STYLE_FIX P3 → agent-harness |
+| CRITICAL | 타입 에러, 컴파일 실패, 뷰 파일 미존재 | STYLE_FIX P0 → agent-harness |
+| HIGH | 보안 취약점, 미처리 에러, 파셜 깨짐 | STYLE_FIX P1 → agent-harness |
+| MEDIUM | 코드 스멜, 높은 복잡도, 미사용 뷰 | STYLE_FIX P2 → agent-harness |
+| LOW | 스타일 불일치, TODO 잔재, 보조 페이지 누락 | STYLE_FIX P3 → agent-harness |
 
 ## 파생 이슈 생성 규칙
 ```
@@ -104,6 +176,8 @@ issue.assign_to == "code-quality" && issue.status == "READY"
 lint 에러 > 10개     → STYLE_FIX P1 (자동 수정 가능 항목 표시)
 미사용 의존성 > 3개  → DEAD_CODE P2 (depcheck 결과 포함)
 복잡도 초과 함수     → COMPLEXITY_REVIEW P2 (리팩토링 방향 제안)
+VIEW_AUDIT CRITICAL  → STYLE_FIX P0 (뷰 파일 생성/레이아웃 수정)
+VIEW_AUDIT HIGH      → STYLE_FIX P1 (파셜/자산 복구)
 전부 클린            → 없음 (학습 기록만)
 ```
 
