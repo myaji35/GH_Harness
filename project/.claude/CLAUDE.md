@@ -142,12 +142,13 @@ v2 업그레이드로 다음 기능이 자동 활성화됩니다:
   → `bash /Volumes/E_SSD/02_GitHub.nosync/GH_Harness/install.sh --batch --batch-dir=/Volumes/E_SSD/02_GitHub.nosync` 실행
   → 모든 harness 설치 프로젝트의 CLAUDE.md + hooks + agents 최신화 (이슈 DB 보존)
 - **"harness 업그레이드 해줘"** ⭐ (v3 업그레이드 전파)
-  → 위와 동일하나 추가로:
+  → `bash /Volumes/E_SSD/02_GitHub.nosync/GH_Harness/install.sh --batch --batch-dir=/Volumes/E_SSD/02_GitHub.nosync --optimize-tokens` 실행
   → v2 에이전트 + v3 신규 에이전트(hermes, advisor, audience-researcher)
   → v3 hooks(hermes-escalate.sh, request-user-confirm.sh, user-confirm-response.sh, opus-budget-check.sh)
   → v3 디렉터리(docs/audience, docs/ui-snapshots, docs/brand, components/)
   → registry.json v3 필수 필드 자동 마이그레이션(hermes_state, opus_budget_state, issue_budget, proactive_scan_state)
   → settings.json의 PreToolUse freeze hook도 자동 등록
+  → **토큰 최적화**: 불필요 플러그인(bkit, linear, zapier, ruby-lsp) 자동 비활성화 (~13K 토큰/턴 절감)
 
 ### 브랜드 트리거
 - **"brand 정의해줘"** / "brand-dna 만들어줘"

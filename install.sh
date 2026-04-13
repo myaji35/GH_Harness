@@ -21,12 +21,14 @@ PROJECT_DIR="$(pwd)/.claude"
 UPDATE_MODE=false
 BATCH_MODE=false
 BATCH_BASE=""
+TOKEN_OPTIMIZE=false
 
 for arg in "$@"; do
   case "$arg" in
     --update) UPDATE_MODE=true ;;
     --batch) BATCH_MODE=true ;;
     --batch-dir=*) BATCH_MODE=true; BATCH_BASE="${arg#*=}" ;;
+    --optimize-tokens) TOKEN_OPTIMIZE=true ;;
   esac
 done
 
@@ -240,6 +242,59 @@ fi
 
 echo -e "${GREEN}  → 프로젝트 설치 완료${NC}"
 echo ""
+
+# ── 토큰 최적화 ────────────────────────────────────────
+if [ "$TOKEN_OPTIMIZE" = true ]; then
+  GLOBAL_SETTINGS="$HOME/.claude/settings.json"
+  echo -e "${YELLOW}[TOKEN] 토큰 절감 최적화 적용 중...${NC}"
+
+  if [ -f "$GLOBAL_SETTINGS" ]; then
+    python3 -c "
+import json
+
+with open('$GLOBAL_SETTINGS', 'r') as f:
+    data = json.load(f)
+
+# 토큰 소비가 큰 플러그인 비활성화 (harness에서 불필요)
+plugins = data.get('enabledPlugins', {})
+disabled = []
+# bkit: ~8,000 토큰/턴 (PDCA 보고서 + 에이전트 목록 + 스킬 목록)
+if plugins.get('bkit@bkit-marketplace') is True:
+    plugins['bkit@bkit-marketplace'] = False
+    disabled.append('bkit (~8K tokens)')
+# linear: ~1,500 토큰/턴
+if plugins.get('linear@claude-plugins-official') is True:
+    plugins['linear@claude-plugins-official'] = False
+    disabled.append('linear (~1.5K tokens)')
+# zapier: ~1,000 토큰/턴
+if plugins.get('zapier@claude-plugins-official') is True:
+    plugins['zapier@claude-plugins-official'] = False
+    disabled.append('zapier (~1K tokens)')
+# ruby-lsp: ~500 토큰/턴 (Rails 프로젝트만 필요)
+if plugins.get('ruby-lsp@claude-plugins-official') is True:
+    plugins['ruby-lsp@claude-plugins-official'] = False
+    disabled.append('ruby-lsp (~500 tokens)')
+
+data['enabledPlugins'] = plugins
+
+with open('$GLOBAL_SETTINGS', 'w') as f:
+    json.dump(data, f, indent=2, ensure_ascii=False)
+
+if disabled:
+    for d in disabled:
+        print(f'  비활성화: {d}')
+    total = sum(int(d.split('~')[1].split('K')[0].replace('.','').replace(',','')) for d in disabled if 'K' in d)
+    print(f'  예상 절감: ~{total}K+ 토큰/턴')
+else:
+    print('  이미 최적화 상태')
+" 2>/dev/null || echo -e "  ${RED}Python 처리 실패 — 수동 확인 필요${NC}"
+
+  echo -e "${GREEN}  → 토큰 최적화 완료${NC}"
+  echo -e "  ${YELLOW}유지: superpowers, chrome-devtools (harness 핵심)${NC}"
+  echo -e "  ${YELLOW}비활성화된 플러그인은 필요 시 settings.json에서 재활성화${NC}"
+  fi
+  echo ""
+fi
 
 # ── 완료 메시지 ─────────────────────────────────────────
 if [ "$UPDATE_MODE" = true ]; then
