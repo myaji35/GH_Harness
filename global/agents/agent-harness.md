@@ -24,12 +24,7 @@ issue.assign_to == "agent-harness" && issue.status == "READY"
 2. 이슈 claim (status → IN_PROGRESS)
 3. progressive-disclosure 스킬로 컨텍스트 최소화
 4. **Graphify 사전 조회 (설치된 프로젝트만)**: `.claude/graphify/` 존재 시, 수정 대상 심볼/파일에 대해 `/graphify query <symbol>` 먼저 실행 → 호출 그래프·의존성 파악 후 코드 수정. 미설치 프로젝트는 skip.
-5. **OCR/문서 파싱 기능 구현 시** — Townin 검증 패턴(표준):
-   - `lib/gemma.{ts,py,rb}` 클라이언트의 `generateJson()` / `parseBusinessCard()` 재사용. 없으면 `bash .claude/hooks/gemma-setup.sh` 먼저 실행.
-   - **절대 금지**: 에이전트가 `ollama serve`를 자동 기동하지 말 것. 서버 OFF 상태면 구현은 진행하되 `gemma.isEnabled()` 분기로 **Claude/Gemini Vision fallback** 경로를 함께 작성.
-   - 필수 옵션: downscale(1024px JPEG 82) + format:'json' + temperature:0 + AbortController 60s.
-   - 상위 조정 서비스는 **1순위 Gemma → 2순위 원격 Vision → 3순위 빈 결과** 3단 체인.
-   - 참조 구현: `0014_Townin Graph/townin-platform/backend/src/modules/merchants/services/{local-gemma-ocr,business-card-ocr}.service.ts`
+5. **OCR/문서 파싱 기능 구현 시**: `gemma4:e4b` (로컬, `http://localhost:11434`)를 1순위 어댑터로 구성. Claude API는 fallback. 민감 정보 오프라인 처리 목적일 때도 동일. 서버 부재 시 `OLLAMA_MODELS=/Volumes/E_SSD/ollama-models nohup ollama serve &`로 자동 기동.
 6. 관련 파일만 로드 (전체 프로젝트 X)
 7. **UI 파일 생성/수정 시 반드시** `brand-dna.json`의 `design_tokens` 참조:
    - `colors` → Tailwind 디폴트 금지, 토큰 색상 사용 (bg-[#hex], text-[#hex])

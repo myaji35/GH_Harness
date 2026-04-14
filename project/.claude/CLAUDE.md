@@ -188,28 +188,11 @@ v2 업그레이드로 다음 기능이 자동 활성화됩니다:
 - **"gemma 사용하자"** / "gemma 연동" / "gemma setup" / "로컬 LLM 붙여"
   → `bash .claude/hooks/gemma-setup.sh` 즉시 실행 (질문 금지)
   → ollama 서버 자동 기동 + `gemma4:e4b` 모델 검증
-  → `.env.local`에 `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, `OLLAMA_KEEP_ALIVE`, `OLLAMA_ENABLED`, `OLLAMA_TIMEOUT_MS` 추가 (중복 방지)
-  → 프로젝트 언어 자동 감지 (TypeScript/Python/Ruby) → `lib/gemma.{ts,py,rb}` 클라이언트 생성 — Townin 검증 패턴 포함
+  → `.env.local`에 `OLLAMA_BASE_URL`, `OLLAMA_MODEL` 추가 (중복 방지)
+  → 프로젝트 언어 자동 감지 (TypeScript/Python/Ruby) → `lib/gemma.{ts,py,rb}` 클라이언트 생성
   → `docs/GEMMA_USAGE.md` 사용 가이드 배포
-  → 클라이언트 기본 메서드: `isEnabled()`, `ping()`, `generate()`, `generateJson()`, `ocr(path)`, `parseBusinessCard(path)`
-  → 안전화 내장: downscale 1024px + format:'json' + temperature:0 + safeParseJson + AbortController + OLLAMA_ENABLED 토글
-
-### Gemma 상태/안정화 트리거 ⭐
-- **"gemma 상태"** / "gemma 점검" / "gemma health"
-  → `bash .claude/hooks/gemma-health.sh` 실행 (좀비/RAM/모델/API 리포트)
-- **"gemma 정리"** / "gemma 안정화" / "ollama 청소"
-  → `bash .claude/hooks/gemma-health.sh --auto-clean` (좀비 SIGTERM→SIGKILL)
-- **"gemma 킵"** / "gemma 워치독" / "gemma idle 감시"
-  → `bash .claude/hooks/gemma-watchdog.sh &` (15분 idle 자동 종료)
-
-### Gemma 운영 원칙 (OCR/문서 파싱 구현 시 필수)
-1. **기본 OFF, 명시적 ON** — Harness 훅이 자동 `ollama serve` 금지. `gemma-on`으로만 기동.
-2. **클라이언트는 graceful** — 호출 전 `gemma.isEnabled()` 또는 `await gemma.ping()` 체크. 실패 시 Claude API 또는 Gemini Vision fallback 경로 유지.
-3. **이미지 다운스케일 필수** — 1024px 장변 + JPEG 82. Townin 실측 3~5배 가속 검증.
-4. **JSON 응답은 `format:'json'` + `temperature:0`** — 마크다운/트레일링 토큰 차단.
-5. **타임아웃 필수** — 기본 60초, 큰 이미지는 120초.
-6. **대량 배치는 직렬화** — 16GB RAM M2 기준 병렬 호출 금지 (세마포어 1).
-7. **배포는 `OLLAMA_KEEP_ALIVE=-1`** — 영구 체류로 로딩 타임 제거.
+  → 클라이언트에는 `generate()`, `ocr(path)`, `parseBusinessCard(path)` 메서드 기본 포함
+  → 완료 후 바로 `import`하여 호출 가능
 
 ## 에이전트 팀 (모델 차등 배치) — v2
 | 에이전트 | Model | 역할 | 담당 이슈 |
