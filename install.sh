@@ -22,6 +22,7 @@ UPDATE_MODE=false
 BATCH_MODE=false
 BATCH_BASE=""
 TOKEN_OPTIMIZE=false
+WITH_GRAPHIFY=false
 
 for arg in "$@"; do
   case "$arg" in
@@ -29,8 +30,33 @@ for arg in "$@"; do
     --batch) BATCH_MODE=true ;;
     --batch-dir=*) BATCH_MODE=true; BATCH_BASE="${arg#*=}" ;;
     --optimize-tokens) TOKEN_OPTIMIZE=true ;;
+    --with-graphify) WITH_GRAPHIFY=true ;;
   esac
 done
+
+install_graphify_scaffold() {
+  local proj="$1"
+  local target_dir="$proj/.claude/graphify"
+  if [ -d "$target_dir" ]; then
+    echo -e "${YELLOW}  Graphify 이미 설치됨 → skip${NC}"
+    return
+  fi
+  mkdir -p "$target_dir"
+  cat > "$target_dir/baseline.json" <<EOF
+{
+  "recorded_at": "$(date -u +%Y-%m-%d)",
+  "project": "$(basename "$proj")",
+  "baseline": {
+    "avg_tokens_per_issue": null,
+    "avg_files_read_per_issue": null,
+    "blindspot_incidents_30d": null,
+    "qa_pass_rate": null
+  }
+}
+EOF
+  : > "$target_dir/metrics.jsonl"
+  echo -e "${GREEN}  Graphify scaffold 설치 → $target_dir${NC}"
+}
 
 # ── 일괄 업데이트 모드 ─────────────────────────────────
 if [ "$BATCH_MODE" = true ]; then
@@ -49,7 +75,9 @@ if [ "$BATCH_MODE" = true ]; then
     if [ -d "$proj_dir/.claude/issue-db" ] || [ -d "$proj_dir/.claude/hooks" ]; then
       proj_name=$(basename "$proj_dir")
       echo -e "${BLUE}━━━ $proj_name ━━━${NC}"
-      (cd "$proj_dir" && bash "$SCRIPT_DIR/install.sh" --update)
+      extra_flags=""
+      [ "$WITH_GRAPHIFY" = true ] && extra_flags="--with-graphify"
+      (cd "$proj_dir" && bash "$SCRIPT_DIR/install.sh" --update $extra_flags)
       updated=$((updated + 1))
     else
       skipped=$((skipped + 1))
@@ -332,6 +360,12 @@ echo -e "  docs/ui-snapshots/   → UI 레벨 승급 전후 스냅샷"
 echo -e "  docs/brand/          → 브랜드 스크레이핑 결과"
 echo -e "  components/          → 21st.dev 등 컴포넌트 프롬프트"
 echo ""
+if [ "$WITH_GRAPHIFY" = true ]; then
+  echo ""
+  echo -e "${BLUE}━━━ Graphify 파일럿 설치 ━━━${NC}"
+  install_graphify_scaffold "$(pwd)"
+fi
+
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${GREEN}v3 시작 방법:${NC}"
 echo -e "  Claude Code 실행 후 아래 문장 중 하나를 입력하세요:"
