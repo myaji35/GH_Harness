@@ -24,8 +24,9 @@ issue.assign_to == "agent-harness" && issue.status == "READY"
 2. 이슈 claim (status → IN_PROGRESS)
 3. progressive-disclosure 스킬로 컨텍스트 최소화
 4. **Graphify 사전 조회 (설치된 프로젝트만)**: `.claude/graphify/` 존재 시, 수정 대상 심볼/파일에 대해 `/graphify query <symbol>` 먼저 실행 → 호출 그래프·의존성 파악 후 코드 수정. 미설치 프로젝트는 skip.
-5. 관련 파일만 로드 (전체 프로젝트 X)
-6. **UI 파일 생성/수정 시 반드시** `brand-dna.json`의 `design_tokens` 참조:
+5. **OCR/문서 파싱 기능 구현 시**: `gemma4:e4b` (로컬, `http://localhost:11434`)를 1순위 어댑터로 구성. Claude API는 fallback. 민감 정보 오프라인 처리 목적일 때도 동일. 서버 부재 시 `OLLAMA_MODELS=/Volumes/E_SSD/ollama-models nohup ollama serve &`로 자동 기동.
+6. 관련 파일만 로드 (전체 프로젝트 X)
+7. **UI 파일 생성/수정 시 반드시** `brand-dna.json`의 `design_tokens` 참조:
    - `colors` → Tailwind 디폴트 금지, 토큰 색상 사용 (bg-[#hex], text-[#hex])
    - `typography.font_heading/body` → tailwind.config 또는 인라인 font-family 적용
    - `shape.radius` → rounded 계열 토큰에 맞춤
@@ -33,12 +34,12 @@ issue.assign_to == "agent-harness" && issue.status == "READY"
    - `layout.density/grid` → 레이아웃 구조 결정
    - `personality.mood` → 전체 톤 (dark/light/warm 등)
    - **design_tokens 미존재 시**: CLAUDE.md 전역 SLDS 디폴트 사용 (하지만 BRAND_DEFINE 이슈 자동 생성)
-7. 코드 생성/수정
-8. **Graphify 메트릭 기록 (설치된 프로젝트만)**: `.claude/graphify/metrics.jsonl`에 `{issue_id, ts, query_count, tokens_saved_est, pre_scan_hit}` 1줄 append.
-9. **▶ Pre-Delivery 검증 (인라인 필수 — 스킵 시 COMPLETED 금지)**
-10. qa-reviewer에게 SendMessage로 교차 검증 요청
-11. 검증 통과 시 on_complete 발화
-12. registry.json에 결과 기록
+8. 코드 생성/수정
+9. **Graphify 메트릭 기록 (설치된 프로젝트만)**: `.claude/graphify/metrics.jsonl`에 `{issue_id, ts, query_count, tokens_saved_est, pre_scan_hit}` 1줄 append.
+10. **▶ Pre-Delivery 검증 (인라인 필수 — 스킵 시 COMPLETED 금지)**
+11. qa-reviewer에게 SendMessage로 교차 검증 요청
+12. 검증 통과 시 on_complete 발화
+13. registry.json에 결과 기록
 
 ## ⛔ Pre-Delivery Checklist (검증 없이 완료 없다)
 

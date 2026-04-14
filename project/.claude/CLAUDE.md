@@ -184,6 +184,16 @@ v2 업그레이드로 다음 기능이 자동 활성화됩니다:
   → `bash .claude/hooks/proactive-scan.sh` 실행
   → 코드베이스 스캔 후 발견된 이슈 자동 생성
 
+### Gemma 사용 트리거 ⭐
+- **"gemma 사용하자"** / "gemma 연동" / "gemma setup" / "로컬 LLM 붙여"
+  → `bash .claude/hooks/gemma-setup.sh` 즉시 실행 (질문 금지)
+  → ollama 서버 자동 기동 + `gemma4:e4b` 모델 검증
+  → `.env.local`에 `OLLAMA_BASE_URL`, `OLLAMA_MODEL` 추가 (중복 방지)
+  → 프로젝트 언어 자동 감지 (TypeScript/Python/Ruby) → `lib/gemma.{ts,py,rb}` 클라이언트 생성
+  → `docs/GEMMA_USAGE.md` 사용 가이드 배포
+  → 클라이언트에는 `generate()`, `ocr(path)`, `parseBusinessCard(path)` 메서드 기본 포함
+  → 완료 후 바로 `import`하여 호출 가능
+
 ## 에이전트 팀 (모델 차등 배치) — v2
 | 에이전트 | Model | 역할 | 담당 이슈 |
 |---------|-------|------|---------|
@@ -322,3 +332,45 @@ Stop/SubagentStop마다 자동 실행:
 - Full: 전체 에이전트 (hook-router, ux-harness, code-quality 포함)
 - Reduced: agent + code-quality + test + meta + hook-router
 - Single: agent만 (긴급)
+
+## 로컬 LLM: Gemma 4 E4B (Harness 공용)
+
+### 가용성
+- 모델명: `gemma4:e4b` / 저장 위치: `/Volumes/E_SSD/ollama-models` / 엔드포인트: `http://localhost:11434`
+- 멀티모달: 텍스트+이미지+비디오+오디오 / 컨텍스트 128K~256K / 140개 언어
+- 공식 강점: multilingual OCR, document/PDF parsing, handwriting, chart 이해
+
+### 에이전트별 활용 기본값
+| 에이전트 | Gemma 4 E4B 활용 시점 |
+|---|---|
+| agent-harness | OCR/문서 파싱 기능 구현 시 `gemma4:e4b`를 1순위 어댑터로 구성. Claude API는 fallback. |
+| domain-analyst | 민감 도메인 문서(보험 약관, 의료 기록) 분석 시 로컬 추론 우선. |
+| biz-validator | 시나리오 대량 검증 시 Opus 비용 절감 목적으로 1차 필터링에 활용. |
+| audience-researcher | 오프라인 자료(PDF/스크린샷) 파싱에 OCR로 활용. |
+
+### 호출 레시피 (구현 시 복붙용)
+
+```bash
+# OCR — 이미지 파일에서 텍스트 추출
+ollama run gemma4:e4b "이 문서에서 텍스트를 그대로 추출. 레이아웃 순서 유지." /path/to/page.png
+
+# 명함 파싱
+ollama run gemma4:e4b "JSON 추출: {name, company, title, phone, email, address}. 없으면 null." /path/to/card.jpg
+
+# API 호출 (Node/Python)
+curl http://localhost:11434/api/generate \
+  -d '{"model":"gemma4:e4b","prompt":"...","stream":false,"images":["<base64>"]}'
+```
+
+### 서버 부재 시 자동 기동
+에이전트는 구현 전 아래 가드를 실행:
+```bash
+pgrep ollama >/dev/null || OLLAMA_MODELS=/Volumes/E_SSD/ollama-models nohup ollama serve > /tmp/ollama.log 2>&1 &
+sleep 2; ollama list | grep -q gemma4:e4b || echo "[WARN] gemma4:e4b 미설치 — ollama pull gemma4:e4b 필요"
+```
+
+### 의사결정 규칙
+1. OCR/문서 파싱이 필요 → **Gemma 4 E4B 우선** (비용 0, 개인정보 안전)
+2. 한국어 대화 품질이 핵심인 챗봇 → Claude API 기본, Gemma는 오프라인/민감 데이터 fallback
+3. 대량 배치(시나리오 검증, 로그 분석) → Gemma로 1차 필터 → 중요 건만 Opus 승급
+4. T2 카테고리 해당 시(외부 배포/유료 API 전환 등) 여전히 사용자 컨펌 필수
