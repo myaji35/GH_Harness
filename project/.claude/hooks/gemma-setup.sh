@@ -57,6 +57,9 @@ add_env() {
 echo -e "${BLUE}[3/5] 환경변수 기록 → $ENV_FILE${NC}"
 add_env "OLLAMA_BASE_URL" "$ENDPOINT"
 add_env "OLLAMA_MODEL" "$MODEL"
+# 로컬 개발 기본: 30분 체류 (첫 호출 로딩 타임만 감당, 이후 즉시)
+# 배포 환경에서는 OLLAMA_KEEP_ALIVE=-1 로 덮어쓰기 (영구 체류)
+add_env "OLLAMA_KEEP_ALIVE" "30m"
 
 # ── 4. 언어 자동 감지 + 클라이언트 스켈레톤 생성 ──────
 mkdir -p lib
@@ -70,6 +73,10 @@ if [ -f "package.json" ]; then
 
 const BASE = process.env.OLLAMA_BASE_URL ?? "http://localhost:11434";
 const MODEL = process.env.OLLAMA_MODEL ?? "gemma4:e4b";
+// 로컬 개발: "30m" 권장 (작업 세션 내 RAM 체류)
+// 배포 서버: "-1" 권장 (영구 체류, 로딩 타임 제거)
+// RAM 즉시 회수: "0"
+const KEEP_ALIVE = process.env.OLLAMA_KEEP_ALIVE ?? "30m";
 
 type GenParams = {
   prompt: string;
@@ -77,10 +84,11 @@ type GenParams = {
   system?: string;
   temperature?: number;
   maxTokens?: number;
+  keepAlive?: string;
 };
 
 export const gemma = {
-  async generate({ prompt, images, system, temperature = 0.2, maxTokens = 2048 }: GenParams): Promise<string> {
+  async generate({ prompt, images, system, temperature = 0.2, maxTokens = 2048, keepAlive = KEEP_ALIVE }: GenParams): Promise<string> {
     const res = await fetch(`${BASE}/api/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -90,6 +98,7 @@ export const gemma = {
         system,
         images,
         stream: false,
+        keep_alive: keepAlive,
         options: { temperature, num_predict: maxTokens },
       }),
     });
@@ -139,6 +148,8 @@ import requests
 
 BASE = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 MODEL = os.environ.get("OLLAMA_MODEL", "gemma4:e4b")
+# 로컬 개발 "30m" / 배포 "-1" / 즉시 회수 "0"
+KEEP_ALIVE = os.environ.get("OLLAMA_KEEP_ALIVE", "30m")
 
 
 class Gemma:
@@ -149,11 +160,13 @@ class Gemma:
         system: Optional[str] = None,
         temperature: float = 0.2,
         max_tokens: int = 2048,
+        keep_alive: Optional[str] = None,
     ) -> str:
         payload = {
             "model": MODEL,
             "prompt": prompt,
             "stream": False,
+            "keep_alive": keep_alive or KEEP_ALIVE,
             "options": {"temperature": temperature, "num_predict": max_tokens},
         }
         if system:
@@ -193,12 +206,15 @@ require "uri"
 module Gemma
   BASE  = ENV.fetch("OLLAMA_BASE_URL", "http://localhost:11434")
   MODEL = ENV.fetch("OLLAMA_MODEL", "gemma4:e4b")
+  # 로컬 개발 "30m" / 배포 "-1" / 즉시 회수 "0"
+  KEEP_ALIVE = ENV.fetch("OLLAMA_KEEP_ALIVE", "30m")
 
   module_function
 
-  def generate(prompt:, images: nil, system: nil, temperature: 0.2, max_tokens: 2048)
+  def generate(prompt:, images: nil, system: nil, temperature: 0.2, max_tokens: 2048, keep_alive: nil)
     payload = {
       model: MODEL, prompt: prompt, stream: false,
+      keep_alive: keep_alive || KEEP_ALIVE,
       options: { temperature: temperature, num_predict: max_tokens }
     }
     payload[:system] = system if system
@@ -241,6 +257,28 @@ cat > docs/GEMMA_USAGE.md <<EOF
 - 엔드포인트: \`$ENDPOINT\`
 - 저장 위치: \`$OLLAMA_HOME\`
 - 클라이언트: \`$GEN_FILE\`
+
+## 운영 모드
+
+| 환경 | \`OLLAMA_KEEP_ALIVE\` | 운영 방식 |
+|---|---|---|
+| **로컬 개발** | \`30m\` (기본) | \`gemma-on\` → \`gemma-warm\` → 작업 → \`gemma-off\` |
+| **배포 서버** | \`-1\` (영구) | 서비스 시작 시 자동 기동, 항상 RAM 상주 |
+
+### 로컬 토글 (alias는 ~/.zshrc에 등록됨)
+\`\`\`bash
+gemma-on      # 서버 기동 (~2초)
+gemma-warm    # RAM 선로딩 (~15~30초, 첫 1회만)
+gemma-status  # ON/OFF 확인
+gemma-off     # 종료 + RAM 10GB 즉시 회수
+\`\`\`
+
+### 배포 (프로덕션)
+\`.env.production\` 또는 systemd/LaunchAgent 환경변수로:
+\`\`\`
+OLLAMA_KEEP_ALIVE=-1
+\`\`\`
+→ 모델이 절대 언로드되지 않아 모든 요청에 즉시 응답.
 
 ## 서버 기동 확인
 \`\`\`bash
