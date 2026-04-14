@@ -3,10 +3,21 @@
 # SessionStart hook에서 호출됨
 #
 # 역할:
-#   1. registry.json 존재 여부 확인
-#   2. 전체 이슈 통계 출력
-#   3. IN_PROGRESS / READY 이슈 목록 출력
-#   4. 다음 실행 지시 제공
+#   1. ollama 좀비 프로세스 자동 청소 (2개 이상 떠있을 때)
+#   2. registry.json 존재 여부 확인
+#   3. 전체 이슈 통계 출력
+#   4. IN_PROGRESS / READY 이슈 목록 출력
+#   5. 다음 실행 지시 제공
+
+# ── 0. Gemma / ollama 좀비 자동 청소 ────────────────
+ollama_count=$(pgrep -x ollama 2>/dev/null | wc -l | tr -d ' ')
+runner_count=$(pgrep -f "ollama runner" 2>/dev/null | wc -l | tr -d ' ')
+if [ "${ollama_count:-0}" -gt 1 ] || [ "${runner_count:-0}" -gt 1 ]; then
+  echo "[Harness] ollama 좀비 감지 (serve=$ollama_count, runner=$runner_count) — 자동 정리"
+  pkill -9 ollama 2>/dev/null || true
+  sleep 1
+  rm -f /tmp/ollama-harness.lock
+fi
 
 REGISTRY=".claude/issue-db/registry.json"
 
