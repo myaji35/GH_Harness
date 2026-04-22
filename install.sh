@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ============================================
-# GH_Harness 설치 스크립트
+# GH_Harness 설치 스크립트 (v4.1 — Symlink + 체크섬 최적화)
 # Self-Evolving Agent Harness System
 # ============================================
 
@@ -17,12 +17,16 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GLOBAL_DIR="$HOME/.claude"
 PROJECT_DIR="$(pwd)/.claude"
 
-# ── 모드 감지 ─���────────────────────────────────────────
+# v4.1: 중앙 hook 저장소 (symlink 원본)
+HARNESS_CORE_DIR="$HOME/.claude/harness-core"
+
+# 모드 감지
 UPDATE_MODE=false
 BATCH_MODE=false
 BATCH_BASE=""
 TOKEN_OPTIMIZE=false
 WITH_GRAPHIFY=false
+FORCE_MODE=false
 
 for arg in "$@"; do
   case "$arg" in
@@ -31,8 +35,167 @@ for arg in "$@"; do
     --batch-dir=*) BATCH_MODE=true; BATCH_BASE="${arg#*=}" ;;
     --optimize-tokens) TOKEN_OPTIMIZE=true ;;
     --with-graphify) WITH_GRAPHIFY=true ;;
+    --force) FORCE_MODE=true ;;
   esac
 done
+
+# ────────────────────────────────────────────────────────
+# v4.1 최적화 유틸 (Symlink + 체크섬)
+# ────────────────────────────────────────────────────────
+
+is_appledouble() {
+  local name
+  name="$(basename "$1")"
+  [[ "$name" == ._* ]]
+}
+
+# 현재 harness 버전 SHA 계산
+compute_harness_sha() {
+  {
+    find "$SCRIPT_DIR/project/.claude/hooks" -type f ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
+    find "$SCRIPT_DIR/global/agents" -type f -name '*.md' ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
+    find "$SCRIPT_DIR/global/skills" -type f -name '*.md' ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
+    [ -f "$SCRIPT_DIR/project/.claude/settings.json" ] && shasum "$SCRIPT_DIR/project/.claude/settings.json"
+    [ -f "$SCRIPT_DIR/project/.claude/CLAUDE.md" ] && shasum "$SCRIPT_DIR/project/.claude/CLAUDE.md"
+  } | shasum | cut -d' ' -f1
+}
+
+# 중앙 harness-core 동기화 (변경된 파일만)
+sync_harness_core() {
+  mkdir -p "$HARNESS_CORE_DIR/hooks"
+  mkdir -p "$HARNESS_CORE_DIR/agents"
+  mkdir -p "$HARNESS_CORE_DIR/skills"
+  mkdir -p "$HARNESS_CORE_DIR/policy"
+
+  local changed=0
+
+  # hooks
+  for hook in "$SCRIPT_DIR/project/.claude/hooks/"*; do
+    [ -f "$hook" ] || continue
+    is_appledouble "$hook" && continue
+    local name dst
+    name="$(basename "$hook")"
+    dst="$HARNESS_CORE_DIR/hooks/$name"
+    if [ ! -f "$dst" ] || ! cmp -s "$hook" "$dst"; then
+      cp "$hook" "$dst"
+      chmod +x "$dst"
+      changed=$((changed+1))
+    fi
+  done
+
+  # agents
+  for agent in "$SCRIPT_DIR/global/agents/"*.md; do
+    [ -f "$agent" ] || continue
+    is_appledouble "$agent" && continue
+    local name dst
+    name="$(basename "$agent")"
+    dst="$HARNESS_CORE_DIR/agents/$name"
+    if [ ! -f "$dst" ] || ! cmp -s "$agent" "$dst"; then
+      cp "$agent" "$dst"
+      changed=$((changed+1))
+    fi
+  done
+
+  # skills
+  for skill_dir in "$SCRIPT_DIR/global/skills/"*/; do
+    [ -d "$skill_dir" ] || continue
+    local sname
+    sname="$(basename "$skill_dir")"
+    is_appledouble "$sname" && continue
+    mkdir -p "$HARNESS_CORE_DIR/skills/$sname"
+    if [ -f "$skill_dir/skill.md" ]; then
+      local dst="$HARNESS_CORE_DIR/skills/$sname/skill.md"
+      if [ ! -f "$dst" ] || ! cmp -s "$skill_dir/skill.md" "$dst"; then
+        cp "$skill_dir/skill.md" "$dst"
+        changed=$((changed+1))
+      fi
+    fi
+  done
+
+  # policy
+  if [ -d "$SCRIPT_DIR/global/policy" ]; then
+    for p in "$SCRIPT_DIR/global/policy/"*; do
+      [ -f "$p" ] || continue
+      is_appledouble "$p" && continue
+      local name dst
+      name="$(basename "$p")"
+      dst="$HARNESS_CORE_DIR/policy/$name"
+      if [ ! -f "$dst" ] || ! cmp -s "$p" "$dst"; then
+        cp "$p" "$dst"
+        changed=$((changed+1))
+      fi
+    done
+  fi
+
+  if [ "$changed" -gt 0 ]; then
+    echo -e "  ${GREEN}harness-core 동기화: ${changed}개 파일 갱신${NC}"
+  else
+    echo -e "  ${YELLOW}harness-core 최신 (변경 없음)${NC}"
+  fi
+}
+
+# 전역 agents/skills를 harness-core로 symlink
+ensure_global_symlinks() {
+  mkdir -p "$GLOBAL_DIR/agents"
+  mkdir -p "$GLOBAL_DIR/skills"
+
+  for core_agent in "$HARNESS_CORE_DIR/agents/"*.md; do
+    [ -f "$core_agent" ] || continue
+    local name link
+    name="$(basename "$core_agent")"
+    link="$GLOBAL_DIR/agents/$name"
+    if [ -L "$link" ]; then
+      continue
+    fi
+    [ -e "$link" ] && rm -f "$link"
+    ln -s "$core_agent" "$link"
+  done
+
+  for core_skill_dir in "$HARNESS_CORE_DIR/skills/"*/; do
+    [ -d "$core_skill_dir" ] || continue
+    local name link
+    name="$(basename "$core_skill_dir")"
+    link="$GLOBAL_DIR/skills/$name"
+    if [ -L "$link" ]; then
+      continue
+    fi
+    [ -e "$link" ] && rm -rf "$link"
+    ln -s "$core_skill_dir" "$link"
+  done
+}
+
+# 프로젝트 hooks를 core로 symlink
+install_project_hooks_symlink() {
+  local proj_hooks="$1"
+  mkdir -p "$proj_hooks"
+
+  for core_hook in "$HARNESS_CORE_DIR/hooks/"*; do
+    [ -f "$core_hook" ] || continue
+    local name link
+    name="$(basename "$core_hook")"
+    link="$proj_hooks/$name"
+    if [ -L "$link" ]; then
+      local target
+      target="$(readlink "$link")"
+      if [ "$target" = "$core_hook" ]; then
+        continue
+      fi
+    fi
+    [ -e "$link" ] && rm -rf "$link"
+    ln -s "$core_hook" "$link"
+  done
+}
+
+write_version_sha() {
+  echo "$2" > "$1/.harness-version"
+}
+
+read_version_sha() {
+  if [ -f "$1/.harness-version" ]; then
+    cat "$1/.harness-version" 2>/dev/null
+  fi
+  return 0
+}
 
 install_graphify_scaffold() {
   local proj="$1"
@@ -58,343 +221,261 @@ EOF
   echo -e "${GREEN}  Graphify scaffold 설치 → $target_dir${NC}"
 }
 
-# ── 일괄 업데이트 모드 ─────────────────────────────────
+# ────────────────────────────────────────────────────────
+# 일괄 업데이트 모드 (v4.1: harness-core 1회 동기화 → 심볼릭)
+# ────────────────────────────────────────────────────────
 if [ "$BATCH_MODE" = true ]; then
   BATCH_BASE="${BATCH_BASE:-$(dirname "$(pwd)")}"
   echo ""
-  echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
-  echo -e "${BLUE}║     GH_Harness 일괄 업데이트          ║${NC}"
-  echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
-  echo ""
-  echo -e "${YELLOW}대상 디렉토리: $BATCH_BASE${NC}"
+  echo -e "${BLUE}GH_Harness v4.1 일괄 업데이트${NC}"
+  echo -e "${YELLOW}대상: $BATCH_BASE${NC}"
   echo ""
 
+  # 1. harness-core 동기화 (한 번만)
+  echo -e "${YELLOW}[1/3] harness-core 중앙 동기화${NC}"
+  sync_harness_core
+  ensure_global_symlinks
+
+  CURRENT_SHA="$(compute_harness_sha)"
+  echo -e "  ${BLUE}버전 SHA: ${CURRENT_SHA:0:12}${NC}"
+
+  # 2. 각 프로젝트에 symlink 배포
+  echo -e "${YELLOW}[2/3] 프로젝트 symlink 배포${NC}"
   updated=0
   skipped=0
+  unchanged=0
+
   for proj_dir in "$BATCH_BASE"/*/; do
-    if [ -d "$proj_dir/.claude/issue-db" ] || [ -d "$proj_dir/.claude/hooks" ]; then
-      proj_name=$(basename "$proj_dir")
-      echo -e "${BLUE}━━━ $proj_name ━━━${NC}"
-      extra_flags=""
-      [ "$WITH_GRAPHIFY" = true ] && extra_flags="--with-graphify"
-      (cd "$proj_dir" && bash "$SCRIPT_DIR/install.sh" --update $extra_flags)
-      updated=$((updated + 1))
-    else
-      skipped=$((skipped + 1))
+    if [ ! -d "$proj_dir/.claude/issue-db" ] && [ ! -d "$proj_dir/.claude/hooks" ]; then
+      skipped=$((skipped+1))
+      continue
     fi
+
+    proj_name="$(basename "$proj_dir")"
+    claude_dir="$proj_dir/.claude"
+    prev_sha="$(read_version_sha "$claude_dir" || true)"
+
+    if [ "$prev_sha" = "$CURRENT_SHA" ] && [ "$FORCE_MODE" != true ]; then
+      echo -e "  ${BLUE}⊘${NC} $proj_name (최신)"
+      unchanged=$((unchanged+1))
+      continue
+    fi
+
+    # hooks symlink + CLAUDE.md/settings.json 실파일 복사
+    install_project_hooks_symlink "$claude_dir/hooks"
+
+    if [ ! -f "$claude_dir/CLAUDE.md" ] || ! cmp -s "$SCRIPT_DIR/project/.claude/CLAUDE.md" "$claude_dir/CLAUDE.md"; then
+      [ -f "$claude_dir/CLAUDE.md" ] && cp "$claude_dir/CLAUDE.md" "$claude_dir/CLAUDE.md.backup"
+      cp "$SCRIPT_DIR/project/.claude/CLAUDE.md" "$claude_dir/CLAUDE.md"
+    fi
+
+    if [ ! -f "$claude_dir/settings.json" ] || ! cmp -s "$SCRIPT_DIR/project/.claude/settings.json" "$claude_dir/settings.json"; then
+      cp "$SCRIPT_DIR/project/.claude/settings.json" "$claude_dir/settings.json"
+    fi
+
+    # brand-dna는 보존
+    if [ ! -f "$claude_dir/brand-dna.json" ] && [ -f "$SCRIPT_DIR/project/.claude/brand-dna.json" ]; then
+      cp "$SCRIPT_DIR/project/.claude/brand-dna.json" "$claude_dir/brand-dna.json"
+    fi
+
+    # registry.json v3 필드 마이그레이션
+    if [ -f "$claude_dir/issue-db/registry.json" ]; then
+      python3 - "$claude_dir/issue-db/registry.json" <<'PYEOF'
+import json, sys
+path = sys.argv[1]
+with open(path) as f: data = json.load(f)
+changed = False
+for k, default in [
+    ('hermes_state', {'invocations_by_issue': {}, 'daily_log': [], 'total_invocations': 0}),
+    ('opus_budget_state', {'daily': {'date': '', 'cost_usd': 0.0, 'calls': 0}, 'monthly': {'month': '', 'cost_usd': 0.0, 'calls': 0}, 'demotion_active': False}),
+    ('issue_budget', {'date': '', 'created_today': 0}),
+    ('proactive_scan_state', {'date': '', 'count': 0}),
+]:
+    if k not in data:
+        data[k] = default
+        changed = True
+if data.get('version') != '3.0.0':
+    data['version'] = '3.0.0'
+    changed = True
+if changed:
+    with open(path, 'w') as f: json.dump(data, f, indent=2, ensure_ascii=False)
+PYEOF
+    fi
+
+    # 버전 기록
+    write_version_sha "$claude_dir" "$CURRENT_SHA"
+
+    echo -e "  ${GREEN}✓${NC} $proj_name (symlink 배포)"
+    updated=$((updated+1))
   done
 
   echo ""
-  echo -e "${GREEN}일괄 업데이트 완료: ${updated}개 프로젝트 업데이트, ${skipped}개 스킵${NC}"
+  echo -e "${YELLOW}[3/3] 완료${NC}"
+  echo -e "  ${GREEN}업데이트: $updated${NC} / ${BLUE}최신 유지: $unchanged${NC} / ${YELLOW}스킵: $skipped${NC}"
+  echo -e "  ${GREEN}중앙 저장소: $HARNESS_CORE_DIR${NC}"
+  echo -e "  ${BLUE}hint: 다음 실행 시 변경 없으면 즉시 skip${NC}"
   exit 0
 fi
 
-# ── 업데이트 모드 헤더 ─────────────────────────────────
+# ────────────────────────────────────────────────────────
+# 단일 프로젝트 설치/업데이트 (v4.1: symlink 기반)
+# ────────────────────────────────────────────────────────
+
 if [ "$UPDATE_MODE" = true ]; then
   echo ""
-  echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
-  echo -e "${BLUE}║     GH_Harness 업데이트               ║${NC}"
-  echo -e "${BLUE}║     CLAUDE.md + hooks 최신화          ║${NC}"
-  echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
+  echo -e "${BLUE}GH_Harness v4.1 업데이트 (symlink)${NC}"
   echo ""
 else
   echo ""
-  echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
-  echo -e "${BLUE}║     GH_Harness 설치 시작              ║${NC}"
-  echo -e "${BLUE}║     Self-Evolving Harness System      ║${NC}"
-  echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
+  echo -e "${BLUE}GH_Harness v4.1 설치${NC}"
   echo ""
 fi
 
-# ── 1. 전역 설치 ───────────────────────────────────────
-echo -e "${YELLOW}[1/2] 전역 설치 → ~/.claude/${NC}"
+# 1. harness-core 동기화
+echo -e "${YELLOW}[1/2] harness-core 중앙 동기화${NC}"
+sync_harness_core
+ensure_global_symlinks
 
-# 전역 agents 설치
-mkdir -p "$GLOBAL_DIR/agents"
-for agent in "$SCRIPT_DIR/global/agents/"*.md; do
-  filename=$(basename "$agent")
-  if [ -f "$GLOBAL_DIR/agents/$filename" ]; then
-    echo -e "  ${YELLOW}⚠ 덮어쓰기: agents/$filename${NC}"
-  fi
-  cp "$agent" "$GLOBAL_DIR/agents/$filename"
-  echo -e "  ${GREEN}✓ agents/$filename${NC}"
-done
-
-# 전역 skills 설치
-mkdir -p "$GLOBAL_DIR/skills"
-for skill_dir in "$SCRIPT_DIR/global/skills/"*/; do
-  skill_name=$(basename "$skill_dir")
-  mkdir -p "$GLOBAL_DIR/skills/$skill_name"
-  cp "$skill_dir/skill.md" "$GLOBAL_DIR/skills/$skill_name/skill.md"
-  echo -e "  ${GREEN}✓ skills/$skill_name/skill.md${NC}"
-done
-
-echo -e "${GREEN}  → 전역 설치 완료${NC}"
-echo ""
-
-# ── 2. 프로젝트 설치 ────────────────────────────────────
-echo -e "${YELLOW}[2/2] 프로젝트 설치 → ./.claude/${NC}"
-
-# 기존 CLAUDE.md 백업
-if [ -f "$PROJECT_DIR/CLAUDE.md" ]; then
-  cp "$PROJECT_DIR/CLAUDE.md" "$PROJECT_DIR/CLAUDE.md.backup"
-  echo -e "  ${YELLOW}⚠ 기존 CLAUDE.md 백업 → CLAUDE.md.backup${NC}"
+CURRENT_SHA="$(compute_harness_sha)"
+PREV_SHA="$(read_version_sha "$PROJECT_DIR")"
+if [ "$PREV_SHA" = "$CURRENT_SHA" ] && [ "$FORCE_MODE" != true ] && [ "$UPDATE_MODE" = true ]; then
+  echo -e "  ${BLUE}이 프로젝트는 이미 최신 (${CURRENT_SHA:0:12}) — skip${NC}"
+  echo -e "  ${YELLOW}강제 재배포: --force${NC}"
+  exit 0
 fi
 
-# 프로젝트 구조 생성
+# 2. 프로젝트 설치
+echo -e "${YELLOW}[2/2] 프로젝트 → $PROJECT_DIR${NC}"
+
+if [ -f "$PROJECT_DIR/CLAUDE.md" ]; then
+  if ! cmp -s "$SCRIPT_DIR/project/.claude/CLAUDE.md" "$PROJECT_DIR/CLAUDE.md"; then
+    cp "$PROJECT_DIR/CLAUDE.md" "$PROJECT_DIR/CLAUDE.md.backup"
+    echo -e "  ${YELLOW}CLAUDE.md 백업 → CLAUDE.md.backup${NC}"
+  fi
+fi
+
 mkdir -p "$PROJECT_DIR/hooks"
 mkdir -p "$PROJECT_DIR/issue-db"
 
-# CLAUDE.md 복사
 cp "$SCRIPT_DIR/project/.claude/CLAUDE.md" "$PROJECT_DIR/CLAUDE.md"
 echo -e "  ${GREEN}✓ CLAUDE.md${NC}"
 
-# hooks 복사
-for hook in "$SCRIPT_DIR/project/.claude/hooks/"*; do
-  filename=$(basename "$hook")
-  cp "$hook" "$PROJECT_DIR/hooks/$filename"
-  chmod +x "$PROJECT_DIR/hooks/$filename"
-  echo -e "  ${GREEN}✓ hooks/$filename${NC}"
-done
+install_project_hooks_symlink "$PROJECT_DIR/hooks"
+echo -e "  ${GREEN}✓ hooks/ (symlink → harness-core)${NC}"
 
-# settings.json 복사 (hooks 등록)
 if [ -f "$SCRIPT_DIR/project/.claude/settings.json" ]; then
   cp "$SCRIPT_DIR/project/.claude/settings.json" "$PROJECT_DIR/settings.json"
-  echo -e "  ${GREEN}✓ settings.json (hooks 자동 실행 등록)${NC}"
+  echo -e "  ${GREEN}✓ settings.json${NC}"
 fi
 
-# brand-dna.json 복사 (v2: 기존 파일이 있으면 보존)
 if [ -f "$SCRIPT_DIR/project/.claude/brand-dna.json" ]; then
   if [ -f "$PROJECT_DIR/brand-dna.json" ]; then
     echo -e "  ${YELLOW}⊘ brand-dna.json (기존 파일 보존)${NC}"
   else
     cp "$SCRIPT_DIR/project/.claude/brand-dna.json" "$PROJECT_DIR/brand-dna.json"
-    echo -e "  ${GREEN}✓ brand-dna.json (v2 템플릿)${NC}"
+    echo -e "  ${GREEN}✓ brand-dna.json${NC}"
   fi
 fi
 
-# v3 필수 디렉터리 생성
 mkdir -p "$PROJECT_DIR/../docs/audience"
 mkdir -p "$PROJECT_DIR/../docs/ui-snapshots"
 mkdir -p "$PROJECT_DIR/../docs/brand"
 mkdir -p "$PROJECT_DIR/../components"
-echo -e "  ${GREEN}✓ docs/audience, docs/ui-snapshots, docs/brand, components/ (v3 디렉터리)${NC}"
 
-# issue-db 초기화 (업데이트 모드에서는 기존 DB 보존)
+if [ -f "$SCRIPT_DIR/docs/graphrag-principles.md" ] && [ ! -f "$PROJECT_DIR/../docs/graphrag-principles.md" ]; then
+  cp "$SCRIPT_DIR/docs/graphrag-principles.md" "$PROJECT_DIR/../docs/graphrag-principles.md" 2>/dev/null || true
+fi
+
+# registry.json
 if [ "$UPDATE_MODE" = true ] && [ -f "$PROJECT_DIR/issue-db/registry.json" ]; then
-  echo -e "  ${YELLOW}⊘ issue-db/registry.json (기존 DB 보존)${NC}"
-  # v3 필수 필드 자동 마이그레이션 (기존 DB 구조 보존)
-  python3 -c "
-import json
-with open('$PROJECT_DIR/issue-db/registry.json', 'r') as f:
-    data = json.load(f)
-
-migrated = []
-
-# hermes_state 추가
-if 'hermes_state' not in data:
-    data['hermes_state'] = {
-        'invocations_by_issue': {},
-        'daily_log': [],
-        'total_invocations': 0
-    }
-    migrated.append('hermes_state')
-
-# opus_budget_state 추가
-if 'opus_budget_state' not in data:
-    data['opus_budget_state'] = {
-        'daily': {'date': '', 'cost_usd': 0.0, 'calls': 0},
-        'monthly': {'month': '', 'cost_usd': 0.0, 'calls': 0},
-        'demotion_active': False
-    }
-    migrated.append('opus_budget_state')
-
-# issue_budget 추가
-if 'issue_budget' not in data:
-    data['issue_budget'] = {'date': '', 'created_today': 0}
-    migrated.append('issue_budget')
-
-# proactive_scan_state 추가
-if 'proactive_scan_state' not in data:
-    data['proactive_scan_state'] = {'date': '', 'count': 0}
-    migrated.append('proactive_scan_state')
-
-# version 갱신
-data['version'] = '3.0.0'
-
-if migrated:
-    with open('$PROJECT_DIR/issue-db/registry.json', 'w') as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-    print(f'  v3 마이그레이션: {', '.join(migrated)} 추가됨')
-else:
-    print('  v3 필드 이미 존재')
-" 2>/dev/null || true
+  python3 - "$PROJECT_DIR/issue-db/registry.json" <<'PYEOF'
+import json, sys
+path = sys.argv[1]
+with open(path) as f: data = json.load(f)
+changed = False
+for k, default in [
+    ('hermes_state', {'invocations_by_issue': {}, 'daily_log': [], 'total_invocations': 0}),
+    ('opus_budget_state', {'daily': {'date': '', 'cost_usd': 0.0, 'calls': 0}, 'monthly': {'month': '', 'cost_usd': 0.0, 'calls': 0}, 'demotion_active': False}),
+    ('issue_budget', {'date': '', 'created_today': 0}),
+    ('proactive_scan_state', {'date': '', 'count': 0}),
+]:
+    if k not in data:
+        data[k] = default; changed = True
+if data.get('version') != '3.0.0':
+    data['version'] = '3.0.0'; changed = True
+if changed:
+    with open(path, 'w') as f: json.dump(data, f, indent=2, ensure_ascii=False)
+PYEOF
+  echo -e "  ${YELLOW}⊘ issue-db/registry.json (보존 + v3 마이그레이션)${NC}"
 else
-  mkdir -p "$PROJECT_DIR/issue-db"
-  cat > "$PROJECT_DIR/issue-db/registry.json" << 'EOF'
+  if [ ! -f "$PROJECT_DIR/issue-db/registry.json" ]; then
+    cat > "$PROJECT_DIR/issue-db/registry.json" << 'EOF'
 {
   "version": "3.0.0",
   "created_at": "",
   "issues": [],
-  "hooks": {
-    "on_create": [],
-    "on_start": [],
-    "on_complete": [],
-    "on_fail": [],
-    "on_learn": []
-  },
-  "knowledge": {
-    "success_patterns": [],
-    "failure_patterns": [],
-    "meta_observations": []
-  },
-  "stats": {
-    "total_issues": 0,
-    "completed": 0,
-    "failed": 0,
-    "evolved": 0
-  }
+  "hooks": {"on_create": [], "on_start": [], "on_complete": [], "on_fail": [], "on_learn": []},
+  "knowledge": {"success_patterns": [], "failure_patterns": [], "meta_observations": []},
+  "stats": {"total_issues": 0, "completed": 0, "failed": 0, "evolved": 0}
 }
 EOF
-  # 생성 시각 삽입
-  python3 -c "
+    python3 -c "
 import json, datetime
-with open('$PROJECT_DIR/issue-db/registry.json', 'r') as f:
-    data = json.load(f)
-data['created_at'] = datetime.datetime.now().isoformat()
-with open('$PROJECT_DIR/issue-db/registry.json', 'w') as f:
-    json.dump(data, f, indent=2, ensure_ascii=False)
+with open('$PROJECT_DIR/issue-db/registry.json') as f: d = json.load(f)
+d['created_at'] = datetime.datetime.now().isoformat()
+with open('$PROJECT_DIR/issue-db/registry.json', 'w') as f: json.dump(d, f, indent=2, ensure_ascii=False)
 " 2>/dev/null || true
-  echo -e "  ${GREEN}✓ issue-db/registry.json (초기화)${NC}"
+    echo -e "  ${GREEN}✓ issue-db/registry.json${NC}"
+  fi
 fi
 
-echo -e "${GREEN}  → 프로젝트 설치 완료${NC}"
-echo ""
+# 버전 기록
+write_version_sha "$PROJECT_DIR" "$CURRENT_SHA"
+echo -e "  ${GREEN}✓ .harness-version (${CURRENT_SHA:0:12})${NC}"
 
-# ── 토큰 최적화 ────────────────────────────────────────
+# 토큰 최적화
 if [ "$TOKEN_OPTIMIZE" = true ]; then
   GLOBAL_SETTINGS="$HOME/.claude/settings.json"
-  echo -e "${YELLOW}[TOKEN] 토큰 절감 최적화 적용 중...${NC}"
-
   if [ -f "$GLOBAL_SETTINGS" ]; then
-    python3 -c "
-import json
-
-with open('$GLOBAL_SETTINGS', 'r') as f:
-    data = json.load(f)
-
-# 토큰 소비가 큰 플러그인 비활성화 (harness에서 불필요)
+    python3 - "$GLOBAL_SETTINGS" <<'PYEOF'
+import json, sys
+path = sys.argv[1]
+with open(path) as f: data = json.load(f)
 plugins = data.get('enabledPlugins', {})
 disabled = []
-# bkit: ~8,000 토큰/턴 (PDCA 보고서 + 에이전트 목록 + 스킬 목록)
-if plugins.get('bkit@bkit-marketplace') is True:
-    plugins['bkit@bkit-marketplace'] = False
-    disabled.append('bkit (~8K tokens)')
-# linear: ~1,500 토큰/턴
-if plugins.get('linear@claude-plugins-official') is True:
-    plugins['linear@claude-plugins-official'] = False
-    disabled.append('linear (~1.5K tokens)')
-# zapier: ~1,000 토큰/턴
-if plugins.get('zapier@claude-plugins-official') is True:
-    plugins['zapier@claude-plugins-official'] = False
-    disabled.append('zapier (~1K tokens)')
-# ruby-lsp: ~500 토큰/턴 (Rails 프로젝트만 필요)
-if plugins.get('ruby-lsp@claude-plugins-official') is True:
-    plugins['ruby-lsp@claude-plugins-official'] = False
-    disabled.append('ruby-lsp (~500 tokens)')
-
+for key, label in [
+    ('bkit@bkit-marketplace', 'bkit'),
+    ('linear@claude-plugins-official', 'linear'),
+    ('zapier@claude-plugins-official', 'zapier'),
+    ('ruby-lsp@claude-plugins-official', 'ruby-lsp'),
+]:
+    if plugins.get(key) is True:
+        plugins[key] = False
+        disabled.append(label)
 data['enabledPlugins'] = plugins
-
-with open('$GLOBAL_SETTINGS', 'w') as f:
-    json.dump(data, f, indent=2, ensure_ascii=False)
-
+with open(path, 'w') as f: json.dump(data, f, indent=2, ensure_ascii=False)
 if disabled:
-    for d in disabled:
-        print(f'  비활성화: {d}')
-    total = sum(int(d.split('~')[1].split('K')[0].replace('.','').replace(',','')) for d in disabled if 'K' in d)
-    print(f'  예상 절감: ~{total}K+ 토큰/턴')
-else:
-    print('  이미 최적화 상태')
-" 2>/dev/null || echo -e "  ${RED}Python 처리 실패 — 수동 확인 필요${NC}"
-
-  echo -e "${GREEN}  → 토큰 최적화 완료${NC}"
-  echo -e "  ${YELLOW}유지: superpowers, chrome-devtools (harness 핵심)${NC}"
-  echo -e "  ${YELLOW}비활성화된 플러그인은 필요 시 settings.json에서 재활성화${NC}"
+    print(f"  토큰 최적화: {', '.join(disabled)} 비활성")
+PYEOF
   fi
-  echo ""
 fi
 
-# ── 완료 메시지 ─────────────────────────────────────────
-if [ "$UPDATE_MODE" = true ]; then
-  echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
-  echo -e "${BLUE}║     업데이트 완료!                    ║${NC}"
-  echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
-else
-  echo -e "${BLUE}╔═══════════════════════════════════════╗${NC}"
-  echo -e "${BLUE}║     설치 완료!                        ║${NC}"
-  echo -e "${BLUE}╚═══════════════════════════════════════╝${NC}"
-fi
-echo ""
-echo -e "${GREEN}전역 설치 위치:${NC} ~/.claude/"
-echo -e "  agents/  → 21개 에이전트 (v3)"
-echo -e "             기존: agent-harness, test-harness, eval-harness,"
-echo -e "             cicd-harness, meta-agent, qa-reviewer,"
-echo -e "             ux-harness, hook-router, biz-validator,"
-echo -e "             design-critic, scenario-player, domain-analyst,"
-echo -e "             product-manager, code-quality,"
-echo -e "             plan-ceo-reviewer, plan-eng-reviewer,"
-echo -e "             opportunity-scout, brand-guardian"
-echo -e "             ${BLUE}hermes, advisor, audience-researcher (v3)${NC}"
-echo -e "  skills/  → harness-orchestrator, hook-registry,"
-echo -e "             issue-registry, progressive-disclosure, meta-evolution"
-echo ""
-echo -e "${GREEN}프로젝트 설치 위치:${NC} ./.claude/"
-echo -e "  CLAUDE.md      → 시스템 진입점 (v3: 3-Tier 컨펌 + Opus 예산)"
-echo -e "  settings.json  → Hooks 자동 실행 설정"
-echo -e "  hooks/         → Hook 이벤트 핸들러 (v3: 13개)"
-echo -e "  issue-db/      → 이슈 레지스트리 (v3: hermes_state/opus_budget 자동 마이그레이션)"
-echo ""
-echo -e "${GREEN}프로젝트 디렉터리:${NC}"
-echo -e "  docs/audience/       → 오디언스 리서치 결과"
-echo -e "  docs/ui-snapshots/   → UI 레벨 승급 전후 스냅샷"
-echo -e "  docs/brand/          → 브랜드 스크레이핑 결과"
-echo -e "  components/          → 21st.dev 등 컴포넌트 프롬프트"
-echo ""
+# Graphify scaffold
 if [ "$WITH_GRAPHIFY" = true ]; then
-  echo ""
-  echo -e "${BLUE}━━━ Graphify 파일럿 설치 ━━━${NC}"
   install_graphify_scaffold "$(pwd)"
 fi
 
-echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${GREEN}v3 시작 방법:${NC}"
-echo -e "  Claude Code 실행 후 아래 문장 중 하나를 입력하세요:"
 echo ""
-echo -e "  ${BLUE}\"harness 시작하자\"${NC}            v3 전체 기능 자동 적용"
-echo -e "  ${BLUE}\"harness 업그레이드 해줘\"${NC}      모든 하위 프로젝트에 v3 전파"
-echo -e "  ${BLUE}\"brand 정의해줘\"${NC}              brand-dna 자동 초안 (Firecrawl 지원)"
+if [ "$UPDATE_MODE" = true ]; then
+  echo -e "${GREEN}업데이트 완료${NC}"
+else
+  echo -e "${GREEN}설치 완료${NC}"
+fi
 echo ""
-echo -e "${GREEN}v3 신규 기능 (v2 위에 추가):${NC}"
-echo -e "  ${BLUE}Advisor Strategy${NC}"
-echo -e "    6. Hermes 에스컬레이션 중개자 — executor 막힘 시 Opus 자문"
-echo -e "    7. Advisor Opus 자문관 — Circuit Breaker 내장"
+echo -e "${BLUE}v4.1 Symlink 구조:${NC}"
+echo -e "  중앙: $HARNESS_CORE_DIR"
+echo -e "  전역: $GLOBAL_DIR/agents, $GLOBAL_DIR/skills (symlink)"
+echo -e "  프로젝트: $PROJECT_DIR/hooks (symlink)"
+echo -e "  버전 SHA: ${CURRENT_SHA:0:12}"
 echo ""
-echo -e "  ${BLUE}3-Tier 컨펌 정책${NC}"
-echo -e "    8. T0 침묵 자동 / T1 내부 자문 / T2 사용자 컨펌"
-echo -e "    9. AWAITING_USER 상태 — 개별 이슈만 멈추고 파이프라인은 계속"
-echo -e "   10. Opus 예산 관리 — Soft \$10 / Hard \$20 / 월 \$250 / 자동 강등"
-echo ""
-echo -e "  ${BLUE}디자인 5 Levels 파이프라인${NC}"
-echo -e "   11. Audience Researcher — 타겟 고객 언어/페인포인트 조사"
-echo -e "   12. UI Level 1-5 단계적 승급 — basic → brand+testimonial"
-echo -e "   13. 21st.dev 컴포넌트 카탈로그 규약"
-echo -e "   14. BRAND_SCRAPE — Firecrawl/CLI로 브랜드 자산 자동 추출"
-echo -e "   15. AI slop 진단 4항목 (A~D) — 원인 분류 + 자동 해결 라우팅"
-echo ""
-echo -e "  ${BLUE}부작용 방어 4종${NC}"
-echo -e "   16. 이슈 폭발 방지 (일일 cap 30 + opportunity 발화 제외)"
-echo -e "   17. Freeze x Hermes 충돌 방어 (scope 확장/해제)"
-echo -e "   18. meta x Hermes 레이스 방어 (lock 파일)"
-echo -e "   19. CLI 우선 원칙 — MCP보다 CLI 도구 우선"
-echo ""
-echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${YELLOW}다음 업데이트 시 변경 없으면 자동 skip (--force로 강제 재배포)${NC}"
