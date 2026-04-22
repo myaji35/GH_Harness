@@ -67,6 +67,17 @@
             "statusMessage": "Checking freeze boundary..."
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/sandbox-enforce.sh",
+            "timeout": 5,
+            "statusMessage": "Sandbox policy check..."
+          }
+        ]
       }
     ],
     "PostToolUse": [

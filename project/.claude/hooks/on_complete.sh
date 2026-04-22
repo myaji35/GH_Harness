@@ -36,7 +36,16 @@ result_raw = '''$RESULT'''
 
 now = datetime.datetime.now().isoformat()
 new_issues = []
-next_num = registry['stats']['total_issues'] + 1
+
+# ID 계산: max ID + 1 과 stats.total_issues + 1 중 큰 값 사용 (ISS-201 중복 ID 방어)
+def _extract_num(iid):
+    try:
+        return int(str(iid).split('-')[-1])
+    except Exception:
+        return 0
+_existing_nums = [_extract_num(iss.get('id','')) for iss in registry.get('issues', [])]
+_stats_next = registry.get('stats', {}).get('total_issues', 0) + 1
+next_num = max((max(_existing_nums) if _existing_nums else 0) + 1, _stats_next)
 
 def add_issue(title, itype, priority, assign_to, payload=None):
     global next_num
@@ -55,6 +64,15 @@ def add_issue(title, itype, priority, assign_to, payload=None):
                 and iss.get('type') == itype
                 and iss.get('status') in ('READY', 'IN_PROGRESS')):
                 print(f"[skip-dup] src={src} type={itype} — 활성 후속 존재 → skip")
+                return
+
+    # 중복 체크 ③ (source_issue, type) 이미 COMPLETED/DONE — 재완료 루프 방어 (ISS-201)
+    if src:
+        for iss in registry['issues']:
+            if (iss.get('payload', {}).get('source_issue') == src
+                and iss.get('type') == itype
+                and iss.get('status') in ('COMPLETED', 'DONE')):
+                print(f"[skip-dup:completed] src={src} type={itype} — 이미 완료된 후속 → skip")
                 return
 
     # [v4.1 Gate] SCORE/DEPLOY_READY는 LINT_CHECK gate 통과 후에만 READY
@@ -76,6 +94,10 @@ def add_issue(title, itype, priority, assign_to, payload=None):
         if gate_blocking:
             initial_status = 'GATE_PENDING'
             print(f"[Gate] {itype} src={src} — LINT_CHECK 미통과 → GATE_PENDING")
+
+    # ID 충돌 회피 (edge case: 레지스트리에 동일 ID 잔존 시)
+    while any(iss.get('id') == f'ISS-{next_num:03d}' for iss in registry['issues']):
+        next_num += 1
 
     iss = {
         'id': f'ISS-{next_num:03d}',
