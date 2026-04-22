@@ -23,7 +23,11 @@ except Exception:
     sys.exit(0)
 
 # 에이전트 → 모델 매핑
+# 2축 구조 (2026-04-16~): plan-harness/check-harness가 기본 라우팅.
+# 기존 세부 에이전트는 "모드"로 병합되었으나 직접 호출도 호환 유지.
 MODEL_MAP = {
+    "plan-harness":   "sonnet",
+    "check-harness":  "sonnet",
     "agent-harness":  "sonnet",
     "meta-agent":     "sonnet",
     "test-harness":   "sonnet",
@@ -181,6 +185,19 @@ print(f"""
 
 ⚠️ 경고: 사소한 질문(T0)/내부 자문(T1)은 금지. T2 컨펌 대상만 request-user-confirm.sh 사용.
 """.strip())
+
+# [v4.1 D] Decision Trace — dispatched 이벤트 기록
+try:
+    import subprocess as _sp2
+    import os as _os2
+    _trace = _os2.path.join(_os2.path.dirname(__file__) if '__file__' in dir() else '.claude/hooks', 'decision-trace.sh')
+    if _os2.path.exists(_trace):
+        _sp2.run([
+            "bash", _trace, "dispatched", issue_id,
+            f"agent={agent}", f"model={model}", f"type={issue_type}", f"priority={issue.get('priority','?')}"
+        ], capture_output=True, timeout=3)
+except Exception:
+    pass
 
 # exit 2 = rewake signal
 sys.exit(2)

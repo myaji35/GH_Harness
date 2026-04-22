@@ -14,6 +14,12 @@ RESULT="$3"
 
 echo "[Hook:on_complete] 이슈 완료: $ISSUE_ID ($ISSUE_TYPE)"
 
+# [v4.1 D] Decision Trace 기록 (completed)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -x "$SCRIPT_DIR/decision-trace.sh" ]; then
+  bash "$SCRIPT_DIR/decision-trace.sh" completed "$ISSUE_ID" type="$ISSUE_TYPE" 2>/dev/null || true
+fi
+
 python3 << PYEOF
 import json, datetime, sys
 
@@ -34,15 +40,48 @@ next_num = registry['stats']['total_issues'] + 1
 
 def add_issue(title, itype, priority, assign_to, payload=None):
     global next_num
-    # 중복 체크
+    payload = payload or {}
+    src = payload.get('source_issue')
+
+    # 중복 체크 ① title + 활성 상태
     for iss in registry['issues']:
         if iss.get('title') == title and iss.get('status') in ('READY', 'IN_PROGRESS'):
             return
+
+    # 중복 체크 ② (source_issue, type) READY/IN_PROGRESS — 핑퐁 차단 (ISS-201)
+    if src:
+        for iss in registry['issues']:
+            if (iss.get('payload', {}).get('source_issue') == src
+                and iss.get('type') == itype
+                and iss.get('status') in ('READY', 'IN_PROGRESS')):
+                print(f"[skip-dup] src={src} type={itype} — 활성 후속 존재 → skip")
+                return
+
+    # [v4.1 Gate] SCORE/DEPLOY_READY는 LINT_CHECK gate 통과 후에만 READY
+    initial_status = 'READY'
+    if itype in ('SCORE', 'DEPLOY_READY') and src:
+        gate_blocking = False
+        for iss in registry['issues']:
+            p = iss.get('payload', {})
+            if (p.get('source_issue') == src
+                and iss.get('type') == 'LINT_CHECK'
+                and p.get('gate') is True
+                and iss.get('status') in ('READY', 'IN_PROGRESS', 'BLOCKED')):
+                gate_blocking = True
+                break
+        # bypass 허용 (환경변수로만)
+        import os as _os
+        if _os.environ.get('HARNESS_BYPASS_GATE') == '1':
+            gate_blocking = False
+        if gate_blocking:
+            initial_status = 'GATE_PENDING'
+            print(f"[Gate] {itype} src={src} — LINT_CHECK 미통과 → GATE_PENDING")
+
     iss = {
         'id': f'ISS-{next_num:03d}',
         'title': title,
         'type': itype,
-        'status': 'READY',
+        'status': initial_status,
         'priority': priority,
         'assign_to': assign_to,
         'depth': target_issue.get('depth', 0) + 1,
@@ -50,14 +89,14 @@ def add_issue(title, itype, priority, assign_to, payload=None):
         'parent_id': issue_id,
         'depends_on': [],
         'created_at': now,
-        'payload': payload or {},
+        'payload': payload,
         'result': None,
         'spawn_rules': []
     }
     if iss['depth'] <= 3:
         new_issues.append(iss)
         next_num += 1
-        print(f"[Plan] {iss['id']} [{priority}] {itype} — {title} → {assign_to}")
+        print(f"[Plan] {iss['id']} [{priority}] {itype} — {title} → {assign_to}" + (f" ({initial_status})" if initial_status != 'READY' else ""))
     else:
         print(f"[깊이 제한] {title} (depth={iss['depth']})")
 
@@ -124,7 +163,21 @@ target_issue['result'] = result
 
 print(f"\n[분석] {issue_type} 결과 기반 Plan 수립:")
 
-if issue_type == 'FEATURE_PLAN':
+if issue_type == 'SCREEN_GAP':
+    # 화면 갭 → 빠진 기능별 USER_STORY 생성
+    missing = result.get('missing_features', target_issue.get('payload', {}).get('missing_features', []))
+    route = result.get('route', target_issue.get('payload', {}).get('route', ''))
+    screen_label = result.get('screen_label', target_issue.get('payload', {}).get('screen_label', ''))
+    for feat in missing:
+        add_issue(
+            f"[Screen Gap → Story] {route} — {feat} 구현",
+            'USER_STORY', 'P2', 'plan-harness',
+            {'source_issue': issue_id, 'route': route, 'screen_label': screen_label,
+             'feature': feat, 'plan_mode': 'code', 'origin': 'screen_gap'}
+        )
+    print(f"  → {len(missing)}개 USER_STORY 생성")
+
+elif issue_type == 'FEATURE_PLAN':
     # 기획 완료 → CEO + Eng 2중 검토 병렬 진행 (USER_STORY 직행 X)
     feature_name = result.get('feature_name', issue_id)
     add_issue(
@@ -234,10 +287,24 @@ elif issue_type == 'UX_FLOW':
     )
 
 elif issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT', 'BIZ_FIX', 'SCENARIO_FIX', 'DESIGN_FIX'):
-    # 코드 변경 완료 → 테스트 + 도메인 분석 + UX 리뷰 병렬
+    # 코드 변경 완료 → [v4.1] Computational Sensor 강제 게이트 선행 + 병렬 체인
     files_changed = target_issue.get('payload', {}).get('files_changed', [])
     files = target_issue.get('payload', {}).get('files', [])
     all_files = list(set(files_changed + files))
+
+    # [v4.1 Gate B] LINT_CHECK P0를 blocking gate로 선행 생성
+    # 실패 시 STYLE_FIX P0 체인만 활성, SCORE/DEPLOY 차단
+    add_issue(
+        f"[Plan:게이트] {issue_id} 계산적 센서 검증 (lint/type-check)",
+        'LINT_CHECK', 'P0', 'code-quality',
+        {
+            'files': all_files,
+            'source_issue': issue_id,
+            'gate': True,
+            'gate_blocks': ['SCORE', 'DEPLOY_READY'],
+            'bypass_env': 'HARNESS_BYPASS_GATE'
+        }
+    )
 
     add_issue(
         f"[Plan:테스트] {issue_id} 변경사항 검증",
@@ -271,6 +338,67 @@ elif issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT
             f"[Plan:브라우저QA] {issue_id} 콘솔 에러 + 스크린샷 검증",
             'BROWSER_QA', 'P1', 'agent-harness',
             {'files': ui_files, 'source_issue': issue_id, 'action': 'run_browse_qa'}
+        )
+
+elif issue_type == 'LINT_CHECK':
+    # [v4.1 Gate] 계산적 센서 결과 분석
+    lint_passed = result.get('passed', True)
+    type_errors = result.get('type_errors', 0)
+    lint_errors = result.get('lint_errors', 0)
+    error_list = result.get('errors', [])
+    is_gate = target_issue.get('payload', {}).get('gate') is True
+    src = target_issue.get('payload', {}).get('source_issue')
+
+    if not lint_passed or type_errors > 0 or lint_errors > 10:
+        # 실패 → STYLE_FIX P0 + SCORE/DEPLOY 차단 유지
+        add_issue(
+            f"[Plan:센서수정] {issue_id} lint/type {type_errors+lint_errors}건 수정",
+            'STYLE_FIX', 'P0', 'agent-harness',
+            {
+                'errors': error_list,
+                'type_errors': type_errors,
+                'lint_errors': lint_errors,
+                'source_issue': src or issue_id,
+                'action': 'fix_sensor_errors',
+                'gate_parent': issue_id
+            }
+        )
+        print(f"[Gate] 실패 — GATE_PENDING 이슈는 STYLE_FIX 통과 시 자동 해제")
+    else:
+        # 통과 → 같은 source의 GATE_PENDING 이슈를 READY로 승격
+        if is_gate and src:
+            released = 0
+            for iss in registry['issues']:
+                if (iss.get('payload', {}).get('source_issue') == src
+                    and iss.get('status') == 'GATE_PENDING'):
+                    iss['status'] = 'READY'
+                    released += 1
+            if released:
+                print(f"[Gate] ✅ 통과 — GATE_PENDING {released}건 → READY")
+        if lint_errors > 10:
+            # 경고성: 에러 < 10이지만 > 0이면 기록만
+            pass
+        registry.setdefault('knowledge', {}).setdefault('success_patterns', []).append({
+            'pattern': 'sensor_clean',
+            'context': f'{issue_id} lint/type clean',
+            'frequency': 1,
+            'discovered_at': now
+        })
+
+elif issue_type == 'STYLE_FIX':
+    # STYLE_FIX 완료 → 재검증 (RETEST 형태로 LINT_CHECK 재스폰)
+    gate_parent = target_issue.get('payload', {}).get('gate_parent')
+    src = target_issue.get('payload', {}).get('source_issue')
+    if src:
+        add_issue(
+            f"[Plan:재검증] {issue_id} 센서 재실행",
+            'LINT_CHECK', 'P0', 'code-quality',
+            {
+                'source_issue': src,
+                'gate': True,
+                'gate_blocks': ['SCORE', 'DEPLOY_READY'],
+                'retest_of': gate_parent
+            }
         )
 
 elif issue_type in ('RUN_TESTS', 'RETEST'):
