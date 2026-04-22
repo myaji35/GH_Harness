@@ -112,25 +112,46 @@ if os.path.exists(".eslintrc.json") or os.path.exists("eslint.config.js") or os.
 
 # ── 4. TODO/FIXME/HACK 스캔 ────────────────────────
 try:
-    todo = subprocess.run(["grep", "-rn", "--include=*.ts", "--include=*.tsx", "--include=*.js",
+    # 단어 경계 사용 — URL 경로/판례번호 예시의 "XXXXX"에 포함된 XXX를 배제
+    # ERE에서는 \b 대신 [[:<:]] / [[:>:]] (BSD grep) 또는 word-regexp 옵션 사용
+    # 호환성 위해 -w 옵션 사용 (-w는 전체 매칭 토큰이 단어여야 함 → XXX in XXXXX 배제)
+    todo = subprocess.run(["grep", "-rn", "-wE",
+                          "--include=*.ts", "--include=*.tsx", "--include=*.js",
                           "--include=*.jsx", "--include=*.py", "--include=*.rb",
-                          "-E", "TODO|FIXME|HACK|XXX", ".",
+                          "TODO|FIXME|HACK|XXX", ".",
                           "--exclude-dir=node_modules", "--exclude-dir=.next",
-                          "--exclude-dir=vendor", "--exclude-dir=.git"],
+                          "--exclude-dir=vendor", "--exclude-dir=.git",
+                          "--exclude-dir=tmp", "--exclude-dir=storage",
+                          "--exclude-dir=log", "--exclude-dir=public",
+                          "--exclude-dir=.bkit", "--exclude-dir=.claude"],
                         capture_output=True, text=True, timeout=15)
-    if todo.stdout.strip():
-        todo_lines = [l for l in todo.stdout.split("\n") if l.strip()]
-        scan_results["todo_count"] = len(todo_lines)
-        if len(todo_lines) > 3:
-            findings.append({
-                "type": "CODE_SMELL",
-                "priority": "P3",
-                "title": f"TODO/FIXME 코멘트 {len(todo_lines)}개 발견",
-                "assign_to": "code-quality",
-                "detail": "\n".join(todo_lines[:5])
-            })
-    else:
-        scan_results["todo_count"] = 0
+    raw_lines = [l for l in (todo.stdout or "").split("\n") if l.strip()]
+
+    # 추가 필터: URL 예시/프롬프트 예시/정규식 문자 클래스 등 오탐 라인 제거
+    def is_real_todo(line):
+        import re as _r
+        # "예:" 또는 "패턴:" 로 시작하는 URL 예시
+        if _r.search(r'예\s*[:]\s*[/"<]', line) or _r.search(r'패턴\s*[:]', line):
+            return False
+        # 프롬프트/가이드 텍스트의 예시 인용 ("예: ...", '"예시..."')
+        if '예:' in line and ('XXXXX' in line or 'XXXX' in line):
+            return False
+        # 정규식 문자 클래스 [...XXX...]
+        if _r.search(r'\[[^\]]*XXX[^\]]*\]', line):
+            return False
+        return True
+
+    todo_lines = [l for l in raw_lines if is_real_todo(l)]
+    scan_results["todo_count"] = len(todo_lines)
+    # 임계값 10으로 상향 — 의도된 유보 마커(US-3.5 등 로드맵 항목)가 누적돼도 P3 이슈화는 의미 없음
+    if len(todo_lines) > 10:
+        findings.append({
+            "type": "CODE_SMELL",
+            "priority": "P3",
+            "title": f"TODO/FIXME 코멘트 {len(todo_lines)}개 발견",
+            "assign_to": "code-quality",
+            "detail": "\n".join(todo_lines[:5])
+        })
 except:
     pass
 
@@ -174,6 +195,9 @@ try:
                           "--exclude-dir=dist", "--exclude-dir=build",
                           "--exclude-dir=.git", "--exclude-dir=__tests__",
                           "--exclude-dir=test", "--exclude-dir=tests",
+                          "--exclude-dir=tmp", "--exclude-dir=storage",
+                          "--exclude-dir=log", "--exclude-dir=public",
+                          "--exclude-dir=.bkit", "--exclude-dir=.claude",
                           "--exclude=*.test.*", "--exclude=*.spec.*"],
                         capture_output=True, text=True, timeout=15)
     console_lines = [l for l in (console_err.stdout or "").split("\n") if l.strip()]
@@ -192,7 +216,10 @@ try:
                           "--include=*.ts", "--include=*.tsx", "--include=*.js", "--include=*.jsx",
                           "-E", r"catch\s*\([^)]*\)\s*\{\s*\}",  ".",
                           "--exclude-dir=node_modules", "--exclude-dir=.next",
-                          "--exclude-dir=dist", "--exclude-dir=.git"],
+                          "--exclude-dir=dist", "--exclude-dir=.git",
+                          "--exclude-dir=tmp", "--exclude-dir=storage",
+                          "--exclude-dir=log", "--exclude-dir=public",
+                          "--exclude-dir=.bkit", "--exclude-dir=.claude"],
                         capture_output=True, text=True, timeout=15)
     empty_catch_lines = [l for l in (empty_catch.stdout or "").split("\n") if l.strip()]
     scan_results["empty_catch"] = len(empty_catch_lines)
@@ -211,14 +238,20 @@ try:
                           "--include=*.ts", "--include=*.tsx", "--include=*.js", "--include=*.jsx",
                           "-E", r"throw\s+new\s+Error|Promise\.reject|reject\(",  ".",
                           "--exclude-dir=node_modules", "--exclude-dir=.next",
-                          "--exclude-dir=dist", "--exclude-dir=.git"],
+                          "--exclude-dir=dist", "--exclude-dir=.git",
+                          "--exclude-dir=tmp", "--exclude-dir=storage",
+                          "--exclude-dir=log", "--exclude-dir=public",
+                          "--exclude-dir=.bkit", "--exclude-dir=.claude"],
                         capture_output=True, text=True, timeout=15)
         throw_lines = [l for l in (unhandled.stdout or "").split("\n") if l.strip()]
         # Error boundary 존재 여부 체크
         err_boundary = subprocess.run(["grep", "-rl",
                           "--include=*.ts", "--include=*.tsx", "--include=*.js", "--include=*.jsx",
                           "-E", r"ErrorBoundary|error\.tsx|componentDidCatch|onError",  ".",
-                          "--exclude-dir=node_modules", "--exclude-dir=.next"],
+                          "--exclude-dir=node_modules", "--exclude-dir=.next",
+                          "--exclude-dir=tmp", "--exclude-dir=storage",
+                          "--exclude-dir=log", "--exclude-dir=public",
+                          "--exclude-dir=.bkit", "--exclude-dir=.claude"],
                         capture_output=True, text=True, timeout=10)
         has_boundary = bool(err_boundary.stdout.strip())
         scan_results["throw_count"] = len(throw_lines)

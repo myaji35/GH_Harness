@@ -78,6 +78,13 @@ if registry["issue_budget"]["created_today"] >= DAILY_ISSUE_CAP:
     print(f"⚠️ [Budget] 일일 이슈 생성 cap 초과 ({registry['issue_budget']['created_today']}/{DAILY_ISSUE_CAP}). 기존 READY만 처리.")
     # cap은 생성만 막고 처리는 계속 (아래로 진행)
 
+# ── ID 중복 사전 점검 (ISS-201) ──────────────────────
+from collections import Counter as _Counter
+_id_counts = _Counter(iss.get("id") for iss in registry.get("issues", []))
+_dup_ids = [k for k, v in _id_counts.items() if v > 1 and k]
+if _dup_ids:
+    print(f"⚠️ [Integrity] registry.json 중복 ID {len(_dup_ids)}건 감지 — registry-dedupe.py 실행 권장 (예: {', '.join(_dup_ids[:3])})")
+
 # READY 이슈 찾기 (FIFO: 가장 오래된 것부터)
 ready_issues = [
     iss for iss in registry.get("issues", [])
@@ -86,6 +93,39 @@ ready_issues = [
 
 if not ready_issues:
     sys.exit(0)
+
+# ── 핑퐁 감지: (type, source_issue) 3건 이상 READY면 초과분 BLOCKED ──
+# ISS-201 구조적 결함: 동일 source의 RUN_TESTS/DOMAIN_ANALYZE/SCORE가 반복 생성되어 파이프라인 정체
+from collections import defaultdict as _dd
+_groups = _dd(list)
+for _iss in ready_issues:
+    _src = _iss.get("payload", {}).get("source_issue") or _iss.get("parent_id") or "-"
+    _key = (_iss.get("type", "?"), _src)
+    _groups[_key].append(_iss)
+
+_pingpong_blocked = 0
+for (_t, _s), _grp in _groups.items():
+    if _s == "-":
+        continue  # 원본 이슈(source 없음)는 제외
+    if len(_grp) >= 3:
+        # 최신 것 1개만 남기고 나머지 BLOCKED
+        _grp.sort(key=lambda x: x.get("created_at", ""))
+        for _dup in _grp[:-1]:
+            _dup["status"] = "BLOCKED"
+            _dup.setdefault("tags", []).append("pingpong_blocked")
+            _dup["blocked_reason"] = f"pingpong_guard: ({_t}, src={_s}) {len(_grp)}건 중복 감지"
+            _pingpong_blocked += 1
+        print(f"⚠️ [Pingpong] ({_t}, src={_s}) {len(_grp)}건 → {len(_grp)-1}건 BLOCKED 처리")
+
+if _pingpong_blocked > 0:
+    # 변경사항 즉시 저장
+    with open(registry_path, 'w') as _rf:
+        json.dump(registry, _rf, indent=2, ensure_ascii=False)
+    # ready_issues 재필터
+    ready_issues = [iss for iss in registry.get("issues", []) if iss.get("status") == "READY"]
+    if not ready_issues:
+        print(f"[Pingpong] {_pingpong_blocked}건 차단 후 처리할 READY 없음 — 종료")
+        sys.exit(0)
 
 # ── 백로그 과다 시 P3 이슈 처리 유보 (폭발 방지) ────────
 if len(ready_issues) > 20:
@@ -186,11 +226,10 @@ print(f"""
 ⚠️ 경고: 사소한 질문(T0)/내부 자문(T1)은 금지. T2 컨펌 대상만 request-user-confirm.sh 사용.
 """.strip())
 
-# [v4.1 D] Decision Trace — dispatched 이벤트 기록
+# [v4.1 D] Decision Trace
 try:
-    import subprocess as _sp2
-    import os as _os2
-    _trace = _os2.path.join(_os2.path.dirname(__file__) if '__file__' in dir() else '.claude/hooks', 'decision-trace.sh')
+    import subprocess as _sp2, os as _os2
+    _trace = ".claude/hooks/decision-trace.sh"
     if _os2.path.exists(_trace):
         _sp2.run([
             "bash", _trace, "dispatched", issue_id,
