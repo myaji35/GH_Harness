@@ -213,6 +213,108 @@ v2 업그레이드로 다음 기능이 자동 활성화됩니다:
   → `bash .claude/hooks/proactive-scan.sh` 실행
   → 코드베이스 스캔 후 발견된 이슈 자동 생성
 
+### Screen Gap Scanner (화면 갭 스캐너) 트리거 ⭐
+- **"화면 갭 스캔"** / "screen gap" / "빠진 기능 찾아줘" / "비즈니스 니즈 점검" / "화면 점검"
+  → `bash .claude/hooks/screen-gap-scan.sh` 실행
+  → 라우트/메뉴 구조에서 **상식적 비즈니스 기능의 부재** 자동 탐지
+  → SCREEN_GAP 이슈 생성 → plan-harness:product 모드로 스토리 분해 → 구현
+  
+  **proactive-scan.sh와의 차이:**
+  - proactive-scan = 코드 결함 ("있는데 깨졌다")
+  - screen-gap-scan = 비즈니스 결함 ("화면은 있는데 기능이 빠졌다")
+
+  **화면 패턴별 기대 기능:**
+  | 화면 패턴 | 상식적 기대 기능 |
+  |---|---|
+  | 목록 (index) | 검색, 필터, 정렬, 페이지네이션, 빈 상태, 신규 생성 버튼 |
+  | 상세 (show) | 수정, 삭제(확인 모달), 뒤로가기, 관련 항목 링크 |
+  | 폼 (new/edit) | 필수값 검증, 저장 피드백, 취소, 로딩 상태 |
+  | 대시보드 | KPI 카드, 최근 활동, 빠른 액션 |
+  | 설정 | 프로필 수정, 비밀번호 변경 |
+  
+  **지원 프레임워크:** Rails, Next.js (App/Pages), React Router, Flask, FastAPI
+  **이슈 타입:** `SCREEN_GAP` → `USER_STORY` → `GENERATE_CODE`
+  **일일 스캔 한도:** 3회 (이슈 폭발 방지)
+
+### RACE_MODE 트리거 (v4.3+) ⭐⭐
+- **"레이스 모드로 해줘"** / "race mode" / "여러 LLM으로 붙여봐" / "멀티 provider로 경쟁"
+  → 현재 IN_PROGRESS 또는 지정 이슈를 RACE_MODE 이슈로 승격/생성
+  → `bash .claude/hooks/race-dispatch.sh <ISSUE_ID>` → `race-judge.sh <ISSUE_ID>` 순차 실행
+  → 각 provider가 **독립 git worktree**에서 동시 구현
+  → lint 정적 분석 + diff 크기 + 파일 스코프 기반 **자동 채점** → 승자 선정
+
+  **RACE_MODE payload 스키마:**
+  ```json
+  {
+    "source_issue": "ISS-245",
+    "task_brief": "프롬프트 핵심 지시문",
+    "providers": ["claude", "codex", "gemini"],
+    "target_files": ["src/foo.ts"],
+    "base_branch": "main",
+    "timeout_sec": 900,
+    "judge_criteria": {"lint": 30, "tests": 40, "diff_size": 15, "files_scope": 15}
+  }
+  ```
+
+  **판정 공식 (가중합):**
+  - `lint` — diff 내 안티패턴 카운트 (console.log, debugger, any 등)
+  - `tests` — exit_code/timeout 휴리스틱 (0:70점, timeout:10, 기타:30)
+  - `diff_size` — 50줄 이하 100점, 500줄+ 30점 (Occam)
+  - `files_scope` — target_files 밖 편집 감점 (한 파일당 -20)
+
+  **산출물:**
+  - `.claude/race-artifacts/<ISS>/{provider}/{stdout,stderr,diff.patch,exit_code,duration_sec}.log`
+  - `.claude/race-artifacts/<ISS>/report.json` — 최종 점수 + 승자
+  - registry.json의 `result.winner`, `result.scores`
+  - 패자 worktree는 `/tmp/harness-race-losers/<ISS>/<provider>/` 로 격리
+
+  **안전장치:**
+  - `git push` 금지 (판정 전 원격 반영 차단)
+  - 동시 RACE_MODE 최대 **1개**
+  - Opus 예산 Hard Cap 근접 시 provider 수 자동 감축 (향후)
+  - 공식 프롬프트는 `target_files`만 건드리도록 제약
+
+  **참고:** `docs/race-mode-design.md`
+
+## 2축 아키텍처 — PLAN / CHECK (v4, 2026-04-16~)
+
+**"만드는 쪽"과 "보는 쪽"을 구조적으로 분리**한다. 동일 LLM 내 과도한 에이전트 세분화의 토큰 낭비를 줄이면서, 기존 22개 에이전트의 도메인 지식은 **"모드 프로파일"**로 100% 보존한다.
+
+### 축 구성
+| 축 | 메타 에이전트 | 역할 | Provider |
+|---|---|---|---|
+| **PLAN** | `plan-harness` | 기획/설계/구현/배포 | Claude (Opus/Sonnet) |
+| **CHECK** | `check-harness` | 디자인/비즈 로직/품질/평가 | Claude (현재) → Codex (Phase 2+) |
+
+### 모드 프로파일 (기존 에이전트의 재활용)
+기존 22개 에이전트 .md는 **삭제하지 않고** plan-harness/check-harness의 "모드"로 호출된다:
+
+**PLAN 모드**: product / ceo-review / eng-review / opportunity / domain / audience / ux-design / code / deploy
+**CHECK 모드**: code / test / eval / biz / journey / scenario / design / brand / ux-review / qa / meta
+
+### 라우팅
+`axis-router.sh`가 이슈 타입 → `<axis>-harness:<mode>` 매핑:
+```
+FEATURE_PLAN    → plan-harness:product
+BIZ_VALIDATE    → check-harness:biz
+GENERATE_CODE   → plan-harness:code
+DESIGN_REVIEW   → check-harness:design
+```
+
+### 기대 효과
+1. **토큰 절약**: 에이전트 호출당 시스템 프롬프트/CLAUDE.md 중복 로드 감소. CHECK 축은 향후 Codex 전환 시 Opus 예산 해방
+2. **완성도 상승**: 만든/본 경계 명확화로 확증 편향 감소. 외부 LLM(Codex) 전환 시 진짜 교차 검증
+3. **자산 보존**: 도메인 튜닝된 프롬프트 22개를 모드로 보관 → 삭제/재작성 없음
+4. **확장성**: 새 도메인 = 모드 1개(.md 파일) 추가로 끝
+
+### Provider 전환 정책
+- 현재(Phase 1): `CHECK_PROVIDER=claude` 고정. codex-check.sh는 스켈레톤만 배포
+- Phase 2 (명시 지시 시): 코드 검증 모드만 `CHECK_PROVIDER=codex` 파일럿
+- Phase 3: 지표 통과 모드부터 순차 Codex 전환
+
+### 호환 모드
+기존 22개 에이전트 직접 호출도 유지된다 (`HARNESS_AXIS_MODE=legacy`). 기본값은 `2axis`.
+
 ## 에이전트 팀 (모델 차등 배치) — v2
 | 에이전트 | Model | 역할 | 담당 이슈 |
 |---------|-------|------|---------|
@@ -339,6 +441,18 @@ Stop/SubagentStop마다 자동 실행:
 2. **리뷰 코멘트** → 현황 + 에이전트별 현황 + 전략 제안
 3. **모든 이슈 완료 시** → "새로운 기능/개선 작업을 기획하세요" 제안
 
+## GraphRAG 구축 3원칙 (필수)
+
+GraphRAG/Knowledge Graph를 구현하는 모든 코드는 **`docs/graphrag-principles.md`를 먼저 읽고** 아래 3원칙을 적용한다:
+
+1. **개체 결합(Entity Resolution)**: 표면형≠개체. `canonical_id` + `aliases[]` + `resolution_confidence` 필수. 정규화 → 블로킹 → 매칭 3단계.
+2. **하이브리드 스키마**: 벡터(Qdrant/pgvector) + 그래프(Neo4j/KuzuDB) + 메타데이터(PostgreSQL)를 분리하되 공통 `entity_id`(UUID v7)로 연결.
+3. **증분 업데이트**: 전체 재구축 금지. `content_hash`로 skip → 델타만 처리. Hard delete 금지(soft delete + tombstone). 주 1회 Re-ER 잡 필수.
+
+### 자동 검증
+- agent-harness가 GraphRAG 코드를 작성/수정할 때 `docs/graphrag-principles.md`의 위반 감지 체크리스트 8개 항목을 자가 점검
+- 미달 항목 발견 시 ARCH_DECISION 이슈 자동 생성 → hermes-escalate.sh로 advisor 자문 요청
+
 ## 운영 원칙
 - 성공 출력 → 핵심 수치만 (컨텍스트 절약)
 - 실패 출력 → 전체 오류 상세
@@ -351,3 +465,39 @@ Stop/SubagentStop마다 자동 실행:
 - Full: 전체 에이전트 (hook-router, ux-harness, code-quality 포함)
 - Reduced: agent + code-quality + test + meta + hook-router
 - Single: agent만 (긴급)
+
+## 이 프로젝트의 디자인 아젠다 (필수)
+
+### 로드 순서 (UI 작업 시작 전 반드시)
+1. **전역 공통** — `GH_Harness/global/skills/harness-ui-trends-2026/skill.md` 읽기 (2026 SaaS 트렌드 + 하네스 공통 컴포넌트 레시피 + 상태 팔레트)
+2. **프로젝트 개성** — 프로젝트 루트의 `brand-dna.json` 읽기 (`design_tokens` / `agenda` / `emotional_tone` / `anti_patterns`)
+3. **SLDS 기본** — 전역 `~/.claude/CLAUDE.md`의 SLDS 섹션 (최후 기본값)
+
+### 충돌 시 우선순위
+`brand-dna.json` (프로젝트 값) > `harness-ui-trends-2026.md` (공통 트렌드) > SLDS 기본값.
+
+### `brand-dna.json` 자동 반영 매핑
+| 필드 | UI 반영 지점 |
+|---|---|
+| `design_tokens.colors.hero` | Accent / 메인 CTA 배경 |
+| `design_tokens.colors.text_primary` | 다크 헤더 텍스트 기본색 |
+| `design_tokens.colors.surface` / `surface_alt` | 카드 / 페이지 배경 |
+| `design_tokens.typography.font_heading/body/mono` | 폰트 페어링 |
+| `design_tokens.shape.radius` | `rounded-md`(tight) / `rounded-lg`(moderate) / `rounded-xl`(soft) |
+| `design_tokens.motion.hover_effect` | lift / glow / none |
+| `design_tokens.personality.icon_style` | feather-outline / duotone / solid |
+| `agenda` | 빈 상태 메시지 / 히어로 카피의 톤 |
+| `emotional_tone` 배열 | 마이크로카피 단어 선택 |
+| `anti_patterns` 배열 | 디자인 리뷰 시 자동 감점 체크 항목 |
+
+### 세션 시작 자동 주입
+`session-resume.sh`가 실행될 때 `brand-dna.json`이 있으면 `design_tokens`와 `agenda`를 stdout에 출력 → Claude 컨텍스트에 자동 주입된다. 이슈 처리 중 이 값을 **무시하지 말 것**.
+
+### `_status: "uninitialized"` 처리
+`brand-dna.json`의 `_status`가 `"uninitialized"`면 세션 시작 시 `BRAND_DEFINE` 이슈가 자동 생성된다. brand-guardian이 코드베이스/git/README 분석 후 초안을 작성한다.
+
+### UI 작업 완료 후 자가 검증
+- [ ] `brand-dna.json`의 `hero_color`를 주요 CTA에 반영했는가?
+- [ ] `anti_patterns` 배열의 항목을 어기지 않았는가?
+- [ ] `primary_action_per_screen: MUST_EXIST` — 화면당 주요 CTA 1개 이상 존재하는가?
+- [ ] `user_decision_clarity` — 첫 0.5초 안에 다음 행동 식별 가능한가?

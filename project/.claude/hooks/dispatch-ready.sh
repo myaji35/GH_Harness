@@ -176,6 +176,42 @@ payload_obj = issue.get("payload", {})
 payload = json.dumps(payload_obj, ensure_ascii=False)
 remaining = len(ready_issues) - 1
 
+# ── RACE_MODE 특별 분기 (v4.3) ─────────────────────
+# 일반 에이전트 스폰이 아니라 race-dispatch.sh → race-judge.sh 파이프 실행
+if issue_type == "RACE_MODE":
+    providers = payload_obj.get("providers") or ["claude", "codex"]
+    timeout_sec = payload_obj.get("timeout_sec", 900)
+    print(f"""
+🏁 [RACE_MODE] {issue_id} — provider 병렬 경쟁 시작
+
+[자동 실행 지시] 다음 두 스크립트를 순서대로 실행하라:
+
+1단계 (dispatch):
+  bash .claude/hooks/race-dispatch.sh {issue_id}
+
+2단계 (judge — 1단계 완료 후):
+  bash .claude/hooks/race-judge.sh {issue_id}
+
+- 제목: {issue_title}
+- providers: {providers}
+- timeout: {timeout_sec}s
+- 판정 결과는 .claude/race-artifacts/{issue_id}/report.json 에 저장됨
+- 승자 브랜치: race/{issue_id}/<winner>  — 수동 머지 또는 T2 컨펌 후 처리
+""".strip())
+
+    # Decision Trace 기록
+    try:
+        import subprocess as _sp3, os as _os3
+        _trace = ".claude/hooks/decision-trace.sh"
+        if _os3.path.exists(_trace):
+            _sp3.run([
+                "bash", _trace, "dispatched", issue_id,
+                "agent=race", f"providers={','.join(providers)}", f"type={issue_type}"
+            ], capture_output=True, timeout=3)
+    except Exception:
+        pass
+    sys.exit(2)
+
 # ── 자동 freeze 설정 ─────────────────────────────────
 # 이슈 payload에 scope_dir 있거나 files에서 공통 dir 추출 가능하면 freeze
 import os
