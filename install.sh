@@ -55,9 +55,45 @@ compute_harness_sha() {
     find "$SCRIPT_DIR/project/.claude/hooks" -type f ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
     find "$SCRIPT_DIR/global/agents" -type f -name '*.md' ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
     find "$SCRIPT_DIR/global/skills" -type f -name '*.md' ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
+    find "$SCRIPT_DIR/bin" -type f -name '*.sh' ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
     [ -f "$SCRIPT_DIR/project/.claude/settings.json" ] && shasum "$SCRIPT_DIR/project/.claude/settings.json"
     [ -f "$SCRIPT_DIR/project/.claude/CLAUDE.md" ] && shasum "$SCRIPT_DIR/project/.claude/CLAUDE.md"
   } | shasum | cut -d' ' -f1
+}
+
+# ─── Worktree 지원 유틸 (v4.2) ─────────────────────────────
+# w.sh를 PATH(~/.local/bin)에 symlink로 노출
+ensure_w_cli_symlink() {
+  local src="$SCRIPT_DIR/bin/w.sh"
+  [ -f "$src" ] || return 0
+  chmod +x "$src" 2>/dev/null || true
+  mkdir -p "$HOME/.local/bin"
+  local link="$HOME/.local/bin/w"
+  if [ -L "$link" ]; then
+    local cur
+    cur="$(readlink "$link")"
+    [ "$cur" = "$src" ] && return 0
+  fi
+  [ -e "$link" ] && rm -f "$link"
+  ln -s "$src" "$link"
+  echo -e "  ${GREEN}w CLI → ~/.local/bin/w${NC}"
+}
+
+# 프로젝트 .gitignore에 worktree 관련 패턴 추가
+ensure_project_gitignore_worktree() {
+  local proj="$1"
+  local gi="$proj/.gitignore"
+  [ -d "$proj/.git" ] || return 0
+  touch "$gi"
+  local added=0
+  for pat in ".claude/worktrees" "worktrees/" ".harness-worktree-meta" ".claude/worktrees.json"; do
+    if ! grep -qxF "$pat" "$gi" 2>/dev/null; then
+      echo "$pat" >> "$gi"
+      added=$((added+1))
+    fi
+  done
+  [ "$added" -gt 0 ] && echo -e "    ${BLUE}gitignore +${added} (worktree)${NC}"
+  return 0
 }
 
 # 중앙 harness-core 동기화 (변경된 파일만)
@@ -235,6 +271,7 @@ if [ "$BATCH_MODE" = true ]; then
   echo -e "${YELLOW}[1/3] harness-core 중앙 동기화${NC}"
   sync_harness_core
   ensure_global_symlinks
+  ensure_w_cli_symlink
 
   CURRENT_SHA="$(compute_harness_sha)"
   echo -e "  ${BLUE}버전 SHA: ${CURRENT_SHA:0:12}${NC}"
@@ -302,6 +339,9 @@ if changed:
 PYEOF
     fi
 
+    # worktree 지원: .gitignore 패턴 추가
+    ensure_project_gitignore_worktree "$proj_dir"
+
     # 버전 기록
     write_version_sha "$claude_dir" "$CURRENT_SHA"
 
@@ -335,6 +375,7 @@ fi
 echo -e "${YELLOW}[1/2] harness-core 중앙 동기화${NC}"
 sync_harness_core
 ensure_global_symlinks
+ensure_w_cli_symlink
 
 CURRENT_SHA="$(compute_harness_sha)"
 PREV_SHA="$(read_version_sha "$PROJECT_DIR")"
@@ -429,6 +470,9 @@ with open('$PROJECT_DIR/issue-db/registry.json', 'w') as f: json.dump(d, f, inde
   fi
 fi
 
+# worktree 지원: .gitignore 패턴 추가
+ensure_project_gitignore_worktree "$(pwd)"
+
 # 버전 기록
 write_version_sha "$PROJECT_DIR" "$CURRENT_SHA"
 echo -e "  ${GREEN}✓ .harness-version (${CURRENT_SHA:0:12})${NC}"
@@ -472,10 +516,11 @@ else
   echo -e "${GREEN}설치 완료${NC}"
 fi
 echo ""
-echo -e "${BLUE}v4.1 Symlink 구조:${NC}"
+echo -e "${BLUE}v4.2 Symlink 구조:${NC}"
 echo -e "  중앙: $HARNESS_CORE_DIR"
 echo -e "  전역: $GLOBAL_DIR/agents, $GLOBAL_DIR/skills (symlink)"
 echo -e "  프로젝트: $PROJECT_DIR/hooks (symlink)"
+echo -e "  CLI: ~/.local/bin/w (worktree helper)"
 echo -e "  버전 SHA: ${CURRENT_SHA:0:12}"
 echo ""
 echo -e "${YELLOW}다음 업데이트 시 변경 없으면 자동 skip (--force로 강제 재배포)${NC}"
