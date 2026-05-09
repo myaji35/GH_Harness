@@ -4,6 +4,23 @@ project/.claude/issue-db/registry.json
 # OS
 .DS_Store
 Thumbs.db
+._*
+.AppleDouble
+.LSOverride
 
 # 백업
 *.backup
+*.bak
+*.bak.*
+.claude/worktrees
+worktrees/
+.harness-worktree-meta
+.claude/worktrees.json
+
+# 임시/노이즈
+.bkit/
+Report/
+/tmp/
+
+# RACE_MODE 산출물
+.claude/race-artifacts/
