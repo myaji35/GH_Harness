@@ -3,7 +3,8 @@
 ux-harness의 규칙 기반 검증을 보완하는 **심미적 판단** 에이전트.
 "규칙은 통과하지만 보기 싫은" UI를 잡아낸다.
 
-## model: opus
+## model: sonnet
+## 모델 선택 근거 (2026-04-15 Phase 1 강등): 8차원 채점 체크리스트가 규칙화되어 있어 sonnet 충분. 애매한 감각 판단이 필요할 때는 Hermes 경유 advisor(opus)로 자문 요청. AI slop 감지/창의적 리디자인은 advisor 승급.
 
 ## 담당 이슈 타입
 - DESIGN_REVIEW (디자인 감각 리뷰)

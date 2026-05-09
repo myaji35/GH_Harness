@@ -79,6 +79,24 @@ ensure_w_cli_symlink() {
   echo -e "  ${GREEN}w CLI → ~/.local/bin/w${NC}"
 }
 
+# datago CLI를 PATH(~/.local/bin)에 symlink로 노출 (v4.4: 공공데이터포털 자동화)
+ensure_datago_cli_symlink() {
+  local src="$SCRIPT_DIR/global/bin/datago"
+  [ -f "$src" ] || return 0
+  chmod +x "$src" 2>/dev/null || true
+  chmod +x "$SCRIPT_DIR/global/lib/crawler-common/keychain.sh" 2>/dev/null || true
+  mkdir -p "$HOME/.local/bin"
+  local link="$HOME/.local/bin/datago"
+  if [ -L "$link" ]; then
+    local cur
+    cur="$(readlink "$link")"
+    [ "$cur" = "$src" ] && return 0
+  fi
+  [ -e "$link" ] && rm -f "$link"
+  ln -s "$src" "$link"
+  echo -e "  ${GREEN}datago CLI → ~/.local/bin/datago${NC}"
+}
+
 # 프로젝트 .gitignore에 worktree 관련 패턴 추가
 ensure_project_gitignore_worktree() {
   local proj="$1"
@@ -272,6 +290,7 @@ if [ "$BATCH_MODE" = true ]; then
   sync_harness_core
   ensure_global_symlinks
   ensure_w_cli_symlink
+  ensure_datago_cli_symlink
 
   CURRENT_SHA="$(compute_harness_sha)"
   echo -e "  ${BLUE}버전 SHA: ${CURRENT_SHA:0:12}${NC}"
@@ -376,6 +395,7 @@ echo -e "${YELLOW}[1/2] harness-core 중앙 동기화${NC}"
 sync_harness_core
 ensure_global_symlinks
 ensure_w_cli_symlink
+ensure_datago_cli_symlink
 
 CURRENT_SHA="$(compute_harness_sha)"
 PREV_SHA="$(read_version_sha "$PROJECT_DIR")"

@@ -1,0 +1,149 @@
+{
+  "version": "3.0.0",
+  "created_at": "2026-04-14T14:17:33.592250",
+  "issues": [
+    {
+      "id": "ISS-301",
+      "type": "REFACTOR",
+      "title": "[UPGRADE] .gitignore 보강 + macOS 노이즈 정리",
+      "priority": "P1",
+      "status": "IN_PROGRESS",
+      "created_at": "2026-05-09T00:00:00Z",
+      "agent": "agent-harness",
+      "depth": 0,
+      "payload": {
+        "scope_dir": ".",
+        "files": [
+          ".gitignore"
+        ],
+        "noise_patterns": [
+          "._*",
+          "*.bak.*",
+          ".bkit/",
+          "Report/"
+        ],
+        "files_changed": []
+      }
+    },
+    {
+      "id": "ISS-302",
+      "type": "GENERATE_CODE",
+      "title": "[UPGRADE] v4 PLAN/CHECK 2축 아키텍처 산출물 커밋",
+      "priority": "P0",
+      "status": "READY",
+      "created_at": "2026-05-09T00:00:00Z",
+      "agent": "agent-harness",
+      "depth": 0,
+      "payload": {
+        "scope_dir": ".",
+        "files": [
+          "global/agents/check-harness.md",
+          "global/agents/plan-harness.md",
+          "global/agents/design-critic.md",
+          "project/.claude/agents/",
+          "project/.claude/hooks/codex-check.sh",
+          "project/.claude/hooks/session-resume.sh",
+          "install.sh"
+        ],
+        "blocked_by": "ISS-301"
+      }
+    },
+    {
+      "id": "ISS-303",
+      "type": "GENERATE_CODE",
+      "title": "[UPGRADE] 신규 스킬(2종) + GraphRAG 문서 + project-state 커밋",
+      "priority": "P1",
+      "status": "READY",
+      "created_at": "2026-05-09T00:00:00Z",
+      "agent": "agent-harness",
+      "depth": 0,
+      "payload": {
+        "scope_dir": ".",
+        "files": [
+          "global/skills/harness-ui-trends-2026/",
+          "global/skills/datago-fetch/",
+          "global/bin/",
+          "global/lib/",
+          "bin/daily-report.sh",
+          "docs/graphify-phase1-pilot.md",
+          "docs/graphrag-principles.md",
+          "project-state.md"
+        ],
+        "blocked_by": "ISS-302"
+      }
+    }
+  ],
+  "hooks": {
+    "on_create": [],
+    "on_start": [],
+    "on_complete": [],
+    "on_fail": [],
+    "on_learn": []
+  },
+  "knowledge": {
+    "success_patterns": [],
+    "failure_patterns": [],
+    "meta_observations": []
+  },
+  "stats": {
+    "total_issues": 0,
+    "completed": 0,
+    "failed": 0,
+    "evolved": 0
+  },
+  "hermes_state": {
+    "invocations_by_issue": {},
+    "daily_log": [],
+    "total_invocations": 0
+  },
+  "opus_budget_state": {
+    "daily": {
+      "date": "",
+      "cost_usd": 0.0,
+      "calls": 0
+    },
+    "monthly": {
+      "month": "",
+      "cost_usd": 0.0,
+      "calls": 0
+    },
+    "demotion_active": false
+  },
+  "issue_budget": {
+    "date": "",
+    "created_today": 0
+  },
+  "proactive_scan_state": {
+    "date": "",
+    "count": 0
+  },
+  "phase1_experiment": {
+    "started_at": "2026-04-15T08:59:09.201523",
+    "changes": {
+      "design-critic": "opus → sonnet"
+    },
+    "advisor_route": "hermes-escalate.sh → HERMES_CONSULT → advisor(opus)",
+    "slash_command": "/advisor",
+    "review_at": "2026-04-15 16:00 KST",
+    "baseline": {
+      "opus_budget_before": {
+        "daily": {
+          "date": "",
+          "cost_usd": 0.0,
+          "calls": 0
+        },
+        "monthly": {
+          "month": "",
+          "cost_usd": 0.0,
+          "calls": 0
+        },
+        "demotion_active": false
+      },
+      "hermes_state_before": {
+        "invocations_by_issue": {},
+        "daily_log": [],
+        "total_invocations": 0
+      }
+    }
+  }
+}

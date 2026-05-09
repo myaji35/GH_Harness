@@ -1,0 +1,12 @@
+{
+  "activated_at": "2026-04-17T07:28:56Z",
+  "phase": 1,
+  "pilot_name": "GH_Harness meta-KG",
+  "scope": "agents / hooks / issue-types / skill-modes 관계 그래프",
+  "gate_criteria": {
+    "routing_accuracy_min": 0.95,
+    "meta_review_noise_reduction_min": 0.20,
+    "evaluation_window_days": 7
+  },
+  "notes": "axis-router.sh / meta-review.sh가 이 KG를 참조하도록 Phase 2에서 연결."
+}

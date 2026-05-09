@@ -9,6 +9,56 @@
 #   4. 다음 실행 지시 제공
 
 REGISTRY=".claude/issue-db/registry.json"
+BRAND_DNA="brand-dna.json"
+
+# ── 프로젝트 디자인 아젠다 자동 주입 ──
+# brand-dna.json이 있으면 design_tokens + agenda를 컨텍스트에 출력
+if [ -f "$BRAND_DNA" ]; then
+  python3 << PYEOF
+import json
+try:
+    with open("$BRAND_DNA", 'r') as f:
+        dna = json.load(f)
+    status = dna.get("_status", "unknown")
+    agenda = dna.get("agenda", "")
+    tokens = dna.get("design_tokens", {})
+    colors = tokens.get("colors", {})
+    hero = colors.get("hero", "")
+    typo = tokens.get("typography", {})
+    shape = tokens.get("shape", {})
+    motion = tokens.get("motion", {})
+    anti = dna.get("anti_patterns", [])
+    tone = dna.get("emotional_tone", [])
+
+    print("━━━ 🎨 프로젝트 디자인 아젠다 (brand-dna.json) ━━━")
+    print(f"상태: {status}")
+    if status == "uninitialized":
+        print("⚠️  brand-dna.json 미초기화 — BRAND_DEFINE 이슈 자동 생성 필요")
+    else:
+        if agenda:
+            print(f"아젠다: {agenda}")
+        if tone:
+            print(f"감성 톤: {', '.join(tone)}")
+        if hero:
+            print(f"Hero Color: {hero}")
+        if colors.get("text_primary"):
+            print(f"Text Primary: {colors.get('text_primary')}")
+        if colors.get("surface"):
+            print(f"Surface: {colors.get('surface')}")
+        if typo.get("font_heading"):
+            print(f"Typography: heading={typo.get('font_heading')} body={typo.get('font_body','')}")
+        if shape.get("radius"):
+            print(f"Shape: radius={shape.get('radius')}")
+        if motion.get("hover_effect"):
+            print(f"Motion: hover={motion.get('hover_effect')}")
+        if anti:
+            print(f"Anti-patterns ({len(anti)}): {', '.join(anti[:3])}{'...' if len(anti)>3 else ''}")
+    print("→ UI 작업 시 이 토큰을 harness-ui-trends-2026.md의 기본값보다 우선 적용하라.")
+    print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+except Exception as e:
+    print(f"[brand-dna.json 파싱 실패: {e}]")
+PYEOF
+fi
 
 if [ ! -f "$REGISTRY" ]; then
   echo "[Harness] registry.json 없음 — 'harness 시작'으로 초기화하세요."
