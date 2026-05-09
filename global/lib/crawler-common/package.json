@@ -1,0 +1,10 @@
+{
+  "name": "@gh-harness/crawler-common",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "공통 크롤링 유틸 (Playwright 세션 + Vision OCR + Keychain)",
+  "dependencies": {
+    "playwright": "^1.57.0"
+  }
+}

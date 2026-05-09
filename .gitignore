@@ -24,3 +24,6 @@ Report/
 
 # RACE_MODE 산출물
 .claude/race-artifacts/
+
+# Node
+node_modules/

@@ -1,0 +1,369 @@
+#!/usr/bin/env bash
+# datago — 공공데이터포털(data.go.kr) CLI
+#
+# 서브커맨드:
+#   login         최초 1회 headed Playwright 로그인 → 쿠키 저장 (Keychain에 ID/PW 보관)
+#   sync-keys     마이페이지 → 인증키 전체 수집 → ~/.config/gh-harness/datago-keys.json
+#   list          보유 키 목록 출력
+#   key <name>    특정 키를 stdout (export 용도). exit 1 if not found
+#   search <q>    데이터셋 검색 (CSV-ish 출력)
+#   apply <id>    활용 신청 → 승인 대기 큐(datago-pending.json)
+#   pending       승인 대기 중 항목 목록
+#   whoami        저장된 ID 출력 (PW는 출력 안 함)
+#   logout        쿠키 + Keychain 자격증명 삭제
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo "${BASH_SOURCE[0]}")")" && pwd)"
+HARNESS_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+LIB_DIR="$HARNESS_ROOT/lib/crawler-common"
+
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/gh-harness"
+STATE_FILE="$CONFIG_DIR/datago-state.json"
+KEYS_FILE="$CONFIG_DIR/datago-keys.json"
+PENDING_FILE="$CONFIG_DIR/datago-pending.json"
+ENDPOINTS_FILE="$CONFIG_DIR/datago-endpoints.json"
+LOG_FILE="$CONFIG_DIR/datago.log"
+
+mkdir -p "$CONFIG_DIR"
+
+# shellcheck source=../lib/crawler-common/keychain.sh
+source "$LIB_DIR/keychain.sh"
+
+log() { echo "[datago] $*" >&2; echo "[$(date +'%F %T')] $*" >> "$LOG_FILE"; }
+die() { log "ERROR: $*"; exit 1; }
+
+ensure_node() { command -v node >/dev/null 2>&1 || die "node가 필요합니다 (brew install node)"; }
+ensure_pw() { command -v playwright >/dev/null 2>&1 || npx --yes playwright --version >/dev/null 2>&1 || die "Playwright 미설치 (npx playwright install chromium)"; }
+
+cmd_login() {
+  ensure_node; ensure_pw
+  local id pw
+  if kc_has datago id; then
+    id="$(kc_get datago id)"
+    log "기존 저장 ID 사용: $id (변경하려면 'datago logout' 먼저)"
+  else
+    read -r -p "공공데이터포털 ID: " id
+    [[ -z "$id" ]] && die "ID가 비었습니다"
+    kc_set datago id "$id"
+  fi
+  if ! kc_has datago pw; then
+    read -r -s -p "공공데이터포털 PW: " pw; echo
+    [[ -z "$pw" ]] && die "PW가 비었습니다"
+    kc_set datago pw "$pw"
+  fi
+  log "headed Playwright 시작 (CAPTCHA/SSO 대응을 위해 사람이 직접 로그인 완료해주세요)"
+  DATAGO_ID="$(kc_get datago id)" \
+  DATAGO_PW="$(kc_get datago pw)" \
+  DATAGO_STATE_FILE="$STATE_FILE" \
+  node "$LIB_DIR/datago-driver.mjs" login
+  log "로그인 완료 → $STATE_FILE"
+}
+
+cmd_refresh() {
+  ensure_node; ensure_pw
+  kc_has datago id || die "Keychain에 ID 없음 → 'datago login' 먼저"
+  kc_has datago pw || die "Keychain에 PW 없음 → 'datago login' 먼저"
+  DATAGO_ID="$(kc_get datago id)" \
+  DATAGO_PW="$(kc_get datago pw)" \
+  DATAGO_STATE_FILE="$STATE_FILE" \
+  ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-$(kc_get anthropic api_key 2>/dev/null || true)}" \
+  node "$LIB_DIR/datago-driver.mjs" refresh
+}
+
+# sync-keys 자동 폴백: 세션 만료(exit 3) → refresh 자동 시도 → 재시도
+cmd_sync_keys() {
+  ensure_node; ensure_pw
+  if [[ ! -f "$STATE_FILE" ]]; then
+    log "세션 파일 없음 → 자동 갱신 시도 (L1+L2)"
+    if cmd_refresh; then log "자동 로그인 성공"; else die "자동 로그인 실패. 'datago login' 수동 실행 필요"; fi
+  fi
+  DATAGO_STATE_FILE="$STATE_FILE" \
+  DATAGO_KEYS_FILE="$KEYS_FILE" \
+  node "$LIB_DIR/datago-driver.mjs" sync-keys
+  local rc=$?
+  if [[ $rc -eq 3 ]]; then
+    log "세션 만료 감지 → 자동 갱신 시도 (L1+L2)"
+    if cmd_refresh; then
+      log "자동 갱신 성공 → sync-keys 재시도"
+      DATAGO_STATE_FILE="$STATE_FILE" \
+      DATAGO_KEYS_FILE="$KEYS_FILE" \
+      node "$LIB_DIR/datago-driver.mjs" sync-keys
+    else
+      local rrc=$?
+      case $rrc in
+        4) die "reCAPTCHA/SSO 감지 → L3 (사람 필요): 'datago login' 1회 실행해주세요" ;;
+        5) die "자동 로그인 실패 (자격증명 오류 또는 사이트 변경) → 'datago logout && datago login'" ;;
+        *) die "자동 갱신 실패 (exit=$rrc)" ;;
+      esac
+    fi
+  fi
+  local count
+  count="$(node -e "try{console.log(Object.keys(require('$KEYS_FILE').services||{}).length)}catch(e){console.log(0)}")"
+  log "동기화 완료: ${count}개 서비스 ($KEYS_FILE)"
+}
+
+cmd_list() {
+  [[ -f "$KEYS_FILE" ]] || die "키 파일 없음. 'datago sync-keys' 먼저"
+  node -e '
+    const f = require("'$KEYS_FILE'");
+    const svcs = f.services || {};
+    const rows = Object.entries(svcs);
+    if (!rows.length) { console.log("(보유 키 없음)"); process.exit(0); }
+    console.log("NAME\tSERVICE_ID\tSTATUS\tEXPIRES");
+    for (const [name, v] of rows) {
+      console.log([name, v.service_id||"-", v.status||"-", v.expires_at||"-"].join("\t"));
+    }
+  '
+}
+
+cmd_key() {
+  local name="${1:-}"
+  [[ -z "$name" ]] && die "사용법: datago key <name>"
+  [[ -f "$KEYS_FILE" ]] || die "키 파일 없음. 'datago sync-keys' 먼저"
+  local key
+  key="$(node -e '
+    const f = require("'$KEYS_FILE'");
+    const svcs = f.services || {};
+    const k = svcs["'$name'"];
+    if (!k || !k.encoding_key) process.exit(1);
+    process.stdout.write(k.encoding_key);
+  ')" || die "키를 찾을 수 없음: $name (가능한 이름: $(cmd_list | tail -n +2 | cut -f1 | tr '\n' ' '))"
+  echo "$key"
+}
+
+cmd_search() {
+  ensure_node; ensure_pw
+  local q="${1:-}"
+  [[ -z "$q" ]] && die "사용법: datago search <검색어>"
+  DATAGO_STATE_FILE="$STATE_FILE" \
+  node "$LIB_DIR/datago-driver.mjs" search "$q"
+}
+
+cmd_apply() {
+  local svc_id="${1:-}"
+  [[ -z "$svc_id" ]] && die "사용법: datago apply <서비스ID>"
+  ensure_node; ensure_pw
+  [[ -f "$STATE_FILE" ]] || die "세션 없음. 먼저 'datago login' 실행"
+  DATAGO_STATE_FILE="$STATE_FILE" \
+  DATAGO_PENDING_FILE="$PENDING_FILE" \
+  node "$LIB_DIR/datago-driver.mjs" apply "$svc_id"
+  log "신청 완료 → 승인 대기 큐에 추가"
+}
+
+cmd_pending() {
+  [[ -f "$PENDING_FILE" ]] || { echo "(대기 항목 없음)"; return; }
+  node -e '
+    const f = require("'$PENDING_FILE'");
+    const items = f.items || [];
+    if (!items.length) { console.log("(대기 항목 없음)"); process.exit(0); }
+    console.log("SERVICE_ID\tAPPLIED_AT\tSTATUS");
+    for (const it of items) console.log([it.service_id, it.applied_at, it.status||"PENDING"].join("\t"));
+  '
+}
+
+cmd_endpoints() {
+  [[ -f "$ENDPOINTS_FILE" ]] || die "endpoints 파일 없음: $ENDPOINTS_FILE"
+  local filter="${1:-}"
+  node -e '
+    const f = require("'$ENDPOINTS_FILE'");
+    const eps = f.endpoints || {};
+    const filter = "'${filter}'";
+    const rows = Object.entries(eps).filter(([n,v]) => !filter || n.includes(filter) || (v.title||"").includes(filter) || (v.category||"").includes(filter));
+    if (!rows.length) { console.log("(등록된 endpoint 없음)"); process.exit(0); }
+    console.log("NAME".padEnd(30) + "CATEGORY".padEnd(12) + "TITLE");
+    console.log("─".repeat(100));
+    for (const [name, v] of rows) {
+      console.log(name.padEnd(30) + (v.category||"-").padEnd(12) + (v.title||""));
+    }
+  '
+}
+
+cmd_show() {
+  local name="${1:-}"
+  [[ -z "$name" ]] && die "사용법: datago show <name>"
+  [[ -f "$ENDPOINTS_FILE" ]] || die "endpoints 파일 없음"
+  node -e '
+    const f = require("'$ENDPOINTS_FILE'");
+    const ep = (f.endpoints || {})["'$name'"];
+    if (!ep) { console.error("endpoint 없음: '$name'"); process.exit(1); }
+    console.log(JSON.stringify(ep, null, 2));
+  '
+}
+
+cmd_call() {
+  local name="${1:-}"
+  shift || true
+  [[ -z "$name" ]] && die "사용법: datago call <name> [--param=value ...]"
+  [[ -f "$ENDPOINTS_FILE" ]] || die "endpoints 파일 없음"
+
+  # 파라미터 파싱: --key=value
+  local override_args=()
+  if [[ $# -gt 0 ]]; then
+    for a in "$@"; do
+      case "$a" in
+        --*=*) override_args+=("${a#--}") ;;
+        *) ;;
+      esac
+    done
+  fi
+
+  local key
+  key="$(cmd_key default 2>/dev/null)" || die "키 'default' 없음. 'datago list' 확인"
+
+  # endpoint + URL 조합
+  local result
+  result=$(node -e '
+    const f = require("'$ENDPOINTS_FILE'");
+    const ep = (f.endpoints || {})["'$name'"];
+    if (!ep) { console.error("endpoint 없음: '$name'"); process.exit(1); }
+    const args = process.argv.slice(1);
+    const overrides = {};
+    for (const a of args) {
+      const i = a.indexOf("=");
+      if (i > 0) overrides[a.slice(0, i)] = a.slice(i + 1);
+    }
+    const params = { ...ep.params, ...overrides };
+    // $KEY 치환
+    for (const k in params) {
+      if (params[k] === "$KEY") params[k] = "'"$key"'";
+    }
+    const qs = Object.entries(params).map(([k,v]) => `${encodeURIComponent(k)}=${v}`).join("&");
+    console.log(`${ep.url}?${qs}`);
+  ' "${override_args[@]:-}")
+  [[ -z "$result" ]] && die "URL 조합 실패"
+
+  log "호출: $result"
+  curl -sS "$result" 2>&1
+}
+
+cmd_register() {
+  local name="${1:-}"
+  shift || true
+  [[ -z "$name" ]] && die "사용법: datago register <name> --url=URL --title=TITLE [--param-key=value ...]"
+  local url="" title="" category="general"
+  declare -A params
+  for a in "$@"; do
+    case "$a" in
+      --url=*) url="${a#--url=}" ;;
+      --title=*) title="${a#--title=}" ;;
+      --category=*) category="${a#--category=}" ;;
+      --param-*=*)
+        local k="${a%%=*}"; k="${k#--param-}"
+        params["$k"]="${a#*=}"
+        ;;
+    esac
+  done
+  [[ -z "$url" ]] && die "--url 필수"
+  [[ -z "$title" ]] && title="$name"
+
+  # serviceKey 기본 추가
+  [[ -z "${params[serviceKey]:-}" ]] && params[serviceKey]="\$KEY"
+
+  local params_json="{"
+  local first=1
+  for k in "${!params[@]}"; do
+    [[ $first -eq 0 ]] && params_json+=","
+    params_json+="\"$k\":\"${params[$k]}\""
+    first=0
+  done
+  params_json+="}"
+
+  node -e '
+    const fs = require("fs");
+    const path = "'$ENDPOINTS_FILE'";
+    let f;
+    try { f = JSON.parse(fs.readFileSync(path, "utf8")); }
+    catch { f = { _meta: { version: 1 }, endpoints: {} }; }
+    f.endpoints["'$name'"] = {
+      title: "'$title'",
+      category: "'$category'",
+      url: "'$url'",
+      method: "GET",
+      params: '"$params_json"',
+      registered_at: new Date().toISOString().slice(0,10),
+    };
+    fs.writeFileSync(path, JSON.stringify(f, null, 2) + "\n");
+  '
+  echo "✓ endpoint 등록: $name → $url"
+}
+
+cmd_unregister() {
+  local name="${1:-}"
+  [[ -z "$name" ]] && die "사용법: datago unregister <name>"
+  node -e '
+    const fs = require("fs");
+    const path = "'$ENDPOINTS_FILE'";
+    const f = JSON.parse(fs.readFileSync(path, "utf8"));
+    if (!f.endpoints["'$name'"]) { console.error("없음: '$name'"); process.exit(1); }
+    delete f.endpoints["'$name'"];
+    fs.writeFileSync(path, JSON.stringify(f, null, 2) + "\n");
+  ' && echo "✓ 삭제: $name"
+}
+
+cmd_whoami() {
+  if kc_has datago id; then echo "$(kc_get datago id)"; else echo "(로그인 안 됨)"; fi
+}
+
+cmd_logout() {
+  rm -f "$STATE_FILE"
+  kc_del datago id
+  kc_del datago pw
+  log "쿠키 + Keychain 자격증명 삭제 완료"
+}
+
+cmd_help() {
+  cat <<EOF
+datago — 공공데이터포털(data.go.kr) CLI
+
+Usage:
+  datago login              최초 1회 헤드드 로그인 (Keychain에 ID/PW 저장, 쿠키 저장)
+  datago refresh            L1+L2 자동 갱신 (headless, ID/PW + Vision OCR CAPTCHA)
+  datago sync-keys          마이페이지 → 인증키 전체 수집 (만료 시 refresh 자동 시도)
+  datago list               보유 키 목록
+  datago key <name>         특정 키를 stdout (예: export API_KEY=\$(datago key apt-trade))
+  datago search <q>         데이터셋 검색
+  datago apply <service-id> 활용 신청 (승인 대기 큐 등록)
+  datago pending            승인 대기 항목 목록
+
+  --- endpoint 시스템 (활용신청 승인된 API 즉시 호출) ---
+  datago endpoints [filter]            등록된 endpoint 목록
+  datago show <name>                   endpoint 상세 (params 포함)
+  datago call <name> [--key=value...]  endpoint 즉시 호출 (키 자동 주입)
+  datago register <name> --url=... --title=... [--param-X=Y]  endpoint 추가
+  datago unregister <name>             endpoint 삭제
+
+  datago whoami             저장된 ID 출력
+  datago logout             자격증명 + 쿠키 전부 삭제
+  datago help               이 도움말
+
+Files:
+  $STATE_FILE  (Playwright storageState)
+  $KEYS_FILE   (수집된 인증키)
+  $PENDING_FILE  (승인 대기 큐)
+  $LOG_FILE          (로그)
+
+Keychain:
+  service=ghharness.datago, account=id|pw
+EOF
+}
+
+case "${1:-help}" in
+  login)       shift; cmd_login "$@" ;;
+  refresh)     shift; cmd_refresh "$@" ;;
+  sync-keys)   shift; cmd_sync_keys "$@" ;;
+  list)        shift; cmd_list "$@" ;;
+  key)         shift; cmd_key "$@" ;;
+  search)      shift; cmd_search "$@" ;;
+  apply)       shift; cmd_apply "$@" ;;
+  pending)     shift; cmd_pending "$@" ;;
+  endpoints)   shift; cmd_endpoints "$@" ;;
+  show)        shift; cmd_show "$@" ;;
+  call)        shift; cmd_call "$@" ;;
+  register)    shift; cmd_register "$@" ;;
+  unregister)  shift; cmd_unregister "$@" ;;
+  whoami)      shift; cmd_whoami "$@" ;;
+  logout)      shift; cmd_logout "$@" ;;
+  help|-h|--help) cmd_help ;;
+  *)           die "알 수 없는 명령: $1 (사용법: datago help)" ;;
+esac
