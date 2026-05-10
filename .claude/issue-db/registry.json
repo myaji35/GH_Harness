@@ -175,6 +175,24 @@
         "circuit_breaker_blocked_at": 4,
         "systemic_issue_created": true
       }
+    },
+    {
+      "id": "ISS-007",
+      "type": "CODE_SMELL",
+      "title": "미커밋 변경 2개 파일 — 리뷰 필요",
+      "priority": "P2",
+      "status": "COMPLETED",
+      "assign_to": "code-quality",
+      "created_at": "2026-05-10T11:10:43.438356",
+      "created_by": "proactive-scan",
+      "depth": 0,
+      "detail": "git diff에서 2개 파일 변경 감지",
+      "parent": null,
+      "completed_at": "2026-05-10T11:25:00Z",
+      "result": {
+        "auto_closed": true,
+        "reason": "미커밋 변경 모두 harness 자기 관측 파일 (trace/, .harness-version) — .gitignore 추가로 해소"
+      }
     }
   ],
   "hooks": {
@@ -267,14 +285,46 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 6,
+        "timestamp": "2026-05-10T11:09:08.165028",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/6)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 6,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 7,
+        "timestamp": "2026-05-10T11:09:10.963374",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/6)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 6,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 6,
-    "completed": 6,
+    "total_issues": 7,
+    "completed": 7,
     "failed": 0,
-    "evolved": 5
+    "evolved": 7
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -299,8 +349,8 @@
     "created_today": 0
   },
   "proactive_scan_state": {
-    "date": "",
-    "count": 0
+    "date": "2026-05-10",
+    "count": 1
   },
   "phase1_experiment": {
     "started_at": "2026-04-15T08:59:09.201523",
