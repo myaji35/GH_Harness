@@ -187,3 +187,30 @@ scenario-player (동적 검증)
 - 존재하지 않는 규칙 날조
 - 시나리오 직접 실행 (scenario-player 담당)
 - 갭 분석 직접 수행 (biz-validator 담당)
+
+
+
+## Hermes 에스컬레이션 프로토콜 (막힘 감지 시)
+
+아래 조건 중 하나라도 충족하면 **스스로 판단하지 말고** `hermes-escalate.sh`를 호출한다:
+
+| 조건 | reason_code |
+|---|---|
+| 같은 작업/검증 2회 연속 실패 | REPEAT_FAIL |
+| 아키텍처/방법론 결정 필요 (선택지 2+개에서 막힘) | ARCH_DECISION |
+| 이슈 payload의 요구사항이 모호해 실행 경로 불명 | AMBIGUOUS_PAYLOAD |
+| 처음 보는 에러/패턴 / 도메인 지식 부족 | UNKNOWN_ERROR |
+| 작업이 freeze-guard 범위 밖 파일 수정을 요구 | SCOPE_CONFLICT |
+| 다른 에이전트와 동일 이슈를 핑퐁 (3회+) | CROSS_AGENT_PINGPONG |
+
+호출:
+```bash
+bash .claude/hooks/hermes-escalate.sh <이슈ID> <reason_code> "<간단한 컨텍스트>"
+```
+
+호출 후:
+1. Hermes/Advisor가 plan을 원본 이슈 payload의 `hermes_plan` 필드에 주입
+2. 재스폰되면 해당 plan의 단계를 순서대로 실행
+3. plan 완료 후에도 같은 문제 발생 시 → 다시 호출 (Circuit Breaker 최대 3회)
+
+**자체 판단 유혹 금지**: "내가 이 정도는 풀 수 있다"는 생각이 들어도, 위 조건에 해당하면 반드시 Hermes 호출. Opus 자문은 장기적으로 복리 효과가 크다. advisor 직접 호출 금지 — 반드시 Hermes 경유.

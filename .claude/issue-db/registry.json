@@ -95,6 +95,86 @@
         ],
         "blocked_by": "ISS-302"
       }
+    },
+    {
+      "id": "ISS-304",
+      "type": "DIAGNOSE",
+      "title": "[HERMES] 22개 에이전트의 hermes 호출 트리거 감사",
+      "priority": "P1",
+      "status": "COMPLETED",
+      "created_at": "2026-05-10T00:00:00Z",
+      "agent": "agent-harness",
+      "depth": 0,
+      "payload": {
+        "scope_dir": "global/agents",
+        "audit_target": "T1 막힘 신호(REPEAT_FAIL/ARCH_DECISION/UNKNOWN_ERROR/AMBIGUOUS_PAYLOAD/SCOPE_CONFLICT/CROSS_AGENT_PINGPONG) 발생 시 hermes-escalate.sh 호출 지침 존재 여부",
+        "expected_block": "## 막힘 처리 (T1 에스컬레이션)",
+        "files_changed": []
+      },
+      "completed_at": "2026-05-10T11:10:00Z",
+      "result": {
+        "audited": 24,
+        "normal": 9,
+        "missing": 15,
+        "missing_list": [
+          "biz-validator",
+          "brand-guardian",
+          "cicd-harness",
+          "design-critic",
+          "domain-analyst",
+          "eval-harness",
+          "hook-router",
+          "journey-validator",
+          "plan-ceo-reviewer",
+          "plan-eng-reviewer",
+          "product-manager",
+          "qa-reviewer",
+          "scenario-player",
+          "test-harness",
+          "ux-harness"
+        ]
+      }
+    },
+    {
+      "id": "ISS-305",
+      "type": "REFACTOR",
+      "title": "[HERMES] 누락 에이전트에 hermes 트리거 일괄 주입",
+      "priority": "P1",
+      "status": "COMPLETED",
+      "created_at": "2026-05-10T00:00:00Z",
+      "agent": "agent-harness",
+      "depth": 0,
+      "payload": {
+        "scope_dir": "global/agents",
+        "blocked_by": "ISS-304"
+      },
+      "completed_at": "2026-05-10T11:15:00Z",
+      "result": {
+        "injected_count": 15,
+        "final_coverage": "24/24"
+      }
+    },
+    {
+      "id": "ISS-306",
+      "type": "TEST",
+      "title": "[HERMES] hermes-escalate.sh end-to-end 작동 검증",
+      "priority": "P1",
+      "status": "COMPLETED",
+      "created_at": "2026-05-10T00:00:00Z",
+      "agent": "test-harness",
+      "depth": 0,
+      "payload": {
+        "scope_dir": ".claude/hooks",
+        "test_scenario": "인위적 REPEAT_FAIL 호출 → HERMES_CONSULT 생성 확인 → Circuit Breaker 3회 초과 시 차단 확인",
+        "blocked_by": "ISS-305"
+      },
+      "completed_at": "2026-05-10T11:20:00Z",
+      "result": {
+        "tests_passed": 4,
+        "normal_calls": 3,
+        "circuit_breaker_blocked_at": 4,
+        "systemic_issue_created": true
+      }
     }
   ],
   "hooks": {
@@ -107,13 +187,94 @@
   "knowledge": {
     "success_patterns": [],
     "failure_patterns": [],
-    "meta_observations": []
+    "meta_observations": [
+      {
+        "cycle": 1,
+        "timestamp": "2026-05-09T17:09:12.060422",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/3)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 3,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 2,
+        "timestamp": "2026-05-09T17:12:15.994619",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/3)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 3,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 3,
+        "timestamp": "2026-05-10T10:24:45.959509",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/3)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 3,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 4,
+        "timestamp": "2026-05-10T11:06:22.217477",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/3)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 3,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 5,
+        "timestamp": "2026-05-10T11:06:25.916139",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/3)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 3,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      }
+    ]
   },
   "stats": {
-    "total_issues": 3,
-    "completed": 3,
+    "total_issues": 6,
+    "completed": 6,
     "failed": 0,
-    "evolved": 0
+    "evolved": 5
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -134,7 +295,7 @@
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "",
+    "date": "2026-05-10",
     "created_today": 0
   },
   "proactive_scan_state": {
