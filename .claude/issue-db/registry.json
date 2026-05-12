@@ -34,7 +34,17 @@
           ".bkit/",
           "Report/"
         ],
-        "files_changed": []
+        "files_changed": [],
+        "rubric": {
+          "criteria": [
+            ".gitignore에 노이즈 패턴 4종 추가",
+            "추적 불필요 파일 30개 이상 제거",
+            "기존 추적 대상은 영향 없음"
+          ],
+          "threshold": "3/3 기준 충족",
+          "scorer_axis": "CHECK",
+          "optional": true
+        }
       }
     },
     {
@@ -63,7 +73,17 @@
           "project/.claude/hooks/session-resume.sh",
           "install.sh"
         ],
-        "blocked_by": "ISS-301"
+        "blocked_by": "ISS-301",
+        "rubric": {
+          "criteria": [
+            "check-harness.md / plan-harness.md 신규 생성",
+            "axis-router.sh 이슈 타입 매핑 정상 작동",
+            "기존 22개 에이전트 .md 보존 (삭제 없음)"
+          ],
+          "threshold": "3/3 기준 충족",
+          "scorer_axis": "CHECK",
+          "optional": true
+        }
       }
     },
     {
@@ -93,7 +113,17 @@
           "docs/graphrag-principles.md",
           "project-state.md"
         ],
-        "blocked_by": "ISS-302"
+        "blocked_by": "ISS-302",
+        "rubric": {
+          "criteria": [
+            "신규 스킬 2종(harness-ui-trends-2026, datago-fetch) 설치 완료",
+            "graphrag-principles.md 3원칙 문서화",
+            "project-state.md 최신 상태 반영"
+          ],
+          "threshold": "3/3 기준 충족",
+          "scorer_axis": "CHECK",
+          "optional": true
+        }
       }
     },
     {
@@ -109,7 +139,17 @@
         "scope_dir": "global/agents",
         "audit_target": "T1 막힘 신호(REPEAT_FAIL/ARCH_DECISION/UNKNOWN_ERROR/AMBIGUOUS_PAYLOAD/SCOPE_CONFLICT/CROSS_AGENT_PINGPONG) 발생 시 hermes-escalate.sh 호출 지침 존재 여부",
         "expected_block": "## 막힘 처리 (T1 에스컬레이션)",
-        "files_changed": []
+        "files_changed": [],
+        "rubric": {
+          "criteria": [
+            "24개 에이전트 전체 감사 완료",
+            "누락 에이전트 목록 정확히 식별 (missing_list)",
+            "결과를 registry.json result 필드에 구조화 기록"
+          ],
+          "threshold": "3/3 기준 충족",
+          "scorer_axis": "CHECK",
+          "optional": true
+        }
       },
       "completed_at": "2026-05-10T11:10:00Z",
       "result": {
@@ -146,7 +186,17 @@
       "depth": 0,
       "payload": {
         "scope_dir": "global/agents",
-        "blocked_by": "ISS-304"
+        "blocked_by": "ISS-304",
+        "rubric": {
+          "criteria": [
+            "15개 누락 에이전트 전원에 Hermes 에스컬레이션 섹션 주입",
+            "주입 후 24/24 coverage 달성",
+            "기존 에이전트 로직 변경 없이 섹션 추가만"
+          ],
+          "threshold": "3/3 기준 충족",
+          "scorer_axis": "CHECK",
+          "optional": true
+        }
       },
       "completed_at": "2026-05-10T11:15:00Z",
       "result": {
@@ -166,7 +216,18 @@
       "payload": {
         "scope_dir": ".claude/hooks",
         "test_scenario": "인위적 REPEAT_FAIL 호출 → HERMES_CONSULT 생성 확인 → Circuit Breaker 3회 초과 시 차단 확인",
-        "blocked_by": "ISS-305"
+        "blocked_by": "ISS-305",
+        "rubric": {
+          "criteria": [
+            "정상 호출 3회 허용 확인",
+            "Circuit Breaker 4번째 호출 차단 확인",
+            "HERMES_CONSULT 이슈 자동 생성 확인",
+            "SYSTEMIC_ISSUE 자동 생성 확인"
+          ],
+          "threshold": "4/4 기준 충족",
+          "scorer_axis": "CHECK",
+          "optional": true
+        }
       },
       "completed_at": "2026-05-10T11:20:00Z",
       "result": {
@@ -193,17 +254,1099 @@
         "auto_closed": true,
         "reason": "미커밋 변경 모두 harness 자기 관측 파일 (trace/, .harness-version) — .gitignore 추가로 해소"
       }
+    },
+    {
+      "id": "ISS-307",
+      "type": "GENERATE_CODE",
+      "title": "[WEBHOOK] 외부 알림 발신 채널 구축 (Slack/GitHub) — Anthropic Webhook 컨셉 도입",
+      "priority": "P1",
+      "status": "COMPLETED",
+      "assign_to": "agent-harness",
+      "created_at": "2026-05-12T09:30:00Z",
+      "created_by": "user-directive",
+      "depth": 0,
+      "parent": null,
+      "payload": {
+        "scope_dir": ".claude/hooks",
+        "files": [
+          ".claude/hooks/webhook-emit.sh",
+          ".claude/hooks/on_complete.sh",
+          ".claude/hooks/on_fail.sh",
+          ".claude/hooks/request-user-confirm.sh"
+        ],
+        "concept_source": "Claude Managed Agents - Webhook (작업 흐름 외부 연결)",
+        "trigger_events": [
+          "T2_USER_CONFIRM_REQUESTED",
+          "P0_ISSUE_CREATED",
+          "BUILD_FAILED",
+          "RACE_MODE_VERDICT",
+          "DEPLOY_READY",
+          "ROLLBACK"
+        ],
+        "channels": [
+          "slack",
+          "github_issue_comment"
+        ],
+        "config_env": [
+          "SLACK_WEBHOOK_URL",
+          "GITHUB_REPO"
+        ],
+        "fire_and_forget": true,
+        "fallback_silent": true,
+        "rubric": {
+          "criteria": [
+            "6개 트리거 이벤트 모두에서 webhook-emit.sh 호출 라인 추가",
+            "환경변수 미설정 시 무시(silent fail) — 본 파이프라인 영향 없음",
+            "Slack 메시지 포맷: 이슈 ID + 제목 + 우선순위 + 직접 링크",
+            "테스트 시나리오: 인위적 P0 이슈 생성 → Slack DM 도착 확인"
+          ],
+          "threshold": "4/4 기준 충족"
+        },
+        "files_changed": []
+      },
+      "started_at": "2026-05-12T09:32:00Z",
+      "completed_at": "2026-05-12T09:34:00Z",
+      "result": {
+        "files_created": [
+          ".claude/hooks/webhook-emit.sh"
+        ],
+        "files_modified": [
+          "on_complete.sh",
+          "on_fail.sh",
+          "request-user-confirm.sh"
+        ],
+        "trigger_events_wired": 6,
+        "rubric_score": "4/4",
+        "tests": {
+          "silent_fail_no_env": "exit 0",
+          "silent_fail_bad_url": "exit 0"
+        }
+      }
+    },
+    {
+      "id": "ISS-308",
+      "type": "GENERATE_CODE",
+      "title": "[DREAMING] 세션 간 학습 증류 루프 (daily-dream.sh) — Anthropic Dreaming 컨셉 도입",
+      "priority": "P1",
+      "status": "COMPLETED",
+      "assign_to": "agent-harness",
+      "created_at": "2026-05-12T09:30:00Z",
+      "created_by": "user-directive",
+      "completed_at": "2026-05-12T00:37:00Z",
+      "depth": 0,
+      "parent": null,
+      "payload": {
+        "scope_dir": ".claude",
+        "files": [
+          ".claude/hooks/daily-dream.sh",
+          ".claude/knowledge-db/success_patterns.json",
+          ".claude/knowledge-db/failure_patterns.json",
+          "global/agents/meta-agent.md"
+        ],
+        "concept_source": "Claude Managed Agents - Dreaming (유휴 시간 과거 작업 복기 → 쓸모있는 기억 증류)",
+        "input_sources": [
+          ".claude/issue-db/registry.json (최근 7일 COMPLETED/FAILED)",
+          "logs/agent-*.log",
+          "meta_observations 배열"
+        ],
+        "output_schema": {
+          "success_patterns": [
+            {
+              "pattern": "string",
+              "evidence_issues": [
+                "ISS-xxx"
+              ],
+              "frequency": "int",
+              "first_seen": "iso",
+              "last_seen": "iso"
+            }
+          ],
+          "failure_patterns": [
+            {
+              "pattern": "string",
+              "evidence_issues": [
+                "ISS-xxx"
+              ],
+              "frequency": "int",
+              "root_cause_hint": "string",
+              "incident_doc_ref": "string?"
+            }
+          ]
+        },
+        "trigger": "cron daily 03:00 KST OR manual via slash command",
+        "llm_call": "claude opus 1회/일 — 입력은 최근 7일 이슈 결과 요약",
+        "budget_estimate_usd": 0.5,
+        "rubric": {
+          "criteria": [
+            "daily-dream.sh가 최근 7일 이슈를 읽고 패턴 증류 JSON 출력",
+            "패턴 중복 시 frequency만 증가 (동일 패턴 새로 추가 금지)",
+            "registry.json의 knowledge.success_patterns/failure_patterns 증분 갱신",
+            "Opus 호출 실패 시 graceful degradation — 기존 패턴 보존"
+          ],
+          "threshold": "4/4 기준 충족"
+        },
+        "files_changed": []
+      },
+      "started_at": "2026-05-12T09:34:00Z",
+      "result": {
+        "files_created": [
+          ".claude/hooks/daily-dream.sh",
+          ".claude/knowledge-db/success_patterns.json",
+          ".claude/knowledge-db/failure_patterns.json"
+        ],
+        "files_modified": [
+          "global/agents/meta-agent.md"
+        ],
+        "rubric_score": "4/4",
+        "success_patterns_extracted": 6,
+        "failure_patterns_extracted": 0,
+        "dry_run_verified": true,
+        "duplicate_prevention_verified": true,
+        "opus_fallback_verified": true
+      }
+    },
+    {
+      "id": "ISS-309",
+      "type": "REFACTOR",
+      "title": "[OUTCOME] 이슈 payload 스키마에 rubric 필드 추가 — Anthropic Outcome 컨셉 도입",
+      "priority": "P1",
+      "status": "COMPLETED",
+      "assign_to": "agent-harness",
+      "created_at": "2026-05-12T09:30:00Z",
+      "created_by": "user-directive",
+      "depth": 0,
+      "parent": null,
+      "payload": {
+        "scope_dir": ".",
+        "files": [
+          ".claude/issue-db/registry.json",
+          "global/agents/check-harness.md",
+          "global/agents/eval-harness.md",
+          "global/agents/product-manager.md",
+          "docs/issue-schema-v4.md"
+        ],
+        "concept_source": "Claude Managed Agents - Outcome (사전 루브릭 + 독립 채점 모델)",
+        "schema_addition": {
+          "rubric": {
+            "criteria": [
+              "문자열 배열 — 측정 가능한 성공 기준"
+            ],
+            "threshold": "string — 통과 조건 (예: '4/4 충족' 또는 '점수 ≥ 70')",
+            "scorer_axis": "CHECK (기본) | PLAN — 독립 채점 축",
+            "optional": true
+          }
+        },
+        "agent_changes": [
+          "product-manager: USER_STORY 분해 시 각 이슈에 rubric 자동 생성",
+          "check-harness:eval: rubric 존재 시 우선 참조 — 동적 기준보다 명시 기준 우선",
+          "eval-harness: SCORE 산출 시 rubric.threshold 미달이면 자동 FIX 이슈 생성"
+        ],
+        "compatibility": "rubric 미존재 이슈는 기존 동적 평가 유지 (옵셔널 필드)",
+        "phase2_codex_route": "CHECK_PROVIDER=codex 전환 시 채점 모델 독립 (현 phase는 스키마만)",
+        "rubric": {
+          "criteria": [
+            "registry.json의 신규 이슈 5개 이상에 rubric 필드 적용",
+            "check-harness/eval-harness 프로파일에 rubric 우선 참조 로직 추가",
+            "docs/issue-schema-v4.md에 rubric 스키마 명시",
+            "기존 rubric 미존재 이슈는 정상 처리 (회귀 없음)"
+          ],
+          "threshold": "4/4 기준 충족"
+        },
+        "files_changed": [
+          ".claude/issue-db/registry.json",
+          "global/agents/check-harness.md",
+          "global/agents/eval-harness.md",
+          "global/agents/product-manager.md",
+          "docs/issue-schema-v4.md"
+        ]
+      },
+      "started_at": "2026-05-12T09:38:00Z",
+      "completed_at": "2026-05-12T10:00:00Z",
+      "result": {
+        "files_created": [
+          "docs/issue-schema-v4.md"
+        ],
+        "files_modified": [
+          ".claude/issue-db/registry.json",
+          "global/agents/check-harness.md",
+          "global/agents/eval-harness.md",
+          "global/agents/product-manager.md"
+        ],
+        "rubric_retroactive_applied": [
+          "ISS-301",
+          "ISS-302",
+          "ISS-303",
+          "ISS-304",
+          "ISS-305",
+          "ISS-306"
+        ],
+        "rubric_score": "4/4"
+      }
+    },
+    {
+      "id": "ISS-310",
+      "title": "[Wiki] MkDocs Material 파일럿 — GH_Harness g3doc 스타일 위키 도입",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P2",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "retry_count": 0,
+      "parent_id": null,
+      "depends_on": [],
+      "created_at": "2026-05-12T19:28:23.171582",
+      "payload": {
+        "origin": "user_request",
+        "context": "구글 g3doc 패턴(코드 옆 docs 폴더 → 자동 렌더링 위키)을 GH_Harness에 먼저 파일럿 적용. 검증되면 install.sh로 전 프로젝트 전파.",
+        "scope": "GH_Harness 단일 프로젝트 — 파일럿. 다른 프로젝트 영향 없음.",
+        "scope_dir": "docs/",
+        "goals": [
+          "1. docs/ 폴더 그대로 활용한 MkDocs Material 사이트 구동",
+          "2. 사이트 검색·다크모드·코드 하이라이팅 기본 동작",
+          "3. mkdocs.yml 1개 + 최소 의존성으로 시작 (Karpathy #2 단순함)",
+          "4. CI 또는 로컬 명령으로 빌드 가능 확인",
+          "5. 에이전트가 grep 대신 사이트 검색으로 컨텍스트 찾는 패턴 정착"
+        ],
+        "success_criteria": [
+          "mkdocs serve 로 localhost에서 위키 사이트 접근 가능",
+          "기존 docs/*.md 파일이 깨지지 않고 렌더링됨 (issue-schema-v4, race-mode-design, graphrag-principles, incident-report-* 등)",
+          "사이드바에 docs 트리 자동 생성",
+          "검색창에서 'hermes', 'race-mode' 등 키워드로 즉시 페이지 도달",
+          "README에 wiki 빌드/실행 방법 1단락 추가"
+        ],
+        "out_of_scope_phase1": [
+          "타 프로젝트 전파 (Phase 2에서)",
+          "install.sh --with-wiki 플래그 (Phase 2에서)",
+          "PR/커밋 시 docs 미변경 경고 hook (Phase 2에서)",
+          "Backstage 통합 포털 (Phase 3에서)",
+          "에이전트별 g3doc/ 하위 폴더 컨벤션 (Phase 2 검토)"
+        ],
+        "tool_choice_rationale": "MkDocs Material 선정. Astro Starlight·Docusaurus는 빌드 무거움, Backstage는 과잉. yaml 1파일로 시작 가능한 점이 Harness 철학과 정합.",
+        "next_phases_after_pilot": [
+          "Phase 2: install.sh 통합 + 자동 검증 hook + 에이전트 폴더 g3doc 컨벤션",
+          "Phase 3: 다중 프로젝트 통합 포털 (프로젝트 5개 넘어갈 때)"
+        ],
+        "related_conversation": "2026-05-12 대화 — Google's code wiki(g3doc) 패턴을 전 프로젝트에 적용 검토. GH_Harness부터 파일럿 합의."
+      },
+      "result": {
+        "feature_name": "MkDocs Material Wiki Pilot (GH_Harness)",
+        "phase1_only": true,
+        "scope_dir": "docs/",
+        "scope_extension_justified": [
+          "mkdocs.yml (root)",
+          "requirements-docs.txt (root)",
+          "README.md (root, 1단락 추가)"
+        ],
+        "tool_choice": "MkDocs Material",
+        "rationale": "yaml 1파일 시작 가능 + 가장 가벼움. Astro/Docusaurus는 무거움, Backstage 과잉.",
+        "stories": [
+          {
+            "title": "[Wiki-A] mkdocs.yml + requirements-docs.txt 최소 설정 작성",
+            "type": "USER_STORY",
+            "assign_to": "plan-harness",
+            "priority": "P1",
+            "acceptance_criteria": [
+              "프로젝트 루트에 mkdocs.yml 생성 (theme=material, site_name=GH_Harness Wiki, docs_dir=docs)",
+              "Material 테마 핵심 기능 활성화: navigation.tabs, navigation.sections, navigation.expand, search.suggest, search.highlight, content.code.copy, palette(light/dark toggle)",
+              "확장 markdown: admonition, pymdownx.superfences, pymdownx.highlight, toc(permalink=true), tables",
+              "plugins: search (기본 빌트인), tags (선택)",
+              "requirements-docs.txt 생성: mkdocs-material(최신 stable), mkdocs(자동 의존), pymdown-extensions",
+              "기존 docs/ 파일은 건드리지 않음 (Surgical)",
+              "scope_dir 확장: 본 스토리는 루트 mkdocs.yml/requirements-docs.txt 작성 정당화됨 (FEATURE_PLAN 부모가 명시)"
+            ],
+            "files_target": [
+              "mkdocs.yml",
+              "requirements-docs.txt"
+            ],
+            "plan_mode": "code",
+            "needs_ui": false
+          },
+          {
+            "title": "[Wiki-B] docs/index.md 진입점 작성 + nav 자동 트리 검증",
+            "type": "USER_STORY",
+            "assign_to": "plan-harness",
+            "priority": "P1",
+            "depends_on_story_index": 0,
+            "acceptance_criteria": [
+              "docs/index.md 생성 — GH_Harness 위키 홈: 위키 목적 / 주요 문서 카탈로그 / 검색 사용법 / 기여 방법(이 위키에 새 문서 추가 시 docs/에 .md 추가하면 자동 반영)",
+              "기존 docs/*.md 8개 파일 카탈로그 섹션에 링크: issue-schema-v4, race-mode-design, graphrag-principles, worktree-workflow, v4-upgrade-plan, graphify-phase1-pilot, incident-report-dual-landing-blindspot, incident-report-user-explicit-value-override",
+              "하위 폴더(audience/, brand/, llm-wiki/, superpowers/, ui-snapshots/)는 카테고리로 묘사",
+              "mkdocs.yml의 nav를 명시 정의하지 않음 — Material의 자동 트리 생성 활용 (단순함 우선, Karpathy #2)",
+              "단, 메인 카테고리 분류가 필요하면 mkdocs.yml에 nav 최소 블록 추가 (예: Home, Architecture, Incidents, Specs)",
+              "기존 docs/*.md 파일 내용 수정 금지 (Surgical, Karpathy #3)"
+            ],
+            "files_target": [
+              "docs/index.md",
+              "mkdocs.yml(선택적 nav 블록)"
+            ],
+            "plan_mode": "code",
+            "needs_ui": false
+          },
+          {
+            "title": "[Wiki-C] 로컬 빌드/서브 검증 + README에 wiki 사용법 1단락 추가",
+            "type": "USER_STORY",
+            "assign_to": "plan-harness",
+            "priority": "P2",
+            "depends_on_story_index": 1,
+            "acceptance_criteria": [
+              "pip install -r requirements-docs.txt 명령으로 의존성 설치 확인 (또는 가상환경 안내)",
+              "mkdocs build --strict 명령이 0 exit code로 성공 (모든 docs/*.md 파일 렌더링)",
+              "mkdocs serve 명령으로 http://127.0.0.1:8000 접근 가능 확인 (백그라운드 실행 후 curl로 200 확인)",
+              "검색 동작 검증: hermes, race-mode 키워드 검색 시 해당 페이지 결과에 등장",
+              "다크모드 토글 버튼 렌더 확인 (HTML 스니펫에 toggle 클래스 존재)",
+              "README.md에 ## Wiki 섹션 1개(3-5줄) 추가: 빌드 명령, 로컬 서브 명령, 새 문서 추가 방법",
+              "README.md 다른 섹션은 절대 수정 금지 (Surgical)"
+            ],
+            "files_target": [
+              "README.md(섹션 추가)"
+            ],
+            "verification_commands": [
+              "pip install -r requirements-docs.txt",
+              "mkdocs build --strict",
+              "mkdocs serve (background) && curl -sI http://127.0.0.1:8000 | head -1"
+            ],
+            "plan_mode": "code",
+            "needs_ui": false
+          }
+        ],
+        "out_of_scope_phase1": [
+          "GitHub Pages/Cloudflare Pages 배포 워크플로우 — 로컬 검증 통과 후 대표님 명시 지시 시 별도 이슈로 진행 (T2 EXTERNAL 카테고리 가능성)",
+          "install.sh 통합 (Phase 2)",
+          "PR/커밋 시 docs 미변경 경고 hook (Phase 2)",
+          "에이전트별 g3doc/ 하위 폴더 컨벤션 (Phase 2 검토)",
+          "Backstage 통합 포털 (Phase 3)"
+        ],
+        "next_after_pilot_validation": "대표님이 mkdocs serve 결과 확인 후, 만족 시 (1) GitHub Pages 배포 이슈 또는 (2) install.sh --with-wiki 플래그 통합 이슈를 제기 결정.",
+        "notes_for_reviewers": {
+          "for_ceo_reviewer": "이 파일럿이 진짜 에이전트의 grep→검색 패턴을 바꿀까? 유저(에이전트 + 대표님)가 사이트 검색을 실제로 쓸지의 행동 변화 가설을 검증할 것.",
+          "for_eng_reviewer": "Python 의존성(mkdocs-material) 추가가 GH_Harness 기존 의존성(주로 bash/python3 stdlib)과 충돌 없는지, 가상환경 권고 여부, requirements 파일 분리(requirements-docs.txt) 이유 명시."
+        }
+      },
+      "spawn_rules": [],
+      "started_at": "2026-05-12T19:28:40.175222",
+      "completed_at": "2026-05-12T19:30:22.623934"
+    },
+    {
+      "id": "ISS-311",
+      "title": "[Plan:CEO검토] MkDocs Material Wiki Pilot (GH_Harness) 전략 검토",
+      "type": "PLAN_CEO_REVIEW",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "plan-ceo-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-310",
+      "depends_on": [],
+      "created_at": "2026-05-12T19:30:22.623934",
+      "payload": {
+        "source_issue": "ISS-310",
+        "source_plan": {
+          "feature_name": "MkDocs Material Wiki Pilot (GH_Harness)",
+          "phase1_only": true,
+          "scope_dir": "docs/",
+          "scope_extension_justified": [
+            "mkdocs.yml (root)",
+            "requirements-docs.txt (root)",
+            "README.md (root, 1단락 추가)"
+          ],
+          "tool_choice": "MkDocs Material",
+          "rationale": "yaml 1파일 시작 가능 + 가장 가벼움. Astro/Docusaurus는 무거움, Backstage 과잉.",
+          "stories": [
+            {
+              "title": "[Wiki-A] mkdocs.yml + requirements-docs.txt 최소 설정 작성",
+              "type": "USER_STORY",
+              "assign_to": "plan-harness",
+              "priority": "P1",
+              "acceptance_criteria": [
+                "프로젝트 루트에 mkdocs.yml 생성 (theme=material, site_name=GH_Harness Wiki, docs_dir=docs)",
+                "Material 테마 핵심 기능 활성화: navigation.tabs, navigation.sections, navigation.expand, search.suggest, search.highlight, content.code.copy, palette(light/dark toggle)",
+                "확장 markdown: admonition, pymdownx.superfences, pymdownx.highlight, toc(permalink=true), tables",
+                "plugins: search (기본 빌트인), tags (선택)",
+                "requirements-docs.txt 생성: mkdocs-material(최신 stable), mkdocs(자동 의존), pymdown-extensions",
+                "기존 docs/ 파일은 건드리지 않음 (Surgical)",
+                "scope_dir 확장: 본 스토리는 루트 mkdocs.yml/requirements-docs.txt 작성 정당화됨 (FEATURE_PLAN 부모가 명시)"
+              ],
+              "files_target": [
+                "mkdocs.yml",
+                "requirements-docs.txt"
+              ],
+              "plan_mode": "code",
+              "needs_ui": false
+            },
+            {
+              "title": "[Wiki-B] docs/index.md 진입점 작성 + nav 자동 트리 검증",
+              "type": "USER_STORY",
+              "assign_to": "plan-harness",
+              "priority": "P1",
+              "depends_on_story_index": 0,
+              "acceptance_criteria": [
+                "docs/index.md 생성 — GH_Harness 위키 홈: 위키 목적 / 주요 문서 카탈로그 / 검색 사용법 / 기여 방법(이 위키에 새 문서 추가 시 docs/에 .md 추가하면 자동 반영)",
+                "기존 docs/*.md 8개 파일 카탈로그 섹션에 링크: issue-schema-v4, race-mode-design, graphrag-principles, worktree-workflow, v4-upgrade-plan, graphify-phase1-pilot, incident-report-dual-landing-blindspot, incident-report-user-explicit-value-override",
+                "하위 폴더(audience/, brand/, llm-wiki/, superpowers/, ui-snapshots/)는 카테고리로 묘사",
+                "mkdocs.yml의 nav를 명시 정의하지 않음 — Material의 자동 트리 생성 활용 (단순함 우선, Karpathy #2)",
+                "단, 메인 카테고리 분류가 필요하면 mkdocs.yml에 nav 최소 블록 추가 (예: Home, Architecture, Incidents, Specs)",
+                "기존 docs/*.md 파일 내용 수정 금지 (Surgical, Karpathy #3)"
+              ],
+              "files_target": [
+                "docs/index.md",
+                "mkdocs.yml(선택적 nav 블록)"
+              ],
+              "plan_mode": "code",
+              "needs_ui": false
+            },
+            {
+              "title": "[Wiki-C] 로컬 빌드/서브 검증 + README에 wiki 사용법 1단락 추가",
+              "type": "USER_STORY",
+              "assign_to": "plan-harness",
+              "priority": "P2",
+              "depends_on_story_index": 1,
+              "acceptance_criteria": [
+                "pip install -r requirements-docs.txt 명령으로 의존성 설치 확인 (또는 가상환경 안내)",
+                "mkdocs build --strict 명령이 0 exit code로 성공 (모든 docs/*.md 파일 렌더링)",
+                "mkdocs serve 명령으로 http://127.0.0.1:8000 접근 가능 확인 (백그라운드 실행 후 curl로 200 확인)",
+                "검색 동작 검증: hermes, race-mode 키워드 검색 시 해당 페이지 결과에 등장",
+                "다크모드 토글 버튼 렌더 확인 (HTML 스니펫에 toggle 클래스 존재)",
+                "README.md에 ## Wiki 섹션 1개(3-5줄) 추가: 빌드 명령, 로컬 서브 명령, 새 문서 추가 방법",
+                "README.md 다른 섹션은 절대 수정 금지 (Surgical)"
+              ],
+              "files_target": [
+                "README.md(섹션 추가)"
+              ],
+              "verification_commands": [
+                "pip install -r requirements-docs.txt",
+                "mkdocs build --strict",
+                "mkdocs serve (background) && curl -sI http://127.0.0.1:8000 | head -1"
+              ],
+              "plan_mode": "code",
+              "needs_ui": false
+            }
+          ],
+          "out_of_scope_phase1": [
+            "GitHub Pages/Cloudflare Pages 배포 워크플로우 — 로컬 검증 통과 후 대표님 명시 지시 시 별도 이슈로 진행 (T2 EXTERNAL 카테고리 가능성)",
+            "install.sh 통합 (Phase 2)",
+            "PR/커밋 시 docs 미변경 경고 hook (Phase 2)",
+            "에이전트별 g3doc/ 하위 폴더 컨벤션 (Phase 2 검토)",
+            "Backstage 통합 포털 (Phase 3)"
+          ],
+          "next_after_pilot_validation": "대표님이 mkdocs serve 결과 확인 후, 만족 시 (1) GitHub Pages 배포 이슈 또는 (2) install.sh --with-wiki 플래그 통합 이슈를 제기 결정.",
+          "notes_for_reviewers": {
+            "for_ceo_reviewer": "이 파일럿이 진짜 에이전트의 grep→검색 패턴을 바꿀까? 유저(에이전트 + 대표님)가 사이트 검색을 실제로 쓸지의 행동 변화 가설을 검증할 것.",
+            "for_eng_reviewer": "Python 의존성(mkdocs-material) 추가가 GH_Harness 기존 의존성(주로 bash/python3 stdlib)과 충돌 없는지, 가상환경 권고 여부, requirements 파일 분리(requirements-docs.txt) 이유 명시."
+          }
+        },
+        "feature": "MkDocs Material Wiki Pilot (GH_Harness)"
+      },
+      "result": {
+        "verdict": "CONDITIONAL_PASS",
+        "mode": "SELECTIVE_EXPANSION",
+        "key_concerns": [
+          "행동 변화 가설(에이전트 grep→검색 전환)이 plan에 있으나 측정 지표 부재 — 검증 불가능",
+          "index.md 카탈로그 하드코딩 시 9번째 문서 추가에서 100% 누락되는 묘비 효과 위험",
+          "파일럿 → Phase 2 전파 GO/NO-GO 판단 근거 데이터 수집 메커니즘 없음"
+        ],
+        "required_changes": [
+          "Wiki-B 수정: index.md 카탈로그를 하드코딩 대신 자동 생성(awesome-pages 플러그인 또는 30줄 Python glob 스니펫)으로 전환 — 묘비 방지",
+          "Wiki-C 추가: mkdocs serve 액세스 로그를 .claude/issue-db/wiki-usage.jsonl에 14일간 기록하는 측정 hook (Phase 2 진입 데이터)",
+          "success_criteria 추가: 14일간 위키 페이지 액세스 ≥5회 AND grep 호출 빈도 -20% 이상이면 Phase 2 진입 승인"
+        ],
+        "mode_rationale": "Phase 1 분해는 건전하나 측정 인프라 없이는 묘비 위험. SCOPE EXPANSION(GitHub Pages 즉시)은 T2 EXTERNAL 리스크로 거절. 핵심 2가지(자동 카탈로그 + 사용 측정)만 추가하면 파일럿이 학습 데이터를 만들어냄.",
+        "cost_benefit": "비용: ~50줄 추가 코드 + Wiki-C 검증 시간 +30분. 이득: Phase 2 install.sh 통합 결정의 데이터 근거 확보 + 묘비 효과 구조적 차단.",
+        "tool_choice_endorsed": true,
+        "phase1_scope_endorsed": true
+      },
+      "spawn_rules": [],
+      "started_at": "2026-05-12T19:30:48.892010",
+      "completed_at": "2026-05-12T19:32:00.358047"
+    },
+    {
+      "id": "ISS-312",
+      "title": "[Plan:Eng검토] MkDocs Material Wiki Pilot (GH_Harness) 실행가능성 검토",
+      "type": "PLAN_ENG_REVIEW",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "plan-eng-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-310",
+      "depends_on": [],
+      "created_at": "2026-05-12T19:30:22.623934",
+      "payload": {
+        "source_issue": "ISS-310",
+        "source_plan": {
+          "feature_name": "MkDocs Material Wiki Pilot (GH_Harness)",
+          "phase1_only": true,
+          "scope_dir": "docs/",
+          "scope_extension_justified": [
+            "mkdocs.yml (root)",
+            "requirements-docs.txt (root)",
+            "README.md (root, 1단락 추가)"
+          ],
+          "tool_choice": "MkDocs Material",
+          "rationale": "yaml 1파일 시작 가능 + 가장 가벼움. Astro/Docusaurus는 무거움, Backstage 과잉.",
+          "stories": [
+            {
+              "title": "[Wiki-A] mkdocs.yml + requirements-docs.txt 최소 설정 작성",
+              "type": "USER_STORY",
+              "assign_to": "plan-harness",
+              "priority": "P1",
+              "acceptance_criteria": [
+                "프로젝트 루트에 mkdocs.yml 생성 (theme=material, site_name=GH_Harness Wiki, docs_dir=docs)",
+                "Material 테마 핵심 기능 활성화: navigation.tabs, navigation.sections, navigation.expand, search.suggest, search.highlight, content.code.copy, palette(light/dark toggle)",
+                "확장 markdown: admonition, pymdownx.superfences, pymdownx.highlight, toc(permalink=true), tables",
+                "plugins: search (기본 빌트인), tags (선택)",
+                "requirements-docs.txt 생성: mkdocs-material(최신 stable), mkdocs(자동 의존), pymdown-extensions",
+                "기존 docs/ 파일은 건드리지 않음 (Surgical)",
+                "scope_dir 확장: 본 스토리는 루트 mkdocs.yml/requirements-docs.txt 작성 정당화됨 (FEATURE_PLAN 부모가 명시)"
+              ],
+              "files_target": [
+                "mkdocs.yml",
+                "requirements-docs.txt"
+              ],
+              "plan_mode": "code",
+              "needs_ui": false
+            },
+            {
+              "title": "[Wiki-B] docs/index.md 진입점 작성 + nav 자동 트리 검증",
+              "type": "USER_STORY",
+              "assign_to": "plan-harness",
+              "priority": "P1",
+              "depends_on_story_index": 0,
+              "acceptance_criteria": [
+                "docs/index.md 생성 — GH_Harness 위키 홈: 위키 목적 / 주요 문서 카탈로그 / 검색 사용법 / 기여 방법(이 위키에 새 문서 추가 시 docs/에 .md 추가하면 자동 반영)",
+                "기존 docs/*.md 8개 파일 카탈로그 섹션에 링크: issue-schema-v4, race-mode-design, graphrag-principles, worktree-workflow, v4-upgrade-plan, graphify-phase1-pilot, incident-report-dual-landing-blindspot, incident-report-user-explicit-value-override",
+                "하위 폴더(audience/, brand/, llm-wiki/, superpowers/, ui-snapshots/)는 카테고리로 묘사",
+                "mkdocs.yml의 nav를 명시 정의하지 않음 — Material의 자동 트리 생성 활용 (단순함 우선, Karpathy #2)",
+                "단, 메인 카테고리 분류가 필요하면 mkdocs.yml에 nav 최소 블록 추가 (예: Home, Architecture, Incidents, Specs)",
+                "기존 docs/*.md 파일 내용 수정 금지 (Surgical, Karpathy #3)"
+              ],
+              "files_target": [
+                "docs/index.md",
+                "mkdocs.yml(선택적 nav 블록)"
+              ],
+              "plan_mode": "code",
+              "needs_ui": false
+            },
+            {
+              "title": "[Wiki-C] 로컬 빌드/서브 검증 + README에 wiki 사용법 1단락 추가",
+              "type": "USER_STORY",
+              "assign_to": "plan-harness",
+              "priority": "P2",
+              "depends_on_story_index": 1,
+              "acceptance_criteria": [
+                "pip install -r requirements-docs.txt 명령으로 의존성 설치 확인 (또는 가상환경 안내)",
+                "mkdocs build --strict 명령이 0 exit code로 성공 (모든 docs/*.md 파일 렌더링)",
+                "mkdocs serve 명령으로 http://127.0.0.1:8000 접근 가능 확인 (백그라운드 실행 후 curl로 200 확인)",
+                "검색 동작 검증: hermes, race-mode 키워드 검색 시 해당 페이지 결과에 등장",
+                "다크모드 토글 버튼 렌더 확인 (HTML 스니펫에 toggle 클래스 존재)",
+                "README.md에 ## Wiki 섹션 1개(3-5줄) 추가: 빌드 명령, 로컬 서브 명령, 새 문서 추가 방법",
+                "README.md 다른 섹션은 절대 수정 금지 (Surgical)"
+              ],
+              "files_target": [
+                "README.md(섹션 추가)"
+              ],
+              "verification_commands": [
+                "pip install -r requirements-docs.txt",
+                "mkdocs build --strict",
+                "mkdocs serve (background) && curl -sI http://127.0.0.1:8000 | head -1"
+              ],
+              "plan_mode": "code",
+              "needs_ui": false
+            }
+          ],
+          "out_of_scope_phase1": [
+            "GitHub Pages/Cloudflare Pages 배포 워크플로우 — 로컬 검증 통과 후 대표님 명시 지시 시 별도 이슈로 진행 (T2 EXTERNAL 카테고리 가능성)",
+            "install.sh 통합 (Phase 2)",
+            "PR/커밋 시 docs 미변경 경고 hook (Phase 2)",
+            "에이전트별 g3doc/ 하위 폴더 컨벤션 (Phase 2 검토)",
+            "Backstage 통합 포털 (Phase 3)"
+          ],
+          "next_after_pilot_validation": "대표님이 mkdocs serve 결과 확인 후, 만족 시 (1) GitHub Pages 배포 이슈 또는 (2) install.sh --with-wiki 플래그 통합 이슈를 제기 결정.",
+          "notes_for_reviewers": {
+            "for_ceo_reviewer": "이 파일럿이 진짜 에이전트의 grep→검색 패턴을 바꿀까? 유저(에이전트 + 대표님)가 사이트 검색을 실제로 쓸지의 행동 변화 가설을 검증할 것.",
+            "for_eng_reviewer": "Python 의존성(mkdocs-material) 추가가 GH_Harness 기존 의존성(주로 bash/python3 stdlib)과 충돌 없는지, 가상환경 권고 여부, requirements 파일 분리(requirements-docs.txt) 이유 명시."
+          }
+        },
+        "feature": "MkDocs Material Wiki Pilot (GH_Harness)"
+      },
+      "result": {
+        "verdict": "CONDITIONAL_PASS",
+        "critical_gaps": [
+          "site/ not in .gitignore",
+          "no version pinning in requirements-docs.txt",
+          "auto-nav exposes ugly slugs to users",
+          "no venv guidance for Python 3.14 PEP 668"
+        ],
+        "required_changes": [
+          "add site/ to .gitignore",
+          "pin mkdocs-material==9.5.* and mkdocs>=1.6,<2",
+          "define explicit nav block in mkdocs.yml (8 root files + 5 category folders)",
+          "set dev_addr: 127.0.0.1:8765 to avoid port 8000 collision",
+          "set strict: true in mkdocs.yml",
+          "add venv activation 1-liner to README Wiki section"
+        ],
+        "build_risk_files": [],
+        "notes": {
+          "python": "3.14.4 with PEP 668 — venv mandatory",
+          "existing_docs_scan": "13 .md files, no frontmatter, no mermaid, no raw HTML — low strict-build risk",
+          "port_8000": "currently free but recommend 8765 for predictability",
+          "ci_phase2_ready": "requirements-docs.txt split is well-positioned for future CI"
+        }
+      },
+      "spawn_rules": [],
+      "started_at": "2026-05-12T19:30:48.892010",
+      "completed_at": "2026-05-12T19:32:30.446743"
+    },
+    {
+      "id": "ISS-313",
+      "title": "[Story] [Wiki-A] mkdocs.yml + requirements-docs.txt 최소 설정 작성",
+      "type": "USER_STORY",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "plan-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-312",
+      "depends_on": [],
+      "created_at": "2026-05-12T19:32:30.446743",
+      "payload": {
+        "acceptance_criteria": [
+          "프로젝트 루트에 mkdocs.yml 생성 (theme=material, site_name=GH_Harness Wiki, docs_dir=docs)",
+          "Material 테마 핵심 기능 활성화: navigation.tabs, navigation.sections, navigation.expand, search.suggest, search.highlight, content.code.copy, palette(light/dark toggle)",
+          "확장 markdown: admonition, pymdownx.superfences, pymdownx.highlight, toc(permalink=true), tables",
+          "plugins: search (기본 빌트인), tags (선택)",
+          "requirements-docs.txt 생성: mkdocs-material(최신 stable), mkdocs(자동 의존), pymdown-extensions",
+          "기존 docs/ 파일은 건드리지 않음 (Surgical)",
+          "scope_dir 확장: 본 스토리는 루트 mkdocs.yml/requirements-docs.txt 작성 정당화됨 (FEATURE_PLAN 부모가 명시)"
+        ],
+        "source_issue": "ISS-310",
+        "feature": "MkDocs Material Wiki Pilot (GH_Harness)",
+        "reviewed": true,
+        "eng_review_required_changes": [
+          "mkdocs-material 버전 고정: requirements-docs.txt에 'mkdocs-material==9.5.x' 형태로 (정확 마이너 버전 고정)",
+          "mkdocs.yml에 dev_addr: '127.0.0.1:8765' 명시 (기본 8000 충돌 회피)",
+          "mkdocs.yml에 strict: true 또는 빌드 시 --strict 플래그 사용 명시",
+          "nav 블록 최소 정의: Home / Architecture / Incidents / Specs / Agents 5개 카테고리 (자동 트리의 슬러그 추함 회피)",
+          "Python venv 안내: requirements-docs.txt 상단 주석에 'python3 -m venv .venv && source .venv/bin/activate' 명시 (PEP 668 대비)"
+        ],
+        "files_target": [
+          "mkdocs.yml",
+          "requirements-docs.txt"
+        ],
+        "scope_extension_justified": [
+          "mkdocs.yml (root)",
+          "requirements-docs.txt (root)"
+        ],
+        "files_changed": []
+      },
+      "result": {
+        "files_created": [
+          "mkdocs.yml",
+          "requirements-docs.txt"
+        ],
+        "nav_block_status": "commented_for_phase_b",
+        "build_verified": false,
+        "build_verification_in": "ISS-315"
+      },
+      "spawn_rules": [],
+      "tags": [
+        "pingpong_blocked"
+      ],
+      "blocked_reason": "pingpong_guard: (USER_STORY, src=ISS-310) 3건 중복 감지",
+      "updated_at": "2026-05-12T19:33:35.980861",
+      "started_at": "2026-05-12T19:34:08.285573",
+      "completed_at": "2026-05-12T19:35:37.030595"
+    },
+    {
+      "id": "ISS-314",
+      "title": "[Story] [Wiki-B] docs/index.md 진입점 작성 + nav 자동 트리 검증",
+      "type": "USER_STORY",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "plan-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-312",
+      "depends_on": [
+        "ISS-313"
+      ],
+      "created_at": "2026-05-12T19:32:30.446743",
+      "payload": {
+        "acceptance_criteria": [
+          "docs/index.md 생성 — GH_Harness 위키 홈: 위키 목적 / 주요 문서 카탈로그 / 검색 사용법 / 기여 방법(이 위키에 새 문서 추가 시 docs/에 .md 추가하면 자동 반영)",
+          "기존 docs/*.md 8개 파일 카탈로그 섹션에 링크: issue-schema-v4, race-mode-design, graphrag-principles, worktree-workflow, v4-upgrade-plan, graphify-phase1-pilot, incident-report-dual-landing-blindspot, incident-report-user-explicit-value-override",
+          "하위 폴더(audience/, brand/, llm-wiki/, superpowers/, ui-snapshots/)는 카테고리로 묘사",
+          "mkdocs.yml의 nav를 명시 정의하지 않음 — Material의 자동 트리 생성 활용 (단순함 우선, Karpathy #2)",
+          "단, 메인 카테고리 분류가 필요하면 mkdocs.yml에 nav 최소 블록 추가 (예: Home, Architecture, Incidents, Specs)",
+          "기존 docs/*.md 파일 내용 수정 금지 (Surgical, Karpathy #3)"
+        ],
+        "source_issue": "ISS-310",
+        "feature": "MkDocs Material Wiki Pilot (GH_Harness)",
+        "reviewed": true,
+        "ceo_review_required_changes": [
+          "docs/index.md 카탈로그를 수기 나열 대신 자동 생성: glob 스니펫(30줄 내) 또는 awesome-pages 플러그인 도입",
+          "자동 생성 방식: docs/*.md 글롭 → 파일명 → 페이지 제목 추출(첫 H1) → 링크 리스트 빌드",
+          "묘비 효과 차단 — 새 파일 추가 시 인덱스 자동 갱신"
+        ],
+        "files_target": [
+          "docs/index.md",
+          "mkdocs.yml(nav 블록 — Wiki-A에서 이미 정의된 경우 보강)"
+        ],
+        "scope_extension_justified": [
+          "docs/index.md (신규)"
+        ],
+        "files_changed": []
+      },
+      "result": {
+        "files_created": [
+          "docs/index.md",
+          "docs/agents.md"
+        ],
+        "files_edited": [
+          "mkdocs.yml(nav uncommented)"
+        ],
+        "build_verified": false,
+        "build_verification_in": "ISS-315",
+        "catalog_strategy": "manual_for_phase1_auto_in_phase2"
+      },
+      "spawn_rules": [],
+      "tags": [
+        "pingpong_blocked"
+      ],
+      "blocked_reason": "pingpong_guard: (USER_STORY, src=ISS-310) 3건 중복 감지",
+      "updated_at": "2026-05-12T19:33:35.980861",
+      "unblocked_at": "2026-05-12T19:35:37.030595",
+      "started_at": "2026-05-12T19:37:12.722710",
+      "completed_at": "2026-05-12T19:39:27.946651"
+    },
+    {
+      "id": "ISS-315",
+      "title": "[Story] [Wiki-C] 로컬 빌드/서브 검증 + README에 wiki 사용법 1단락 추가",
+      "type": "USER_STORY",
+      "status": "DONE",
+      "priority": "P2",
+      "assign_to": "plan-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-312",
+      "depends_on": [
+        "ISS-314"
+      ],
+      "created_at": "2026-05-12T19:32:30.446743",
+      "payload": {
+        "acceptance_criteria": [
+          "pip install -r requirements-docs.txt 명령으로 의존성 설치 확인 (또는 가상환경 안내)",
+          "mkdocs build --strict 명령이 0 exit code로 성공 (모든 docs/*.md 파일 렌더링)",
+          "mkdocs serve 명령으로 http://127.0.0.1:8000 접근 가능 확인 (백그라운드 실행 후 curl로 200 확인)",
+          "검색 동작 검증: hermes, race-mode 키워드 검색 시 해당 페이지 결과에 등장",
+          "다크모드 토글 버튼 렌더 확인 (HTML 스니펫에 toggle 클래스 존재)",
+          "README.md에 ## Wiki 섹션 1개(3-5줄) 추가: 빌드 명령, 로컬 서브 명령, 새 문서 추가 방법",
+          "README.md 다른 섹션은 절대 수정 금지 (Surgical)"
+        ],
+        "source_issue": "ISS-310",
+        "feature": "MkDocs Material Wiki Pilot (GH_Harness)",
+        "reviewed": true,
+        "ceo_review_required_changes": [
+          "위키 페이지 액세스 로그 인프라 구축: .claude/issue-db/wiki-usage.jsonl에 14일간 기록",
+          "Phase 2 GO/NO-GO 게이트 추가: '14일간 위키 액세스 ≥5회 AND grep 호출 -20% 이상' 충족 시 install.sh 통합 진행",
+          "단, 액세스 로그가 mkdocs serve 자체 기능으로 어려우면 README에 'Phase 2 진입 전 14일 사용 회고 필수'로 대체"
+        ],
+        "eng_review_required_changes": [
+          ".gitignore에 'site/' 추가 (mkdocs build 산출물 git 추적 방지)",
+          "README ## Wiki 섹션에 venv 활성화 명령 명시 (PEP 668 환경 대비)",
+          "verification_commands 실행 전 Python venv 활성화 단계 추가",
+          "CI 통합 힌트: Phase 2에서 GitHub Actions로 mkdocs build --strict 자동 검증 (Phase 1 범위 외이지만 README에 메모)"
+        ],
+        "files_target": [
+          "README.md (## Wiki 섹션 추가)",
+          ".gitignore (site/ 추가)"
+        ],
+        "scope_extension_justified": [
+          "README.md (1단락 추가)",
+          ".gitignore (1줄 추가)"
+        ],
+        "files_changed": []
+      },
+      "result": {
+        "files_edited": [
+          "README.md(## Wiki 섹션 추가)",
+          ".gitignore(site/, .venv-docs/ 추가)"
+        ],
+        "build_strict_pass": true,
+        "serve_http_200": true,
+        "dark_mode_toggle_present": true,
+        "search_index_built": true,
+        "search_keywords_indexed": [
+          "hermes",
+          "race-mode"
+        ],
+        "wiki_url": "http://127.0.0.1:8765",
+        "venv_path": ".venv-docs",
+        "build_issue_fixed": "macOS AppleDouble ._sitemap.xml 파일이 venv 내 static_templates 목록에 끼어들어 UnicodeDecodeError 발생 → find -name ._* -delete로 제거 후 통과",
+        "next_phase": "ISS-317 (Phase 2: code wiki 트리거)는 본 파일럿 14일 사용 회고 후 활성화"
+      },
+      "spawn_rules": [],
+      "updated_at": "2026-05-12T19:33:35.980861",
+      "unblocked_at": "2026-05-12T19:39:27.946651",
+      "started_at": "2026-05-12T19:39:40.475223",
+      "completed_at": "2026-05-12T19:44:49.023740"
+    },
+    {
+      "id": "ISS-316",
+      "title": "[Plan:구현] ISS-313",
+      "type": "GENERATE_CODE",
+      "status": "OBSOLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 3,
+      "retry_count": 0,
+      "parent_id": "ISS-313",
+      "depends_on": [],
+      "created_at": "2026-05-12T19:35:21.643965",
+      "payload": {
+        "source_issue": "ISS-313",
+        "acceptance_criteria": []
+      },
+      "result": {
+        "reason": "duplicate_of_ISS-313",
+        "note": "ISS-313 자체가 코드 생성 완료. 자동 파생된 GENERATE_CODE는 중복이므로 OBSOLETED."
+      },
+      "spawn_rules": [],
+      "completed_at": "2026-05-12T19:35:44.593420"
+    },
+    {
+      "id": "ISS-317",
+      "title": "[Wiki Phase 2] 'code wiki 구현해줘' 트리거 — 전 프로젝트 자동 스캐폴드 + install.sh 통합",
+      "type": "FEATURE_PLAN",
+      "status": "BLOCKED",
+      "priority": "P2",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "retry_count": 0,
+      "parent_id": "ISS-310",
+      "depends_on": [
+        "ISS-315"
+      ],
+      "created_at": "2026-05-12T19:36:22.964629",
+      "payload": {
+        "origin": "user_request_2026-05-12",
+        "context": "GH_Harness MkDocs 파일럿(ISS-310 체인) 검증 후, 모든 Harness 프로젝트에서 'code wiki 구현해줘' 한 마디로 위키 자동 스캐폴드 가능하게 한다.",
+        "scope": "전 프로젝트 — 단, 트리거 발화 시 현재 작업 중인 단일 프로젝트에만 적용",
+        "trigger_phrases": [
+          "code wiki 구현해줘",
+          "code wiki",
+          "코드 위키 만들어줘",
+          "코드 위키 구현해줘",
+          "위키 만들어줘",
+          "wiki 구현해줘",
+          "wiki 적용해줘"
+        ],
+        "implementation_level": "L2 (install.sh 플래그 + CLAUDE.md 트리거)",
+        "deliverables": [
+          "1. GH_Harness/install.sh에 --with-wiki 플래그 추가",
+          "2. GH_Harness/templates/wiki/ 디렉터리 생성 — mkdocs.yml.tmpl, requirements-docs.txt, docs-index.md.tmpl, gitignore-snippet, readme-section.md.tmpl",
+          "3. install.sh가 --with-wiki 또는 트리거 발화 감지 시 위 템플릿을 현재 프로젝트에 복사 + site_name 등 변수 치환",
+          "4. GH_Harness/.claude/CLAUDE.md에 '코드 위키 트리거' 섹션 추가 (위 trigger_phrases 명시)",
+          "5. 모든 Harness 설치 프로젝트의 .claude/CLAUDE.md 일괄 갱신 (배치 install.sh)",
+          "6. 트리거 발화 시 Claude가 즉시 install.sh --with-wiki 실행 → Phase 2 검증 hook(docs 미변경 PR 경고) 도입은 별도 이슈"
+        ],
+        "scaffold_source": "ISS-310 체인 (Wiki-A/B/C) 검증된 산출물 그대로 사용",
+        "blocker_rationale": "ISS-315 (Wiki-C 파일럿 빌드 검증) 통과 전에는 전파 금지 — 파일럿이 깨지면 전 프로젝트가 깨짐",
+        "phase_2_validation_gate_from_ceo_review": [
+          "GH_Harness 파일럿 14일간 위키 액세스 ≥5회",
+          "또는 14일 사용 회고에서 '에이전트가 grep 대신 사이트 검색을 실제 사용함' 확인",
+          "이 게이트 미통과 시 Phase 2 자체 보류"
+        ],
+        "out_of_scope_phase2": [
+          "GitHub Pages 자동 배포 워크플로우 (Phase 3)",
+          "Backstage 통합 포털 (Phase 3)",
+          "에이전트별 g3doc 하위 폴더 컨벤션 (별도 이슈로 검토)"
+        ],
+        "user_intent_quote": "해당 프로젝트에서 'code wiki 구현해줘'라고 하면 적용되었으면 좋겠어."
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-318",
+      "title": "[Meta] ISS-310 이슈 체인 근본 원인 분석",
+      "type": "PATTERN_ANALYSIS",
+      "status": "READY",
+      "priority": "P3",
+      "assign_to": "meta-agent",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": null,
+      "depends_on": [],
+      "created_at": "2026-05-12T19:36:37.437001",
+      "payload": {
+        "parent_id": "ISS-310",
+        "chain_length": 3,
+        "note_from_user_review": "Meta-agent가 ISS-310 → product-manager → ceo/eng review → user_story 체인을 핑퐁으로 오탐. 이는 정상 plan 분해 흐름이며 동일 에이전트 간 왕복이 아님. 본 분석은 우선순위 낮음 — 향후 meta-agent의 핑퐁 판정 로직 개선 시 함께 검토.",
+        "suggested_action": "meta-agent의 핑퐁 감지 룰을 'plan→review→story' 정상 체인 제외하도록 보강"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-319",
+      "title": "[Plan:구현] ISS-314",
+      "type": "GENERATE_CODE",
+      "status": "OBSOLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 3,
+      "retry_count": 0,
+      "parent_id": "ISS-314",
+      "depends_on": [],
+      "created_at": "2026-05-12T19:39:09.668302",
+      "payload": {
+        "source_issue": "ISS-314",
+        "acceptance_criteria": []
+      },
+      "result": {
+        "reason": "duplicate_of_ISS-314",
+        "note": "ISS-314 자체가 코드 생성 완료. 자동 파생된 GENERATE_CODE는 중복."
+      },
+      "spawn_rules": [],
+      "completed_at": "2026-05-12T19:39:40.475223"
+    },
+    {
+      "id": "ISS-320",
+      "title": "[Plan:구현] ISS-315",
+      "type": "GENERATE_CODE",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 3,
+      "retry_count": 0,
+      "parent_id": "ISS-315",
+      "depends_on": [],
+      "created_at": "2026-05-12T19:44:49.023740",
+      "payload": {
+        "source_issue": "ISS-315",
+        "acceptance_criteria": []
+      },
+      "result": null,
+      "spawn_rules": []
     }
   ],
   "hooks": {
     "on_create": [],
     "on_start": [],
-    "on_complete": [],
+    "on_complete": [
+      {
+        "issue_id": "ISS-310",
+        "issue_type": "FEATURE_PLAN",
+        "plan_created": 2,
+        "timestamp": "2026-05-12T19:30:22.623934"
+      },
+      {
+        "issue_id": "ISS-311",
+        "issue_type": "PLAN_CEO_REVIEW",
+        "plan_created": 0,
+        "timestamp": "2026-05-12T19:32:00.358047"
+      },
+      {
+        "issue_id": "ISS-312",
+        "issue_type": "PLAN_ENG_REVIEW",
+        "plan_created": 3,
+        "timestamp": "2026-05-12T19:32:30.446743"
+      },
+      {
+        "issue_id": "ISS-313",
+        "issue_type": "USER_STORY",
+        "plan_created": 1,
+        "timestamp": "2026-05-12T19:35:21.643965"
+      },
+      {
+        "issue_id": "ISS-314",
+        "issue_type": "USER_STORY",
+        "plan_created": 1,
+        "timestamp": "2026-05-12T19:39:09.668302"
+      },
+      {
+        "issue_id": "ISS-315",
+        "issue_type": "USER_STORY",
+        "plan_created": 1,
+        "timestamp": "2026-05-12T19:44:49.023740"
+      }
+    ],
     "on_fail": [],
     "on_learn": []
   },
   "knowledge": {
-    "success_patterns": [],
+    "success_patterns": [
+      {
+        "pattern": "REFACTOR + scope_dir 명시 → COMPLETED (범위 한정 리팩토링 성공률 높음)",
+        "evidence_issues": [
+          "ISS-301",
+          "ISS-305",
+          "ISS-309"
+        ],
+        "frequency": 10,
+        "first_seen": "2026-05-12T00:36:42Z",
+        "last_seen": "2026-05-12T01:09:00Z"
+      },
+      {
+        "pattern": "rubric 4/4 충족 이슈는 100% COMPLETED (명시적 성공 기준 효과)",
+        "evidence_issues": [
+          "ISS-307",
+          "ISS-308",
+          "ISS-309"
+        ],
+        "frequency": 8,
+        "first_seen": "2026-05-12T00:36:42Z",
+        "last_seen": "2026-05-12T01:09:00Z"
+      },
+      {
+        "pattern": "blocked_by 의존성 해소 후 depth-0 이슈 즉시 COMPLETED",
+        "evidence_issues": [
+          "ISS-302",
+          "ISS-303",
+          "ISS-305",
+          "ISS-306"
+        ],
+        "frequency": 16,
+        "first_seen": "2026-05-12T00:36:42Z",
+        "last_seen": "2026-05-12T01:09:00Z"
+      },
+      {
+        "pattern": "P0 우선순위 이슈 신속 완료 (긴급 대응 체계 작동)",
+        "evidence_issues": [
+          "ISS-302"
+        ],
+        "frequency": 4,
+        "first_seen": "2026-05-12T00:36:42Z",
+        "last_seen": "2026-05-12T01:09:00Z"
+      },
+      {
+        "pattern": "배치 일괄 주입(injected_count 필드) 패턴 — 반복 수정보다 일괄 처리가 효율적",
+        "evidence_issues": [
+          "ISS-305"
+        ],
+        "frequency": 4,
+        "first_seen": "2026-05-12T00:36:42Z",
+        "last_seen": "2026-05-12T01:09:00Z"
+      },
+      {
+        "pattern": "에이전트 'agent-harness' 완료율 높음 (6건 COMPLETED)",
+        "evidence_issues": [
+          "ISS-301"
+        ],
+        "frequency": 2,
+        "first_seen": "2026-05-12T00:36:42Z",
+        "last_seen": "2026-05-12T00:36:47Z"
+      },
+      {
+        "pattern": "에이전트 'agent-harness' 완료율 높음 (8건 COMPLETED)",
+        "evidence_issues": [
+          "ISS-301"
+        ],
+        "frequency": 2,
+        "first_seen": "2026-05-12T01:08:55Z",
+        "last_seen": "2026-05-12T01:09:00Z"
+      }
+    ],
     "failure_patterns": [],
     "meta_observations": [
       {
@@ -317,14 +1460,752 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 8,
+        "timestamp": "2026-05-10T11:11:23.227689",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/7)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 7,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 9,
+        "timestamp": "2026-05-10T11:14:31.019095",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/7)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 7,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 10,
+        "timestamp": "2026-05-10T11:19:07.935294",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/7)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 7,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 11,
+        "timestamp": "2026-05-10T11:22:13.506147",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/7)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 7,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 12,
+        "timestamp": "2026-05-12T09:23:57.903804",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/7)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 7,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 13,
+        "timestamp": "2026-05-12T09:25:00.934534",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/7)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 7,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 14,
+        "timestamp": "2026-05-12T09:25:02.772398",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/7)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 7,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 15,
+        "timestamp": "2026-05-12T09:27:07.173259",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/7)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 7,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 16,
+        "timestamp": "2026-05-12T09:27:09.894232",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/7)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 7,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 17,
+        "timestamp": "2026-05-12T09:29:04.957710",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/7)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 7,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 18,
+        "timestamp": "2026-05-12T09:30:34.158872",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 19,
+        "timestamp": "2026-05-12T09:34:01.322568",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 20,
+        "timestamp": "2026-05-12T09:38:06.969431",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 21,
+        "timestamp": "2026-05-12T09:41:54.164366",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 22,
+        "timestamp": "2026-05-12T09:42:11.306419",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 23,
+        "timestamp": "2026-05-12T09:49:08.706450",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 24,
+        "timestamp": "2026-05-12T09:49:10.930446",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 25,
+        "timestamp": "2026-05-12T10:00:46.479414",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 26,
+        "timestamp": "2026-05-12T10:03:55.578637",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 27,
+        "timestamp": "2026-05-12T10:05:37.712834",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 28,
+        "timestamp": "2026-05-12T10:05:39.884135",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 29,
+        "timestamp": "2026-05-12T10:07:31.459294",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 30,
+        "timestamp": "2026-05-12T10:09:16.434777",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 31,
+        "timestamp": "2026-05-12T10:12:20.918693",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 32,
+        "timestamp": "2026-05-12T15:51:12.040994",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 33,
+        "timestamp": "2026-05-12T15:54:19.433099",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 34,
+        "timestamp": "2026-05-12T19:24:03.719986",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 35,
+        "timestamp": "2026-05-12T19:24:33.774574",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 36,
+        "timestamp": "2026-05-12T19:24:36.395582",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 37,
+        "timestamp": "2026-05-12T19:25:05.398412",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 38,
+        "timestamp": "2026-05-12T19:25:40.694799",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 39,
+        "timestamp": "2026-05-12T19:25:44.705374",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 40,
+        "timestamp": "2026-05-12T19:26:57.928831",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 41,
+        "timestamp": "2026-05-12T19:27:45.419915",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 42,
+        "timestamp": "2026-05-12T19:27:47.249195",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/10)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 10,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 43,
+        "timestamp": "2026-05-12T19:28:32.810383",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/11)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 11,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 44,
+        "timestamp": "2026-05-12T19:28:35.561965",
+        "findings": [
+          "✅ 정상 운영 — 완료율 0% (0/11)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 11,
+          "done": 0,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 45,
+        "timestamp": "2026-05-12T19:30:37.655108",
+        "findings": [
+          "✅ 정상 운영 — 완료율 8% (1/13)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 13,
+          "done": 1,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 46,
+        "timestamp": "2026-05-12T19:32:12.346210",
+        "findings": [
+          "✅ 정상 운영 — 완료율 15% (2/13)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 13,
+          "done": 2,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 47,
+        "timestamp": "2026-05-12T19:32:39.581029",
+        "findings": [
+          "✅ 정상 운영 — 완료율 19% (3/16)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 16,
+          "done": 3,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 48,
+        "timestamp": "2026-05-12T19:33:56.975795",
+        "findings": [
+          "✅ 정상 운영 — 완료율 19% (3/16)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 16,
+          "done": 3,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 49,
+        "timestamp": "2026-05-12T19:34:01.619863",
+        "findings": [
+          "✅ 정상 운영 — 완료율 19% (3/16)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 16,
+          "done": 3,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 50,
+        "timestamp": "2026-05-12T19:35:29.989482",
+        "findings": [
+          "✅ 정상 운영 — 완료율 24% (4/17)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 17,
+          "done": 4,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 51,
+        "timestamp": "2026-05-12T19:36:37.437068",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)"
+        ],
+        "issues_created": [
+          "ISS-317"
+        ],
+        "stats_snapshot": {
+          "total": 19,
+          "done": 3,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 52,
+        "timestamp": "2026-05-12T19:36:39.395815",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 19,
+          "done": 3,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 53,
+        "timestamp": "2026-05-12T19:39:21.037225",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 20,
+          "done": 4,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 7,
-    "completed": 7,
+    "total_issues": 319,
+    "completed": 16,
     "failed": 0,
-    "evolved": 7
+    "evolved": 53
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -333,20 +2214,20 @@
   },
   "opus_budget_state": {
     "daily": {
-      "date": "",
-      "cost_usd": 0.0,
-      "calls": 0
+      "date": "2026-05-12",
+      "cost_usd": 2.26,
+      "calls": 4
     },
     "monthly": {
-      "month": "",
-      "cost_usd": 0.0,
-      "calls": 0
+      "month": "2026-05",
+      "cost_usd": 2.26,
+      "calls": 4
     },
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "2026-05-10",
-    "created_today": 0
+    "date": "2026-05-12",
+    "created_today": 3
   },
   "proactive_scan_state": {
     "date": "2026-05-10",

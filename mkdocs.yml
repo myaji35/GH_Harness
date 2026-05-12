@@ -1,0 +1,74 @@
+site_name: GH_Harness Wiki
+site_description: Self-Evolving Harness System — code wiki for agents and humans
+docs_dir: docs
+site_dir: site
+strict: true
+dev_addr: '127.0.0.1:8765'
+
+theme:
+  name: material
+  language: ko
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.instant
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/git-alt
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search:
+      lang:
+        - ko
+        - en
+
+nav:
+  - Home: index.md
+  - Architecture:
+      - 'Issue Schema v4': issue-schema-v4.md
+      - 'V4 Upgrade Plan': v4-upgrade-plan.md
+      - 'Race Mode Design': race-mode-design.md
+      - 'GraphRAG Principles': graphrag-principles.md
+      - 'Worktree Workflow': worktree-workflow.md
+  - Incidents:
+      - 'Dual Landing Blindspot': incident-report-dual-landing-blindspot.md
+      - 'User Explicit Value Override': incident-report-user-explicit-value-override.md
+  - Specs:
+      - 'Graphify Phase1 Pilot': graphify-phase1-pilot.md
+  - Agents: agents.md

@@ -1,0 +1,15 @@
+# GH_Harness Wiki — MkDocs Material 의존성
+#
+# 설치 (PEP 668 환경 권장):
+#   python3 -m venv .venv
+#   source .venv/bin/activate
+#   pip install -r requirements-docs.txt
+#
+# 로컬 서브:
+#   mkdocs serve   # http://127.0.0.1:8765
+#
+# 빌드 검증:
+#   mkdocs build --strict
+
+mkdocs-material==9.5.42
+pymdown-extensions>=10.7

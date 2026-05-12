@@ -107,5 +107,24 @@ on_learn   → Meta Agent 학습 트리거
 
 ---
 
+## Wiki
+
+GH_Harness는 `docs/` 폴더를 MkDocs Material로 렌더링하는 코드 위키를 가진다.
+
+**로컬 실행:**
+```bash
+python3 -m venv .venv-docs && source .venv-docs/bin/activate
+pip install -r requirements-docs.txt
+mkdocs serve   # http://127.0.0.1:8765
+```
+
+**빌드 검증:** `mkdocs build --strict`
+
+**새 문서 추가:** `docs/`에 `.md` 파일 생성 → 자동 사이드바 반영. 카테고리 변경은 `mkdocs.yml`의 `nav:` 편집.
+
+> Phase 2 예정: `code wiki 구현해줘` 트리거로 모든 Harness 프로젝트에 자동 스캐폴드 (ISS-317).
+
+---
+
 ## License
 MIT
