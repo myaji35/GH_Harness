@@ -171,6 +171,29 @@ if model == "opus":
     except Exception as _e:
         pass  # 예산 체크 실패 시 기본값 유지
 issue_type = issue.get("type", "UNKNOWN")
+
+# ── Opus 4.8 effort 작업별 차등 (ISS-339) ──────────
+# 기본값 high. issue type 으로 단계 결정.
+EFFORT_LOW = {"LINT_CHECK", "TYPE_CHECK", "STYLE_FIX", "DEAD_CODE"}
+EFFORT_MED = {"RUN_TESTS", "RETEST", "COVERAGE_CHECK", "SCORE",
+              "REGRESSION_CHECK", "BIZ_VALIDATE", "SCENARIO_GAP",
+              "EDGE_CASE_REVIEW", "JOURNEY_VALIDATE", "ROLE_AUDIT",
+              "ONBOARDING_CHECK", "IMPACT_REVIEW"}
+if agent == "hook-router" or issue_type in EFFORT_LOW:
+    effort = "low"
+elif issue_type in EFFORT_MED:
+    effort = "medium"
+else:
+    effort = "high"
+# 예산 강등 활성 시 high→medium (plan-ceo-reviewer 제외)
+if effort == "high" and agent != "plan-ceo-reviewer":
+    try:
+        _bs = json.load(open(".claude/issue-db/registry.json")).get("opus_budget_state", {})
+        if _bs.get("demotion_active"):
+            effort = "medium"
+    except Exception:
+        pass
+
 issue_title = issue.get("title", "")
 payload_obj = issue.get("payload", {})
 payload = json.dumps(payload_obj, ensure_ascii=False)
@@ -250,13 +273,13 @@ print(f"""
 [자동 실행 지시] 질문하지 마라. 즉시 실행하라.
 - 이슈: {issue_id} ({issue_type})
 - 제목: {issue_title}
-- 담당: {agent} (model: {model}){internal_note}
+- 담당: {agent} (model: {model}, effort: {effort}){internal_note}
 - 페이로드: {payload}
 - 대기 중: {remaining}개
 
 실행 순서:
 1. registry.json에서 {issue_id}의 status를 "IN_PROGRESS"로 변경
-2. {agent} 에이전트를 model={model}로 즉시 스폰
+2. {agent} 에이전트를 model={model} effort={effort}로 즉시 스폰
 3. 처리 완료 후 on_complete.sh 호출 (result JSON 포함)
 
 ⚠️ 경고: 사소한 질문(T0)/내부 자문(T1)은 금지. T2 컨펌 대상만 request-user-confirm.sh 사용.
@@ -269,7 +292,7 @@ try:
     if _os2.path.exists(_trace):
         _sp2.run([
             "bash", _trace, "dispatched", issue_id,
-            f"agent={agent}", f"model={model}", f"type={issue_type}", f"priority={issue.get('priority','?')}"
+            f"agent={agent}", f"model={model}", f"effort={effort}", f"type={issue_type}", f"priority={issue.get('priority','?')}"
         ], capture_output=True, timeout=3)
 except Exception:
     pass
