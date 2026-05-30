@@ -3836,14 +3836,38 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 73,
+        "timestamp": "2026-05-30T11:32:27.941760",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-322 → 3회 파생 (code-quality, test-harness, domain-analyst)",
+          "🟠 핑퐁 감지: ISS-321 → 3회 파생 (code-quality, test-harness, domain-analyst)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, plan-eng-reviewer, agent-harness)",
+          "🟠 핑퐁 감지: ISS-339 → 3회 파생 (code-quality, test-harness, domain-analyst)",
+          "🟠 핑퐁 감지: ISS-341 → 3회 파생 (code-quality, test-harness, domain-analyst)"
+        ],
+        "issues_created": [
+          "ISS-345",
+          "ISS-346"
+        ],
+        "stats_snapshot": {
+          "total": 51,
+          "done": 10,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 344,
+    "total_issues": 346,
     "completed": 31,
     "failed": 0,
-    "evolved": 72
+    "evolved": 73
   },
   "hermes_state": {
     "invocations_by_issue": {},

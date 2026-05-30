@@ -143,6 +143,14 @@ if len(escalated) >= 3:
     )
 
 # 패턴 4: 에이전트 간 핑퐁 — 같은 parent에서 3회+ 왕복
+# 단, on_complete 가 자동 생성하는 "게이트 fan-out"은 핑퐁이 아니다.
+# REFACTOR/GENERATE_CODE 완료 → LINT/TEST/DOMAIN 등 검증이 한 번씩 퍼지는 것은 정상.
+# 진짜 핑퐁은 같은 작업이 에이전트 사이를 왕복(같은 타입 반복)하는 경우다.
+GATE_FANOUT_TYPES = {
+    "LINT_CHECK", "TYPE_CHECK", "RUN_TESTS", "RETEST", "COVERAGE_CHECK",
+    "SCORE", "DOMAIN_ANALYZE", "BIZ_VALIDATE", "SCENARIO_PLAY",
+    "UI_REVIEW", "DESIGN_REVIEW", "JOURNEY_VALIDATE", "PATTERN_ANALYSIS",
+}
 parent_chains = {}
 for iss in issues:
     pid = iss.get("parent_id")
@@ -151,7 +159,13 @@ for iss in issues:
 for pid, children in parent_chains.items():
     if len(children) >= 3:
         agents = set(c.get("assign_to") for c in children)
-        if len(agents) >= 2:
+        child_types = [c.get("type") for c in children]
+        # 모든 child 가 서로 다른 게이트 검증 타입이면 = fan-out (정상). 핑퐁 아님.
+        is_gate_fanout = (
+            all(t in GATE_FANOUT_TYPES for t in child_types)
+            and len(set(child_types)) == len(child_types)  # 타입 중복 없음 = 왕복 아님
+        )
+        if len(agents) >= 2 and not is_gate_fanout:
             findings.append(f"🟠 핑퐁 감지: {pid} → {len(children)}회 파생 ({', '.join(agents)})")
             make_issue(
                 f"[Meta] {pid} 이슈 체인 근본 원인 분석",
