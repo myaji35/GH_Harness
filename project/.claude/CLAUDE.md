@@ -363,6 +363,20 @@ DESIGN_REVIEW   → check-harness:design
    e. `npm audit` → critical/high 취약점 → LINT_CHECK P0 이슈 생성
    f. 전부 클린 → "프로젝트 정상. 새 기능 또는 개선 작업을 기획하세요." 출력
 
+## Compaction 시 보존 규칙 (Compact Instructions)
+
+세션 컨텍스트가 압축(auto-compaction 또는 수동 `/compact`)될 때, Claude Code는 아래 항목을 **반드시 요약에 유지**한다. 특히 세션 휘발성 상태(진행 중 이슈)는 CLAUDE.md 재로드로는 복원되지 않으므로 요약 보존이 핵심이다.
+
+**반드시 보존:**
+- **자율 실행 원칙** + 금지 문장 패턴 (질문 금지 룰)
+- **3-Tier 컨펌 정책** (T0 침묵 자동 / T1 hermes-escalate / T2 request-user-confirm)
+- **사용자 명시값 절대 우선** (Override Convention — 포트/URL/디렉터리 명시값 그대로)
+- **현재 IN_PROGRESS 이슈 ID와 진행 단계** ← 세션 휘발성, 가장 중요
+- **Opus 예산 상태** (Soft Cap $10 / Hard Cap $20 / 월 $250)
+- 마지막 on_complete.sh 호출 결과와 다음 디스패치 대상 에이전트
+
+**압축 후 재개 시:** 사용자에게 진행 상황을 다시 묻지 말고, 보존된 IN_PROGRESS 이슈를 즉시 이어서 처리한다. (자율 실행 원칙 그대로 적용)
+
 ## Harness 엔진 핵심: 결과 분석 → 자동 Plan → 실행 루프
 
 ```
