@@ -2415,12 +2415,15 @@
       "type": "FEATURE_PLAN",
       "title": "[Plan:자율강화] 헤드리스 자율체인 도구잠금 (dontAsk+allowedTools frontmatter 적용)",
       "priority": "P1",
-      "status": "READY",
+      "status": "DONE",
       "assign_to": "plan-harness",
       "created_by": "deep-research 공식문서 대조 (2026-06-09)",
       "payload": {
         "plan_mode": "product",
-        "scope_dir": "global/agents",
+        "scope_dir": [
+          "global/agents",
+          "project/.claude/hooks"
+        ],
         "context": "Opus 4.8 dontAsk+allowedTools 잠금이 CLAUDE.md v5 정책만 존재, 에이전트 frontmatter엔 미적용. 밤샘 헤드리스 자율운영 시 도구 레벨 안전장치 없음.",
         "goal": "T0 비대화 헤드리스 전용 에이전트(예: code-quality, test-harness 모드)에 allowedTools 화이트리스트 + permissionMode:dontAsk 적용. 화이트리스트 밖 도구는 프롬프트 없이 거부.",
         "guardrail": "대화형 세션 일반작업엔 절대 미적용(대표님 개입여지 보존). T1/T2 가능 작업엔 dontAsk 금지. freeze-guard와 중복 적용 금지.",
@@ -2428,6 +2431,20 @@
           "대화형 작업은 영향 없음 확인",
           "헤드리스 체인에서 화이트리스트 밖 도구 거부 검증",
           "T2 가능성 있는 모드엔 미적용 확인"
+        ],
+        "files_changed": []
+      },
+      "result": {
+        "passed": true,
+        "acceptance": [
+          "대화형 미적용 PASS",
+          "헤드리스 dontAsk+allowedTools PASS",
+          "brand T2 제외 PASS"
+        ],
+        "files": [
+          "global/agents/check-harness.md",
+          "project/.claude/hooks/axis-router.sh",
+          "project/.claude/hooks/dispatch-ready.sh"
         ]
       }
     },
@@ -6563,6 +6580,23 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 230,
+        "timestamp": "2026-06-09T09:45:22.703954",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 10,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -6570,7 +6604,7 @@
     "total_issues": 346,
     "completed": 31,
     "failed": 0,
-    "evolved": 229
+    "evolved": 230
   },
   "hermes_state": {
     "invocations_by_issue": {},

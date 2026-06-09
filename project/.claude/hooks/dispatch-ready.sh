@@ -175,7 +175,7 @@ issue_type = issue.get("type", "UNKNOWN")
 # ── Opus 4.8 agentic 힌트 (v5) — 단일 진실 소스 = axis-router.sh ──────────
 # effort/background/isolation을 plan-harness/check-harness 모드 테이블과 정합시킨다.
 # 자체 매핑 금지: route_axis_hints가 모드 테이블을 반영하므로 그것을 호출한다.
-effort = "medium"; bg_hint = 0; iso_hint = 0
+effort = "medium"; bg_hint = 0; iso_hint = 0; allowed_tools = ""
 try:
     import subprocess as _spH
     _h = _spH.run(["bash", ".claude/hooks/axis-router.sh", "--hints", issue_type],
@@ -185,6 +185,7 @@ try:
         if _k == "effort": effort = _v or "medium"
         elif _k == "background": bg_hint = 1 if _v == "1" else 0
         elif _k == "isolation": iso_hint = 1 if _v == "1" else 0
+        elif _k == "allowed_tools": allowed_tools = _v
 except Exception:
     pass
 if agent == "hook-router":
@@ -281,6 +282,13 @@ if bg_hint or iso_hint:
     if iso_hint:
         _parts.append("isolation:worktree 권고 — 단, 2개 이상 에이전트가 동일 파일 동시 수정 시에만. 아니면 worktree 없이 실행")
     agentic_note = "\n- agentic 힌트: " + " / ".join(_parts)
+
+# ── 헤드리스 도구잠금 (ISS-350) ──────────────────────
+# HARNESS_HEADLESS=1 (비대화 자율 체인)일 때만 dontAsk + allowedTools 적용.
+# 대화형 세션에는 미적용 → 대표님 개입 여지 보존. brand/PLAN축은 allowed_tools="" 라 자동 제외.
+if os.environ.get("HARNESS_HEADLESS") == "1" and allowed_tools:
+    agentic_note += (f"\n- 도구잠금(헤드리스): allowedTools={allowed_tools} + permissionMode=dontAsk "
+                     f"→ 화이트리스트 밖 도구는 프롬프트 없이 거부. (CHECK 축 검증 전용, 쓰기 불가)")
 
 # 지시문 출력 — Claude Code가 이것을 읽고 즉시 실행
 print(f"""

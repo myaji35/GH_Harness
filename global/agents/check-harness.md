@@ -16,19 +16,19 @@ CHECK 축(보는 쪽)의 모든 검증/평가 작업을 단일 에이전트 인�
 
 이슈 payload에 `check_mode` 필드가 필수. 없으면 이슈 타입으로 자동 추론:
 
-| check_mode | 모드 파일 | 모델 권장 | effort | 담당 이슈 타입 |
-|---|---|---|---|---|
-| `code` | `code-quality.md` | sonnet | medium | LINT_CHECK, TYPE_CHECK, CODE_SMELL, DEAD_CODE, COMPLEXITY_REVIEW |
-| `test` | `test-harness.md` | sonnet | low | RUN_TESTS, RETEST, COVERAGE_CHECK |
-| `eval` | `eval-harness.md` | sonnet | medium | SCORE, REGRESSION_CHECK |
-| `biz` | `biz-validator.md` | sonnet | high | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
-| `journey` | `journey-validator.md` | sonnet | medium | JOURNEY_VALIDATE, ROLE_AUDIT, ONBOARDING_CHECK, IMPACT_REVIEW |
-| `scenario` | `scenario-player.md` | sonnet | low | SCENARIO_PLAY, E2E_VERIFY, FLOW_REPLAY |
-| `design` | `design-critic.md` | sonnet | medium | DESIGN_REVIEW, VISUAL_AUDIT |
-| `brand` | `brand-guardian.md` | opus | high | BRAND_GUARD, BRAND_DEFINE |
-| `ux-review` | `ux-harness.md` (UI_REVIEW 섹션) | sonnet | medium | UI_REVIEW |
-| `qa` | `qa-reviewer.md` | sonnet | medium | (SendMessage 교차검증) |
-| `meta` | `meta-agent.md` | sonnet | high | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
+| check_mode | 모드 파일 | 모델 권장 | effort | 헤드리스 도구잠금 | 담당 이슈 타입 |
+|---|---|---|---|---|---|
+| `code` | `code-quality.md` | sonnet | medium | Read,Grep,Glob,Bash | LINT_CHECK, TYPE_CHECK, CODE_SMELL, DEAD_CODE, COMPLEXITY_REVIEW |
+| `test` | `test-harness.md` | sonnet | low | Read,Grep,Glob,Bash | RUN_TESTS, RETEST, COVERAGE_CHECK |
+| `eval` | `eval-harness.md` | sonnet | medium | Read,Grep,Glob,Bash | SCORE, REGRESSION_CHECK |
+| `biz` | `biz-validator.md` | sonnet | high | Read,Grep,Glob | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
+| `journey` | `journey-validator.md` | sonnet | medium | Read,Grep,Glob | JOURNEY_VALIDATE, ROLE_AUDIT, ONBOARDING_CHECK, IMPACT_REVIEW |
+| `scenario` | `scenario-player.md` | sonnet | low | Read,Grep,Glob,Bash | SCENARIO_PLAY, E2E_VERIFY, FLOW_REPLAY |
+| `design` | `design-critic.md` | sonnet | medium | Read,Grep,Glob | DESIGN_REVIEW, VISUAL_AUDIT |
+| `brand` | `brand-guardian.md` | opus | high | (잠금 없음 — T2) | BRAND_GUARD, BRAND_DEFINE |
+| `ux-review` | `ux-harness.md` (UI_REVIEW 섹션) | sonnet | medium | Read,Grep,Glob | UI_REVIEW |
+| `qa` | `qa-reviewer.md` | sonnet | medium | Read,Grep,Glob | (SendMessage 교차검증) |
+| `meta` | `meta-agent.md` | sonnet | high | Read,Grep,Glob | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
 
 **effort 적용 규칙** (Opus 4.8 `effort` 파라미터):
 - 모드 처리 시 `payload.effort`가 있으면 우선, 없으면 위 테이블 기본값 사용.
@@ -36,6 +36,13 @@ CHECK 축(보는 쪽)의 모든 검증/평가 작업을 단일 에이전트 인�
 - `medium` = 정적 검증/리뷰(코드 품질, 디자인, UX) — 균형.
 - `high` = 깊은 판단(비즈 로직 갭, 브랜드 정체성, 시스템 패턴 분석) — 추론 우선.
 - Opus 예산 Hard Cap 근접 시 `high`→`medium` 자동 강등 (brand/meta 제외).
+
+**헤드리스 도구잠금 규칙** (Opus 4.8 `dontAsk` + `allowedTools`, ISS-350):
+- **발동 조건**: 환경변수 `HARNESS_HEADLESS=1`(비대화 자율 체인)일 때**만**. 대화형 세션에는 절대 미적용 — 대표님 개입 여지 보존.
+- 발동 시: 해당 모드 스폰에 `allowedTools=<위 컬럼>` + `permissionMode=dontAsk` 부여 → 화이트리스트 밖 도구는 프롬프트 없이 거부.
+- CHECK 축은 검증/읽기 본질이라 Write/Edit 불필요(잠금에서 제외). 코드 수정이 필요하면 PLAN 축(code 모드)으로 별도 이슈 전환.
+- **brand 모드 제외**: 외부 사이트 스크레이핑(SECURITY T2 가능) → dontAsk 금지.
+- **freeze-guard와 중복 금지**: 도구잠금(allowedTools)과 디렉터리잠금(freeze)은 작업 성격에 맞는 **하나만** 적용. CHECK 축은 도구잠금 우선(쓰기 자체가 없으므로 freeze 불필요).
 
 ## 실행 절차
 

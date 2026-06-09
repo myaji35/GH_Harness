@@ -116,7 +116,26 @@ route_axis_hints() {
     RACE_MODE) iso=1 ;;
   esac
 
-  echo "effort=${effort} background=${bg} isolation=${iso}"
+  # 헤드리스 도구잠금(ISS-350): CHECK 축(검증/읽기)만 화이트리스트.
+  # 빈 문자열 = 잠금 미적용(기본). dispatch가 HARNESS_HEADLESS=1일 때만 사용.
+  local allow=""
+  case "$issue_type" in
+    # 테스트/시나리오/eval/코드품질 — Bash 필요(테스트·린트 실행)
+    RUN_TESTS|RETEST|COVERAGE_CHECK|IMPROVE_COVERAGE|\
+    SCENARIO_PLAY|E2E_VERIFY|FLOW_REPLAY|\
+    LINT_CHECK|TYPE_CHECK|CODE_SMELL|DEAD_CODE|COMPLEXITY_REVIEW|\
+    SCORE|REGRESSION_CHECK)
+      allow="Read,Grep,Glob,Bash" ;;
+    # 비즈/저니/디자인/UX/메타 — 읽기 전용(Bash 불필요)
+    BIZ_VALIDATE|SCENARIO_GAP|EDGE_CASE_REVIEW|\
+    JOURNEY_VALIDATE|ROLE_AUDIT|ONBOARDING_CHECK|IMPACT_REVIEW|\
+    DESIGN_REVIEW|VISUAL_AUDIT|UI_REVIEW|\
+    SYSTEMIC_ISSUE|PATTERN_ANALYSIS)
+      allow="Read,Grep,Glob" ;;
+    # brand(외부 스크레이핑 T2) + PLAN 축(쓰기 필요) = 잠금 없음
+  esac
+
+  echo "effort=${effort} background=${bg} isolation=${iso} allowed_tools=${allow}"
 }
 
 # CLI로도 호출 가능
