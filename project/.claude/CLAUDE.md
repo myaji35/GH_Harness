@@ -145,16 +145,17 @@ Opus 4.8 공식 기능을 하네스에 도입한다. **핵심 원칙: 능동적�
 - **오버 방지**: 모드 테이블 밖의 즉흥적 effort 상향 금지. high는 기획/코드생성/도메인/브랜드/비즈로직/메타에만.
 - Hard Cap 근접 시 sonnet 모드 high→medium 자동 강등(code·brand·meta 제외).
 
-### 2. background 서브에이전트 + Monitor (조건부 발동)
+### 2. background 서브에이전트 + Monitor (메커니즘 구현 완료, ISS-349)
 - **발동 조건 (전부 충족 시에만)**: ① 예상 소요 ≥ 60초인 장시간 작업(테스트 스위트 전체, 크롤링, PDF 빌드, E2E), ② 결과를 기다리는 동안 다른 READY 이슈 처리가 가능, ③ 동시 background ≤ 2개.
-- 위 조건 밖이면 **동기 실행**(기본). 짧은 작업을 background로 돌리지 않는다 — 오케스트레이션 오버헤드가 이득보다 큼.
-- background 작업은 `Monitor`로 출력 라인을 관측하고, 완료 시 on_complete 체인 진입.
-- **오버 방지**: "혹시 모르니 background로"는 금지. 60초 미만 추정이면 동기.
+- **자동 판정**: `dispatch-ready.sh`가 조건 ②③을 자동 판정 → "background 승인/거부" 지시 출력. 조건 ①(시간 추정)은 스폰 측 판단.
+- **승인 시 절차**: (a) `background-track.sh claim <ISS>` (b) `run_in_background:true` 스폰 (c) `Monitor`로 완료 감지 (d) `background-track.sh release <ISS>` → on_complete 진입.
+- **동시≤2 강제**: `background-track.sh`가 claim 시 한도 초과면 REJECT(exit 1) → 스폰 측 동기 폴백. on_complete가 release 안전망.
+- **오버 방지**: 조건 밖이면 동기 실행(기본). 60초 미만은 동기(claim 불필요).
 
-### 3. dontAsk + allowedTools 잠금 (T0 자동실행 한정)
-- **발동 조건**: T0(침묵 자동) 분류 작업을 **비대화 헤드리스/체인 디스패치**로 돌릴 때만.
-- 적용: 해당 에이전트에 `allowedTools` 화이트리스트 + `permissionMode: dontAsk` 부여 → 화이트리스트 밖 도구는 프롬프트 없이 거부.
-- **오버 방지**: 대화형 세션의 일반 작업에는 적용 금지(대표님 개입 여지 차단됨). T1/T2 가능성이 있는 작업에는 절대 dontAsk 금지. freeze-guard(디렉터리 제한)와 **중복 적용하지 않음** — 둘 중 작업 성격에 맞는 하나만.
+### 3. dontAsk + allowedTools 잠금 (메커니즘 구현 완료, ISS-350)
+- **발동 조건**: 환경변수 `HARNESS_HEADLESS=1`(비대화 자율 체인)일 때만. `dispatch-ready.sh`가 자동으로 `allowedTools` + `permissionMode=dontAsk` 지시 출력.
+- **적용 대상**: CHECK 축(검증/읽기) 모드만. 화이트리스트는 `check-harness.md` 모드 테이블 "헤드리스 도구잠금" 컬럼 = 단일 진실 소스(axis-router `route_axis_hints` 반영).
+- **제외**: 대화형 세션(HEADLESS 미설정) → 개입 여지 보존. brand 모드(외부 스크레이핑 T2). PLAN 축(쓰기 필요). freeze-guard와 중복 금지(CHECK 축은 쓰기 없어 도구잠금 우선).
 
 ### 4. isolation: worktree (병렬 파일수정 충돌 시만)
 - **발동 조건**: 2개 이상 에이전트가 **동일 파일/디렉터리를 동시에 수정**할 때만(RACE_MODE, 병렬 REFACTOR 등).
