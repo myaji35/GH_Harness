@@ -2394,7 +2394,7 @@
       "type": "FEATURE_PLAN",
       "title": "[Plan:자율강화] background+Monitor 실 메커니즘 구현 (정책→자동실행)",
       "priority": "P2",
-      "status": "READY",
+      "status": "DONE",
       "assign_to": "plan-harness",
       "created_by": "deep-research 공식문서 대조 (2026-06-09)",
       "payload": {
@@ -2407,6 +2407,20 @@
           "발동조건 미충족 시 동기 실행 유지",
           "동시 background ≤2 강제",
           "Monitor 완료 시 on_complete 체인 자동 진입 검증"
+        ],
+        "files_changed": []
+      },
+      "result": {
+        "passed": true,
+        "acceptance": [
+          "발동조건 미충족 시 동기 PASS(remaining비교+한도거부)",
+          "동시≤2 강제 PASS(claim REJECT 2/2)",
+          "Monitor→on_complete 체인 구현+안전망 release"
+        ],
+        "files": [
+          "project/.claude/hooks/dispatch-ready.sh",
+          "project/.claude/hooks/background-track.sh",
+          "project/.claude/hooks/on_complete.sh"
         ]
       }
     },
@@ -6597,6 +6611,40 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 231,
+        "timestamp": "2026-06-09T09:49:53.126413",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 11,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 232,
+        "timestamp": "2026-06-09T09:49:55.746205",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, plan-ceo-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 11,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -6604,7 +6652,7 @@
     "total_issues": 346,
     "completed": 31,
     "failed": 0,
-    "evolved": 230
+    "evolved": 232
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -6625,8 +6673,8 @@
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "2026-05-12",
-    "created_today": 7
+    "date": "2026-06-09",
+    "created_today": 0
   },
   "proactive_scan_state": {
     "date": "2026-05-10",
@@ -6671,5 +6719,9 @@
         "coverage": null
       }
     }
-  ]
+  ],
+  "background_state": {
+    "active": 0,
+    "issues": []
+  }
 }

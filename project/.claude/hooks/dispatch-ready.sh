@@ -275,10 +275,36 @@ internal_note = " (내부 자문 — 사용자 대기 아님)" if agent in ("her
 # ── Opus 4.8 agentic 힌트 → 지시문 (v5) ──────────────
 # 능동 작동하되 오버 방지: 힌트는 "권고", 최종 발동 판단은 스폰 측 + CLAUDE.md 가드레일.
 agentic_note = ""
+
+# ── background 발동조건 자동 판정 (ISS-349) ──────────
+# bash hook이 직접 비동기 스폰은 불가 → "승인/거부 + 동시≤2 카운터 관리"를 담당.
+# 실제 run_in_background 스폰은 스폰 측(Claude Code)이 수행.
+# 조건: ① 장시간 추정(bg_hint=1) ② 대기 READY 존재(remaining≥1) ③ 동시 background ≤2
+BG_MAX = 2
+_bg_state = registry.setdefault("background_state", {"active": 0, "issues": []})
+# stale 정리: DONE/FAILED 된 이슈는 active에서 제외
+_alive = []
+for _bid in _bg_state.get("issues", []):
+    _bi = next((x for x in registry.get("issues", []) if x.get("id") == _bid), None)
+    if _bi and _bi.get("status") in ("IN_PROGRESS", "BACKGROUND_RUNNING"):
+        _alive.append(_bid)
+_bg_state["issues"] = _alive
+_bg_state["active"] = len(_alive)
+
 if bg_hint or iso_hint:
     _parts = []
     if bg_hint:
-        _parts.append("background 권고(장시간 추정) — 단, ①≥60초 ②대기 중 다른 READY 처리 가능 ③동시 background≤2 모두 충족 시에만 background 스폰. 아니면 동기 실행")
+        _cond2 = remaining >= 1
+        _cond3 = _bg_state["active"] < BG_MAX
+        if _cond2 and _cond3:
+            _parts.append(f"background 승인(②대기 {remaining}개 ③동시 {_bg_state['active']}/{BG_MAX}) — "
+                          f"①예상≥60초면: (a) `bash .claude/hooks/background-track.sh claim {issue_id}` 호출 "
+                          f"(b) run_in_background:true로 스폰 (c) Monitor로 완료 감지 "
+                          f"(d) 완료 시 `background-track.sh release {issue_id}` → on_complete 자동 진입. "
+                          f"60초 미만 추정이면 동기 실행(claim 불필요)")
+        else:
+            _reason = ("대기 READY 없음" if not _cond2 else f"동시 background 한도 도달({_bg_state['active']}/{BG_MAX})")
+            _parts.append(f"background 거부({_reason}) → 동기 실행")
     if iso_hint:
         _parts.append("isolation:worktree 권고 — 단, 2개 이상 에이전트가 동일 파일 동시 수정 시에만. 아니면 worktree 없이 실행")
     agentic_note = "\n- agentic 힌트: " + " / ".join(_parts)
@@ -308,6 +334,13 @@ print(f"""
 
 ⚠️ 경고: 사소한 질문(T0)/내부 자문(T1)은 금지. T2 컨펌 대상만 request-user-confirm.sh 사용.
 """.strip())
+
+# background_state stale 정리 결과 저장 (ISS-349)
+try:
+    with open(registry_path, 'w') as _bf:
+        json.dump(registry, _bf, indent=2, ensure_ascii=False)
+except Exception:
+    pass
 
 # [v4.1 D] Decision Trace
 try:

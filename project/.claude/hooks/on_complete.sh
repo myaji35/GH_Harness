@@ -16,6 +16,12 @@ echo "[Hook:on_complete] 이슈 완료: $ISSUE_ID ($ISSUE_TYPE)"
 
 # [v4.1 D] Decision Trace 기록 (completed)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# ── background 카운터 안전망 해제 (ISS-349) ──
+# 스폰 측이 release를 깜빡해도 완료 시 자동 정리. background 아니면 no-op.
+if [ -x "$SCRIPT_DIR/background-track.sh" ]; then
+  bash "$SCRIPT_DIR/background-track.sh" release "$ISSUE_ID" >/dev/null 2>&1 || true
+fi
 if [ -x "$SCRIPT_DIR/decision-trace.sh" ]; then
   bash "$SCRIPT_DIR/decision-trace.sh" completed "$ISSUE_ID" type="$ISSUE_TYPE" 2>/dev/null || true
 fi
