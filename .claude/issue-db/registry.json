@@ -2467,7 +2467,7 @@
       "type": "FEATURE_PLAN",
       "title": "[Plan:자율강화] SubagentStart hook으로 effort/예산 스폰직전 강제주입",
       "priority": "P2",
-      "status": "READY",
+      "status": "OBSOLETED",
       "assign_to": "plan-harness",
       "created_by": "deep-research 공식문서 대조 (2026-06-09)",
       "payload": {
@@ -2481,6 +2481,11 @@
           "예산 강등이 스폰 시점 반영 검증",
           "훅 실패 시 graceful fallback"
         ]
+      },
+      "result": {
+        "passed": false,
+        "obsolete_reason": "SubagentStart hook으로 effort/model override는 공식 메커니즘 없음(claude-code-guide 확인, GH issue #19170). 원래 목표 '스폰직전 강제주입' 구현 불가. 가능한 형태(additionalContext 주입/예산차단)는 이미 dispatch 지시문 effort 주입 + opus-budget-check와 중복. 새 hook 추가는 전 서브에이전트 스폰 오버헤드만 증가 → 기각.",
+        "evidence": "https://github.com/anthropics/claude-code/issues/19170 (SubagentStart 입력 스키마 미정의, override 메커니즘 없음)"
       }
     }
   ],
@@ -6645,6 +6650,23 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 233,
+        "timestamp": "2026-06-09T09:55:55.132734",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 12,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -6652,7 +6674,7 @@
     "total_issues": 346,
     "completed": 31,
     "failed": 0,
-    "evolved": 232
+    "evolved": 233
   },
   "hermes_state": {
     "invocations_by_issue": {},
