@@ -80,7 +80,50 @@ route_axis() {
   esac
 }
 
+# ── Opus 4.8 agentic 힌트 (v5) ───────────────────────────────
+# route_axis_hints "<ISSUE_TYPE>" → "effort=<v> background=<0|1> isolation=<0|1>"
+# 능동 작동하되 오버 방지: background/isolation은 기본 0, 발동 조건 만족 시에만 1 권고.
+# 실제 스폰 측(Claude Code)이 이 힌트 + CLAUDE.md 가드레일을 종합해 최종 판단.
+route_axis_hints() {
+  local issue_type="$1"
+  local effort="medium" bg=0 iso=0
+
+  case "$issue_type" in
+    # high effort — 기획/설계/코드생성/도메인/브랜드/비즈로직/메타
+    FEATURE_PLAN|USER_STORY|SCOPE_DEFINE|PRIORITY_RANK|SCREEN_GAP|\
+    PLAN_CEO_REVIEW|PLAN_ENG_REVIEW|OPPORTUNITY_SCOUT|OPPORTUNITY|\
+    DOMAIN_ANALYZE|RULE_EXTRACT|SCENARIO_GENERATE|\
+    GENERATE_CODE|REFACTOR|FIX_BUG|BIZ_FIX|STYLE_FIX|QUALITY_IMPROVEMENT|\
+    BIZ_VALIDATE|SCENARIO_GAP|EDGE_CASE_REVIEW|\
+    BRAND_GUARD|BRAND_DEFINE|SYSTEMIC_ISSUE|PATTERN_ANALYSIS)
+      effort="high" ;;
+    # low effort — 절차적/기계적
+    DEPLOY_READY|ROLLBACK|RUN_TESTS|RETEST|COVERAGE_CHECK|IMPROVE_COVERAGE|\
+    SCENARIO_PLAY|E2E_VERIFY|FLOW_REPLAY)
+      effort="low" ;;
+    # 그 외 medium (정적 검증/리뷰/조사/UX)
+  esac
+
+  # background 권고: 장시간 추정 작업만 (조건 ②③은 스폰 측이 최종 판단)
+  case "$issue_type" in
+    RUN_TESTS|RETEST|COVERAGE_CHECK|IMPROVE_COVERAGE|\
+    SCENARIO_PLAY|E2E_VERIFY|FLOW_REPLAY|BROWSER_QA)
+      bg=1 ;;
+  esac
+
+  # isolation 권고: 병렬 파일수정 충돌 가능 작업만
+  case "$issue_type" in
+    RACE_MODE) iso=1 ;;
+  esac
+
+  echo "effort=${effort} background=${bg} isolation=${iso}"
+}
+
 # CLI로도 호출 가능
 if [ "${BASH_SOURCE[0]}" = "$0" ]; then
-  route_axis "$@"
+  if [ "$1" = "--hints" ]; then
+    shift; route_axis_hints "$@"
+  else
+    route_axis "$@"
+  fi
 fi

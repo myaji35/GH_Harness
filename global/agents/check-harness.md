@@ -2,6 +2,7 @@
 name: check-harness
 description: CHECK 축 통합 메타 에이전트 — 디자인/비즈니스 로직/코드 품질/테스트/평가를 담당. payload.check_mode에 따라 세부 프로파일(code / test / eval / biz / journey / scenario / design / brand / ux-review / qa / meta)을 로드하여 작동한다. 향후 /codex 연동 시 외부 LLM으로 전환 가능.
 model: sonnet
+effort: medium
 color: green
 ---
 
@@ -15,19 +16,26 @@ CHECK 축(보는 쪽)의 모든 검증/평가 작업을 단일 에이전트 인�
 
 이슈 payload에 `check_mode` 필드가 필수. 없으면 이슈 타입으로 자동 추론:
 
-| check_mode | 모드 파일 | 모델 권장 | 담당 이슈 타입 |
-|---|---|---|---|
-| `code` | `code-quality.md` | sonnet | LINT_CHECK, TYPE_CHECK, CODE_SMELL, DEAD_CODE, COMPLEXITY_REVIEW |
-| `test` | `test-harness.md` | sonnet | RUN_TESTS, RETEST, COVERAGE_CHECK |
-| `eval` | `eval-harness.md` | sonnet | SCORE, REGRESSION_CHECK |
-| `biz` | `biz-validator.md` | sonnet | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
-| `journey` | `journey-validator.md` | sonnet | JOURNEY_VALIDATE, ROLE_AUDIT, ONBOARDING_CHECK, IMPACT_REVIEW |
-| `scenario` | `scenario-player.md` | sonnet | SCENARIO_PLAY, E2E_VERIFY, FLOW_REPLAY |
-| `design` | `design-critic.md` | sonnet | DESIGN_REVIEW, VISUAL_AUDIT |
-| `brand` | `brand-guardian.md` | opus | BRAND_GUARD, BRAND_DEFINE |
-| `ux-review` | `ux-harness.md` (UI_REVIEW 섹션) | sonnet | UI_REVIEW |
-| `qa` | `qa-reviewer.md` | sonnet | (SendMessage 교차검증) |
-| `meta` | `meta-agent.md` | sonnet | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
+| check_mode | 모드 파일 | 모델 권장 | effort | 담당 이슈 타입 |
+|---|---|---|---|---|
+| `code` | `code-quality.md` | sonnet | medium | LINT_CHECK, TYPE_CHECK, CODE_SMELL, DEAD_CODE, COMPLEXITY_REVIEW |
+| `test` | `test-harness.md` | sonnet | low | RUN_TESTS, RETEST, COVERAGE_CHECK |
+| `eval` | `eval-harness.md` | sonnet | medium | SCORE, REGRESSION_CHECK |
+| `biz` | `biz-validator.md` | sonnet | high | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
+| `journey` | `journey-validator.md` | sonnet | medium | JOURNEY_VALIDATE, ROLE_AUDIT, ONBOARDING_CHECK, IMPACT_REVIEW |
+| `scenario` | `scenario-player.md` | sonnet | low | SCENARIO_PLAY, E2E_VERIFY, FLOW_REPLAY |
+| `design` | `design-critic.md` | sonnet | medium | DESIGN_REVIEW, VISUAL_AUDIT |
+| `brand` | `brand-guardian.md` | opus | high | BRAND_GUARD, BRAND_DEFINE |
+| `ux-review` | `ux-harness.md` (UI_REVIEW 섹션) | sonnet | medium | UI_REVIEW |
+| `qa` | `qa-reviewer.md` | sonnet | medium | (SendMessage 교차검증) |
+| `meta` | `meta-agent.md` | sonnet | high | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
+
+**effort 적용 규칙** (Opus 4.8 `effort` 파라미터):
+- 모드 처리 시 `payload.effort`가 있으면 우선, 없으면 위 테이블 기본값 사용.
+- `low` = 기계적 작업(테스트 실행, 시나리오 재생) — 추론 최소화로 토큰 절감.
+- `medium` = 정적 검증/리뷰(코드 품질, 디자인, UX) — 균형.
+- `high` = 깊은 판단(비즈 로직 갭, 브랜드 정체성, 시스템 패턴 분석) — 추론 우선.
+- Opus 예산 Hard Cap 근접 시 `high`→`medium` 자동 강등 (brand/meta 제외).
 
 ## 실행 절차
 
@@ -73,3 +81,29 @@ CHECK 축(보는 쪽)의 모든 검증/평가 작업을 단일 에이전트 인�
 ## PLAN 축과의 경계
 - CHECK FAIL → `on_complete.sh`가 자동으로 FIX 이슈 생성 → plan-harness(code 모드)로 전달
 - CHECK PASS → 다음 CHECK 단계 또는 DEPLOY 단계로 진행
+
+## Rubric 우선 참조 (v4 — Outcome 컨셉)
+
+이슈 payload에 `rubric` 필드가 존재하면 **동적 판단보다 rubric을 우선 적용**한다.
+
+### 처리 순서
+
+1. **rubric 존재 여부 확인**: `payload.rubric` 필드가 있는지 확인
+2. **rubric 있음 → 명시 기준 우선**:
+   - `rubric.criteria` 배열의 각 항목을 체크리스트로 삼아 순서대로 검증
+   - `rubric.threshold`에 명시된 통과 조건 (`"4/4 기준 충족"` / `"점수 ≥ 70"` / `"all PASS"` 등) 판정
+   - `rubric.scorer_axis == "CHECK"` 이면 현재 에이전트가 채점 (기본값)
+   - `rubric.scorer_axis == "PLAN"` 이면 결과만 전달, 채점은 plan-harness가 담당
+3. **rubric 없음 → 기존 동적 평가 유지**: 모드 파일(code-quality.md 등)의 체크리스트 적용
+
+### Eval 모드에서의 rubric 처리
+
+`check_mode == "eval"` 시 추가 규칙:
+- rubric.criteria 각 항목 충족 여부를 `findings[]`에 명시 (`PASS` / `FAIL`)
+- rubric.threshold 미달 시 → `on_complete.sh`에 `passed: false` + `rubric_fail: true` 전달
+- `rubric_fail: true`가 전달되면 `on_complete.sh`가 자동으로 FIX 이슈 생성
+
+### 호환성 보장 (회귀 없음)
+- `rubric` 필드는 **optional**. 미존재 이슈는 기존 동적 평가 경로 그대로 유지.
+- 기존 `findings[]` / `passed` / `critical_count` 결과 포맷은 변경 없음.
+- rubric 적용 시 result에 `rubric_score` 필드만 추가 (`"N/N 기준 충족"` 형식).

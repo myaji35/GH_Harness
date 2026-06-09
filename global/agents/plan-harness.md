@@ -2,6 +2,7 @@
 name: plan-harness
 description: PLAN 축 통합 메타 에이전트 — 기획/설계/구현/배포를 담당. payload.mode에 따라 세부 프로파일(product / ceo-review / eng-review / opportunity / domain / audience / ux / code / deploy)을 로드하여 작동한다.
 model: sonnet
+effort: high
 color: blue
 ---
 
@@ -15,17 +16,24 @@ PLAN 축(만드는 쪽)의 모든 작업을 단일 에이전트 인터페이스�
 
 이슈 payload에 `plan_mode` 필드가 필수. 없으면 이슈 타입으로 자동 추론:
 
-| plan_mode | 모드 파일 | 모델 권장 | 담당 이슈 타입 |
-|---|---|---|---|
-| `product` | `product-manager.md` | opus | FEATURE_PLAN, USER_STORY, SCOPE_DEFINE, PRIORITY_RANK, SCREEN_GAP |
-| `ceo-review` | `plan-ceo-reviewer.md` | opus | PLAN_CEO_REVIEW |
-| `eng-review` | `plan-eng-reviewer.md` | opus | PLAN_ENG_REVIEW |
-| `opportunity` | `opportunity-scout.md` | opus | OPPORTUNITY_SCOUT, OPPORTUNITY |
-| `domain` | `domain-analyst.md` | opus | DOMAIN_ANALYZE, RULE_EXTRACT, SCENARIO_GENERATE |
-| `audience` | `audience-researcher.md` | sonnet | AUDIENCE_RESEARCH, AUDIENCE_REFRESH |
-| `ux-design` | `ux-harness.md` | sonnet | UX_DESIGN, UX_FLOW, UI_REVIEW |
-| `code` | `agent-harness.md` | sonnet | GENERATE_CODE, REFACTOR, FIX_BUG, BIZ_FIX, STYLE_FIX |
-| `deploy` | `cicd-harness.md` | sonnet | DEPLOY_READY, ROLLBACK |
+| plan_mode | 모드 파일 | 모델 권장 | effort | 담당 이슈 타입 |
+|---|---|---|---|---|
+| `product` | `product-manager.md` | opus | high | FEATURE_PLAN, USER_STORY, SCOPE_DEFINE, PRIORITY_RANK, SCREEN_GAP |
+| `ceo-review` | `plan-ceo-reviewer.md` | opus | high | PLAN_CEO_REVIEW |
+| `eng-review` | `plan-eng-reviewer.md` | opus | high | PLAN_ENG_REVIEW |
+| `opportunity` | `opportunity-scout.md` | opus | high | OPPORTUNITY_SCOUT, OPPORTUNITY |
+| `domain` | `domain-analyst.md` | opus | high | DOMAIN_ANALYZE, RULE_EXTRACT, SCENARIO_GENERATE |
+| `audience` | `audience-researcher.md` | sonnet | medium | AUDIENCE_RESEARCH, AUDIENCE_REFRESH |
+| `ux-design` | `ux-harness.md` | sonnet | medium | UX_DESIGN, UX_FLOW, UI_REVIEW |
+| `code` | `agent-harness.md` | sonnet | high | GENERATE_CODE, REFACTOR, FIX_BUG, BIZ_FIX, STYLE_FIX |
+| `deploy` | `cicd-harness.md` | sonnet | low | DEPLOY_READY, ROLLBACK |
+
+**effort 적용 규칙** (Opus 4.8 `effort` 파라미터):
+- 모드 처리 시 `payload.effort`가 있으면 우선, 없으면 위 테이블 기본값 사용.
+- `high` = 기획/설계/코드생성 — 기획 품질·구현 정확도가 결과를 좌우하므로 추론 우선.
+- `medium` = 조사/UX 설계 — 균형.
+- `low` = 배포/롤백 등 절차적 작업 — 토큰 절감.
+- Opus 예산 Hard Cap 근접 시 sonnet 모드의 `high`→`medium` 자동 강등 (code 모드 제외).
 
 ## 실행 절차
 

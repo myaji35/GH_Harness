@@ -135,6 +135,37 @@ bash .claude/hooks/request-user-confirm.sh <이슈ID> <카테고리> "<구체 �
 - **자동 강등**: Hard Cap 근접 시 design-critic/domain-analyst/brand-guardian/advisor를 sonnet으로 자동 강등. plan-ceo-reviewer는 강등 불가(opus 필수).
 - 예산 상태는 `registry.json`의 `opus_budget_state` 필드에 기록.
 
+## Opus 4.8 Agentic 기능 정책 (v5, 2026-06-09~)
+
+Opus 4.8 공식 기능을 하네스에 도입한다. **핵심 원칙: 능동적으로 작동하되 오버하지 않는다.** 각 기능은 아래 "발동 조건"을 만족할 때만 켜진다. 조건 밖에서는 기본(보수) 동작을 유지한다.
+
+### 1. effort 차등 (도입 완료)
+- `plan-harness.md` / `check-harness.md`의 모드 테이블 `effort` 컬럼이 단일 진실 소스.
+- 에이전트 스폰 시 해당 모드의 effort 기본값 적용. `payload.effort`가 있으면 우선.
+- **오버 방지**: 모드 테이블 밖의 즉흥적 effort 상향 금지. high는 기획/코드생성/도메인/브랜드/비즈로직/메타에만.
+- Hard Cap 근접 시 sonnet 모드 high→medium 자동 강등(code·brand·meta 제외).
+
+### 2. background 서브에이전트 + Monitor (조건부 발동)
+- **발동 조건 (전부 충족 시에만)**: ① 예상 소요 ≥ 60초인 장시간 작업(테스트 스위트 전체, 크롤링, PDF 빌드, E2E), ② 결과를 기다리는 동안 다른 READY 이슈 처리가 가능, ③ 동시 background ≤ 2개.
+- 위 조건 밖이면 **동기 실행**(기본). 짧은 작업을 background로 돌리지 않는다 — 오케스트레이션 오버헤드가 이득보다 큼.
+- background 작업은 `Monitor`로 출력 라인을 관측하고, 완료 시 on_complete 체인 진입.
+- **오버 방지**: "혹시 모르니 background로"는 금지. 60초 미만 추정이면 동기.
+
+### 3. dontAsk + allowedTools 잠금 (T0 자동실행 한정)
+- **발동 조건**: T0(침묵 자동) 분류 작업을 **비대화 헤드리스/체인 디스패치**로 돌릴 때만.
+- 적용: 해당 에이전트에 `allowedTools` 화이트리스트 + `permissionMode: dontAsk` 부여 → 화이트리스트 밖 도구는 프롬프트 없이 거부.
+- **오버 방지**: 대화형 세션의 일반 작업에는 적용 금지(대표님 개입 여지 차단됨). T1/T2 가능성이 있는 작업에는 절대 dontAsk 금지. freeze-guard(디렉터리 제한)와 **중복 적용하지 않음** — 둘 중 작업 성격에 맞는 하나만.
+
+### 4. isolation: worktree (병렬 파일수정 충돌 시만)
+- **발동 조건**: 2개 이상 에이전트가 **동일 파일/디렉터리를 동시에 수정**할 때만(RACE_MODE, 병렬 REFACTOR 등).
+- 단일 에이전트 작업, 읽기 전용 작업, 서로 다른 파일을 만지는 병렬 작업에는 **적용 금지**(worktree 생성 ~200-500ms + 디스크 비용).
+- **오버 방지**: 기본은 worktree 없음. 충돌이 실제로 예상될 때만 명시적으로 켠다.
+
+### 공통 가드레일
+- 위 2~4는 **기본 OFF**, 조건 충족 시에만 ON. 의심스러우면 OFF(보수 동작).
+- 발동 시 1줄 로그로 이유 명시(예: "background 사용: 테스트 스위트 추정 90초").
+- 새 기능이 파이프라인을 느리게/비싸게 만들면 즉시 OFF로 회귀.
+
 ## 트리거
 아래 조건 중 하나라도 해당되면 harness-orchestrator 스킬을 읽고 시스템을 가동하라:
 
@@ -362,6 +393,20 @@ DESIGN_REVIEW   → check-harness:design
    d. TODO/FIXME/HACK 검색 → 3개 이상이면 CODE_SMELL P3 이슈 생성
    e. `npm audit` → critical/high 취약점 → LINT_CHECK P0 이슈 생성
    f. 전부 클린 → "프로젝트 정상. 새 기능 또는 개선 작업을 기획하세요." 출력
+
+## Compaction 시 보존 규칙 (Compact Instructions)
+
+세션 컨텍스트가 압축(auto-compaction 또는 수동 `/compact`)될 때, Claude Code는 아래 항목을 **반드시 요약에 유지**한다. 특히 세션 휘발성 상태(진행 중 이슈)는 CLAUDE.md 재로드로는 복원되지 않으므로 요약 보존이 핵심이다.
+
+**반드시 보존:**
+- **자율 실행 원칙** + 금지 문장 패턴 (질문 금지 룰)
+- **3-Tier 컨펌 정책** (T0 침묵 자동 / T1 hermes-escalate / T2 request-user-confirm)
+- **사용자 명시값 절대 우선** (Override Convention — 포트/URL/디렉터리 명시값 그대로)
+- **현재 IN_PROGRESS 이슈 ID와 진행 단계** ← 세션 휘발성, 가장 중요
+- **Opus 예산 상태** (Soft Cap $10 / Hard Cap $20 / 월 $250)
+- 마지막 on_complete.sh 호출 결과와 다음 디스패치 대상 에이전트
+
+**압축 후 재개 시:** 사용자에게 진행 상황을 다시 묻지 말고, 보존된 IN_PROGRESS 이슈를 즉시 이어서 처리한다. (자율 실행 원칙 그대로 적용)
 
 ## Harness 엔진 핵심: 결과 분석 → 자동 Plan → 실행 루프
 

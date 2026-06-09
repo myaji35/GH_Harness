@@ -172,21 +172,26 @@ if model == "opus":
         pass  # 예산 체크 실패 시 기본값 유지
 issue_type = issue.get("type", "UNKNOWN")
 
-# ── Opus 4.8 effort 작업별 차등 (ISS-339) ──────────
-# 기본값 high. issue type 으로 단계 결정.
-EFFORT_LOW = {"LINT_CHECK", "TYPE_CHECK", "STYLE_FIX", "DEAD_CODE"}
-EFFORT_MED = {"RUN_TESTS", "RETEST", "COVERAGE_CHECK", "SCORE",
-              "REGRESSION_CHECK", "BIZ_VALIDATE", "SCENARIO_GAP",
-              "EDGE_CASE_REVIEW", "JOURNEY_VALIDATE", "ROLE_AUDIT",
-              "ONBOARDING_CHECK", "IMPACT_REVIEW"}
-if agent == "hook-router" or issue_type in EFFORT_LOW:
-    effort = "low"
-elif issue_type in EFFORT_MED:
-    effort = "medium"
-else:
-    effort = "high"
-# 예산 강등 활성 시 high→medium (plan-ceo-reviewer 제외)
-if effort == "high" and agent != "plan-ceo-reviewer":
+# ── Opus 4.8 agentic 힌트 (v5) — 단일 진실 소스 = axis-router.sh ──────────
+# effort/background/isolation을 plan-harness/check-harness 모드 테이블과 정합시킨다.
+# 자체 매핑 금지: route_axis_hints가 모드 테이블을 반영하므로 그것을 호출한다.
+effort = "medium"; bg_hint = 0; iso_hint = 0
+try:
+    import subprocess as _spH
+    _h = _spH.run(["bash", ".claude/hooks/axis-router.sh", "--hints", issue_type],
+                  capture_output=True, text=True, timeout=5)
+    for _kv in (_h.stdout or "").split():
+        _k, _, _v = _kv.partition("=")
+        if _k == "effort": effort = _v or "medium"
+        elif _k == "background": bg_hint = 1 if _v == "1" else 0
+        elif _k == "isolation": iso_hint = 1 if _v == "1" else 0
+except Exception:
+    pass
+if agent == "hook-router":
+    effort = "low"  # 라우팅은 항상 최소
+# 예산 강등 활성 시 high→medium (code/brand/meta 모드 + plan-ceo-reviewer 제외)
+_EFFORT_KEEP = {"agent-harness", "brand-guardian", "meta-agent", "plan-ceo-reviewer"}
+if effort == "high" and agent not in _EFFORT_KEEP:
     try:
         _bs = json.load(open(".claude/issue-db/registry.json")).get("opus_budget_state", {})
         if _bs.get("demotion_active"):
@@ -266,6 +271,17 @@ else:
 # 담당이 hermes/advisor면 내부 자문 — 사용자 대기 아님
 internal_note = " (내부 자문 — 사용자 대기 아님)" if agent in ("hermes", "advisor") else ""
 
+# ── Opus 4.8 agentic 힌트 → 지시문 (v5) ──────────────
+# 능동 작동하되 오버 방지: 힌트는 "권고", 최종 발동 판단은 스폰 측 + CLAUDE.md 가드레일.
+agentic_note = ""
+if bg_hint or iso_hint:
+    _parts = []
+    if bg_hint:
+        _parts.append("background 권고(장시간 추정) — 단, ①≥60초 ②대기 중 다른 READY 처리 가능 ③동시 background≤2 모두 충족 시에만 background 스폰. 아니면 동기 실행")
+    if iso_hint:
+        _parts.append("isolation:worktree 권고 — 단, 2개 이상 에이전트가 동일 파일 동시 수정 시에만. 아니면 worktree 없이 실행")
+    agentic_note = "\n- agentic 힌트: " + " / ".join(_parts)
+
 # 지시문 출력 — Claude Code가 이것을 읽고 즉시 실행
 print(f"""
 🔄 [Harness Auto-Dispatch] READY {len(ready_issues)}개 — 즉시 실행
@@ -273,7 +289,7 @@ print(f"""
 [자동 실행 지시] 질문하지 마라. 즉시 실행하라.
 - 이슈: {issue_id} ({issue_type})
 - 제목: {issue_title}
-- 담당: {agent} (model: {model}, effort: {effort}){internal_note}
+- 담당: {agent} (model: {model}, effort: {effort}){internal_note}{agentic_note}
 - 페이로드: {payload}
 - 대기 중: {remaining}개
 
