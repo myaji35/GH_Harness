@@ -30,8 +30,9 @@ CHECK 축(보는 쪽)의 모든 검증/평가 작업을 단일 에이전트 인�
 | `qa` | `qa-reviewer.md` | sonnet | medium | Read,Grep,Glob | (SendMessage 교차검증) |
 | `meta` | `meta-agent.md` | sonnet | high | Read,Grep,Glob | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
 
-**effort 적용 규칙** (Opus 4.8 `effort` 파라미터):
+**effort 적용 규칙** (Fable 5 / Opus 4.7+ `effort` 파라미터):
 - 모드 처리 시 `payload.effort`가 있으면 우선, 없으면 위 테이블 기본값 사용.
+- CHECK 축은 `xhigh` 미사용 — 검증은 sonnet 중심이라 high가 상한 (sonnet 4.6은 xhigh 미지원).
 - `low` = 기계적 작업(테스트 실행, 시나리오 재생) — 추론 최소화로 토큰 절감.
 - `medium` = 정적 검증/리뷰(코드 품질, 디자인, UX) — 균형.
 - `high` = 깊은 판단(비즈 로직 갭, 브랜드 정체성, 시스템 패턴 분석) — 추론 우선.

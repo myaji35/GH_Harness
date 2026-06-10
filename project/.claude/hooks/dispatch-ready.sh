@@ -40,14 +40,14 @@ MODEL_MAP = {
     "domain-analyst": "opus",
     "design-critic":  "opus",
     "product-manager": "opus",
-    "plan-ceo-reviewer": "opus",
+    "plan-ceo-reviewer": "fable",
     "plan-eng-reviewer": "sonnet",
     "opportunity-scout": "sonnet",
     "brand-guardian":  "sonnet",
     "code-quality":   "sonnet",
     "hook-router":    "haiku",
     "hermes":         "sonnet",
-    "advisor":        "opus",
+    "advisor":        "fable",
     "audience-researcher": "sonnet",
     "journey-validator": "sonnet",
 }
@@ -146,28 +146,28 @@ agent = issue.get("assign_to", "agent-harness")
 model = MODEL_MAP.get(agent, "sonnet")
 issue_id = issue.get("id", "UNKNOWN")
 
-# ── Opus 예산 체크 + 자동 강등 ─────────────────────
-if model == "opus":
+# ── 상위 모델(fable/opus) 예산 체크 + 자동 강등 ─────────────────────
+if model in ("opus", "fable"):
     import subprocess as _sp
     try:
         br = _sp.run(
             ["bash", ".claude/hooks/opus-budget-check.sh", agent],
             capture_output=True, text=True, timeout=5
         )
-        budget_model = (br.stdout or "").strip().splitlines()[-1] if br.stdout else "opus"
+        budget_model = (br.stdout or "").strip().splitlines()[-1] if br.stdout else model
         if br.returncode == 3 or budget_model == "BLOCKED":
             # Hard Cap + 강등 불가 → BUDGET T2 자동 트리거
             print(f"🛑 [Opus Budget] {agent} Hard Cap 초과 — BUDGET T2 컨펌 필요")
             _sp.run([
                 "bash", ".claude/hooks/request-user-confirm.sh",
                 issue_id, "BUDGET",
-                f"{agent}(opus) 호출이 일일 Opus Hard Cap($20)을 초과합니다. "
-                f"A: 오늘은 보류 / B: Hard Cap 임시 상향 / C: sonnet 강등 허용"
+                f"{agent}({model}) 호출이 일일 상위모델 Hard Cap($20)을 초과합니다. "
+                f"A: 오늘은 보류 / B: Hard Cap 임시 상향 / C: 하위 모델 강등 허용"
             ])
             sys.exit(2)
-        if budget_model == "sonnet" and model == "opus":
-            print(f"⚠️ [Opus Budget] {agent} opus→sonnet 자동 강등 (예산 근접)")
-            model = "sonnet"
+        if budget_model in ("fable", "opus", "sonnet") and budget_model != model:
+            print(f"⚠️ [Opus Budget] {agent} {model}→{budget_model} 자동 강등 (예산 근접)")
+            model = budget_model
     except Exception as _e:
         pass  # 예산 체크 실패 시 기본값 유지
 issue_type = issue.get("type", "UNKNOWN")

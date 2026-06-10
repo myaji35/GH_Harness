@@ -127,13 +127,39 @@ bash .claude/hooks/request-user-confirm.sh <이슈ID> <카테고리> "<구체 �
 - 위 질문이 떠오르면 → T0(그냥 실행) 또는 T2(명확히 중단) 중 하나로 분류
 - 중간은 없다. 애매하면 T0(실행)을 선택하라.
 
-## Opus 예산 정책 (v2+)
+## 상위 모델(Fable/Opus) 예산 정책 (v5.1)
 
 - **Soft Cap**: 일일 $10 — 초과 시 경고 출력, 계속 진행
-- **Hard Cap**: 일일 $20 — 초과 시 T2 컨펌 (BUDGET 카테고리) 발동, Opus 호출 일시 중단
+- **Hard Cap**: 일일 $20 — 초과 시 T2 컨펌 (BUDGET 카테고리) 발동, 상위 모델 호출 일시 중단
 - **월간 한도**: $250
-- **자동 강등**: Hard Cap 근접 시 design-critic/domain-analyst/brand-guardian/advisor를 sonnet으로 자동 강등. plan-ceo-reviewer는 강등 불가(opus 필수).
+- **가격 기준(2026-06)**: Fable 5 = $10/$50 per 1M, Opus 4.8 = $5/$25 per 1M. 비용표는 `opus-budget-check.sh`의 `AGENT_COST`가 단일 진실 소스.
+- **자동 강등 체인**: Hard Cap 근접 시 **fable → opus → sonnet** 순.
+  - fable 에이전트(plan-ceo-reviewer, advisor)는 1차로 opus 강등(비용 절반).
+  - plan-ceo-reviewer는 opus까지만 강등 가능(sonnet 불가 — 전략 검토 품질 보장).
+  - opus 에이전트(design-critic/domain-analyst/brand-guardian)는 sonnet 강등.
 - 예산 상태는 `registry.json`의 `opus_budget_state` 필드에 기록.
+
+## Fable 5 모델 정책 (v5.1, 2026-06-10~)
+
+메인 세션 기본 모델이 **Claude Fable 5**(`claude-fable-5`, Opus 위 신규 최상위 티어)로 전환되었다. 가격이 Opus 4.8의 2배이므로 **모델 차등 배치로 비용을 통제**한다.
+
+### 모델 4단 티어
+| 티어 | 배치 | 용도 |
+|---|---|---|
+| **fable** | 메인 루프(오케스트레이션) + plan-ceo-reviewer + advisor | 최고 판단 — 전략 검토, 막힘 해소 심층 자문 |
+| opus | product-manager, domain-analyst, design-critic 등 | 기획/도메인/디자인 판단 |
+| sonnet | 코드 생성·검증·테스트 등 실행 작업 다수 | 실행 |
+| haiku | hook-router | 라우팅 |
+
+- 서브에이전트 `model: fable` 지정은 **plan-ceo-reviewer / advisor 한정** (dispatch-ready.sh `MODEL_MAP` = 단일 진실 소스). 즉흥적 fable 승급 금지.
+- Fable 5는 일부 위험 도메인 감지 시 Opus 4.8로 **자동 폴백**되는 공식 동작이 있다 — 오류로 취급하지 말 것.
+- `effort: xhigh`는 fable/opus 4.7+ 전용 (sonnet 4.6 미지원). 모드 테이블에서 ceo-review만 xhigh. CHECK 축은 high 상한.
+
+### Fable 행동 보정 3종 (모든 에이전트 공통)
+Fable 5의 행동 특성을 harness 운영에 맞게 보정한다:
+1. **내레이션 절제 (silence-default)** — Fable은 도구 호출 사이 내레이션이 늘어나는 성향. 도구 호출 사이 침묵이 기본. 발견·방향 전환·블로커 시에만 1문장. 루틴 행동 내레이션("이제 ~를 확인하겠습니다") 금지. 완료 보고는 1~2문장 + 핵심 수치 (기존 "성공 출력 → 핵심 수치만" 원칙의 강화).
+2. **도구·서브에이전트 명시 트리거** — Fable은 서브에이전트/메모리/배경작업에 보수적. 본 문서의 매핑(이슈 타입 → 에이전트, background 발동 조건, T1 에스컬레이션 조건)이 곧 트리거다. **매핑 조건이 충족되면 확신을 따지지 말고 즉시 스폰/호출**한다.
+3. **소소한 결정 즉시 실행** — Fable은 신중해서 되묻는 빈도가 증가하는 성향. 네이밍/기본값/동급 선택지는 T0(침묵 자동)으로 즉시 선택 후 한 줄 기록. 스코프 변경·파괴적 행동만 T2.
 
 ## Opus 4.8 Agentic 기능 정책 (v5, 2026-06-09~)
 
@@ -315,7 +341,7 @@ v2 업그레이드로 다음 기능이 자동 활성화됩니다:
 ### 축 구성
 | 축 | 메타 에이전트 | 역할 | Provider |
 |---|---|---|---|
-| **PLAN** | `plan-harness` | 기획/설계/구현/배포 | Claude (Opus/Sonnet) |
+| **PLAN** | `plan-harness` | 기획/설계/구현/배포 | Claude (Fable/Opus/Sonnet) |
 | **CHECK** | `check-harness` | 디자인/비즈 로직/품질/평가 | Claude (현재) → Codex (Phase 2+) |
 
 ### 모드 프로파일 (기존 에이전트의 재활용)
@@ -351,7 +377,7 @@ DESIGN_REVIEW   → check-harness:design
 | 에이전트 | Model | 역할 | 담당 이슈 |
 |---------|-------|------|---------|
 | product-manager | opus | 기획/스토리/스코프 | FEATURE_PLAN, USER_STORY, SCOPE_DEFINE, PRIORITY_RANK |
-| **plan-ceo-reviewer** ⭐ | opus | 전략 검토 (CEO 시선) | PLAN_CEO_REVIEW |
+| **plan-ceo-reviewer** ⭐ | **fable** | 전략 검토 (CEO 시선) | PLAN_CEO_REVIEW |
 | **plan-eng-reviewer** ⭐ | opus | 실행 가능성 검토 (Eng Lead) | PLAN_ENG_REVIEW |
 | **opportunity-scout** ⭐ | opus | 발산 엔진 (통과 후 기회 발굴) | OPPORTUNITY_SCOUT, OPPORTUNITY |
 | **brand-guardian** ⭐ | opus | 브랜드 정체성 수호 | BRAND_GUARD, BRAND_DEFINE |
@@ -369,7 +395,7 @@ DESIGN_REVIEW   → check-harness:design
 | qa-reviewer | sonnet | 교차 검증 | SendMessage로 호출됨 |
 | hook-router | haiku | 이슈 라우팅 | READY 이슈 디스패치 |
 | **hermes** ⭐ | sonnet | 에스컬레이션 중개자 (막힘 감지 → advisor 자문) | HERMES_CONSULT |
-| **advisor** ⭐ | opus | Opus 수준 심층 자문 (Hermes 경유 전용) | ADVISOR_CONSULT |
+| **advisor** ⭐ | **fable** | 최상위 모델 심층 자문 (Hermes 경유 전용) | ADVISOR_CONSULT |
 | **audience-researcher** ⭐ | sonnet | 타겟 오디언스 언어/페인포인트/드림아웃컴 조사 | AUDIENCE_RESEARCH, AUDIENCE_REFRESH |
 | **journey-validator** ⭐ | sonnet | 사용자 여정 검증 (역할별/인팩트/온보딩/안내 품질) | JOURNEY_VALIDATE, ROLE_AUDIT, ONBOARDING_CHECK, IMPACT_REVIEW |
 

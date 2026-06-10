@@ -2487,6 +2487,32 @@
         "obsolete_reason": "SubagentStart hook으로 effort/model override는 공식 메커니즘 없음(claude-code-guide 확인, GH issue #19170). 원래 목표 '스폰직전 강제주입' 구현 불가. 가능한 형태(additionalContext 주입/예산차단)는 이미 dispatch 지시문 effort 주입 + opus-budget-check와 중복. 새 hook 추가는 전 서브에이전트 스폰 오버헤드만 증가 → 기각.",
         "evidence": "https://github.com/anthropics/claude-code/issues/19170 (SubagentStart 입력 스키마 미정의, override 메커니즘 없음)"
       }
+    },
+    {
+      "id": "ISS-352",
+      "type": "HARNESS_UPGRADE",
+      "title": "Fable 5 모델 정책 도입 (v5.1) — 모델 티어/예산/effort/행동보정",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "plan-harness",
+      "depth": 0,
+      "created_at": "2026-06-10T09:04:27.462604",
+      "updated_at": "2026-06-10T09:04:27.462604",
+      "payload": {
+        "plan_mode": "code",
+        "scope": "CLAUDE.md, plan-harness.md, check-harness.md, dispatch-ready.sh, opus-budget-check.sh"
+      },
+      "result": {
+        "summary": "메인 루프 Fable 5 전환 대응: ① 모델 4단 티어(fable/opus/sonnet/haiku) + plan-ceo-reviewer·advisor fable 승급 ② 예산 가격표 교정(Opus4.6 $15/$75 → Opus4.8 $5/$25, Fable $10/$50) ③ 강등 체인 fable→opus→sonnet 구현+테스트 ④ effort xhigh(ceo-review) ⑤ Fable 행동 보정 3종(silence-default/명시 트리거/소소한 결정 즉시 실행) ⑥ heredoc $ 이스케이프 버그 수정",
+        "files": [
+          "project/.claude/CLAUDE.md",
+          "global/agents/plan-harness.md",
+          "global/agents/check-harness.md",
+          "project/.claude/hooks/dispatch-ready.sh",
+          "project/.claude/hooks/opus-budget-check.sh"
+        ],
+        "verified": "임시 레지스트리로 fable/opus/sonnet/BLOCKED 4경로 + Hard Cap 강등 체인 테스트 통과"
+      }
     }
   ],
   "hooks": {
@@ -6667,6 +6693,142 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 234,
+        "timestamp": "2026-06-09T09:58:34.933553",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 12,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 235,
+        "timestamp": "2026-06-09T10:01:39.478073",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, test-harness, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 12,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 236,
+        "timestamp": "2026-06-09T10:04:29.831727",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 12,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 237,
+        "timestamp": "2026-06-09T10:07:35.797017",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 12,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 238,
+        "timestamp": "2026-06-09T10:35:18.122416",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 12,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 239,
+        "timestamp": "2026-06-09T10:38:22.992887",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 12,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 240,
+        "timestamp": "2026-06-09T11:36:07.450195",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 12,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 241,
+        "timestamp": "2026-06-10T08:58:38.292927",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 52,
+          "done": 12,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -6674,7 +6836,7 @@
     "total_issues": 346,
     "completed": 31,
     "failed": 0,
-    "evolved": 233
+    "evolved": 241
   },
   "hermes_state": {
     "invocations_by_issue": {},

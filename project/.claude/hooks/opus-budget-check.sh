@@ -43,18 +43,27 @@ HARD_CAP_DAILY = 20.0
 MONTHLY_CAP = 250.0
 
 # ── 에이전트별 호출당 예상 비용 (USD) ────────────────
-# Claude Opus 4.6 기준 (Input $15/1M, Output $75/1M)
+# 2026-06 가격: Opus 4.8 = $5/$25 per 1M, Fable 5 = $10/$50 per 1M
+# (구버전 표는 Opus 4.6 $15/$75 기준 → 3배 과대 추정이라 교정)
 AGENT_COST = {
-    "product-manager":    0.68,
-    "plan-ceo-reviewer":  0.45,
-    "domain-analyst":     0.98,
-    "design-critic":      0.75,
-    "brand-guardian":     0.45,
-    "advisor":            0.27,
+    "product-manager":    0.23,  # opus
+    "plan-ceo-reviewer":  0.30,  # fable (opus 환산 0.15 × 2)
+    "domain-analyst":     0.33,  # opus
+    "design-critic":      0.25,  # opus
+    "brand-guardian":     0.15,  # opus
+    "advisor":            0.18,  # fable (opus 환산 0.09 × 2)
     # sonnet 에이전트는 예산 대상 아님
 }
 
-# ── 강등 가능 여부 (plan-ceo-reviewer는 불가) ─────────
+# ── 에이전트별 기본 모델 티어 (미지정 시 opus) ─────────
+AGENT_MODEL = {
+    "plan-ceo-reviewer": "fable",
+    "advisor":           "fable",
+}
+
+# ── 강등 가능 여부 ─────────────────────────────────
+# fable 에이전트는 Hard Cap 시 1차로 opus 강등(비용 절반).
+# plan-ceo-reviewer는 opus 밑(sonnet)으로는 강등 불가.
 DEMOTABLE = {"design-critic", "domain-analyst", "brand-guardian", "advisor"}
 
 if AGENT not in AGENT_COST:
@@ -65,7 +74,7 @@ try:
     with open(REGISTRY_PATH, 'r') as f:
         registry = json.load(f)
 except Exception:
-    print("opus")
+    print(AGENT_MODEL.get(AGENT, "opus"))
     sys.exit(0)
 
 today = datetime.date.today().isoformat()
@@ -83,19 +92,34 @@ if budget["daily"].get("date") != today:
 if budget["monthly"].get("month") != month:
     budget["monthly"] = {"month": month, "cost_usd": 0.0, "calls": 0}
 
+base_model = AGENT_MODEL.get(AGENT, "opus")
 expected_cost = AGENT_COST[AGENT]
 projected_daily = budget["daily"]["cost_usd"] + expected_cost
 projected_monthly = budget["monthly"]["cost_usd"] + expected_cost
 
 # ── Hard Cap 검사 ────────────────────────────────
 if projected_daily >= HARD_CAP_DAILY or projected_monthly >= MONTHLY_CAP:
-    # 강등 가능 에이전트면 sonnet으로
+    # 1차 강등: fable → opus (비용 절반)
+    if base_model == "fable":
+        half_cost = expected_cost / 2
+        if budget["daily"]["cost_usd"] + half_cost < HARD_CAP_DAILY and \
+           budget["monthly"]["cost_usd"] + half_cost < MONTHLY_CAP:
+            budget["daily"]["cost_usd"] = round(budget["daily"]["cost_usd"] + half_cost, 4)
+            budget["daily"]["calls"] += 1
+            budget["monthly"]["cost_usd"] = round(budget["monthly"]["cost_usd"] + half_cost, 4)
+            budget["monthly"]["calls"] += 1
+            with open(REGISTRY_PATH, 'w') as f:
+                json.dump(registry, f, indent=2, ensure_ascii=False)
+            print("opus", flush=True)
+            print(f"[opus-budget] {AGENT} fable→opus 자동 강등 (예상 일일 \${projected_daily:.2f} ≥ \${HARD_CAP_DAILY})", file=sys.stderr)
+            sys.exit(0)
+    # 2차 강등: 가능 에이전트면 sonnet으로
     if AGENT in DEMOTABLE:
         budget["demotion_active"] = True
         with open(REGISTRY_PATH, 'w') as f:
             json.dump(registry, f, indent=2, ensure_ascii=False)
         print("sonnet", flush=True)
-        print(f"[opus-budget] {AGENT} 자동 강등 (예상 일일 ${projected_daily:.2f} ≥ ${HARD_CAP_DAILY})", file=sys.stderr)
+        print(f"[opus-budget] {AGENT} 자동 강등 (예상 일일 \${projected_daily:.2f} ≥ \${HARD_CAP_DAILY})", file=sys.stderr)
         sys.exit(0)
     else:
         # 강등 불가 (plan-ceo-reviewer 등) → BLOCKED + BUDGET T2
@@ -105,9 +129,9 @@ if projected_daily >= HARD_CAP_DAILY or projected_monthly >= MONTHLY_CAP:
 
 # ── Soft Cap 경고 ────────────────────────────────
 if projected_daily >= SOFT_CAP_DAILY:
-    print(f"[opus-budget] ⚠️ Soft Cap 근접/초과 — 예상 일일 ${projected_daily:.2f} ≥ ${SOFT_CAP_DAILY}", file=sys.stderr)
+    print(f"[opus-budget] ⚠️ Soft Cap 근접/초과 — 예상 일일 \${projected_daily:.2f} ≥ \${SOFT_CAP_DAILY}", file=sys.stderr)
 
-# ── 정상: opus 사용 승인 + 비용 가산 ─────────────
+# ── 정상: 기본 티어(fable/opus) 사용 승인 + 비용 가산 ─────────────
 budget["daily"]["cost_usd"] = round(projected_daily, 4)
 budget["daily"]["calls"] += 1
 budget["monthly"]["cost_usd"] = round(projected_monthly, 4)
@@ -116,5 +140,5 @@ budget["monthly"]["calls"] += 1
 with open(REGISTRY_PATH, 'w') as f:
     json.dump(registry, f, indent=2, ensure_ascii=False)
 
-print("opus")
+print(base_model)
 PYEOF
