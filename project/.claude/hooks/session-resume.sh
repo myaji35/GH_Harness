@@ -60,6 +60,23 @@ except Exception as e:
 PYEOF
 fi
 
+# ── graphify 그래프 자동 빌드/증분 신호 (v5.1) ─────────────
+# 이슈 상태와 독립적으로 항상 평가 (아래 REGISTRY exit 분기 이전 위치).
+# scaffold만 있고 graph.json 본체 없으면 초기 빌드, 변경 신호 누적 시 증분.
+# 실제 빌드는 Claude Code가 graphify 스킬을 호출해 수행(셸→LLM 직접 호출 불가).
+if [ -d ".claude/graphify" ]; then
+  GSIG=$(bash .claude/hooks/graphify-autobuild.sh session 2>/dev/null | grep "GRAPHIFY_SIGNAL=" | cut -d= -f2)
+  if [ "$GSIG" = "build" ]; then
+    echo ""
+    echo "🕸️  [graphify] 그래프 미생성 — 코드 수정 정확도/토큰 절감을 위해 초기 빌드 권장."
+    echo "   [자동 실행 지시] /graphify . --update --no-viz 를 실행해 graph.json을 생성한 뒤 .claude/graphify/.rebuild-needed 를 삭제하라."
+  elif [ "$GSIG" = "update" ]; then
+    echo ""
+    echo "🕸️  [graphify] 코드 변경 감지 — 그래프 증분 갱신 필요."
+    echo "   [자동 실행 지시] /graphify . --update --no-viz 를 실행한 뒤 .claude/graphify/.rebuild-needed 를 삭제하라."
+  fi
+fi
+
 if [ ! -f "$REGISTRY" ]; then
   echo "[Harness] registry.json 없음 — 'harness 시작'으로 초기화하세요."
   exit 0

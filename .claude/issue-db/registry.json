@@ -2513,6 +2513,32 @@
         ],
         "verified": "임시 레지스트리로 fable/opus/sonnet/BLOCKED 4경로 + Hard Cap 강등 체인 테스트 통과"
       }
+    },
+    {
+      "id": "ISS-353",
+      "type": "HARNESS_UPGRADE",
+      "title": "graphify 전 프로젝트 상시 운영 — 코드변경 증분 자동 빌드",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "plan-harness",
+      "depth": 0,
+      "created_at": "2026-06-10T14:00:06.746720",
+      "updated_at": "2026-06-10T14:00:06.746720",
+      "payload": {
+        "plan_mode": "code",
+        "trigger": "코드변경 시 증분"
+      },
+      "result": {
+        "summary": "graphify가 6개 프로젝트에 scaffold만 깔리고 2개월 0회 실행(drift)된 상태를 상시 운영으로 전환. ① graphify-autobuild.sh 신규 hook(초기빌드/증분 신호, 디바운스90s, 미설치 즉시skip) ② post-code-change에 change 신호 1줄 ③ session-resume에 build/update 신호 감지(이슈상태 독립 위치) ④ install.sh batch 루프 scaffold 호출 추가 + WITH_GRAPHIFY 기본 true + --no-graphify 옵트아웃 ⑤ scaffold 보강(README/.gitignore/graphify-out). 19/23 프로젝트 배포 완료.",
+        "files": [
+          "project/.claude/hooks/graphify-autobuild.sh",
+          "project/.claude/hooks/post-code-change.sh",
+          "project/.claude/hooks/session-resume.sh",
+          "install.sh"
+        ],
+        "verified": "autobuild 6경로(build/update/디바운스/비대상무시/미설치skip/noop) 테스트 통과, batch 배포 후 scaffold 19/23 + hook symlink 검증",
+        "note": "실제 graph.json 빌드는 셸→LLM 직접호출 불가라 신호파일(.rebuild-needed) → 다음 세션 Claude가 /graphify 실행하는 패턴. 각 프로젝트 첫 세션에서 초기 빌드 1회 발생."
+      }
     }
   ],
   "hooks": {
@@ -6829,6 +6855,142 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 242,
+        "timestamp": "2026-06-10T09:06:08.800522",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 53,
+          "done": 13,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 243,
+        "timestamp": "2026-06-10T09:06:17.705492",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 53,
+          "done": 13,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 244,
+        "timestamp": "2026-06-10T09:35:10.778982",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 53,
+          "done": 13,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 245,
+        "timestamp": "2026-06-10T09:35:14.871073",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 53,
+          "done": 13,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 246,
+        "timestamp": "2026-06-10T09:38:34.839449",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 53,
+          "done": 13,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 247,
+        "timestamp": "2026-06-10T10:26:51.442397",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 53,
+          "done": 13,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 248,
+        "timestamp": "2026-06-10T10:30:25.406824",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, plan-ceo-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 53,
+          "done": 13,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 249,
+        "timestamp": "2026-06-10T13:53:05.268509",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 53,
+          "done": 13,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -6836,7 +6998,7 @@
     "total_issues": 346,
     "completed": 31,
     "failed": 0,
-    "evolved": 241
+    "evolved": 249
   },
   "hermes_state": {
     "invocations_by_issue": {},

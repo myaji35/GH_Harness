@@ -15,6 +15,9 @@ fi
 # Hook 입력에서 파일 경로 추출 (TOOL_INPUT 환경변수 또는 stdin)
 CHANGED_FILE="${TOOL_INPUT_FILE_PATH:-unknown}"
 
+# graphify 그래프 증분 갱신 신호 (게이트는 autobuild.sh 내부, 미설치 시 즉시 skip)
+bash .claude/hooks/graphify-autobuild.sh change "$CHANGED_FILE" >/dev/null 2>&1 || true
+
 python3 << PYEOF
 import json, datetime, sys
 

@@ -25,8 +25,11 @@ UPDATE_MODE=false
 BATCH_MODE=false
 BATCH_BASE=""
 TOKEN_OPTIMIZE=false
-WITH_GRAPHIFY=false
+WITH_GRAPHIFY=true   # v5.1: graphify 전 프로젝트 기본 운영 (--no-graphify로 비활성)
 FORCE_MODE=false
+WITH_WIKI=false
+FORCE_WIKI=false
+AUTO_SERVE=false
 
 for arg in "$@"; do
   case "$arg" in
@@ -35,7 +38,11 @@ for arg in "$@"; do
     --batch-dir=*) BATCH_MODE=true; BATCH_BASE="${arg#*=}" ;;
     --optimize-tokens) TOKEN_OPTIMIZE=true ;;
     --with-graphify) WITH_GRAPHIFY=true ;;
+    --no-graphify) WITH_GRAPHIFY=false ;;
     --force) FORCE_MODE=true ;;
+    --with-wiki) WITH_WIKI=true ;;
+    --force-wiki) FORCE_WIKI=true ;;
+    --auto-serve) AUTO_SERVE=true ;;
   esac
 done
 
@@ -56,6 +63,7 @@ compute_harness_sha() {
     find "$SCRIPT_DIR/global/agents" -type f -name '*.md' ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
     find "$SCRIPT_DIR/global/skills" -type f -name '*.md' ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
     find "$SCRIPT_DIR/bin" -type f -name '*.sh' ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
+    find "$SCRIPT_DIR/templates/wiki" -type f ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
     [ -f "$SCRIPT_DIR/project/.claude/settings.json" ] && shasum "$SCRIPT_DIR/project/.claude/settings.json"
     [ -f "$SCRIPT_DIR/project/.claude/CLAUDE.md" ] && shasum "$SCRIPT_DIR/project/.claude/CLAUDE.md"
   } | shasum | cut -d' ' -f1
@@ -272,7 +280,183 @@ install_graphify_scaffold() {
 }
 EOF
   : > "$target_dir/metrics.jsonl"
+  mkdir -p "$target_dir/graphify-out"
+  # graph.json 등 산출물은 프로젝트 git에 커밋하지 않음(용량/노이즈)
+  cat > "$target_dir/.gitignore" <<'EOF'
+graphify-out/
+.rebuild-needed
+.last-autobuild
+autobuild.log
+EOF
+  cat > "$target_dir/README.md" <<'EOF'
+# graphify (자동 운영)
+
+이 프로젝트는 graphify 그래프를 **코드 변경 시 자동 증분 갱신**한다.
+
+- **초기 빌드**: 세션 시작 시 graph.json이 없으면 session-resume이 빌드 신호를 띄움
+  → Claude가 `/graphify . --update --no-viz` 실행 → `graphify-out/graph.json` 생성
+- **증분 갱신**: 코드/문서 편집(Write/Edit) 시 post-code-change → graphify-autobuild가
+  `.rebuild-needed` 신호를 남김(디바운스 90초) → 다음 세션 시작 시 증분 반영
+- **활용**: agent-harness가 GENERATE_CODE/REFACTOR/FIX_BUG claim 직후 graph를 조회해
+  의존성 맹점 제거 + 토큰 절감 (graphify-integration 스킬)
+
+수동 전체 재빌드: `/graphify . --wiki`
+EOF
   echo -e "${GREEN}  Graphify scaffold 설치 → $target_dir${NC}"
+}
+
+# ────────────────────────────────────────────────────────
+# Wiki 스캐폴드 (v4.5: --with-wiki)
+# ────────────────────────────────────────────────────────
+
+check_python_for_wiki() {
+  if [ "$WITH_WIKI" != "true" ]; then return 0; fi
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "[install.sh --with-wiki] python3 필요. 설치 후 재시도." >&2
+    return 1
+  fi
+  local PY_VER PY_MAJOR PY_MINOR
+  PY_VER="$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")"
+  PY_MAJOR="$(echo "$PY_VER" | cut -d. -f1)"
+  PY_MINOR="$(echo "$PY_VER" | cut -d. -f2)"
+  if [ "$PY_MAJOR" -lt 3 ] || ([ "$PY_MAJOR" -eq 3 ] && [ "$PY_MINOR" -lt 8 ]); then
+    echo "[install.sh --with-wiki] Python 3.8+ 필요 (현재: $PY_VER). mkdocs-material 9.5 의존." >&2
+    return 1
+  fi
+  return 0
+}
+
+extract_wiki_vars() {
+  local target_dir="${1:-$(pwd)}"
+  WIKI_SITE_NAME="$(basename "$target_dir")"
+  WIKI_PROJECT_NAME="$WIKI_SITE_NAME"
+  WIKI_SITE_DESC=""
+  if [ -f "$target_dir/README.md" ]; then
+    WIKI_SITE_DESC="$(grep -m1 '^# ' "$target_dir/README.md" 2>/dev/null | sed 's/^# *//' || true)"
+  fi
+  WIKI_SITE_DESC="${WIKI_SITE_DESC:-코드 위키 (g3doc 스타일)}"
+  WIKI_REPO_URL="$(cd "$target_dir" && git remote get-url origin 2>/dev/null || true)"
+}
+
+substitute_wiki_vars() {
+  local file="$1"
+  sed -e "s|{{site_name}}|${WIKI_SITE_NAME}|g" \
+      -e "s|{{project_name}}|${WIKI_PROJECT_NAME}|g" \
+      -e "s|{{site_description}}|${WIKI_SITE_DESC}|g" \
+      -e "s|{{repo_url}}|${WIKI_REPO_URL}|g" \
+      "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+}
+
+copy_wiki_file() {
+  local src="$1" dst="$2"
+  if [ -f "$dst" ] && cmp -s "$src" "$dst"; then
+    echo "[wiki] $dst 동일 — skip" >&2
+    return 0
+  fi
+  if [ -f "$dst" ] && [ "$FORCE_WIKI" != "true" ]; then
+    echo "[wiki] $dst 이미 존재 — 보존 (강제 갱신: --force-wiki)" >&2
+    return 0
+  fi
+  if [ -f "$dst" ]; then
+    cp "$dst" "$dst.bak"
+    echo "[wiki] $dst → $dst.bak 백업" >&2
+  fi
+  cp "$src" "$dst"
+  echo "[wiki] $dst 생성" >&2
+}
+
+install_wiki_scaffold() {
+  local target_dir="${1:-$(pwd)}"
+  local templates_dir="$SCRIPT_DIR/templates/wiki"
+
+  if [ ! -d "$templates_dir" ]; then
+    echo "[wiki] templates/wiki/ 미발견: $templates_dir" >&2
+    return 1
+  fi
+
+  echo "[wiki] $target_dir에 위키 스캐폴드 적용 중..." >&2
+  extract_wiki_vars "$target_dir"
+
+  mkdir -p "$target_dir/docs"
+
+  # 1. mkdocs.yml
+  local tmp_mkdocs
+  tmp_mkdocs="$(mktemp)"
+  cp "$templates_dir/mkdocs.yml.tmpl" "$tmp_mkdocs"
+  substitute_wiki_vars "$tmp_mkdocs"
+  copy_wiki_file "$tmp_mkdocs" "$target_dir/mkdocs.yml"
+  rm -f "$tmp_mkdocs"
+
+  # 2. requirements-docs.txt (변수 없음)
+  copy_wiki_file "$templates_dir/requirements-docs.txt" "$target_dir/requirements-docs.txt"
+
+  # 3. docs/index.md
+  if [ ! -f "$target_dir/docs/index.md" ]; then
+    local tmp_idx
+    tmp_idx="$(mktemp)"
+    cp "$templates_dir/docs-index.md.tmpl" "$tmp_idx"
+    substitute_wiki_vars "$tmp_idx"
+    cp "$tmp_idx" "$target_dir/docs/index.md"
+    echo "[wiki] $target_dir/docs/index.md 생성" >&2
+    rm -f "$tmp_idx"
+  else
+    echo "[wiki] docs/index.md 이미 존재 — 보존" >&2
+  fi
+
+  # 4. .gitignore append (멱등)
+  if ! grep -q '^site/$' "$target_dir/.gitignore" 2>/dev/null; then
+    cat "$templates_dir/gitignore-snippet" >> "$target_dir/.gitignore"
+    echo "[wiki] .gitignore에 site/ + .venv-docs/ 추가" >&2
+  else
+    echo "[wiki] .gitignore에 site/ 이미 존재 — skip" >&2
+  fi
+
+  # 5. README ## Wiki 섹션 (grep 멱등)
+  if [ -f "$target_dir/README.md" ] && ! grep -q '^## Wiki' "$target_dir/README.md"; then
+    echo "" >> "$target_dir/README.md"
+    local tmp_readme
+    tmp_readme="$(mktemp)"
+    cp "$templates_dir/readme-section.md.tmpl" "$tmp_readme"
+    substitute_wiki_vars "$tmp_readme"
+    cat "$tmp_readme" >> "$target_dir/README.md"
+    echo "[wiki] README.md에 ## Wiki 섹션 추가" >&2
+    rm -f "$tmp_readme"
+  elif [ ! -f "$target_dir/README.md" ]; then
+    echo "[wiki] README.md 미발견 — ## Wiki 섹션 skip (수동 추가 필요)" >&2
+  else
+    echo "[wiki] README.md에 ## Wiki 이미 존재 — skip" >&2
+  fi
+
+  # 6. bin/wiki-setup.sh (venv+pip+mkdocs serve 분리, here-doc 생성)
+  mkdir -p "$target_dir/bin"
+  if [ ! -f "$target_dir/bin/wiki-setup.sh" ]; then
+    cat > "$target_dir/bin/wiki-setup.sh" <<'WIKIEOF'
+#!/usr/bin/env bash
+# wiki-setup.sh — venv + pip install + mkdocs serve
+set -e
+cd "$(dirname "$0")/.."
+if [ ! -d .venv-docs ]; then
+  python3 -m venv .venv-docs
+fi
+source .venv-docs/bin/activate
+pip install -q -r requirements-docs.txt
+echo "[wiki-setup] mkdocs serve 시작 → http://127.0.0.1:8765"
+exec mkdocs serve --dev-addr 127.0.0.1:8765 "$@"
+WIKIEOF
+    chmod +x "$target_dir/bin/wiki-setup.sh"
+    echo "[wiki] bin/wiki-setup.sh 생성 (실행권한 부여)" >&2
+  else
+    echo "[wiki] bin/wiki-setup.sh 이미 존재 — 보존" >&2
+  fi
+
+  echo "[wiki] 스캐폴드 완료. 'bash bin/wiki-setup.sh' 또는 'mkdocs serve'로 시작." >&2
+
+  if [ "$AUTO_SERVE" = "true" ]; then
+    echo "[wiki] --auto-serve: bin/wiki-setup.sh 백그라운드 실행..." >&2
+    (cd "$target_dir" && nohup bash bin/wiki-setup.sh > "/tmp/wiki-serve-${WIKI_PROJECT_NAME}.log" 2>&1 &)
+    sleep 2
+    echo "[wiki] 백그라운드 시작됨 — http://127.0.0.1:8765 (로그: /tmp/wiki-serve-${WIKI_PROJECT_NAME}.log)" >&2
+  fi
 }
 
 # ────────────────────────────────────────────────────────
@@ -294,6 +478,11 @@ if [ "$BATCH_MODE" = true ]; then
 
   CURRENT_SHA="$(compute_harness_sha)"
   echo -e "  ${BLUE}버전 SHA: ${CURRENT_SHA:0:12}${NC}"
+
+  # wiki 사전 체크 (배치 모드에서도 --with-wiki 명시 시에만)
+  if [ "$WITH_WIKI" = "true" ]; then
+    check_python_for_wiki || exit 1
+  fi
 
   # 2. 각 프로젝트에 symlink 배포
   echo -e "${YELLOW}[2/3] 프로젝트 symlink 배포${NC}"
@@ -360,6 +549,16 @@ PYEOF
 
     # worktree 지원: .gitignore 패턴 추가
     ensure_project_gitignore_worktree "$proj_dir"
+
+    # graphify 스캐폴드 (v5.1: 전 프로젝트 기본 운영 — 이미 설치 시 내부 skip, --no-graphify로 옵트아웃)
+    if [ "$WITH_GRAPHIFY" = true ]; then
+      install_graphify_scaffold "$proj_dir"
+    fi
+
+    # wiki 스캐폴드 (--batch --with-wiki 명시 시에만)
+    if [ "$WITH_WIKI" = "true" ]; then
+      install_wiki_scaffold "$proj_dir"
+    fi
 
     # 버전 기록
     write_version_sha "$claude_dir" "$CURRENT_SHA"
@@ -527,6 +726,12 @@ fi
 # Graphify scaffold
 if [ "$WITH_GRAPHIFY" = true ]; then
   install_graphify_scaffold "$(pwd)"
+fi
+
+# Wiki scaffold (단일 모드: --with-wiki 명시 시에만)
+if [ "$WITH_WIKI" = "true" ]; then
+  check_python_for_wiki || exit 1
+  install_wiki_scaffold "$(pwd)"
 fi
 
 echo ""
