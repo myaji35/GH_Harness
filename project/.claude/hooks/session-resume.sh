@@ -8,6 +8,7 @@
 #   3. IN_PROGRESS / READY 이슈 목록 출력
 #   4. 다음 실행 지시 제공
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REGISTRY=".claude/issue-db/registry.json"
 BRAND_DNA="brand-dna.json"
 
@@ -77,6 +78,15 @@ if [ -d ".claude/graphify" ]; then
   fi
 fi
 
+# ── CI/CD 부재 감지 (v5.1) ─────────────────────────────────
+# GitHub remote는 있으나 .github/workflows가 0개면 CI/CD gap.
+# verdict를 env로 넘겨 아래 Python 블록에서 CICD_BOOTSTRAP 이슈 주입(일일 한도/중복 방지 포함).
+export CICD_GAP_VERDICT="OK"
+if [ -f "$SCRIPT_DIR/detect-cicd-gap.sh" ]; then
+  CICD_GAP_VERDICT=$(bash "$SCRIPT_DIR/detect-cicd-gap.sh" 2>/dev/null || echo "OK")
+fi
+export CICD_GAP_VERDICT
+
 if [ ! -f "$REGISTRY" ]; then
   echo "[Harness] registry.json 없음 — 'harness 시작'으로 초기화하세요."
   exit 0
@@ -94,6 +104,46 @@ except Exception as e:
 
 issues = registry.get("issues", [])
 stats = registry.get("stats", {})
+
+# ── CI/CD 부재 → CICD_BOOTSTRAP 이슈 자동 주입 (v5.1) ──
+# session-resume.sh 셸 영역에서 detect-cicd-gap.sh 결과를 env로 전달.
+# 중복 방지: 활성(READY/IN_PROGRESS/AWAITING_USER) CICD_BOOTSTRAP 있으면 skip.
+# 일일 한도: registry.cicd_bootstrap_state.last_date 로 1일 1회.
+import os, datetime
+if os.environ.get("CICD_GAP_VERDICT", "OK") == "GAP":
+    active = [i for i in issues if i.get("type") == "CICD_BOOTSTRAP"
+              and i.get("status") in ("READY", "IN_PROGRESS", "AWAITING_USER")]
+    # 이미 워크플로를 깔았던 이력(DONE)이 있으면 재주입 안 함 (사용자가 지운 게 아닌 한)
+    done_before = any(i.get("type") == "CICD_BOOTSTRAP" and i.get("status") == "DONE" for i in issues)
+    cb_state = registry.setdefault("cicd_bootstrap_state", {"last_date": ""})
+    today = datetime.date.today().isoformat()
+    if not active and not done_before and cb_state.get("last_date") != today:
+        # ID 생성: ISS-<max+1>
+        nums = [int(i["id"].split("-")[1]) for i in issues if i.get("id","").startswith("ISS-") and i["id"].split("-")[1].isdigit()]
+        new_id = f"ISS-{(max(nums)+1 if nums else 1):03d}"
+        new_issue = {
+            "id": new_id,
+            "type": "CICD_BOOTSTRAP",
+            "title": "CI/CD 기본 골격 부재 — GitHub Actions 워크플로 자동 생성",
+            "status": "READY",
+            "priority": "P1",
+            "assign_to": "cicd-harness",
+            "depth": 0,
+            "payload": {
+                "reason": "no_workflows",
+                "platform": "github-actions",
+                "scope": "최소 CI(lint·test·build) 워크플로 + 배포 게이트 골격 생성. 프로젝트 타입은 detect-project-type.sh로 자동 감지.",
+                "created_by": "session-resume:cicd-gap"
+            }
+        }
+        issues.append(new_issue)
+        cb_state["last_date"] = today
+        try:
+            with open(".claude/issue-db/registry.json", "w") as wf:
+                json.dump(registry, wf, ensure_ascii=False, indent=2)
+            print(f"\n🔧 [CI/CD] 워크플로 부재 감지 — {new_id} (CICD_BOOTSTRAP) 자동 생성. cicd-harness가 GitHub Actions 골격을 깐다.")
+        except Exception as e:
+            print(f"[CICD_BOOTSTRAP 주입 실패: {e}]")
 
 if not issues:
     print("[Harness] 이슈 없음 — 'harness 시작'으로 초기화하세요.")

@@ -38,7 +38,7 @@ route_axis() {
       echo "plan-harness:ux-design" ;;
     GENERATE_CODE|REFACTOR|FIX_BUG|BIZ_FIX|STYLE_FIX|QUALITY_IMPROVEMENT|BROWSER_QA)
       echo "plan-harness:code" ;;
-    DEPLOY_READY|ROLLBACK)
+    DEPLOY_READY|ROLLBACK|CICD_BOOTSTRAP|PIPELINE_CHECK|PIPELINE_OPTIMIZE)
       echo "plan-harness:deploy" ;;
     SCREEN_GAP)
       echo "plan-harness:product" ;;
