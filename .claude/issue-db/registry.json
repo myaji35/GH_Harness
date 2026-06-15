@@ -2539,6 +2539,606 @@
         "verified": "autobuild 6경로(build/update/디바운스/비대상무시/미설치skip/noop) 테스트 통과, batch 배포 후 scaffold 19/23 + hook symlink 검증",
         "note": "실제 graph.json 빌드는 셸→LLM 직접호출 불가라 신호파일(.rebuild-needed) → 다음 세션 Claude가 /graphify 실행하는 패턴. 각 프로젝트 첫 세션에서 초기 빌드 1회 발생."
       }
+    },
+    {
+      "id": "ISS-354",
+      "type": "CICD_BOOTSTRAP",
+      "title": "CI/CD 기본 골격 부재 — GitHub Actions 워크플로 자동 생성",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "cicd-harness",
+      "depth": 0,
+      "payload": {
+        "reason": "no_workflows",
+        "platform": "github-actions",
+        "scope": "최소 CI(lint·test·build) 워크플로 + 배포 게이트 골격 생성. 프로젝트 타입은 detect-project-type.sh로 자동 감지.",
+        "created_by": "session-resume:cicd-gap",
+        "files_changed": []
+      },
+      "completed_at": "2026-06-15T19:08:54.374276",
+      "result": {
+        "files_created": [
+          ".github/workflows/ci.yml"
+        ],
+        "checks": [
+          "bash -n",
+          "json validation",
+          "shellcheck"
+        ],
+        "project_type": "doc",
+        "deploy_gate_skipped": true,
+        "reason": "doc/shell repo — no deployable artifact",
+        "yaml_valid": true
+      }
+    },
+    {
+      "id": "ISS-355",
+      "type": "FEATURE_PLAN",
+      "title": "graphify 시맨틱 회상 보강 — 로컬 Ollama 임베딩 기반 의미 검색 (Phase 2)",
+      "status": "DONE",
+      "priority": "P2",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "payload": {
+        "feature": "graphify-semantic-recall",
+        "origin": "gbrain 비교 분석 — graphify의 빈 곳(시맨틱 회상) 보강",
+        "constraints": [
+          "로컬 Ollama nomic-embed-text 임베딩 사용 ($0/query, 클라우드 DB 금지)",
+          "gbrain의 운영 함정(Supabase 커넥션 고갈/락/시크릿 유출) 도입 금지 — 파일 기반 유지",
+          "graph.json 파일 기반 저장 유지 (서버리스 원칙)",
+          "기존 graphify edge 감사 태그(EXTRACTED/INFERRED/AMBIGUOUS) 보존",
+          "증분 임베딩 — content_hash로 변경 노드만 재임베딩 (GraphRAG 3원칙 #3)"
+        ],
+        "scope_hint": [
+          "Ollama 임베딩 파이프라인 (gate: ollama 미설치 시 skip)",
+          "graph.json 스키마 확장 — node.vector 필드 (선택적, 하위호환)",
+          "/graphify query --semantic 플래그 (기존 BFS query와 공존)",
+          "임베딩 캐시 + 증분 갱신 (graphify-autobuild.sh 연동)"
+        ],
+        "created_by": "user:gbrain-comparison"
+      },
+      "completed_at": "2026-06-15T19:14:40.726140",
+      "result": {
+        "stories": [
+          {
+            "story_id": "S1",
+            "title": "Ollama 게이트 + 임베딩 파이프라인",
+            "ui_needed": false,
+            "depends_on": []
+          },
+          {
+            "story_id": "S2",
+            "title": "graph.json 스키마 확장 — node.vector 선택적 필드",
+            "ui_needed": false,
+            "depends_on": [
+              "S1"
+            ]
+          },
+          {
+            "story_id": "S3",
+            "title": "증분 임베딩 캐시 + 갱신 로직",
+            "ui_needed": false,
+            "depends_on": [
+              "S1",
+              "S2"
+            ]
+          },
+          {
+            "story_id": "S4",
+            "title": "/graphify query --semantic 플래그",
+            "ui_needed": false,
+            "depends_on": [
+              "S2",
+              "S3"
+            ]
+          },
+          {
+            "story_id": "S5",
+            "title": "graphify-autobuild.sh 연동 + smoke test",
+            "ui_needed": false,
+            "depends_on": [
+              "S3",
+              "S4"
+            ]
+          }
+        ],
+        "execution_order": [
+          "S1",
+          "S2",
+          "S3",
+          "S4",
+          "S5"
+        ],
+        "constraints_verified": true
+      }
+    },
+    {
+      "id": "ISS-356",
+      "title": "[Plan:CEO검토] ISS-355 전략 검토",
+      "type": "PLAN_CEO_REVIEW",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "plan-ceo-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-355",
+      "depends_on": [],
+      "created_at": "2026-06-15T19:14:40.726140",
+      "payload": {
+        "source_issue": "ISS-355",
+        "source_plan": {
+          "stories": [
+            {
+              "story_id": "S1",
+              "title": "Ollama 게이트 + 임베딩 파이프라인",
+              "ui_needed": false,
+              "depends_on": []
+            },
+            {
+              "story_id": "S2",
+              "title": "graph.json 스키마 확장 — node.vector 선택적 필드",
+              "ui_needed": false,
+              "depends_on": [
+                "S1"
+              ]
+            },
+            {
+              "story_id": "S3",
+              "title": "증분 임베딩 캐시 + 갱신 로직",
+              "ui_needed": false,
+              "depends_on": [
+                "S1",
+                "S2"
+              ]
+            },
+            {
+              "story_id": "S4",
+              "title": "/graphify query --semantic 플래그",
+              "ui_needed": false,
+              "depends_on": [
+                "S2",
+                "S3"
+              ]
+            },
+            {
+              "story_id": "S5",
+              "title": "graphify-autobuild.sh 연동 + smoke test",
+              "ui_needed": false,
+              "depends_on": [
+                "S3",
+                "S4"
+              ]
+            }
+          ],
+          "execution_order": [
+            "S1",
+            "S2",
+            "S3",
+            "S4",
+            "S5"
+          ],
+          "constraints_verified": true
+        },
+        "feature": "ISS-355"
+      },
+      "result": {
+        "verdict": "HOLD_SCOPE",
+        "story_verdicts": {
+          "S1": "GO",
+          "S2": "GO",
+          "S3": "GO",
+          "S4": "GO",
+          "S5": "MODIFY"
+        },
+        "key_finding": "graph.json 미생성 — Phase1 BFS도 현재 noop. ISS-355 전 graphify 초기 빌드 필요",
+        "defer": "MCP노출/커뮤니티요약 임베딩은 Phase1 metrics 10줄 후 opportunity-scout 위임"
+      },
+      "spawn_rules": [],
+      "completed_at": "2026-06-15T19:21:32.812021"
+    },
+    {
+      "id": "ISS-357",
+      "title": "[Plan:Eng검토] ISS-355 실행가능성 검토",
+      "type": "PLAN_ENG_REVIEW",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "plan-eng-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-355",
+      "depends_on": [],
+      "created_at": "2026-06-15T19:14:40.726140",
+      "payload": {
+        "source_issue": "ISS-355",
+        "source_plan": {
+          "stories": [
+            {
+              "story_id": "S1",
+              "title": "Ollama 게이트 + 임베딩 파이프라인",
+              "ui_needed": false,
+              "depends_on": []
+            },
+            {
+              "story_id": "S2",
+              "title": "graph.json 스키마 확장 — node.vector 선택적 필드",
+              "ui_needed": false,
+              "depends_on": [
+                "S1"
+              ]
+            },
+            {
+              "story_id": "S3",
+              "title": "증분 임베딩 캐시 + 갱신 로직",
+              "ui_needed": false,
+              "depends_on": [
+                "S1",
+                "S2"
+              ]
+            },
+            {
+              "story_id": "S4",
+              "title": "/graphify query --semantic 플래그",
+              "ui_needed": false,
+              "depends_on": [
+                "S2",
+                "S3"
+              ]
+            },
+            {
+              "story_id": "S5",
+              "title": "graphify-autobuild.sh 연동 + smoke test",
+              "ui_needed": false,
+              "depends_on": [
+                "S3",
+                "S4"
+              ]
+            }
+          ],
+          "execution_order": [
+            "S1",
+            "S2",
+            "S3",
+            "S4",
+            "S5"
+          ],
+          "constraints_verified": true
+        },
+        "feature": "ISS-355"
+      },
+      "result": {
+        "verdict": "GO_WITH_CHANGES",
+        "risks": [
+          {
+            "level": "HIGH",
+            "desc": "graphify query --semantic CLI명 충돌 — pipx venv 수정 시 upgrade로 덮어씀. harness 래퍼로 분리 필요"
+          },
+          {
+            "level": "MEDIUM",
+            "desc": "vector를 graph.json 내부 저장 시 최대 43MB 폭증 — .vector_cache.json 단독 저장으로 고정"
+          },
+          {
+            "level": "LOW",
+            "desc": "Ollama 미설치 smoke test 환경의존"
+          }
+        ],
+        "package_fork_needed": false,
+        "cosine_perf": "7211노드 238ms 순수Python 허용",
+        "story_changes": {
+          "S2_S3": "MERGE — vector는 graph.json 밖 단독저장",
+          "S4": "래퍼 분리 + BFS폴백 성공기준 명시"
+        },
+        "revised_story_count": 4
+      },
+      "spawn_rules": [],
+      "completed_at": "2026-06-15T19:21:32.986131"
+    },
+    {
+      "id": "ISS-358",
+      "title": "[Story] Ollama 게이트 + 임베딩 파이프라인",
+      "type": "USER_STORY",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-357",
+      "depends_on": [],
+      "created_at": "2026-06-15T19:21:32.986131",
+      "payload": {
+        "acceptance_criteria": [],
+        "source_issue": "ISS-355",
+        "feature": "ISS-355",
+        "reviewed": true,
+        "blocked_by": [],
+        "review_note": "Eng: skip 게이트에 curl --max-time 2 타임아웃 포함. CEO: 선행 graph.json 빌드 필요(미생성)",
+        "files_changed": []
+      },
+      "result": {
+        "story": "S1",
+        "files_created": [
+          ".claude/graphify/semantic/ollama_gate.py",
+          ".claude/graphify/semantic/test_s1.py"
+        ],
+        "verified": {
+          "ollama_available": true,
+          "embed_dim": 768,
+          "skip_returns_none": true
+        },
+        "self_test": "5/5 PASS",
+        "unblocks": "ISS-359"
+      },
+      "spawn_rules": [],
+      "tags": [
+        "pingpong_blocked"
+      ],
+      "blocked_reason": "pingpong_guard: (USER_STORY, src=ISS-355) 5건 중복 감지",
+      "completed_at": "2026-06-15T19:25:52.594253"
+    },
+    {
+      "id": "ISS-359",
+      "title": "[Story] graph.json 스키마 확장 — node.vector 선택적 필드",
+      "type": "USER_STORY",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-357",
+      "depends_on": [],
+      "created_at": "2026-06-15T19:21:32.986131",
+      "payload": {
+        "acceptance_criteria": [],
+        "source_issue": "ISS-355",
+        "feature": "ISS-355",
+        "reviewed": true,
+        "blocked_by": [
+          "ISS-358"
+        ],
+        "review_note": "Eng MERGE 권고: S3(ISS-360)을 흡수 검토. vector는 graph.json 내부 저장 금지 → .vector_cache.json 단독(43MB 폭증 회피)",
+        "files_changed": []
+      },
+      "result": {
+        "story": "S2+S3 merged",
+        "files_created": [
+          ".claude/graphify/semantic/vector_cache.py",
+          ".claude/graphify/semantic/fixtures/graph.json",
+          ".claude/graphify/semantic/test_s2s3.py"
+        ],
+        "verified": {
+          "embedded": 5,
+          "reused": 5,
+          "tombstone": true,
+          "dim": 768,
+          "skip_no_ollama": true
+        },
+        "self_test": "5/5 PASS",
+        "merged_issue": "ISS-360",
+        "unblocks": "ISS-361"
+      },
+      "spawn_rules": [],
+      "tags": [
+        "pingpong_blocked"
+      ],
+      "blocked_reason": "pingpong_guard: (USER_STORY, src=ISS-355) 5건 중복 감지",
+      "completed_at": "2026-06-15T19:29:29.563470"
+    },
+    {
+      "id": "ISS-360",
+      "title": "[Story] 증분 임베딩 캐시 + 갱신 로직",
+      "type": "USER_STORY",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-357",
+      "depends_on": [],
+      "created_at": "2026-06-15T19:21:32.986131",
+      "payload": {
+        "acceptance_criteria": [],
+        "source_issue": "ISS-355",
+        "feature": "ISS-355",
+        "reviewed": true,
+        "blocked_by": [
+          "ISS-359"
+        ],
+        "review_note": "Eng: S2(ISS-359)와 병합 권고. 통합 시 본 이슈 CLOSED 처리",
+        "merge_note": "S2(ISS-359)에 통합 구현 — Eng MERGE 권고. vector_cache.py가 스키마+증분캐시 동시 담당"
+      },
+      "result": null,
+      "spawn_rules": [],
+      "tags": [
+        "pingpong_blocked"
+      ],
+      "blocked_reason": "pingpong_guard: (USER_STORY, src=ISS-355) 5건 중복 감지"
+    },
+    {
+      "id": "ISS-361",
+      "title": "[Story] /graphify query --semantic 플래그",
+      "type": "USER_STORY",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-357",
+      "depends_on": [],
+      "created_at": "2026-06-15T19:21:32.986131",
+      "payload": {
+        "acceptance_criteria": [],
+        "source_issue": "ISS-355",
+        "feature": "ISS-355",
+        "reviewed": true,
+        "blocked_by": [
+          "ISS-360"
+        ],
+        "review_note": "Eng HIGH리스크: 'graphify query --semantic' CLI명 금지(pipx venv upgrade로 덮어씀) → harness 래퍼 스크립트로 분리. 성공기준에 BFS 폴백 명시",
+        "files_changed": []
+      },
+      "result": {
+        "story": "S4",
+        "files_created": [
+          ".claude/graphify/semantic/semantic_query.py",
+          ".claude/graphify/semantic/test_s4.py"
+        ],
+        "verified": {
+          "top1": "IssueRegistry cosine=0.8258",
+          "top_k": 3,
+          "tombstone_excluded": true,
+          "fallback_signal": "None on no-ollama",
+          "cosine_correct": "1.0/0.0/-1.0"
+        },
+        "self_test": "8/8 PASS",
+        "wrapper_separated": true,
+        "unblocks": "ISS-362"
+      },
+      "spawn_rules": [],
+      "tags": [
+        "pingpong_blocked"
+      ],
+      "blocked_reason": "pingpong_guard: (USER_STORY, src=ISS-355) 5건 중복 감지",
+      "completed_at": "2026-06-15T19:32:04.072174"
+    },
+    {
+      "id": "ISS-362",
+      "title": "[Story] graphify-autobuild.sh 연동 + smoke test",
+      "type": "USER_STORY",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-357",
+      "depends_on": [],
+      "created_at": "2026-06-15T19:21:32.986131",
+      "payload": {
+        "acceptance_criteria": [],
+        "source_issue": "ISS-355",
+        "feature": "ISS-355",
+        "reviewed": true,
+        "blocked_by": [
+          "ISS-361"
+        ],
+        "review_note": "Eng: smoke test에 'Ollama 미설치=BFS폴백+캐시비어있음' 경로 검증 필수. CEO MODIFY: autobuild 자동연동 대신 첫 임베딩 수동 문서화",
+        "files_changed": []
+      },
+      "result": {
+        "story": "S5",
+        "files": [
+          ".claude/hooks/graphify-autobuild.sh (semantic step append)",
+          ".claude/graphify/semantic/vector_cache.py (__main__)",
+          ".claude/graphify/semantic/README.md",
+          ".claude/graphify/semantic/test_smoke.sh"
+        ],
+        "smoke_test": "8 PASS/0 FAIL",
+        "autobuild_skip_verified": {
+          "no_graph": "exit0",
+          "no_ollama": "exit0"
+        },
+        "syntax_ok": true
+      },
+      "spawn_rules": [],
+      "completed_at": "2026-06-15T19:35:20.611099"
+    },
+    {
+      "id": "ISS-363",
+      "title": "[Plan:구현] ISS-358",
+      "type": "GENERATE_CODE",
+      "status": "CLOSED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 3,
+      "retry_count": 0,
+      "parent_id": "ISS-358",
+      "depends_on": [],
+      "created_at": "2026-06-15T19:25:52.594253",
+      "payload": {
+        "source_issue": "ISS-358",
+        "acceptance_criteria": [],
+        "close_reason": "중복 — S1(ISS-358)에서 코드 작성·임베딩 검증 5/5 완료. on_complete 기본매핑이 만든 재구현 이슈"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-364",
+      "title": "[Plan:구현] ISS-359",
+      "type": "GENERATE_CODE",
+      "status": "CLOSED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 3,
+      "retry_count": 0,
+      "parent_id": "ISS-359",
+      "depends_on": [],
+      "created_at": "2026-06-15T19:29:29.563470",
+      "payload": {
+        "source_issue": "ISS-359",
+        "acceptance_criteria": [],
+        "close_reason": "중복 — S2+S3 이미 vector_cache.py로 구현·검증 완료"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-365",
+      "title": "[Plan:구현] ISS-361",
+      "type": "GENERATE_CODE",
+      "status": "CLOSED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 3,
+      "retry_count": 0,
+      "parent_id": "ISS-361",
+      "depends_on": [],
+      "created_at": "2026-06-15T19:32:04.072174",
+      "payload": {
+        "source_issue": "ISS-361",
+        "acceptance_criteria": [],
+        "close_reason": "중복 — S4 이미 구현·검증 완료"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-366",
+      "title": "[Plan:구현] ISS-362",
+      "type": "GENERATE_CODE",
+      "status": "CLOSED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 3,
+      "retry_count": 0,
+      "parent_id": "ISS-362",
+      "depends_on": [],
+      "created_at": "2026-06-15T19:35:20.611099",
+      "payload": {
+        "source_issue": "ISS-362",
+        "acceptance_criteria": [],
+        "close_reason": "중복 — S5 이미 구현·검증 완료"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-366",
+      "type": "REFACTOR",
+      "title": "graphify semantic 모듈 harness-core 승격 + install.sh 전파 로직",
+      "status": "DONE",
+      "priority": "P2",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "payload": {
+        "origin": "graphify Phase2 전파",
+        "scope": "global/graphify/semantic 원천 신설, sync_harness_core 동기화 블록, ensure_graphify_semantic symlink 헬퍼"
+      },
+      "result": {
+        "source": "global/graphify/semantic/ (4 files)",
+        "sync": "harness-core/graphify/semantic",
+        "propagation": "ensure_graphify_semantic symlink, scaffold skip 분기에서도 보강",
+        "verified": "fake-proj symlink import OK, ollama_available True",
+        "gitignore": "semantic/__pycache__,fixtures 추가"
+      }
     }
   ],
   "hooks": {
@@ -2670,6 +3270,54 @@
         "issue_type": "LINT_CHECK",
         "plan_created": 0,
         "timestamp": "2026-05-30T11:31:00.357098"
+      },
+      {
+        "issue_id": "ISS-354",
+        "issue_type": "CICD_BOOTSTRAP",
+        "plan_created": 0,
+        "timestamp": "2026-06-15T19:08:54.374276"
+      },
+      {
+        "issue_id": "ISS-355",
+        "issue_type": "FEATURE_PLAN",
+        "plan_created": 2,
+        "timestamp": "2026-06-15T19:14:40.726140"
+      },
+      {
+        "issue_id": "ISS-356",
+        "issue_type": "PLAN_CEO_REVIEW",
+        "plan_created": 0,
+        "timestamp": "2026-06-15T19:21:32.812021"
+      },
+      {
+        "issue_id": "ISS-357",
+        "issue_type": "PLAN_ENG_REVIEW",
+        "plan_created": 5,
+        "timestamp": "2026-06-15T19:21:32.986131"
+      },
+      {
+        "issue_id": "ISS-358",
+        "issue_type": "USER_STORY",
+        "plan_created": 1,
+        "timestamp": "2026-06-15T19:25:52.594253"
+      },
+      {
+        "issue_id": "ISS-359",
+        "issue_type": "USER_STORY",
+        "plan_created": 1,
+        "timestamp": "2026-06-15T19:29:29.563470"
+      },
+      {
+        "issue_id": "ISS-361",
+        "issue_type": "USER_STORY",
+        "plan_created": 1,
+        "timestamp": "2026-06-15T19:32:04.072174"
+      },
+      {
+        "issue_id": "ISS-362",
+        "issue_type": "USER_STORY",
+        "plan_created": 1,
+        "timestamp": "2026-06-15T19:35:20.611099"
       }
     ],
     "on_fail": [],
@@ -6991,14 +7639,558 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 250,
+        "timestamp": "2026-06-10T14:00:47.499593",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 54,
+          "done": 14,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 251,
+        "timestamp": "2026-06-10T14:03:52.256065",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 54,
+          "done": 14,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 252,
+        "timestamp": "2026-06-11T11:03:29.285522",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 54,
+          "done": 14,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 253,
+        "timestamp": "2026-06-11T11:06:34.552155",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 54,
+          "done": 14,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 254,
+        "timestamp": "2026-06-11T12:09:00.727903",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, plan-ceo-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 54,
+          "done": 14,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 255,
+        "timestamp": "2026-06-11T12:12:08.268534",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 54,
+          "done": 14,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 256,
+        "timestamp": "2026-06-12T10:33:38.193899",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 54,
+          "done": 14,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 257,
+        "timestamp": "2026-06-12T10:33:41.754379",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 54,
+          "done": 14,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 258,
+        "timestamp": "2026-06-12T10:36:54.475882",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 54,
+          "done": 14,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 259,
+        "timestamp": "2026-06-15T19:07:12.764866",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 55,
+          "done": 14,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 260,
+        "timestamp": "2026-06-15T19:07:14.741802",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 55,
+          "done": 14,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 261,
+        "timestamp": "2026-06-15T19:08:44.846479",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 55,
+          "done": 14,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 262,
+        "timestamp": "2026-06-15T19:09:08.201195",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 55,
+          "done": 15,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 263,
+        "timestamp": "2026-06-15T19:09:13.358344",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 55,
+          "done": 15,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 264,
+        "timestamp": "2026-06-15T19:10:25.275337",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 55,
+          "done": 15,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 265,
+        "timestamp": "2026-06-15T19:10:27.373834",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 55,
+          "done": 15,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 266,
+        "timestamp": "2026-06-15T19:14:33.198730",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 56,
+          "done": 15,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 267,
+        "timestamp": "2026-06-15T19:17:40.326863",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, plan-ceo-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 58,
+          "done": 17,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 268,
+        "timestamp": "2026-06-15T19:21:19.147959",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 58,
+          "done": 17,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 269,
+        "timestamp": "2026-06-15T19:22:27.474244",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 63,
+          "done": 18,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 270,
+        "timestamp": "2026-06-15T19:22:29.575072",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 63,
+          "done": 18,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 271,
+        "timestamp": "2026-06-15T19:25:46.759270",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 63,
+          "done": 18,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 272,
+        "timestamp": "2026-06-15T19:29:19.087449",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 64,
+          "done": 19,
+          "in_progress": 2,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 273,
+        "timestamp": "2026-06-15T19:31:52.915317",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 65,
+          "done": 21,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 274,
+        "timestamp": "2026-06-15T19:35:12.286773",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 66,
+          "done": 22,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 275,
+        "timestamp": "2026-06-15T19:35:56.499365",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 67,
+          "done": 23,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 276,
+        "timestamp": "2026-06-15T19:35:58.286866",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 67,
+          "done": 23,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 277,
+        "timestamp": "2026-06-15T19:40:33.860720",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 67,
+          "done": 23,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 278,
+        "timestamp": "2026-06-15T19:42:43.659212",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, plan-ceo-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 67,
+          "done": 23,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 279,
+        "timestamp": "2026-06-15T19:44:30.273721",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 67,
+          "done": 23,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 280,
+        "timestamp": "2026-06-15T19:46:22.256662",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 67,
+          "done": 23,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 281,
+        "timestamp": "2026-06-15T19:46:24.553513",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 67,
+          "done": 23,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 346,
-    "completed": 31,
+    "total_issues": 357,
+    "completed": 39,
     "failed": 0,
-    "evolved": 249
+    "evolved": 281
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -7019,7 +8211,7 @@
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "2026-06-09",
+    "date": "2026-06-15",
     "created_today": 0
   },
   "proactive_scan_state": {
@@ -7069,5 +8261,8 @@
   "background_state": {
     "active": 0,
     "issues": []
+  },
+  "cicd_bootstrap_state": {
+    "last_date": "2026-06-15"
   }
 }
