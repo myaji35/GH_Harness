@@ -62,6 +62,7 @@ compute_harness_sha() {
     find "$SCRIPT_DIR/project/.claude/hooks" -type f ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
     find "$SCRIPT_DIR/global/agents" -type f -name '*.md' ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
     find "$SCRIPT_DIR/global/skills" -type f -name '*.md' ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
+    find "$SCRIPT_DIR/global/graphify/semantic" -type f ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
     find "$SCRIPT_DIR/bin" -type f -name '*.sh' ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
     find "$SCRIPT_DIR/templates/wiki" -type f ! -name '._*' 2>/dev/null | sort | while read -r f; do shasum "$f" 2>/dev/null; done
     [ -f "$SCRIPT_DIR/project/.claude/settings.json" ] && shasum "$SCRIPT_DIR/project/.claude/settings.json"

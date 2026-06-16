@@ -3139,6 +3139,22 @@
         "verified": "fake-proj symlink import OK, ollama_available True",
         "gitignore": "semantic/__pycache__,fixtures 추가"
       }
+    },
+    {
+      "id": "ISS-367",
+      "type": "FIX_BUG",
+      "title": "compute_harness_sha에 graphify semantic 누락 — 신규 자산 자동전파 불가",
+      "status": "DONE",
+      "priority": "P2",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "payload": {
+        "symptom": "semantic 변경해도 버전SHA 불변 → 일반 harness 업데이트가 전 프로젝트 skip(--force 필요)"
+      },
+      "result": {
+        "fix": "compute_harness_sha에 global/graphify/semantic find 1줄 추가",
+        "verified": "SHA 변경 반응+복원 정확"
+      }
     }
   ],
   "hooks": {
@@ -8183,6 +8199,74 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 282,
+        "timestamp": "2026-06-15T19:48:56.826634",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 68,
+          "done": 24,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 283,
+        "timestamp": "2026-06-15T19:48:59.420811",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 68,
+          "done": 24,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 284,
+        "timestamp": "2026-06-15T19:51:13.002016",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, plan-ceo-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 68,
+          "done": 24,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 285,
+        "timestamp": "2026-06-15T19:54:18.603490",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, test-harness, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 68,
+          "done": 24,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -8190,7 +8274,7 @@
     "total_issues": 357,
     "completed": 39,
     "failed": 0,
-    "evolved": 281
+    "evolved": 285
   },
   "hermes_state": {
     "invocations_by_issue": {},
