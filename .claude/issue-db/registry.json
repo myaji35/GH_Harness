@@ -73,7 +73,9 @@
           "project/.claude/hooks/session-resume.sh",
           "install.sh"
         ],
-        "blocked_by": "ISS-301",
+        "blocked_by": [
+          "ISS-301"
+        ],
         "rubric": {
           "criteria": [
             "check-harness.md / plan-harness.md 신규 생성",
@@ -113,7 +115,9 @@
           "docs/graphrag-principles.md",
           "project-state.md"
         ],
-        "blocked_by": "ISS-302",
+        "blocked_by": [
+          "ISS-302"
+        ],
         "rubric": {
           "criteria": [
             "신규 스킬 2종(harness-ui-trends-2026, datago-fetch) 설치 완료",
@@ -186,7 +190,9 @@
       "depth": 0,
       "payload": {
         "scope_dir": "global/agents",
-        "blocked_by": "ISS-304",
+        "blocked_by": [
+          "ISS-304"
+        ],
         "rubric": {
           "criteria": [
             "15개 누락 에이전트 전원에 Hermes 에스컬레이션 섹션 주입",
@@ -216,7 +222,9 @@
       "payload": {
         "scope_dir": ".claude/hooks",
         "test_scenario": "인위적 REPEAT_FAIL 호출 → HERMES_CONSULT 생성 확인 → Circuit Breaker 3회 초과 시 차단 확인",
-        "blocked_by": "ISS-305",
+        "blocked_by": [
+          "ISS-305"
+        ],
         "rubric": {
           "criteria": [
             "정상 호출 3회 허용 확인",
@@ -3101,7 +3109,7 @@
       "spawn_rules": []
     },
     {
-      "id": "ISS-366",
+      "id": "ISS-368",
       "title": "[Plan:구현] ISS-362",
       "type": "GENERATE_CODE",
       "status": "CLOSED",
@@ -3115,7 +3123,7 @@
       "payload": {
         "source_issue": "ISS-362",
         "acceptance_criteria": [],
-        "close_reason": "중복 — S5 이미 구현·검증 완료"
+        "close_reason": "중복 — ISS-362(S5) 이미 구현 완료. id충돌로 재배정"
       },
       "result": null,
       "spawn_rules": []
@@ -3154,6 +3162,30 @@
       "result": {
         "fix": "compute_harness_sha에 global/graphify/semantic find 1줄 추가",
         "verified": "SHA 변경 반응+복원 정확"
+      }
+    },
+    {
+      "id": "ISS-369",
+      "type": "SYSTEMIC_ISSUE",
+      "title": "harness 검증 보강 6종 — 모델맵/라우팅/blocked_by/중복디스패치/registry검증/CI테스트",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "meta-agent",
+      "depth": 0,
+      "payload": {
+        "goal": "완성도 있는 harness 운영 기술검증 보강"
+      },
+      "result": {
+        "fixes": [
+          "dispatch-ready MODEL_MAP: plan-eng-reviewer/opportunity-scout/brand-guardian sonnet→opus (CLAUDE.md 단일진실 정합)",
+          "axis-router: SCENARIO_FIX 라우팅 추가 (hermes:unknown-type→plan-harness:code, effort high)",
+          "on_complete: blocked_by 의존성 자동 해소 로직 (수동정리 루프 제거)",
+          "on_complete: USER_STORY already_implemented 가드 (GENERATE_CODE 중복 디스패치 방지)",
+          "validate-registry.py 신설 + CI 연동 (필수필드/enum/중복id/blocked_by 참조무결성)",
+          "ci.yml: Python 테스트 + registry 검증 step 추가"
+        ],
+        "data_repair": "blocked_by 문자열손상 4건(ISS-302/303/305/306) list 정규화, ISS-366 중복id 해소",
+        "verified": "문법 OK, SCENARIO_FIX 라우팅 확인, blocked_by 단위테스트 PASS, registry 69이슈 검증통과"
       }
     }
   ],
@@ -8267,6 +8299,74 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 286,
+        "timestamp": "2026-06-16T09:03:23.033327",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 69,
+          "done": 25,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 287,
+        "timestamp": "2026-06-16T09:06:30.360448",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 69,
+          "done": 25,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 288,
+        "timestamp": "2026-06-17T09:59:23.797012",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 69,
+          "done": 25,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 289,
+        "timestamp": "2026-06-17T10:00:36.403989",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 69,
+          "done": 25,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -8274,7 +8374,7 @@
     "total_issues": 357,
     "completed": 39,
     "failed": 0,
-    "evolved": 285
+    "evolved": 289
   },
   "hermes_state": {
     "invocations_by_issue": {},

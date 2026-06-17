@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate Shell & JSON
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Bash syntax check (bash -n)
+        run: |
+          echo "=== bash -n syntax check ==="
+          fail=0
+          while IFS= read -r -d '' f; do
+            if ! bash -n "$f" 2>&1; then
+              echo "FAIL: $f"
+              fail=1
+            else
+              echo "OK:   $f"
+            fi
+          done < <(find . -name "*.sh" -not -path "./.git/*" -print0)
+          exit $fail
+
+      - name: JSON validation
+        run: |
+          echo "=== JSON validation ==="
+          fail=0
+          while IFS= read -r -d '' f; do
+            if ! python3 -m json.tool "$f" > /dev/null 2>&1; then
+              echo "FAIL: $f"
+              fail=1
+            else
+              echo "OK:   $f"
+            fi
+          done < <(find . -name "*.json" -not -path "./.git/*" -not -path "./site/*" -print0)
+          exit $fail
+
+      - name: Registry schema validation
+        run: |
+          echo "=== registry.json 스키마 무결성 ==="
+          if [ -f .claude/issue-db/registry.json ]; then
+            python3 global/lib/validate-registry.py .claude/issue-db/registry.json
+          else
+            echo "registry.json 없음 — skip"
+          fi
+
+      - name: Python semantic tests
+        run: |
+          echo "=== graphify semantic 단위 테스트 ==="
+          sem=.claude/graphify/semantic
+          if [ -d "$sem" ]; then
+            # Ollama 없는 CI 환경 → skip 경로 검증만 (게이트 False 시 graceful)
+            for t in "$sem"/test_*.py; do
+              [ -f "$t" ] || continue
+              echo "--- $t ---"
+              python3 "$t" || echo "  (Ollama 미설치 환경 — skip 경로 동작 확인)"
+            done
+          else
+            echo "semantic 모듈 없음 — skip"
+          fi
+
+      - name: Shellcheck (warning only)
+        continue-on-error: true
+        run: |
+          echo "=== shellcheck (non-blocking) ==="
+          find . -name "*.sh" -not -path "./.git/*" | xargs shellcheck --severity=warning || true

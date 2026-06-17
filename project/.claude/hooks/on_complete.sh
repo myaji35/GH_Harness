@@ -275,8 +275,17 @@ elif issue_type in ('PLAN_CEO_REVIEW', 'PLAN_ENG_REVIEW'):
 
 elif issue_type == 'USER_STORY':
     # 사용자 스토리 완료 → UI 필요 여부에 따라 분기
+    # 단, 스토리가 이미 구현 완료된 경우(result.already_implemented 또는 files_created/files 존재)
+    # GENERATE_CODE 재생성 금지 — 중복 디스패치/수동정리 루프 방지.
+    already_done = (
+        result.get('already_implemented') is True
+        or bool(result.get('files_created'))
+        or bool(result.get('files'))
+    )
     needs_ui = result.get('needs_ui', False)
-    if needs_ui:
+    if already_done:
+        print(f"  → USER_STORY {issue_id} 이미 구현됨(files/already_implemented) → GENERATE_CODE 생략")
+    elif needs_ui:
         add_issue(
             f"[Plan:UX설계] {result.get('title', issue_id)} UI 설계",
             'UX_DESIGN', 'P1', 'ux-harness',
@@ -831,6 +840,25 @@ if new_issues:
         registry['stats']['total_issues'] = registry['stats'].get('total_issues', 0) + 1
 else:
     print(f"\n✅ 파이프라인 사이클 완료 — 추가 이슈 없음")
+
+# ── blocked_by 의존성 자동 해소 ──────────────────────────
+# 이슈 완료(DONE/COMPLETED) 시, 그 이슈를 blocked_by로 참조하던 BLOCKED 이슈 중
+# 모든 의존이 해소된 것을 READY로 승격. (수동 정리 루프 제거 — 핵심 결함 수정)
+_done_ids = {
+    iss['id'] for iss in registry.get('issues', [])
+    if iss.get('status') in ('DONE', 'COMPLETED', 'CLOSED')
+}
+_unblocked = 0
+for iss in registry.get('issues', []):
+    if iss.get('status') != 'BLOCKED':
+        continue
+    bb = iss.get('payload', {}).get('blocked_by', [])
+    if bb and all(dep in _done_ids for dep in bb):
+        iss['status'] = 'READY'
+        _unblocked += 1
+        print(f"  → 의존성 해소: {iss['id']} BLOCKED → READY (blocked_by={bb})")
+if _unblocked:
+    print(f"[on_complete] blocked_by 자동 해소: {_unblocked}건")
 
 # Hook 이력 기록
 registry.setdefault('hooks', {}).setdefault('on_complete', []).append({
