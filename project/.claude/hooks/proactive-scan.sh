@@ -174,6 +174,41 @@ if os.path.exists("package-lock.json"):
     except:
         pass
 
+# ── 5.5. 시크릿 노출 스캔 (git 추적 파일) ───────────
+# 근거: 2026-06 Gemini 키 유출 사고 — git 추적 파일에 평문 키 커밋 → 봇 수집 → 폭주
+try:
+    SECRET_RE = (r'AIza[0-9A-Za-z_-]{35}|sk-ant-[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9]{20,}'
+                 r'|gh[pousr]_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}')
+    tracked = subprocess.run(["git", "ls-files"], capture_output=True, text=True, timeout=20)
+    secret_files = []
+    for f in tracked.stdout.split("\n"):
+        if not f or any(s in f for s in ("node_modules", ".lock", "/assets/", "playwright")):
+            continue
+        try:
+            hit = subprocess.run(["grep", "-lEo", SECRET_RE, f],
+                                 capture_output=True, text=True, timeout=5)
+            # placeholder 제외 후 실제 매칭 라인 있는지
+            if hit.returncode == 0:
+                lines = subprocess.run(["grep", "-Eo", SECRET_RE, f],
+                                       capture_output=True, text=True, timeout=5).stdout
+                real = [l for l in lines.split("\n")
+                        if l and not any(p in l for p in ("YOUR_", "example", "REDACTED"))]
+                if real:
+                    secret_files.append(f)
+        except:
+            continue
+    scan_results["secret_files"] = len(secret_files)
+    if secret_files:
+        findings.append({
+            "type": "SECURITY",
+            "priority": "P0",
+            "title": f"git 추적 파일에 API 키/시크릿 평문 노출 {len(secret_files)}개",
+            "assign_to": "agent-harness",
+            "detail": "환경변수 전환 + .gitignore 처리 필요. 파일: " + ", ".join(secret_files[:5])
+        })
+except:
+    pass
+
 # ── 6. Gemfile (Ruby) ───────────────────────────────
 if os.path.exists("Gemfile"):
     try:

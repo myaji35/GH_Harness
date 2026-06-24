@@ -525,6 +525,36 @@ GraphRAG/Knowledge Graph를 구현하는 모든 코드는 **`docs/graphrag-princ
 - agent-harness가 GraphRAG 코드를 작성/수정할 때 `docs/graphrag-principles.md`의 위반 감지 체크리스트 8개 항목을 자가 점검
 - 미달 항목 발견 시 ARCH_DECISION 이슈 자동 생성 → hermes-escalate.sh로 advisor 자문 요청
 
+## 시크릿/API 키 관리 규칙 (v5.2, 2026-06-24~) ⭐⭐ SECURITY
+
+**근거**: 2026-06-12~13 Gemini API 키 유출 사고. GitHub 공개 저장소에 평문 커밋된 키(`deploy.sh`·`.env.production`·`.md` 문서)를 키 스캐닝 봇이 자동 수집 → 존재하지 않는 모델명 `gemini-3.5-flash`로 이틀간 1,735만 토큰 폭주. 100% 자사 키 관리 실수. 상세: 본 사고 보고서.
+
+### 절대 금지 (HARD BLOCK — secret-guard가 커밋 차단)
+- API 키/토큰/시크릿을 코드·`.env*`·`deploy*.sh`·`.md` 문서에 **평문 작성 후 커밋**
+- 키를 git TRACKED 파일에 하드코딩
+- `.env.production` 등 실값 환경파일을 `.gitignore` 없이 추적
+
+### 강제 (MUST)
+- 키는 **환경변수 / kamal secrets / Rails credentials만** 사용 — 코드에 직접 박지 않는다
+- 모든 `.env*`는 `.gitignore`에 표준 등록 (`.env`, `.env.local`, `.env*.local`, `.env.production`)
+- 문서/예시의 키는 반드시 `<YOUR_API_KEY>` placeholder 또는 `${ENV_VAR}` 참조
+- 커밋 전 **secret-guard.sh 통과 필수** (자동 강제)
+
+### secret-guard.sh (자동 강제 hook)
+- **PreToolUse(Bash)**: `git commit`/`git push` 명령 감지 → staged diff에서 시크릿 패턴 스캔 → 발견 시 **exit 2(커밋 차단)**
+- **PostToolUse(Write|Edit)**: 수정 파일에 시크릿 하드코딩 시 경고 + 환경변수 전환 유도
+- 탐지: `AIza…`(Google), `sk-…`/`sk-ant-…`(OpenAI/Anthropic), `ghp_…`(GitHub), `AKIA…`(AWS), 일반 `api_key=…` 패턴
+- placeholder(`<YOUR_…>`, `${…}`, `example` 등)는 자동 제외
+
+### 키 유출 의심 시 (Incident Response)
+1. **즉시 콘솔에서 키 무효화** (출혈 차단 — 코드 정리보다 우선)
+2. 새 키는 환경변수로만 주입
+3. 빌링/사용량에서 비정상 소진 확인
+4. proactive-scan.sh가 git 추적 파일 시크릿 발견 시 `SECURITY` P0 이슈 자동 생성 → 즉시 처리
+
+### T2 SECURITY 연계
+키/시크릿 관련 외부 노출·무효화·신규 발급은 T2 SECURITY 카테고리 → 무효화는 대표님 콘솔 직접 처리(에이전트 대행 불가).
+
 ## 운영 원칙
 - 성공 출력 → 핵심 수치만 (컨텍스트 절약)
 - 실패 출력 → 전체 오류 상세

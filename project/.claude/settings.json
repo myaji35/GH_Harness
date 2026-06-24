@@ -76,6 +76,12 @@
             "command": "bash .claude/hooks/sandbox-enforce.sh",
             "timeout": 5,
             "statusMessage": "Sandbox policy check..."
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/secret-guard.sh",
+            "timeout": 8,
+            "statusMessage": "Scanning for leaked secrets..."
           }
         ]
       }
@@ -89,6 +95,12 @@
             "command": "bash .claude/hooks/post-code-change.sh",
             "timeout": 10,
             "statusMessage": "Tracking code change..."
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/secret-guard.sh",
+            "timeout": 8,
+            "statusMessage": "Checking for hardcoded secrets..."
           }
         ]
       }
