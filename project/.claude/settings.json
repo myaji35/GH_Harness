@@ -52,6 +52,12 @@
             "command": "bash .claude/hooks/session-resume.sh",
             "timeout": 10,
             "statusMessage": "Restoring harness state..."
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/fleet-scan.sh",
+            "timeout": 10,
+            "statusMessage": "Scanning fleet for orphaned issues..."
           }
         ]
       }

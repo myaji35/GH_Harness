@@ -52,34 +52,12 @@
             "command": "bash .claude/hooks/session-resume.sh",
             "timeout": 10,
             "statusMessage": "Restoring harness state..."
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/session-end-dream.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/user-input-mark.sh",
-            "timeout": 5
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/intent-gate.sh",
-            "timeout": 8,
-            "statusMessage": "Classifying intent..."
+            "command": "bash .claude/hooks/fleet-scan.sh",
+            "timeout": 10,
+            "statusMessage": "Scanning fleet for orphaned issues..."
           }
         ]
       }
@@ -175,6 +153,34 @@
             "timeout": 30,
             "statusMessage": "Meta Agent reviewing...",
             "asyncRewake": true
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-end-dream.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/user-input-mark.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/intent-gate.sh",
+            "timeout": 8,
+            "statusMessage": "Classifying intent..."
           }
         ]
       }
