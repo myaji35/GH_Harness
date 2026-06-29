@@ -28,7 +28,22 @@ low = prompt.lower()
 EXCLUDE_META = ['harness', '하네스', '점검', '확인해', '상태 보여', '스캔',
                 'biz check', '비즈', 'race mode', '레이스', '화면 갭', 'graphify',
                 '커밋', 'push', '푸시', '의견', '어떻게 생각', '알려줘', '설명',
-                '보여줘', '뭐야', '무엇', '왜', '리스트', '목록', '찾아줘']
+                '보여줘', '뭐야', '무엇', '왜', '리스트', '목록', '찾아줘',
+                '반영', '되고 있', '제대로', '맞나', '맞아', '되나', '하고 있',
+                # 규칙성 메타 지시 — 작업이 아니라 CLAUDE.md에 박을 규칙 (ISS-073 오인 방지)
+                '앞으로', '항상', '매번', '언제나', '규칙으로', '~하게 해', '하도록 해',
+                '하게 해줘', '하도록 해줘', '습관', '원칙으로']
+
+# 0-b) 의문문/조회형 우선 통과 — 실작업 동사가 섞여도 '질문'이면 이슈화하지 않는다.
+#      (ISS-074: '~기능 반영되고 있나?' 같은 메타질문이 WORK 동사에 걸려 오탐하던 버그)
+#      조회형 통과는 이슈를 '안 만드는' 안전 방향이라 전역 적용해도 부작용이 적다.
+QUESTION = ['?', '？', '나요', '습니까', '까요', '는가', '은가', '했는데', '하는데',
+            '되는지', '있는지', '인지', '될까', '할까']
+def asks():
+    p = prompt.strip()
+    return any(p.endswith(q) or q in p for q in QUESTION)
+if asks():
+    sys.exit(0)
 # 실작업형 동사(이것이 있으면 이슈화)
 WORK = ['추가', '구현', '만들어', '만들어줘', '생성해', '개발',
         '수정', '고쳐', '버그', 'fix', '리팩터', '리팩토링', 'refactor',
@@ -86,8 +101,16 @@ reg['issues'].append({
 reg.setdefault('stats', {})['total_issues'] = reg['stats'].get('total_issues',0)+1
 json.dump(reg, open(REG,'w'), ensure_ascii=False, indent=2)
 
-# stdout → Claude 컨텍스트 주입(검증 루프 강제 안내)
+# stdout → Claude 컨텍스트 주입(검증 루프 강제 안내 + 즉시 실행 명령)
 print(f"[지시 분류 게이트] 이 지시를 실작업으로 분류 → {iid}({itype}/{prio}) 자동 생성.")
-print(f"→ 구현 후 on_complete.sh가 LINT/TEST/캐릭터저니 검증을 자동 파생한다. 검증 없이 '완료' 보고 금지.")
+print(f"")
+print(f"[강제 실행 지시 — 이 턴에서 즉시 수행하라]")
+print(f"1. {iid}를 status=IN_PROGRESS로 변경하고 '이슈로 등록했습니다'로 끝내지 마라.")
+print(f"   → 이슈 생성은 시작점이지 완료가 아니다. 지금 이 응답에서 바로 구현에 착수하라.")
+print(f"2. {assign} 역할로 {iid}({itype})를 실제 구현/수정한다.")
+print(f"3. 구현 후 bash .claude/hooks/on_complete.sh {iid} {itype} '{{...result...}}' 호출")
+print(f"   → LINT/TEST/캐릭터저니 검증 자동 파생. 검증 통과 전 '완료' 보고 금지.")
+print(f"4. 완료 시 {iid} status=COMPLETED.")
+print(f"※ '이슈화했습니다' 또는 '다음 세션에서 처리' 류로 미루는 것은 규칙 위반이다. 지금 실행하라.")
 PY
 exit 0

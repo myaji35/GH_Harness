@@ -1,13 +1,19 @@
 # Self-Evolving Harness System
 
-## 지시 분류 게이트 (v5.3, 2026-06-29~) ⭐
+## 지시 분류 게이트 (v5.3, 2026-06-29~) ⭐⭐ 이슈생성 ≠ 작업완료
 
-`UserPromptSubmit` hook의 `intent-gate.sh`가 대표님의 모든 프롬프트를 **자동 3분류**한다 (강도=실작업형만 강제):
-- **실작업형**(추가/구현/수정/고쳐/리팩토링/연동 등 동사) → registry.json에 이슈 자동 생성(FEATURE_PLAN/FIX_BUG/REFACTOR) + 검증루프 안내. **구현 후 on_complete.sh가 LINT/TEST/캐릭터저니 검증 자동 파생 → 검증 없이 "완료" 보고 금지.**
-- **즉답/조회형**(상태/값/의견/커밋 등) → 이슈화 X, 즉시 실행 (속도 보존, Karpathy #2).
-- **모호형** → 이슈화 X, 시작 전 1회 옵션 제시(메타룰 #1).
-- hook이 `[지시 분류 게이트] → ISS-NNN 자동 생성` 컨텍스트를 주입하면 그 이슈 ID로 검증 루프를 탄다.
-- 근거: 대표님 "단순 지시도 이슈화→구현→검증 강제" 요청. 단순 프롬프트 습관이 검증 누락으로 이어지는 것을 입력단에서 차단.
+`UserPromptSubmit` hook의 `intent-gate.sh`가 사용자 프롬프트를 자동 분류한다:
+- **실작업형**(추가/구현/수정/고쳐/리팩토링 등) → registry에 ISS-NNN 자동 생성 + **즉시 실행 강제 지시 출력**
+- **즉답/조회형**(상태/값/의견/커밋) → 이슈화 X, 즉시 실행
+- **규칙성 메타지시**("앞으로 ~하게 해줘", "항상", "원칙으로", "습관") → 이슈화 X. **작업이 아니라 CLAUDE.md에 박을 규칙**이다.
+- **의문문 메타**("반영되고 있나?", "맞나?") → 이슈화 X, 답변만.
+
+### ⭐ 이슈 생성은 시작점이지 완료가 아니다 (ISS-073/082 incident — 절대 위반 금지)
+intent-gate가 `[지시 분류 게이트] → ISS-NNN 자동 생성`을 출력하면:
+1. **같은 응답 턴에서 즉시** ISS-NNN을 IN_PROGRESS로 바꾸고 **구현에 착수**한다.
+2. "이슈로 등록했습니다" / "다음 세션에서 처리하겠습니다" / "READY 대기" → **전부 규칙 위반**. 지금 구현하라.
+3. 구현 후 `bash .claude/hooks/on_complete.sh ISS-NNN <type> '<result>'` → 검증 자동 파생 → 검증 통과 전 완료 보고 금지.
+4. **근거**: 2026-06-29 — 하위 프로젝트(infraGrid 등)에서 게이트가 이슈만 생성하고 구현·검증으로 이어지지 않아 READY/CLOSED_INVALID로 방치됨. 대표님이 "지시받은 내용 없다는 듯 딴말한다"고 지적. 게이트가 강제 실행 지시를 출력하도록 보강했으나, 이 규칙으로 행동 차원에서도 이중 강제한다.
 
 ## 자율 실행 원칙 (최우선 규칙)
 
@@ -571,22 +577,6 @@ GraphRAG/Knowledge Graph를 구현하는 모든 코드는 **`docs/graphrag-princ
 - 이슈 깊이 최대 3단계
 - Meta Agent 이슈 생성 주기당 최대 5개
 - **CLI 우선 원칙 (v3)**: MCP 서버보다 CLI 도구(bash, curl, jq, gh, gstack 등)를 우선한다. MCP는 세션 상태 유지/양방향 스트리밍이 필수인 경우에만 정당화. MCP 의존 시 반드시 CLI fallback 경로를 확보할 것.
-
-## 토큰 절약 도구 (v5.3, 2026-06-29~) ⭐
-
-두 도구를 도입했다. **둘은 레이어가 달라 보완 관계** — Serena는 "애초에 덜 읽고"(시맨틱 탐색), RTK는 "읽는 출력을 압축"(CLI 프록시).
-
-### RTK (Rust Token Killer) — CLI 출력 압축
-- 설치: `brew install rtk` (바이너리). hook: `PreToolUse(Bash)`에 `rtk hook claude` 등록 — **반드시 secret-guard 뒤(맨 마지막)**.
-- 동작: Bash 명령을 `git status` → `rtk git status`로 **재작성**(출력 가로채기 아님). git/grep/find/ls/diff 등 60~90% 절감.
-- **검증 명령 RTK 제외 필수**: `bash -n`·`shellcheck`·JSON 검증·registry 무결성 체크는 출력 한 글자가 중요 → rtk 미적용(원본 출력 보존). RTK가 명령 재작성 방식이라, 검증 명령에 `rtk`를 안 붙이면 자동 보존됨. truncation이 검증 신호를 자르면 거짓통과 위험.
-- 안전: secret-guard가 원본 command를 먼저 스캔 → RTK 재작성이 시크릿 스캔 우회 못 함.
-- 분석: `rtk gain`(절감 누적), `rtk cc-economics`(비용 대비 절감).
-
-### Serena — LSP 시맨틱 코드 탐색 (MCP)
-- 설치: `claude mcp add --scope user serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context claude-code --project-from-cwd`
-- 동작: 파일 통째 Read 대신 심볼(함수/클래스/참조) 단위 조회 → Python 대규모 코드 탐색 토큰 1/5~1/10.
-- CLI 우선 예외 정당화: LSP는 세션 상태 유지가 본질 → MCP 정당화 조건 충족.
 
 ## Scale Mode
 - Full: 전체 에이전트 (hook-router, ux-harness, code-quality 포함)
