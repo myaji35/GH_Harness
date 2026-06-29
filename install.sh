@@ -106,6 +106,19 @@ ensure_datago_cli_symlink() {
   echo -e "  ${GREEN}datago CLI → ~/.local/bin/datago${NC}"
 }
 
+# RTK(Rust Token Killer) 토큰 절약 도구 자동 설치 (v5.3)
+# rtk-guard.sh hook이 미설치 시 no-op이라 필수는 아니지만, 있으면 60~90% CLI 출력 절감.
+ensure_rtk() {
+  command -v rtk >/dev/null 2>&1 && return 0   # 이미 설치됨
+  if command -v brew >/dev/null 2>&1; then
+    brew install rtk >/dev/null 2>&1 \
+      && echo -e "  ${GREEN}RTK 토큰절약 도구 설치 완료 (rtk $(rtk --version 2>/dev/null | awk '{print $2}'))${NC}" \
+      || echo -e "  ${YELLOW}RTK 설치 실패 — rtk-guard.sh는 no-op으로 안전 동작${NC}"
+  else
+    echo -e "  ${YELLOW}brew 없음 — RTK 설치 건너뜀(rtk-guard.sh no-op). 수동: brew install rtk${NC}"
+  fi
+}
+
 # 프로젝트 .gitignore에 worktree 관련 패턴 추가
 ensure_project_gitignore_worktree() {
   local proj="$1"
@@ -643,6 +656,7 @@ sync_harness_core
 ensure_global_symlinks
 ensure_w_cli_symlink
 ensure_datago_cli_symlink
+ensure_rtk
 
 CURRENT_SHA="$(compute_harness_sha)"
 PREV_SHA="$(read_version_sha "$PROJECT_DIR")"

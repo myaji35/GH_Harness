@@ -56,6 +56,17 @@
         ]
       }
     ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-end-dream.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
@@ -102,7 +113,7 @@
           },
           {
             "type": "command",
-            "command": "rtk hook claude",
+            "command": "bash .claude/hooks/rtk-guard.sh",
             "timeout": 5,
             "statusMessage": "RTK token-optimizing..."
           }

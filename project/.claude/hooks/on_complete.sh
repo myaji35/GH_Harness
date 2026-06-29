@@ -58,6 +58,16 @@ def add_issue(title, itype, priority, assign_to, payload=None):
     payload = payload or {}
     src = payload.get('source_issue')
 
+    # 일일 이슈 생성 cap (ISS-372) — dispatch-ready.sh와 동일 정책(30개). 폭발 방어.
+    import datetime as _dt
+    _today = _dt.date.today().isoformat()
+    _budget = registry.setdefault('issue_budget', {'date': _today, 'created_today': 0})
+    if _budget.get('date') != _today:
+        _budget['date'] = _today; _budget['created_today'] = 0
+    if _budget.get('created_today', 0) >= 30:
+        print(f"⚠️ [Budget] 일일 이슈 cap 초과({_budget['created_today']}/30) — '{title[:40]}' 생성 보류")
+        return
+
     # 중복 체크 ① title + 활성 상태
     for iss in registry['issues']:
         if iss.get('title') == title and iss.get('status') in ('READY', 'IN_PROGRESS'):
@@ -124,6 +134,7 @@ def add_issue(title, itype, priority, assign_to, payload=None):
     if iss['depth'] <= 3:
         new_issues.append(iss)
         next_num += 1
+        _budget['created_today'] = _budget.get('created_today', 0) + 1  # cap 카운트 (ISS-372)
         print(f"[Plan] {iss['id']} [{priority}] {itype} — {title} → {assign_to}" + (f" ({initial_status})" if initial_status != 'READY' else ""))
     else:
         print(f"[깊이 제한] {title} (depth={iss['depth']})")
@@ -421,6 +432,33 @@ elif issue_type == 'LINT_CHECK':
             'frequency': 1,
             'discovered_at': now
         })
+
+elif issue_type == 'VIEW_AUDIT':
+    # 뷰/구조 감사 완료 → CRITICAL/HIGH 갭이 있으면 STYLE_FIX 파생 (ISS-371)
+    crit = result.get('critical', 0)
+    high = result.get('high', 0)
+    findings = result.get('findings', result.get('top_findings', []))
+    src = target_issue.get('payload', {}).get('source_issue')
+    if crit > 0 or high > 0:
+        prio = 'P0' if crit > 0 else 'P1'
+        add_issue(
+            f"[Plan:뷰수정] {issue_id} 뷰 구조 갭 C{crit}/H{high} 수정",
+            'STYLE_FIX', prio, 'agent-harness',
+            {
+                'errors': findings,
+                'source_issue': src or issue_id,
+                'action': 'fix_view_gaps',
+            }
+        )
+        print(f"[VIEW_AUDIT] CRITICAL:{crit} HIGH:{high} → STYLE_FIX {prio} 생성")
+    else:
+        registry.setdefault('knowledge', {}).setdefault('success_patterns', []).append({
+            'pattern': 'view_clean',
+            'context': f'{issue_id} 뷰 구조 갭 없음',
+            'frequency': 1,
+            'discovered_at': now
+        })
+        print(f"[VIEW_AUDIT] 갭 없음 — 학습 기록")
 
 elif issue_type == 'STYLE_FIX':
     # STYLE_FIX 완료 → 재검증 (RETEST 형태로 LINT_CHECK 재스폰)

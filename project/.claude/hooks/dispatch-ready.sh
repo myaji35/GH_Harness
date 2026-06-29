@@ -96,9 +96,15 @@ if not ready_issues:
 
 # ── 핑퐁 감지: (type, source_issue) 3건 이상 READY면 초과분 BLOCKED ──
 # ISS-201 구조적 결함: 동일 source의 RUN_TESTS/DOMAIN_ANALYZE/SCORE가 반복 생성되어 파이프라인 정체
+# ⚠️ 검증 반복 타입에만 적용. GENERATE_CODE/FEATURE_PLAN 등 고유 작업 이슈는
+#    한 source(예: opportunity-scout)가 여러 개를 정당하게 만들 수 있으므로 제외.
+_PINGPONG_TYPES = {"RUN_TESTS", "DOMAIN_ANALYZE", "SCORE", "LINT_CHECK",
+                   "RETEST", "COVERAGE_CHECK", "REGRESSION_CHECK"}
 from collections import defaultdict as _dd
 _groups = _dd(list)
 for _iss in ready_issues:
+    if _iss.get("type", "?") not in _PINGPONG_TYPES:
+        continue  # 고유 작업 이슈(GENERATE_CODE/FEATURE_PLAN 등)는 핑퐁 대상 아님
     _src = _iss.get("payload", {}).get("source_issue") or _iss.get("parent_id") or "-"
     _key = (_iss.get("type", "?"), _src)
     _groups[_key].append(_iss)
@@ -136,9 +142,13 @@ if len(ready_issues) > 20:
     if not ready_issues:
         sys.exit(0)
 
-# 우선순위 정렬: P0 > P1 > P2 > P3
+# 우선순위 정렬: P0 > P1 > P2 > P3, 동일 우선순위 내 실패 이슈(retry_count>0) 우선 (ISS-374, BR-014)
 priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
-ready_issues.sort(key=lambda x: (priority_order.get(x.get("priority", "P3"), 9)))
+ready_issues.sort(key=lambda x: (
+    priority_order.get(x.get("priority", "P3"), 9),
+    0 if x.get("retry_count", 0) > 0 else 1,   # 실패 후 재시도 이슈를 신규보다 앞에
+    x.get("depth", 0),                          # 깊이 낮은(근본) 이슈 우선
+))
 
 # 가장 우선순위 높은 이슈 선택
 issue = ready_issues[0]

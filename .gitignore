@@ -35,3 +35,6 @@ node_modules/
 # MkDocs (docs wiki 빌드 산출물 + 가상환경)
 site/
 .venv-docs/
+
+# harness 런타임 로그
+.claude/hooks/.webhook.log

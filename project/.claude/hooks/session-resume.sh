@@ -34,7 +34,38 @@ try:
     print("━━━ 🎨 프로젝트 디자인 아젠다 (brand-dna.json) ━━━")
     print(f"상태: {status}")
     if status == "uninitialized":
-        print("⚠️  brand-dna.json 미초기화 — BRAND_DEFINE 이슈 자동 생성 필요")
+        # 실제 BRAND_DEFINE 이슈를 registry에 생성 (ISS-373) — 경고만 출력하던 결함 수정
+        import datetime as _dt
+        _REG = ".claude/issue-db/registry.json"
+        try:
+            _reg = json.load(open(_REG))
+            _title = "[BRAND] brand-dna.json 미초기화 — 디자인 토큰 정의"
+            _exists = any(i.get("type") == "BRAND_DEFINE"
+                          and i.get("status") in ("READY", "IN_PROGRESS")
+                          for i in _reg.get("issues", []))
+            if not _exists:
+                def _n(iid):
+                    try: return int(str(iid).split("-")[-1])
+                    except: return 0
+                _nums = [_n(i.get("id","")) for i in _reg.get("issues", [])]
+                _nx = max((max(_nums) if _nums else 0)+1,
+                          _reg.get("stats", {}).get("total_issues", 0)+1)
+                while any(i.get("id") == f"ISS-{_nx:03d}" for i in _reg["issues"]):
+                    _nx += 1
+                _now = _dt.datetime.now().isoformat()
+                _reg["issues"].append({
+                    "id": f"ISS-{_nx:03d}", "title": _title, "type": "BRAND_DEFINE",
+                    "status": "READY", "priority": "P1", "assign_to": "brand-guardian",
+                    "depth": 0, "created_at": _now, "updated_at": _now,
+                    "payload": {"origin": "session-resume", "action": "draft_brand_dna"},
+                })
+                _reg.setdefault("stats", {})["total_issues"] = _reg["stats"].get("total_issues", 0)+1
+                json.dump(_reg, open(_REG, "w"), ensure_ascii=False, indent=2)
+                print(f"⚠️  brand-dna.json 미초기화 → BRAND_DEFINE 이슈 ISS-{_nx:03d} 자동 생성 (brand-guardian)")
+            else:
+                print("⚠️  brand-dna.json 미초기화 — BRAND_DEFINE 이슈 이미 존재")
+        except Exception as _e:
+            print(f"⚠️  brand-dna.json 미초기화 — BRAND_DEFINE 생성 실패: {_e}")
     else:
         if agenda:
             print(f"아젠다: {agenda}")
@@ -181,6 +212,11 @@ if in_progress:
         "test-harness": "sonnet", "eval-harness": "sonnet",
         "cicd-harness": "sonnet", "ux-harness": "sonnet",
         "qa-reviewer": "sonnet", "biz-validator": "sonnet", "scenario-player": "sonnet", "domain-analyst": "opus", "design-critic": "opus", "hook-router": "haiku",
+        # v3+ 에이전트 (ISS-375) — dispatch-ready.sh MODEL_MAP과 일치
+        "plan-ceo-reviewer": "fable", "plan-eng-reviewer": "opus",
+        "opportunity-scout": "opus", "brand-guardian": "opus",
+        "hermes": "sonnet", "advisor": "fable",
+        "audience-researcher": "sonnet", "journey-validator": "sonnet",
     }
     model = MODEL_MAP.get(iss.get("assign_to", ""), "sonnet")
     print(f"\n⚠️  중단된 작업 즉시 재개:")
@@ -211,6 +247,11 @@ if ready and not in_progress:
         "test-harness": "sonnet", "eval-harness": "sonnet",
         "cicd-harness": "sonnet", "ux-harness": "sonnet",
         "qa-reviewer": "sonnet", "biz-validator": "sonnet", "scenario-player": "sonnet", "domain-analyst": "opus", "design-critic": "opus", "hook-router": "haiku",
+        # v3+ 에이전트 (ISS-375) — dispatch-ready.sh MODEL_MAP과 일치
+        "plan-ceo-reviewer": "fable", "plan-eng-reviewer": "opus",
+        "opportunity-scout": "opus", "brand-guardian": "opus",
+        "hermes": "sonnet", "advisor": "fable",
+        "audience-researcher": "sonnet", "journey-validator": "sonnet",
     }
     model = MODEL_MAP.get(next_iss.get("assign_to", ""), "sonnet")
     print(f"\n[자동 실행 지시]")
