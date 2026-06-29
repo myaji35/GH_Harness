@@ -589,7 +589,12 @@ if [ "$BATCH_MODE" = true ]; then
       python3 - "$claude_dir/issue-db/registry.json" <<'PYEOF'
 import json, sys
 path = sys.argv[1]
-with open(path) as f: data = json.load(f)
+# 손상된 registry는 batch 전체를 죽이지 않도록 격리 (v5.3) — 경고 후 skip
+try:
+    with open(path) as f: data = json.load(f)
+except (json.JSONDecodeError, ValueError) as e:
+    print(f"  ⚠️ registry.json 손상 — 마이그레이션 skip: {e}", file=sys.stderr)
+    sys.exit(0)
 changed = False
 for k, default in [
     ('hermes_state', {'invocations_by_issue': {}, 'daily_log': [], 'total_invocations': 0}),
