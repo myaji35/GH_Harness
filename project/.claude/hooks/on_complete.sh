@@ -696,6 +696,34 @@ elif issue_type == 'SCORE':
             {'prev_score': prev_score, 'current_score': score, 'source_issue': issue_id}
         )
 
+elif issue_type == 'CICD_BOOTSTRAP':
+    # CI/CD 골격 주입 완료 → 워크플로 생성 검증 + CD 갭 후속 처리
+    created = result.get('workflows_created', [])
+    cd_skipped = result.get('cd_skipped', False)
+    if not created:
+        # 워크플로가 실제로 안 생겼으면 재시도 (bootstrap 실패)
+        add_issue(
+            f"[Plan:CICD재시도] {issue_id} 워크플로 미생성 — CI 골격 주입 재시도",
+            'CICD_BOOTSTRAP', 'P1', 'cicd-harness',
+            {'source_issue': issue_id, 'retry': True}
+        )
+    else:
+        print(f"[Plan:CICD] CI 워크플로 {len(created)}개 생성 — {', '.join(created)}")
+        registry.setdefault('knowledge', {}).setdefault('success_patterns', []).append({
+            'pattern': 'cicd_bootstrap',
+            'context': f'{issue_id} created {created}',
+            'frequency': 1,
+            'discovered_at': now
+        })
+        # 배포 흔적은 있는데 CD가 스킵됐으면 → 배포 게이트 도입 기회로 기록(오버 방지: 이슈 강제 생성 안 함)
+        if cd_skipped:
+            registry.setdefault('pending_opportunity_signals', []).append({
+                'signal': 'cd_gap',
+                'source_issue': issue_id,
+                'note': 'CI는 깔았으나 CD(배포 자동화) 미도입 — 배포 게이트 도입 검토 대상',
+                'at': now
+            })
+
 elif issue_type == 'DEPLOY_READY':
     # 배포 완료 → 파이프라인 종료, 학습 기록
     print(f"[Plan:완료] 배포 성공 — 파이프라인 사이클 종료")

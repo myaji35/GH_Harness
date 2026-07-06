@@ -45,19 +45,19 @@ issue.assign_to == "cicd-harness" && issue.status == "READY"
    bash global/lib/detect-project-type.sh        # code | doc | hybrid
    ```
    (없으면 package.json / Gemfile / pyproject.toml / go.mod 등 빌드 파일로 직접 판별)
-3. **타입별 최소 CI 워크플로 생성** — `.github/workflows/ci.yml`:
-   | 프로젝트 | lint | test | build |
-   |---|---|---|---|
-   | Node/TS | `npm run lint` 또는 eslint | `npm test` | `npm run build` |
-   | Ruby/Rails | `rubocop` | `bundle exec rspec`/`rails test` | (자산 프리컴파일) |
-   | Python | `ruff`/`flake8` | `pytest` | (선택) |
-   | Go | `go vet` | `go test ./...` | `go build ./...` |
-   | doc only | (markdownlint 선택) | 링크체크 선택 | — |
-   - 트리거: `on: [push, pull_request]` (main/PR)
-   - 존재하지 않는 스크립트는 **넣지 않는다** (CI 빨강 방지). package.json/Gemfile 실제 스크립트만 반영.
+3. **검증된 템플릿 복사** — 즉석 생성 금지. `~/.claude/harness-core/templates/ci/`(설치본) 또는 `GH_Harness/global/templates/ci/`(원본)에서 빌드 파일에 맞는 템플릿을 `.github/workflows/ci.yml`로 복사:
+   | 감지 빌드 파일 | 템플릿 |
+   |---|---|
+   | `Gemfile` | `rails.yml` |
+   | `package.json` | `nextjs.yml` |
+   | `pyproject.toml` / `requirements.txt` | `python.yml` |
+   | `go.mod` | `go.yml` |
+   | (빌드 파일 없음, doc only) | 생성 안 함 → result에 `cd_skipped:true` |
+   - 템플릿은 이미 `--if-present`/존재검사 가드를 내장하므로 **존재하지 않는 스크립트로 CI가 빨강이 되지 않는다**.
+   - 프로젝트에 특이 스크립트가 있으면 복사 후 최소 조정만. 없는 명령은 넣지 않는다.
 4. **배포 게이트 골격** (선택, 배포 대상 식별 시):
-   - Kamal/Vercel/Fly 등 배포 설정 흔적이 있으면 `deploy.yml` 스켈레톤(수동 트리거 `workflow_dispatch` 기본)만 생성.
-   - 흔적 없으면 CD는 생략하고 그 사실을 result에 기록.
+   - `config/deploy.yml`(Kamal) 흔적이 있으면 `templates/ci/deploy-kamal.yml`을 `.github/workflows/deploy.yml`로 복사(수동 트리거 `workflow_dispatch` 기본).
+   - 흔적 없으면 CD는 생략하고 result에 `cd_skipped:true` 기록 → on_complete가 `cd_gap` 신호로 누적(배포 게이트 도입 검토 대상).
 5. **검증**: 생성한 yml을 `yq`/python yaml로 파싱하여 문법 통과 확인.
 6. 결과 기록 후 on_complete 발화:
    ```bash

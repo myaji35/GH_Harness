@@ -219,6 +219,22 @@ sync_harness_core() {
     done
   fi
 
+  # CI/CD 템플릿 (cicd-harness가 CICD_BOOTSTRAP 처리 시 참조)
+  if [ -d "$SCRIPT_DIR/global/templates/ci" ]; then
+    mkdir -p "$HARNESS_CORE_DIR/templates/ci"
+    for tf in "$SCRIPT_DIR/global/templates/ci/"*; do
+      [ -f "$tf" ] || continue
+      is_appledouble "$tf" && continue
+      local name dst
+      name="$(basename "$tf")"
+      dst="$HARNESS_CORE_DIR/templates/ci/$name"
+      if [ ! -f "$dst" ] || ! cmp -s "$tf" "$dst"; then
+        cp "$tf" "$dst"
+        changed=$((changed+1))
+      fi
+    done
+  fi
+
   if [ "$changed" -gt 0 ]; then
     echo -e "  ${GREEN}harness-core 동기화: ${changed}개 파일 갱신${NC}"
   else
