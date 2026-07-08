@@ -20,6 +20,11 @@
 
 set -uo pipefail
 
+# --- AGENT-OS PATH INJECT ---
+# cron/launchd 환경은 로그인 셸 PATH를 물려받지 못해 claude/python을 못 찾는다.
+# 실제 설치 경로를 명시해 무인 실행에서도 발화되게 한다. (Hermes 미발화 근본 원인 수정)
+export PATH="/Applications/cmux.app/Contents/Resources/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
 AOS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HARNESS_ROOT="$(cd "$AOS_DIR/../.." && pwd)"
 REGISTRY="$HARNESS_ROOT/.claude/issue-db/registry.json"
@@ -95,3 +100,4 @@ fi
 # hub를 최종 상태로 한 번 더 렌더(배지 갱신)
 bash "$AOS_DIR/hub/hub-render.sh" >/dev/null 2>&1 || true
 log "완료 (action=$ACTION, claude_calls=$CLAUDE_CALLS, 오늘누적=$((CALLS_TODAY+CLAUDE_CALLS)))"
+exit 0  # 자문 성공이면 하위 렌더 실패와 무관하게 0으로 종료 (launchd 상태 clean)
