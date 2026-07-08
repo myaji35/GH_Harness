@@ -27,24 +27,44 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 3
 fi
 
-# --- 20개 프로젝트 git 상태 스냅샷 -----------------------------------
-{
-  echo "["
-  first=1
-  for d in "$PROJECTS_ROOT"/*/; do
-    [ -d "$d/.git" ] || continue
-    name="$(basename "$d")"
+# --- 프로젝트 스냅샷: 하네스 관리 대상 = registry 보유 프로젝트 기준 --
+# (.git 유무와 무관 — ShortsAffiliate처럼 git 없이 registry만 있는 곳도 포함)
+for d in "$PROJECTS_ROOT"/*/; do
+  [ -f "$d/.claude/issue-db/registry.json" ] || continue
+  name="$(basename "$d")"
+  if [ -d "$d/.git" ]; then
     branch="$(git -C "$d" branch --show-current 2>/dev/null || echo '?')"
     dirty="$(git -C "$d" status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
-    [ $first -eq 0 ] && echo ","
-    first=0
-    printf '{"name":%s,"branch":%s,"dirty":%s}' \
-      "$(python3 -c 'import json,sys;print(json.dumps(sys.argv[1]))' "$name")" \
-      "$(python3 -c 'import json,sys;print(json.dumps(sys.argv[1]))' "$branch")" \
-      "$dirty"
-  done
-  echo "]"
-} > "$SNAP"
+  else
+    branch="(no-git)"; dirty="0"
+  fi
+  echo "$name|$branch|$dirty|$d"
+done > "$SNAP.raw"
+
+python3 - "$SNAP.raw" "$SNAP" <<'PY'
+import json, sys, os
+raw, out = sys.argv[1:3]
+rows = []
+for line in open(raw, encoding="utf-8"):
+    parts = line.rstrip("\n").split("|", 3)
+    if len(parts) < 4: continue
+    name, branch, dirty, d = parts
+    ready = advised = 0
+    reg = os.path.join(d, ".claude", "issue-db", "registry.json")
+    if os.path.isfile(reg):
+        try:
+            data = json.load(open(reg, encoding="utf-8"))
+            for i in data.get("issues", []):
+                if i.get("status") == "READY":
+                    ready += 1
+                    if i.get("hermes_advice"): advised += 1
+        except Exception:
+            pass
+    rows.append({"name": name, "branch": branch, "dirty": int(dirty or 0),
+                 "ready": ready, "advised": advised})
+json.dump(rows, open(out, "w", encoding="utf-8"), ensure_ascii=False)
+PY
+rm -f "$SNAP.raw"
 
 # --- 렌더 -------------------------------------------------------------
 python3 - "$REGISTRY" "$MEMORY_INDEX" "$SNAP" "$JOURNEY_HTML" "$OUT" <<'PY'
@@ -99,10 +119,19 @@ journey_exists = os.path.isfile(journey)
 
 def esc(s): return html.escape(str(s))
 
+def ready_cell(p):
+    r, a = p.get("ready",0), p.get("advised",0)
+    if r == 0: return '<span class="sub">0</span>'
+    badge = f'<span class="hbadge live" style="padding:1px 7px;font-size:11px">🤖 {a}/{r} 자문</span>' if a else f'<span class="warn">{r}</span>'
+    return badge
 proj_rows = "".join(
     f'<tr><td>{esc(p["name"])}</td><td><code>{esc(p["branch"])}</code></td>'
-    f'<td class="{"warn" if p["dirty"] else "ok"}">{p["dirty"]}</td></tr>'
-    for p in sorted(projects, key=lambda x:-x.get("dirty",0)))
+    f'<td class="{"warn" if p["dirty"] else "ok"}">{p["dirty"]}</td>'
+    f'<td>{ready_cell(p)}</td></tr>'
+    for p in sorted(projects, key=lambda x:(-x.get("ready",0), -x.get("dirty",0))))
+
+total_ready = sum(p.get("ready",0) for p in projects)
+total_advised = sum(p.get("advised",0) for p in projects)
 
 issue_rows = "".join(
     f'<tr><td><code>{esc(i.get("id","?"))}</code></td><td>{esc(i.get("type","?"))}</td>'
@@ -199,8 +228,9 @@ header{align-items:flex-start}
     <div class="scroll"><table><thead><tr><th>ID</th><th>타입</th><th>우선</th><th>상태</th><th>제목</th></tr></thead>
     <tbody>__ISSUE_ROWS__</tbody></table></div>
   </div>
-  <div class="card"><h2>📦 프로젝트 상태 (git)</h2>
-    <div class="scroll"><table><thead><tr><th>프로젝트</th><th>브랜치</th><th>미커밋</th></tr></thead>
+  <div class="card"><h2>🗼 프로젝트 관제탑 (Hermes 순회)</h2>
+    <p class="sub">READY __TOTAL_READY__건 중 __TOTAL_ADVISED__건 Hermes 자문 완료 — 실행은 각 프로젝트에서 개별 진행</p>
+    <div class="scroll"><table><thead><tr><th>프로젝트</th><th>브랜치</th><th>미커밋</th><th>READY/자문</th></tr></thead>
     <tbody>__PROJ_ROWS__</tbody></table></div>
   </div>
   <div class="card"><h2>🧭 Journey 그래프</h2>
@@ -241,6 +271,8 @@ out_html = (TPL
   .replace("__PRIO_CHIPS__", prio_chips)
   .replace("__ISSUE_ROWS__", issue_rows)
   .replace("__PROJ_ROWS__", proj_rows)
+  .replace("__TOTAL_READY__", str(total_ready))
+  .replace("__TOTAL_ADVISED__", str(total_advised))
   .replace("__JOURNEY__", journey_card)
   .replace("__LEARNED__", learned_rows))
 

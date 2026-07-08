@@ -61,49 +61,20 @@ fi
 ACTION="render"
 DETAIL="hub 재렌더"
 CLAUDE_CALLS=0
+PATROL_PROJECT=""
+PATROL_ISSUE=""
 
-# --- 4. 자문 대상 이슈 있으면 claude -p 호출 --------------------------
-if [ "$CALLS_TODAY" -ge "$DAILY_CALL_CAP" ]; then
-  log "일일 호출 상한($DAILY_CALL_CAP) 도달 — 이번 tick은 렌더만."
-  DETAIL="상한 도달, 렌더만"
-elif command -v claude >/dev/null 2>&1; then
-  # READY 상태의 자문 필요 이슈 1건 추출
-  TARGET="$(python3 -c "
-import json
-d=json.load(open('$REGISTRY',encoding='utf-8'))
-for i in d.get('issues',[]):
-    if i.get('status')=='READY':
-        print(i.get('id',''))
-        break
-" 2>/dev/null || echo "")"
-
-  if [ -n "$TARGET" ]; then
-    TITLE="$(python3 -c "
-import json
-d=json.load(open('$REGISTRY',encoding='utf-8'))
-print(next((i.get('title','') for i in d.get('issues',[]) if i.get('id')=='$TARGET'),''))
-" 2>/dev/null)"
-    log "READY 이슈 $TARGET 자문 (claude -p, 구독): $TITLE"
-    # 자문만 — 무검증 자동수정/커밋은 하지 않는다 (읽기+제안까지만)
-    ADVICE="$(cd "$HARNESS_ROOT" && timeout 120 claude -p "다음 하네스 이슈에 대해 '다음 실행 단계 3줄'만 한국어로 제안하세요(코드 수정 금지, 제안만): [$TARGET] $TITLE" 2>/dev/null || true)"
-    CLAUDE_CALLS=1
-    ACTION="advise"
-    DETAIL="$TARGET 자문"
-    # 제안을 이슈 payload에 기록 (자동 수정 아님)
-    if [ -n "$(echo "$ADVICE" | tr -d '[:space:]')" ]; then
-      python3 -c "
-import json,tempfile,os,shutil
-p='$REGISTRY'; d=json.load(open(p,encoding='utf-8'))
-for i in d.get('issues',[]):
-    if i.get('id')=='$TARGET':
-        i.setdefault('hermes_advice',[]).append({'ts':'$(ts)','advice':'''$ADVICE'''[:800]})
-fd,t=tempfile.mkstemp(dir=os.path.dirname(p))
-json.dump(d,os.fdopen(fd,'w',encoding='utf-8'),ensure_ascii=False,indent=2); shutil.move(t,p)
-" 2>/dev/null || true
-    fi
-  else
-    DETAIL="READY 이슈 없음, 렌더만"
-  fi
+# --- 4. 22개 프로젝트 순회 자문 (patrol.py) --------------------------
+# 자기 registry가 아니라 상위 폴더 전 프로젝트를 순회하며 자문만 남긴다.
+PROJECTS_ROOT="$(cd "$HARNESS_ROOT/.." && pwd)"
+if command -v claude >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1; then
+  PATROL_JSON="$(python3 "$AOS_DIR/patrol.py" "$PROJECTS_ROOT" "$DAILY_CALL_CAP" "$CALLS_TODAY" 2>/dev/null || echo '{}')"
+  ACTION="$(echo "$PATROL_JSON" | python3 -c "import json,sys;print(json.load(sys.stdin).get('action','patrol'))" 2>/dev/null || echo patrol)"
+  DETAIL="$(echo "$PATROL_JSON" | python3 -c "import json,sys;print(json.load(sys.stdin).get('detail',''))" 2>/dev/null || echo '')"
+  CLAUDE_CALLS="$(echo "$PATROL_JSON" | python3 -c "import json,sys;print(json.load(sys.stdin).get('claude_calls',0))" 2>/dev/null || echo 0)"
+  PATROL_PROJECT="$(echo "$PATROL_JSON" | python3 -c "import json,sys;print(json.load(sys.stdin).get('project',''))" 2>/dev/null || echo '')"
+  PATROL_ISSUE="$(echo "$PATROL_JSON" | python3 -c "import json,sys;print(json.load(sys.stdin).get('advised_issue',''))" 2>/dev/null || echo '')"
+  [ -n "$PATROL_PROJECT" ] && log "순회 자문: $PATROL_PROJECT / $PATROL_ISSUE (구독 claude -p)"
 fi
 
 # --- 5. hermes_runs 기록 ---------------------------------------------
