@@ -38,3 +38,5 @@ site/
 
 # harness 런타임 로그
 .claude/hooks/.webhook.log
+.gstack/
+graphify-obsidian-input/
