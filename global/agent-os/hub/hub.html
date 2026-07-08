@@ -21,16 +21,28 @@ th{color:var(--sub);font-weight:500}code{background:#0d0f14;padding:1px 5px;bord
 .jbtn{display:inline-block;background:var(--accent);color:#0d0f14;font-weight:600;padding:8px 16px;border-radius:8px;text-decoration:none}
 .cmds code{display:block;margin:4px 0;padding:6px 10px;background:#0d0f14;border-radius:6px}
 .scroll{max-height:280px;overflow:auto}
+header{align-items:flex-start}
+.hermesbar{margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hbadge{font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px}
+.hbadge.live{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid #22c55e;animation:pulse 2s infinite}
+.hbadge.idle{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid #f59e0b}
+.hbadge.stop{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid #ef4444}
+.hbadge.off{background:#0d0f14;color:#8b95a5;border:1px solid #262b37}
+.hsub{font-size:12px;color:#8b95a5}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
 </style></head><body>
-<header><h1>🛰️ Agent OS 허브 <span class="sub" style="font-size:13px">· GH_Harness</span></h1>
-<span class="ts">생성: 2026-07-08 00:20 UTC</span></header>
+<header><div><h1>🛰️ Agent OS 허브 <span class="sub" style="font-size:13px">· GH_Harness</span></h1>
+<div class="hermesbar"><span class="hbadge live">🤖 Hermes 운영 중</span><span class="hsub">마지막 갱신 0분 전 · 다음 갱신 약 30분 후 · 총 1회</span></div></div>
+<span class="ts">생성: 2026-07-08 00:39 UTC</span></header>
 <div class="kpis" style="padding:20px 28px 0">
   <div class="kpi"><div class="n">20</div><div class="l">연결 프로젝트</div></div>
   <div class="kpi"><div class="n">79</div><div class="l">전체 이슈</div></div>
-  <div class="kpi"><div class="n">1016</div><div class="l">미커밋 변경 합계</div></div>
+  <div class="kpi"><div class="n">1019</div><div class="l">미커밋 변경 합계</div></div>
   <div class="kpi"><div class="n">11</div><div class="l">메모리 항목</div></div>
   <div class="kpi"><div class="n">0</div><div class="l">학습한 스킬</div></div>
-  <div class="kpi"><div class="n">0</div><div class="l">MoA 실행</div></div>
+  <div class="kpi"><div class="n">1</div><div class="l">MoA 실행</div></div>
+  <div class="kpi"><div class="n">1</div><div class="l">Hermes 실행</div></div>
+  <div class="kpi"><div class="n">0</div><div class="l">오늘 claude 호출 (구독)</div></div>
 </div>
 <main>
   <div class="card"><h2>📋 이슈 파이프라인</h2>
@@ -41,7 +53,7 @@ th{color:var(--sub);font-weight:500}code{background:#0d0f14;padding:1px 5px;bord
   </div>
   <div class="card"><h2>📦 프로젝트 상태 (git)</h2>
     <div class="scroll"><table><thead><tr><th>프로젝트</th><th>브랜치</th><th>미커밋</th></tr></thead>
-    <tbody><tr><td>0030_OmniVibePro</td><td><code>main</code></td><td class="warn">189</td></tr><tr><td>0015_ExamsGraph</td><td><code>upgrade/ruby-3.4-rails-8.0</code></td><td class="warn">144</td></tr><tr><td>0017_SocialDoctors </td><td><code>main</code></td><td class="warn">133</td></tr><tr><td>0025_CEO</td><td><code>feature/partner-domain-step1</code></td><td class="warn">92</td></tr><tr><td>0000_master</td><td><code>main</code></td><td class="warn">60</td></tr><tr><td>0051_TowninAlpafold</td><td><code>main</code></td><td class="warn">59</td></tr><tr><td>0021_shilla_medical</td><td><code>main</code></td><td class="warn">53</td></tr><tr><td>0002_choncance(조준범 VINTEE)</td><td><code>main</code></td><td class="warn">51</td></tr><tr><td>0008_choi-pd</td><td><code>main</code></td><td class="warn">46</td></tr><tr><td>0012_InsureGraph Pro</td><td><code>feature/tenant-isolation-pii-compliance</code></td><td class="warn">41</td></tr><tr><td>0027_XimTierLab</td><td><code>feat/engine-api-and-report</code></td><td class="warn">27</td></tr><tr><td>GH_Harness</td><td><code>feat/cicd-bootstrap-feature</code></td><td class="warn">24</td></tr><tr><td>0014_Townin Graph</td><td><code>main</code></td><td class="warn">23</td></tr><tr><td>0026_infraGrid</td><td><code>main</code></td><td class="warn">20</td></tr><tr><td>0052_Phoenix_매수GA_채권평가</td><td><code>main</code></td><td class="warn">19</td></tr><tr><td>0028_insuClaw</td><td><code>main</code></td><td class="warn">13</td></tr><tr><td>0046_optionTrading</td><td><code>main</code></td><td class="warn">9</td></tr><tr><td>0020_CPOFlow</td><td><code>main</code></td><td class="warn">8</td></tr><tr><td>0029_XimTier_SaaS_Deploy</td><td><code>main</code></td><td class="warn">3</td></tr><tr><td>0022_k1nurifarm01_dt</td><td><code>main</code></td><td class="warn">2</td></tr></tbody></table></div>
+    <tbody><tr><td>0030_OmniVibePro</td><td><code>main</code></td><td class="warn">189</td></tr><tr><td>0015_ExamsGraph</td><td><code>upgrade/ruby-3.4-rails-8.0</code></td><td class="warn">144</td></tr><tr><td>0017_SocialDoctors </td><td><code>main</code></td><td class="warn">133</td></tr><tr><td>0025_CEO</td><td><code>feature/partner-domain-step1</code></td><td class="warn">92</td></tr><tr><td>0000_master</td><td><code>main</code></td><td class="warn">60</td></tr><tr><td>0051_TowninAlpafold</td><td><code>main</code></td><td class="warn">59</td></tr><tr><td>0021_shilla_medical</td><td><code>main</code></td><td class="warn">53</td></tr><tr><td>0002_choncance(조준범 VINTEE)</td><td><code>main</code></td><td class="warn">51</td></tr><tr><td>0008_choi-pd</td><td><code>main</code></td><td class="warn">46</td></tr><tr><td>0012_InsureGraph Pro</td><td><code>feature/tenant-isolation-pii-compliance</code></td><td class="warn">41</td></tr><tr><td>0027_XimTierLab</td><td><code>feat/engine-api-and-report</code></td><td class="warn">27</td></tr><tr><td>GH_Harness</td><td><code>feat/cicd-bootstrap-feature</code></td><td class="warn">27</td></tr><tr><td>0014_Townin Graph</td><td><code>main</code></td><td class="warn">23</td></tr><tr><td>0026_infraGrid</td><td><code>main</code></td><td class="warn">20</td></tr><tr><td>0052_Phoenix_매수GA_채권평가</td><td><code>main</code></td><td class="warn">19</td></tr><tr><td>0028_insuClaw</td><td><code>main</code></td><td class="warn">13</td></tr><tr><td>0046_optionTrading</td><td><code>main</code></td><td class="warn">9</td></tr><tr><td>0020_CPOFlow</td><td><code>main</code></td><td class="warn">8</td></tr><tr><td>0029_XimTier_SaaS_Deploy</td><td><code>main</code></td><td class="warn">3</td></tr><tr><td>0022_k1nurifarm01_dt</td><td><code>main</code></td><td class="warn">2</td></tr></tbody></table></div>
   </div>
   <div class="card"><h2>🧭 Journey 그래프</h2>
     <p class="sub">스킬 ↔ 메모리 연결 시각화</p><a class="jbtn" href="file:///Volumes/E_SSD/02_GitHub.nosync/GH_Harness/global/agent-os/journey/journey.html" target="_blank">🧭 Journey 그래프 열기</a>
@@ -49,10 +61,18 @@ th{color:var(--sub);font-weight:500}code{background:#0d0f14;padding:1px 5px;bord
   <div class="card"><h2>🎓 학습한 스킬 (/learn)</h2>
     <ul style="margin:0;padding-left:18px"><li class="sub">아직 /learn 으로 학습한 스킬 없음</li></ul>
   </div>
+  <div class="card"><h2>🤖 Hermes 운영 활동</h2>
+    <p class="sub">cron 무인 운영 기록 — Claude Code(claude -p, 구독 토큰 · API 비용 없음)</p>
+    <div class="scroll"><table><thead><tr><th>시각</th><th>동작</th><th>내용</th><th>claude 호출</th></tr></thead>
+    <tbody><tr><td class="sub">2026-07-08 00:39</td><td>render</td><td>READY 이슈 없음, 렌더만</td><td class="sub">0회</td></tr></tbody></table></div>
+  </div>
   <div class="card cmds"><h2>⌨️ Agent OS 명령</h2>
     <code>agent-os moa "&lt;프롬프트&gt;"  # 멀티모델 합의</code>
     <code>agent-os learn &lt;URL&gt;        # URL → 스킬</code>
     <code>agent-os journey            # 그래프 재생성</code>
     <code>agent-os hub --open         # 이 허브 열기</code>
+    <code>agent-os hermes start       # 무인 운영 시작(cron)</code>
+    <code>agent-os hermes stop        # 킬스위치 · 즉시 정지</code>
+    <code>agent-os hermes status      # 운영 상태 조회</code>
   </div>
 </main></body></html>

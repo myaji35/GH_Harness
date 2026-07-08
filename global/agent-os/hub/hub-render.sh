@@ -63,6 +63,24 @@ issues = reg.get("issues", [])
 projects = load_json(snap_path, [])
 learned = reg.get("learned_skills", [])
 moa = reg.get("moa_runs", [])
+hermes_runs = reg.get("hermes_runs", [])
+
+# --- Hermes 운영 상태 판정 ---
+def parse_ts(s):
+    try:
+        return datetime.datetime.fromisoformat(str(s).replace("Z","+00:00"))
+    except Exception:
+        return None
+
+now_dt = datetime.datetime.now(datetime.timezone.utc)
+last_run = hermes_runs[-1] if hermes_runs else None
+last_ago_min = None
+if last_run and parse_ts(last_run.get("ts")):
+    last_ago_min = int((now_dt - parse_ts(last_run["ts"])).total_seconds() // 60)
+interval_min = reg.get("hermes_state", {}).get("interval_min", 30)
+# 운영 중 판정: 마지막 실행이 interval의 2배 이내면 '운영 중'
+hermes_live = last_ago_min is not None and last_ago_min <= interval_min * 2
+kill = os.path.isfile(os.path.join(os.path.dirname(registry), "..", "..", "global", "agent-os", "hermes.stop"))
 
 # 이슈 상태 집계
 from collections import Counter
@@ -104,6 +122,30 @@ journey_card = (
     if journey_exists else
     '<span class="sub">아직 생성 안 됨 — <code>agent-os journey</code> 실행</span>')
 
+# --- Hermes 운영 배지 ---
+if kill:
+    hermes_badge = '<span class="hbadge stop">🛑 Hermes 정지됨 (킬스위치 ON)</span>'
+elif hermes_live:
+    nxt = f"약 {max(0, interval_min - (last_ago_min or 0))}분 후" if last_ago_min is not None else "예정"
+    hermes_badge = (f'<span class="hbadge live">🤖 Hermes 운영 중</span>'
+                    f'<span class="hsub">마지막 갱신 {last_ago_min}분 전 · 다음 갱신 {esc(nxt)} · 총 {len(hermes_runs)}회</span>')
+elif hermes_runs:
+    hermes_badge = f'<span class="hbadge idle">😴 Hermes 유휴</span><span class="hsub">마지막 {last_ago_min}분 전 · cron 미가동 의심</span>'
+else:
+    hermes_badge = '<span class="hbadge off">⚪ Hermes 미운영</span><span class="hsub">agent-os hermes start 로 시작</span>'
+
+# --- Hermes 활동 카드 rows ---
+hermes_rows = "".join(
+    f'<tr><td class="sub">{esc(str(r.get("ts",""))[:16].replace("T"," "))}</td>'
+    f'<td>{esc(r.get("action","render"))}</td>'
+    f'<td>{esc(str(r.get("detail",""))[:40])}</td>'
+    f'<td class="sub">{r.get("claude_calls",0)}회</td></tr>'
+    for r in reversed(hermes_runs[-10:])) or '<tr><td colspan="4" class="sub">아직 Hermes 실행 기록 없음</td></tr>'
+
+# 오늘 claude 호출 횟수 (구독 토큰 — API 비용 없음)
+today = now_dt.strftime("%Y-%m-%d")
+calls_today = sum(r.get("claude_calls",0) for r in hermes_runs if str(r.get("ts","")).startswith(today))
+
 TPL = r"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Agent OS 허브</title>
@@ -127,8 +169,18 @@ th{color:var(--sub);font-weight:500}code{background:#0d0f14;padding:1px 5px;bord
 .jbtn{display:inline-block;background:var(--accent);color:#0d0f14;font-weight:600;padding:8px 16px;border-radius:8px;text-decoration:none}
 .cmds code{display:block;margin:4px 0;padding:6px 10px;background:#0d0f14;border-radius:6px}
 .scroll{max-height:280px;overflow:auto}
+header{align-items:flex-start}
+.hermesbar{margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hbadge{font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px}
+.hbadge.live{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid #22c55e;animation:pulse 2s infinite}
+.hbadge.idle{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid #f59e0b}
+.hbadge.stop{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid #ef4444}
+.hbadge.off{background:#0d0f14;color:#8b95a5;border:1px solid #262b37}
+.hsub{font-size:12px;color:#8b95a5}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
 </style></head><body>
-<header><h1>🛰️ Agent OS 허브 <span class="sub" style="font-size:13px">· GH_Harness</span></h1>
+<header><div><h1>🛰️ Agent OS 허브 <span class="sub" style="font-size:13px">· GH_Harness</span></h1>
+<div class="hermesbar">__HERMES_BADGE__</div></div>
 <span class="ts">생성: __NOW__</span></header>
 <div class="kpis" style="padding:20px 28px 0">
   <div class="kpi"><div class="n">__NPROJ__</div><div class="l">연결 프로젝트</div></div>
@@ -137,6 +189,8 @@ th{color:var(--sub);font-weight:500}code{background:#0d0f14;padding:1px 5px;bord
   <div class="kpi"><div class="n">__NMEM__</div><div class="l">메모리 항목</div></div>
   <div class="kpi"><div class="n">__NLEARN__</div><div class="l">학습한 스킬</div></div>
   <div class="kpi"><div class="n">__NMOA__</div><div class="l">MoA 실행</div></div>
+  <div class="kpi"><div class="n">__NHERMES__</div><div class="l">Hermes 실행</div></div>
+  <div class="kpi"><div class="n">__CALLS_TODAY__</div><div class="l">오늘 claude 호출 (구독)</div></div>
 </div>
 <main>
   <div class="card"><h2>📋 이슈 파이프라인</h2>
@@ -155,11 +209,19 @@ th{color:var(--sub);font-weight:500}code{background:#0d0f14;padding:1px 5px;bord
   <div class="card"><h2>🎓 학습한 스킬 (/learn)</h2>
     <ul style="margin:0;padding-left:18px">__LEARNED__</ul>
   </div>
+  <div class="card"><h2>🤖 Hermes 운영 활동</h2>
+    <p class="sub">cron 무인 운영 기록 — Claude Code(claude -p, 구독 토큰 · API 비용 없음)</p>
+    <div class="scroll"><table><thead><tr><th>시각</th><th>동작</th><th>내용</th><th>claude 호출</th></tr></thead>
+    <tbody>__HERMES_ROWS__</tbody></table></div>
+  </div>
   <div class="card cmds"><h2>⌨️ Agent OS 명령</h2>
     <code>agent-os moa "&lt;프롬프트&gt;"  # 멀티모델 합의</code>
     <code>agent-os learn &lt;URL&gt;        # URL → 스킬</code>
     <code>agent-os journey            # 그래프 재생성</code>
     <code>agent-os hub --open         # 이 허브 열기</code>
+    <code>agent-os hermes start       # 무인 운영 시작(cron)</code>
+    <code>agent-os hermes stop        # 킬스위치 · 즉시 정지</code>
+    <code>agent-os hermes status      # 운영 상태 조회</code>
   </div>
 </main></body></html>"""
 
@@ -171,6 +233,10 @@ out_html = (TPL
   .replace("__NMEM__", str(mem_lines))
   .replace("__NLEARN__", str(len(learned)))
   .replace("__NMOA__", str(len(moa)))
+  .replace("__NHERMES__", str(len(hermes_runs)))
+  .replace("__CALLS_TODAY__", str(calls_today))
+  .replace("__HERMES_BADGE__", hermes_badge)
+  .replace("__HERMES_ROWS__", hermes_rows)
   .replace("__STATUS_CHIPS__", status_chips or '<span class="sub">이슈 없음</span>')
   .replace("__PRIO_CHIPS__", prio_chips)
   .replace("__ISSUE_ROWS__", issue_rows)
