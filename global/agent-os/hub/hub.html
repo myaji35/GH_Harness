@@ -1,0 +1,58 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent OS 허브</title>
+<style>
+:root{--bg:#0d0f14;--card:#161923;--line:#262b37;--txt:#e8ebf1;--sub:#8b95a5;--accent:#6ea8ff;--ok:#22c55e;--warn:#f59e0b;--p0:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,'Apple SD Gothic Neo',Segoe UI,sans-serif;font-size:14px;line-height:1.5}
+header{padding:20px 28px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+h1{margin:0;font-size:20px}.ts{color:var(--sub);font-size:12px}
+main{padding:24px 28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;max-width:1400px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h2{margin:0 0 12px;font-size:15px;display:flex;align-items:center;gap:8px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:120px}
+.kpi .n{font-size:26px;font-weight:700}.kpi .l{color:var(--sub);font-size:12px;margin-top:2px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--sub);font-weight:500}code{background:#0d0f14;padding:1px 5px;border-radius:4px;font-size:12px}
+.chip{display:inline-block;background:#0d0f14;border:1px solid var(--line);border-radius:20px;padding:3px 10px;margin:2px;font-size:12px}
+.chip.p-P0{border-color:var(--p0)}.badge{padding:2px 8px;border-radius:6px;font-size:11px;background:#0d0f14;border:1px solid var(--line)}
+.s-COMPLETED{color:var(--ok)}.s-READY{color:var(--accent)}.s-IN_PROGRESS{color:var(--warn)}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.sub{color:var(--sub)}
+.jbtn{display:inline-block;background:var(--accent);color:#0d0f14;font-weight:600;padding:8px 16px;border-radius:8px;text-decoration:none}
+.cmds code{display:block;margin:4px 0;padding:6px 10px;background:#0d0f14;border-radius:6px}
+.scroll{max-height:280px;overflow:auto}
+</style></head><body>
+<header><h1>🛰️ Agent OS 허브 <span class="sub" style="font-size:13px">· GH_Harness</span></h1>
+<span class="ts">생성: 2026-07-08 00:20 UTC</span></header>
+<div class="kpis" style="padding:20px 28px 0">
+  <div class="kpi"><div class="n">20</div><div class="l">연결 프로젝트</div></div>
+  <div class="kpi"><div class="n">79</div><div class="l">전체 이슈</div></div>
+  <div class="kpi"><div class="n">1016</div><div class="l">미커밋 변경 합계</div></div>
+  <div class="kpi"><div class="n">11</div><div class="l">메모리 항목</div></div>
+  <div class="kpi"><div class="n">0</div><div class="l">학습한 스킬</div></div>
+  <div class="kpi"><div class="n">0</div><div class="l">MoA 실행</div></div>
+</div>
+<main>
+  <div class="card"><h2>📋 이슈 파이프라인</h2>
+    <div style="margin-bottom:10px"><span class="chip">COMPLETED: <b>37</b></span><span class="chip">DONE: <b>26</b></span><span class="chip">OBSOLETED: <b>12</b></span><span class="chip">CLOSED: <b>4</b></span></div>
+    <div style="margin-bottom:12px"><span class="chip p-P0">P0: <b>7</b></span><span class="chip p-P1">P1: <b>52</b></span><span class="chip p-P2">P2: <b>18</b></span><span class="chip p-P3">P3: <b>2</b></span></div>
+    <div class="scroll"><table><thead><tr><th>ID</th><th>타입</th><th>우선</th><th>상태</th><th>제목</th></tr></thead>
+    <tbody><tr><td><code>ISS-310</code></td><td>FEATURE_PLAN</td><td>P2</td><td><span class="badge s-DONE">DONE</span></td><td>[Wiki] MkDocs Material 파일럿 — GH_Harness g3doc 스타일 </td></tr><tr><td><code>ISS-311</code></td><td>PLAN_CEO_REVIEW</td><td>P1</td><td><span class="badge s-DONE">DONE</span></td><td>[Plan:CEO검토] MkDocs Material Wiki Pilot (GH_Harnes</td></tr><tr><td><code>ISS-312</code></td><td>PLAN_ENG_REVIEW</td><td>P1</td><td><span class="badge s-DONE">DONE</span></td><td>[Plan:Eng검토] MkDocs Material Wiki Pilot (GH_Harnes</td></tr><tr><td><code>ISS-316</code></td><td>GENERATE_CODE</td><td>P1</td><td><span class="badge s-OBSOLETED">OBSOLETED</span></td><td>[Plan:구현] ISS-313</td></tr><tr><td><code>ISS-317</code></td><td>FEATURE_PLAN</td><td>P2</td><td><span class="badge s-DONE">DONE</span></td><td>[Wiki Phase 2] &#x27;code wiki 구현해줘&#x27; 트리거 — 전 프로젝트 자동 스캐</td></tr><tr><td><code>ISS-319</code></td><td>GENERATE_CODE</td><td>P1</td><td><span class="badge s-OBSOLETED">OBSOLETED</span></td><td>[Plan:구현] ISS-314</td></tr><tr><td><code>ISS-320</code></td><td>GENERATE_CODE</td><td>P1</td><td><span class="badge s-OBSOLETED">OBSOLETED</span></td><td>[Plan:구현] ISS-315</td></tr><tr><td><code>ISS-335</code></td><td>GENERATE_CODE</td><td>P1</td><td><span class="badge s-OBSOLETED">OBSOLETED</span></td><td>[Plan:구현] ISS-330</td></tr><tr><td><code>ISS-338</code></td><td>PATTERN_ANALYSIS</td><td>P1</td><td><span class="badge s-OBSOLETED">OBSOLETED</span></td><td>[Meta] ISS-322 이슈 체인 근본 원인 분석</td></tr><tr><td><code>ISS-336</code></td><td>PATTERN_ANALYSIS</td><td>P1</td><td><span class="badge s-OBSOLETED">OBSOLETED</span></td><td>[Meta] ISS-321 이슈 체인 근본 원인 분석</td></tr><tr><td><code>ISS-337</code></td><td>PATTERN_ANALYSIS</td><td>P1</td><td><span class="badge s-OBSOLETED">OBSOLETED</span></td><td>[Meta] ISS-317 이슈 체인 근본 원인 분석</td></tr><tr><td><code>ISS-339</code></td><td>REFACTOR</td><td>P2</td><td><span class="badge s-DONE">DONE</span></td><td>[Opus4.8] effort 작업별 차등 정책 + opus_budget_state 연동</td></tr></tbody></table></div>
+  </div>
+  <div class="card"><h2>📦 프로젝트 상태 (git)</h2>
+    <div class="scroll"><table><thead><tr><th>프로젝트</th><th>브랜치</th><th>미커밋</th></tr></thead>
+    <tbody><tr><td>0030_OmniVibePro</td><td><code>main</code></td><td class="warn">189</td></tr><tr><td>0015_ExamsGraph</td><td><code>upgrade/ruby-3.4-rails-8.0</code></td><td class="warn">144</td></tr><tr><td>0017_SocialDoctors </td><td><code>main</code></td><td class="warn">133</td></tr><tr><td>0025_CEO</td><td><code>feature/partner-domain-step1</code></td><td class="warn">92</td></tr><tr><td>0000_master</td><td><code>main</code></td><td class="warn">60</td></tr><tr><td>0051_TowninAlpafold</td><td><code>main</code></td><td class="warn">59</td></tr><tr><td>0021_shilla_medical</td><td><code>main</code></td><td class="warn">53</td></tr><tr><td>0002_choncance(조준범 VINTEE)</td><td><code>main</code></td><td class="warn">51</td></tr><tr><td>0008_choi-pd</td><td><code>main</code></td><td class="warn">46</td></tr><tr><td>0012_InsureGraph Pro</td><td><code>feature/tenant-isolation-pii-compliance</code></td><td class="warn">41</td></tr><tr><td>0027_XimTierLab</td><td><code>feat/engine-api-and-report</code></td><td class="warn">27</td></tr><tr><td>GH_Harness</td><td><code>feat/cicd-bootstrap-feature</code></td><td class="warn">24</td></tr><tr><td>0014_Townin Graph</td><td><code>main</code></td><td class="warn">23</td></tr><tr><td>0026_infraGrid</td><td><code>main</code></td><td class="warn">20</td></tr><tr><td>0052_Phoenix_매수GA_채권평가</td><td><code>main</code></td><td class="warn">19</td></tr><tr><td>0028_insuClaw</td><td><code>main</code></td><td class="warn">13</td></tr><tr><td>0046_optionTrading</td><td><code>main</code></td><td class="warn">9</td></tr><tr><td>0020_CPOFlow</td><td><code>main</code></td><td class="warn">8</td></tr><tr><td>0029_XimTier_SaaS_Deploy</td><td><code>main</code></td><td class="warn">3</td></tr><tr><td>0022_k1nurifarm01_dt</td><td><code>main</code></td><td class="warn">2</td></tr></tbody></table></div>
+  </div>
+  <div class="card"><h2>🧭 Journey 그래프</h2>
+    <p class="sub">스킬 ↔ 메모리 연결 시각화</p><a class="jbtn" href="file:///Volumes/E_SSD/02_GitHub.nosync/GH_Harness/global/agent-os/journey/journey.html" target="_blank">🧭 Journey 그래프 열기</a>
+  </div>
+  <div class="card"><h2>🎓 학습한 스킬 (/learn)</h2>
+    <ul style="margin:0;padding-left:18px"><li class="sub">아직 /learn 으로 학습한 스킬 없음</li></ul>
+  </div>
+  <div class="card cmds"><h2>⌨️ Agent OS 명령</h2>
+    <code>agent-os moa "&lt;프롬프트&gt;"  # 멀티모델 합의</code>
+    <code>agent-os learn &lt;URL&gt;        # URL → 스킬</code>
+    <code>agent-os journey            # 그래프 재생성</code>
+    <code>agent-os hub --open         # 이 허브 열기</code>
+  </div>
+</main></body></html>

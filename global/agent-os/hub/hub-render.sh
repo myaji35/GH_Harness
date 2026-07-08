@@ -1,0 +1,188 @@
+#!/bin/bash
+# hub-render.sh — Agent OS 통합 허브 대시보드 (Agent OS ④, 기본언어 한국어)
+#
+# registry.json(이슈/에이전트), memory/MEMORY.md, 20개 프로젝트 git 상태,
+# journey 그래프 링크를 읽어 단일 HTML(의존성 0)로 렌더한다. 영상3의 Agent OS 허브.
+#
+# 사용법:
+#   hub-render.sh [--open]
+#     --open: 렌더 후 브라우저로 연다.
+#
+# 산출물: global/agent-os/hub/hub.html
+# exit 0 = 성공, 3 = python3 없음
+
+set -euo pipefail
+
+HARNESS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
+PROJECTS_ROOT="$(dirname "$HARNESS_ROOT")"    # /Volumes/E_SSD/02_GitHub.nosync
+REGISTRY="$HARNESS_ROOT/.claude/issue-db/registry.json"
+MEMORY_INDEX="$HOME/.claude/projects/-Volumes-E-SSD-02-GitHub-nosync/memory/MEMORY.md"
+JOURNEY_HTML="$HARNESS_ROOT/global/agent-os/journey/journey.html"
+OUT="$(dirname "${BASH_SOURCE[0]}")/hub.html"
+SNAP="$(mktemp)"
+trap 'rm -f "$SNAP"' EXIT
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "[hub] python3 가 필요합니다." >&2
+  exit 3
+fi
+
+# --- 20개 프로젝트 git 상태 스냅샷 -----------------------------------
+{
+  echo "["
+  first=1
+  for d in "$PROJECTS_ROOT"/*/; do
+    [ -d "$d/.git" ] || continue
+    name="$(basename "$d")"
+    branch="$(git -C "$d" branch --show-current 2>/dev/null || echo '?')"
+    dirty="$(git -C "$d" status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
+    [ $first -eq 0 ] && echo ","
+    first=0
+    printf '{"name":%s,"branch":%s,"dirty":%s}' \
+      "$(python3 -c 'import json,sys;print(json.dumps(sys.argv[1]))' "$name")" \
+      "$(python3 -c 'import json,sys;print(json.dumps(sys.argv[1]))' "$branch")" \
+      "$dirty"
+  done
+  echo "]"
+} > "$SNAP"
+
+# --- 렌더 -------------------------------------------------------------
+python3 - "$REGISTRY" "$MEMORY_INDEX" "$SNAP" "$JOURNEY_HTML" "$OUT" <<'PY'
+import json, os, re, sys, html, datetime
+
+registry, mem_index, snap_path, journey, out = sys.argv[1:6]
+
+def load_json(p, default):
+    try:
+        return json.load(open(p, encoding="utf-8"))
+    except Exception:
+        return default
+
+reg = load_json(registry, {})
+issues = reg.get("issues", [])
+projects = load_json(snap_path, [])
+learned = reg.get("learned_skills", [])
+moa = reg.get("moa_runs", [])
+
+# 이슈 상태 집계
+from collections import Counter
+status_ct = Counter(i.get("status","?") for i in issues)
+prio_ct = Counter(i.get("priority","?") for i in issues)
+recent = [i for i in issues if i.get("status") not in ("COMPLETED","CLOSED")][:12]
+
+# 메모리 인덱스 라인 수
+mem_lines = 0
+if os.path.isfile(mem_index):
+    mem_lines = sum(1 for l in open(mem_index, encoding="utf-8") if l.strip().startswith("- ["))
+
+dirty_total = sum(p.get("dirty",0) for p in projects)
+now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+journey_exists = os.path.isfile(journey)
+
+def esc(s): return html.escape(str(s))
+
+proj_rows = "".join(
+    f'<tr><td>{esc(p["name"])}</td><td><code>{esc(p["branch"])}</code></td>'
+    f'<td class="{"warn" if p["dirty"] else "ok"}">{p["dirty"]}</td></tr>'
+    for p in sorted(projects, key=lambda x:-x.get("dirty",0)))
+
+issue_rows = "".join(
+    f'<tr><td><code>{esc(i.get("id","?"))}</code></td><td>{esc(i.get("type","?"))}</td>'
+    f'<td>{esc(i.get("priority","?"))}</td><td><span class="badge s-{esc(i.get("status","?"))}">{esc(i.get("status","?"))}</span></td>'
+    f'<td>{esc(i.get("title","")[:50])}</td></tr>'
+    for i in recent) or '<tr><td colspan="5" class="sub">진행 중 이슈 없음</td></tr>'
+
+learned_rows = "".join(
+    f'<li><code>{esc(l.get("slug",""))}</code> <span class="sub">← {esc(l.get("url","")[:50])}</span></li>'
+    for l in learned[-8:]) or '<li class="sub">아직 /learn 으로 학습한 스킬 없음</li>'
+
+status_chips = "".join(f'<span class="chip">{esc(k)}: <b>{v}</b></span>' for k,v in status_ct.most_common())
+prio_chips = "".join(f'<span class="chip p-{esc(k)}">{esc(k)}: <b>{v}</b></span>' for k,v in sorted(prio_ct.items()))
+
+journey_card = (
+    f'<a class="jbtn" href="file://{esc(os.path.abspath(journey))}" target="_blank">🧭 Journey 그래프 열기</a>'
+    if journey_exists else
+    '<span class="sub">아직 생성 안 됨 — <code>agent-os journey</code> 실행</span>')
+
+TPL = r"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent OS 허브</title>
+<style>
+:root{--bg:#0d0f14;--card:#161923;--line:#262b37;--txt:#e8ebf1;--sub:#8b95a5;--accent:#6ea8ff;--ok:#22c55e;--warn:#f59e0b;--p0:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,'Apple SD Gothic Neo',Segoe UI,sans-serif;font-size:14px;line-height:1.5}
+header{padding:20px 28px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+h1{margin:0;font-size:20px}.ts{color:var(--sub);font-size:12px}
+main{padding:24px 28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;max-width:1400px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h2{margin:0 0 12px;font-size:15px;display:flex;align-items:center;gap:8px}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:120px}
+.kpi .n{font-size:26px;font-weight:700}.kpi .l{color:var(--sub);font-size:12px;margin-top:2px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--sub);font-weight:500}code{background:#0d0f14;padding:1px 5px;border-radius:4px;font-size:12px}
+.chip{display:inline-block;background:#0d0f14;border:1px solid var(--line);border-radius:20px;padding:3px 10px;margin:2px;font-size:12px}
+.chip.p-P0{border-color:var(--p0)}.badge{padding:2px 8px;border-radius:6px;font-size:11px;background:#0d0f14;border:1px solid var(--line)}
+.s-COMPLETED{color:var(--ok)}.s-READY{color:var(--accent)}.s-IN_PROGRESS{color:var(--warn)}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.sub{color:var(--sub)}
+.jbtn{display:inline-block;background:var(--accent);color:#0d0f14;font-weight:600;padding:8px 16px;border-radius:8px;text-decoration:none}
+.cmds code{display:block;margin:4px 0;padding:6px 10px;background:#0d0f14;border-radius:6px}
+.scroll{max-height:280px;overflow:auto}
+</style></head><body>
+<header><h1>🛰️ Agent OS 허브 <span class="sub" style="font-size:13px">· GH_Harness</span></h1>
+<span class="ts">생성: __NOW__</span></header>
+<div class="kpis" style="padding:20px 28px 0">
+  <div class="kpi"><div class="n">__NPROJ__</div><div class="l">연결 프로젝트</div></div>
+  <div class="kpi"><div class="n">__NISSUE__</div><div class="l">전체 이슈</div></div>
+  <div class="kpi"><div class="n">__DIRTY__</div><div class="l">미커밋 변경 합계</div></div>
+  <div class="kpi"><div class="n">__NMEM__</div><div class="l">메모리 항목</div></div>
+  <div class="kpi"><div class="n">__NLEARN__</div><div class="l">학습한 스킬</div></div>
+  <div class="kpi"><div class="n">__NMOA__</div><div class="l">MoA 실행</div></div>
+</div>
+<main>
+  <div class="card"><h2>📋 이슈 파이프라인</h2>
+    <div style="margin-bottom:10px">__STATUS_CHIPS__</div>
+    <div style="margin-bottom:12px">__PRIO_CHIPS__</div>
+    <div class="scroll"><table><thead><tr><th>ID</th><th>타입</th><th>우선</th><th>상태</th><th>제목</th></tr></thead>
+    <tbody>__ISSUE_ROWS__</tbody></table></div>
+  </div>
+  <div class="card"><h2>📦 프로젝트 상태 (git)</h2>
+    <div class="scroll"><table><thead><tr><th>프로젝트</th><th>브랜치</th><th>미커밋</th></tr></thead>
+    <tbody>__PROJ_ROWS__</tbody></table></div>
+  </div>
+  <div class="card"><h2>🧭 Journey 그래프</h2>
+    <p class="sub">스킬 ↔ 메모리 연결 시각화</p>__JOURNEY__
+  </div>
+  <div class="card"><h2>🎓 학습한 스킬 (/learn)</h2>
+    <ul style="margin:0;padding-left:18px">__LEARNED__</ul>
+  </div>
+  <div class="card cmds"><h2>⌨️ Agent OS 명령</h2>
+    <code>agent-os moa "&lt;프롬프트&gt;"  # 멀티모델 합의</code>
+    <code>agent-os learn &lt;URL&gt;        # URL → 스킬</code>
+    <code>agent-os journey            # 그래프 재생성</code>
+    <code>agent-os hub --open         # 이 허브 열기</code>
+  </div>
+</main></body></html>"""
+
+out_html = (TPL
+  .replace("__NOW__", esc(now))
+  .replace("__NPROJ__", str(len(projects)))
+  .replace("__NISSUE__", str(len(issues)))
+  .replace("__DIRTY__", str(dirty_total))
+  .replace("__NMEM__", str(mem_lines))
+  .replace("__NLEARN__", str(len(learned)))
+  .replace("__NMOA__", str(len(moa)))
+  .replace("__STATUS_CHIPS__", status_chips or '<span class="sub">이슈 없음</span>')
+  .replace("__PRIO_CHIPS__", prio_chips)
+  .replace("__ISSUE_ROWS__", issue_rows)
+  .replace("__PROJ_ROWS__", proj_rows)
+  .replace("__JOURNEY__", journey_card)
+  .replace("__LEARNED__", learned_rows))
+
+open(out, "w", encoding="utf-8").write(out_html)
+print(f"[hub] ✅ 허브 렌더: {out}")
+print(f"[hub]    프로젝트 {len(projects)} · 이슈 {len(issues)} · 미커밋 {dirty_total} · 메모리 {mem_lines}")
+PY
+
+if [ "${1:-}" = "--open" ]; then
+  command -v open >/dev/null 2>&1 && open "$OUT" || echo "[hub] 파일: $OUT"
+fi
