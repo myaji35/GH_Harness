@@ -74,8 +74,15 @@ if [ "$TOOL" = "Bash" ]; then
       # 게이트를 테스트할 수 없다 — 실제 유출 사례를 회귀 테스트로 고정하는 것이
       # 이 사고의 재발 방지책이므로, 테스트 파일은 스캔 대상에서 뺀다.
       # (tests/ 밖의 모든 파일은 그대로 검사한다)
-      STAGED=$(git diff --cached -- . ':(exclude)tests/*' ':(exclude)*_test.sh' 2>/dev/null \
-               | grep '^+' | grep -v '^+++')
+      # test/ (Rails·Minitest) 와 tests/ (일반) 양쪽 + spec/ (RSpec) 을 제외한다.
+      # 2026-07-15: tests/* 만 제외해 CPOFlow(test/ 단수)의 픽스처
+      # `u.password = "password123"` 이 차단됐다. 테스트 픽스처의 가짜 비번은
+      # 시크릿이 아니다. 단, 이름에 test가 들어가도 앱 코드면 검사 대상이다.
+      STAGED=$(git diff --cached -- . \
+                 ':(exclude)tests/*' ':(exclude)test/*' ':(exclude)spec/*' \
+                 ':(exclude)*_test.sh' ':(exclude)*_test.rb' ':(exclude)*_spec.rb' \
+                 ':(exclude)*.test.ts' ':(exclude)*.spec.ts' \
+               2>/dev/null | grep '^+' | grep -v '^+++')
       HITS=$(echo "$STAGED" | scan_text)
       if [ -n "$HITS" ]; then
         echo "🚨 [Harness Secret-Guard] 커밋 차단: staged 변경에 시크릿(API 키) 평문 감지" >&2
