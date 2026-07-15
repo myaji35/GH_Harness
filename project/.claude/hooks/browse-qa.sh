@@ -61,21 +61,25 @@ NET_ERR=$("$BROWSE_BIN" network 2>/dev/null | grep -E "^[45][0-9][0-9]" || echo 
 "$BROWSE_BIN" screenshot "$ARTIFACT_DIR/after.png" 2>/dev/null || true
 
 # 결과 JSON 생성 (Python으로 안전하게)
-python3 << PYEOF
+python3 - "$ARTIFACT_DIR" "$URL" "$CONSOLE_ERR" "$NET_ERR" << 'PYEOF'
+import sys as _sysargv
+# 인자는 argv로 받는다 (heredoc 보간 = RCE 경로. 2026-07-15 감사)
+_ARTIFACT_DIR, _URL, _CONSOLE_ERR, _NET_ERR = (_sysargv.argv[1:5] + ['']*4)[:4]
+
 import json, os
 
-console_lines = """$CONSOLE_ERR""".strip().split("\n") if """$CONSOLE_ERR""".strip() else []
-net_lines = """$NET_ERR""".strip().split("\n") if """$NET_ERR""".strip() else []
+console_lines = ""_CONSOLE_ERR"".strip().split("\n") if ""_CONSOLE_ERR"".strip() else []
+net_lines = ""_NET_ERR"".strip().split("\n") if ""_NET_ERR"".strip() else []
 
 result = {
-    "url": "$URL",
+    "url": _URL,
     "console_errors": [{"message": l} for l in console_lines if l],
     "network_errors": [{"line": l} for l in net_lines if l],
-    "screenshot": "$ARTIFACT_DIR/after.png",
+    "screenshot": "' + str(_ARTIFACT_DIR) + '/after.png",
     "navigate_ok": True
 }
 
-with open("$ARTIFACT_DIR/browser-qa-result.json", "w") as f:
+with open("' + str(_ARTIFACT_DIR) + '/browser-qa-result.json", "w") as f:
     json.dump(result, f, ensure_ascii=False, indent=2)
 
 print(json.dumps(result, ensure_ascii=False))

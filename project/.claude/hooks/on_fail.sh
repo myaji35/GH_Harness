@@ -8,17 +8,21 @@ ERROR_MSG="$2"
 
 echo "[Hook:on_fail] 이슈 실패: $ISSUE_ID"
 
-python3 << EOF
+python3 - "$REGISTRY" "$ISSUE_ID" "$ERROR_MSG" << 'EOF'
+import sys as _sysargv
+# 인자는 argv로 받는다 (heredoc 보간 = RCE 경로. 2026-07-15 감사)
+_REGISTRY, _ISSUE_ID, _ERROR_MSG = (_sysargv.argv[1:4] + ['']*3)[:3]
+
 import json, datetime, sys
 
 try:
-    with open('$REGISTRY', 'r') as f:
+    with open(_REGISTRY, 'r') as f:
         registry = json.load(f)
 except:
     print("registry.json 읽기 실패")
     sys.exit(1)
 
-issue_id = '$ISSUE_ID'
+issue_id = _ISSUE_ID
 
 for issue in registry['issues']:
     if issue['id'] == issue_id:
@@ -45,7 +49,7 @@ for issue in registry['issues']:
                 'parent_id': issue_id,
                 'depends_on': [],
                 'created_at': datetime.datetime.now().isoformat(),
-                'payload': {'original_issue': issue_id, 'error': '$ERROR_MSG'},
+                'payload': {'original_issue': issue_id, 'error': _ERROR_MSG},
                 'result': None,
                 'spawn_rules': []
             }
@@ -61,7 +65,7 @@ for issue in registry['issues']:
         })
         break
 
-with open('$REGISTRY', 'w') as f:
+with open(_REGISTRY, 'w') as f:
     json.dump(registry, f, indent=2, ensure_ascii=False)
 
 print(f"[on_fail] 처리 완료")

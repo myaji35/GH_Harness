@@ -18,16 +18,20 @@ CHANGED_FILE="${TOOL_INPUT_FILE_PATH:-unknown}"
 # graphify 그래프 증분 갱신 신호 (게이트는 autobuild.sh 내부, 미설치 시 즉시 skip)
 bash .claude/hooks/graphify-autobuild.sh change "$CHANGED_FILE" >/dev/null 2>&1 || true
 
-python3 << PYEOF
+python3 - "$REGISTRY" "$CHANGED_FILE" << 'PYEOF'
+import sys as _sysargv
+# 인자는 argv로 받는다 (heredoc 보간 = RCE 경로. 2026-07-15 감사)
+_REGISTRY, _CHANGED_FILE = (_sysargv.argv[1:3] + ['']*2)[:2]
+
 import json, datetime, sys
 
 try:
-    with open('$REGISTRY', 'r') as f:
+    with open(_REGISTRY, 'r') as f:
         registry = json.load(f)
 except Exception:
     sys.exit(0)
 
-changed_file = '$CHANGED_FILE'
+changed_file = _CHANGED_FILE
 
 # 현재 IN_PROGRESS 이슈에 변경 파일 기록
 for issue in registry.get('issues', []):
@@ -38,6 +42,6 @@ for issue in registry.get('issues', []):
             issue['payload']['files_changed'].append(changed_file)
         break
 
-with open('$REGISTRY', 'w') as f:
+with open(_REGISTRY, 'w') as f:
     json.dump(registry, f, indent=2, ensure_ascii=False)
 PYEOF

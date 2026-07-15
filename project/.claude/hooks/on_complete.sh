@@ -26,19 +26,19 @@ if [ -x "$SCRIPT_DIR/decision-trace.sh" ]; then
   bash "$SCRIPT_DIR/decision-trace.sh" completed "$ISSUE_ID" type="$ISSUE_TYPE" 2>/dev/null || true
 fi
 
-python3 << PYEOF
+python3 - "$REGISTRY" "$ISSUE_ID" "$ISSUE_TYPE" "$RESULT" << 'PYEOF'
 import json, datetime, sys
 
+# 인자는 argv로 받는다 (heredoc 보간 금지 — RCE 차단, 2026-07-15)
+_REG, issue_id, issue_type, result_raw = sys.argv[1:5]
+
 try:
-    with open('$REGISTRY', 'r') as f:
+    with open(_REG, 'r') as f:
         registry = json.load(f)
 except:
     print("registry.json 읽기 실패")
     sys.exit(1)
 
-issue_id = '$ISSUE_ID'
-issue_type = '$ISSUE_TYPE'
-result_raw = '''$RESULT'''
 
 now = datetime.datetime.now().isoformat()
 new_issues = []
@@ -934,7 +934,7 @@ registry.setdefault('hooks', {}).setdefault('on_complete', []).append({
     'timestamp': now
 })
 
-with open('$REGISTRY', 'w') as f:
+with open(_REG, 'w') as f:
     json.dump(registry, f, indent=2, ensure_ascii=False)
 
 print(f"[on_complete] 처리 완료")

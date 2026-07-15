@@ -68,7 +68,14 @@ if [ "$TOOL" = "Bash" ]; then
       fi
 
       # 2차 방어선: staged diff에서 추가된 라인(+)만 값 패턴 스캔
-      STAGED=$(git diff --cached 2>/dev/null | grep '^+' | grep -v '^+++')
+      #
+      # 테스트 픽스처 제외 (2026-07-15): tests/ 아래 파일은 secret-guard 자신의
+      # 탐지 능력을 검증하려고 일부러 가짜 시크릿 문자열을 담는다. 이를 차단하면
+      # 게이트를 테스트할 수 없다 — 실제 유출 사례를 회귀 테스트로 고정하는 것이
+      # 이 사고의 재발 방지책이므로, 테스트 파일은 스캔 대상에서 뺀다.
+      # (tests/ 밖의 모든 파일은 그대로 검사한다)
+      STAGED=$(git diff --cached -- . ':(exclude)tests/*' ':(exclude)*_test.sh' 2>/dev/null \
+               | grep '^+' | grep -v '^+++')
       HITS=$(echo "$STAGED" | scan_text)
       if [ -n "$HITS" ]; then
         echo "🚨 [Harness Secret-Guard] 커밋 차단: staged 변경에 시크릿(API 키) 평문 감지" >&2

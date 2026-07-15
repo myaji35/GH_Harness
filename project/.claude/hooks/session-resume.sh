@@ -15,10 +15,14 @@ BRAND_DNA="brand-dna.json"
 # ── 프로젝트 디자인 아젠다 자동 주입 ──
 # brand-dna.json이 있으면 design_tokens + agenda를 컨텍스트에 출력
 if [ -f "$BRAND_DNA" ]; then
-  python3 << PYEOF
+  python3 - "$BRAND_DNA" << 'PYEOF'
+import sys as _sa
+# heredoc 보간 금지 — argv로 수신 (RCE 차단, 2026-07-15)
+_ARGV = (_sa.argv[1:2] + ['']*1)[:1]
+
 import json
 try:
-    with open("$BRAND_DNA", 'r') as f:
+    with open(_ARGV[0], 'r') as f:
         dna = json.load(f)
     status = dna.get("_status", "unknown")
     agenda = dna.get("agenda", "")

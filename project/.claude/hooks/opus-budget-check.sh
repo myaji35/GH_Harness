@@ -31,11 +31,15 @@ if [ ! -f "$REGISTRY" ]; then
   exit 0
 fi
 
-python3 << PYEOF
+python3 - "$REGISTRY" "$AGENT" << 'PYEOF'
+import sys as _sa
+# heredoc 보간 금지 — argv로 수신 (RCE 차단, 2026-07-15)
+_ARGV = (_sa.argv[1:3] + ['']*2)[:2]
+
 import json, datetime, sys
 
-REGISTRY_PATH = "$REGISTRY"
-AGENT = "$AGENT"
+REGISTRY_PATH = _ARGV[0]
+AGENT = _ARGV[1]
 
 # ── 예산 정책 (v2+ 균형) ────────────────────────────
 SOFT_CAP_DAILY = 10.0

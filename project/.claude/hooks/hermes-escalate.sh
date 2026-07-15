@@ -45,13 +45,17 @@ fi
 
 echo "[hermes-escalate] 이슈=$EXECUTOR_ISSUE_ID reason=$REASON_CODE"
 
-python3 << PYEOF
+python3 - "$REGISTRY" "$EXECUTOR_ISSUE_ID" "$REASON_CODE" "$CONTEXT_HINT" << 'PYEOF'
+import sys as _sa
+# heredoc 보간 금지 — argv로 수신 (RCE 차단, 2026-07-15)
+_ARGV = (_sa.argv[1:5] + ['']*4)[:4]
+
 import json, datetime, sys, os
 
-REGISTRY_PATH = "$REGISTRY"
-EXECUTOR_ID = "$EXECUTOR_ISSUE_ID"
-REASON = "$REASON_CODE"
-CONTEXT_HINT = "$CONTEXT_HINT"
+REGISTRY_PATH = _ARGV[0]
+EXECUTOR_ID = _ARGV[1]
+REASON = _ARGV[2]
+CONTEXT_HINT = _ARGV[3]
 
 # Circuit Breaker 임계치
 MAX_PER_ISSUE = 3        # 이슈당 Hermes 호출 제한

@@ -37,13 +37,17 @@ if [ ! -f "$REGISTRY" ]; then
   exit 1
 fi
 
-python3 << PYEOF
+python3 - "$REGISTRY" "$ISSUE_ID" "$DECISION" "$PAYLOAD_ARG" << 'PYEOF'
+import sys as _sysargv
+# 인자는 argv로 받는다 (heredoc 보간 = RCE 경로. 2026-07-15 감사)
+_REGISTRY, _ISSUE_ID, _DECISION, _PAYLOAD_ARG = (_sysargv.argv[1:5] + ['']*4)[:4]
+
 import json, datetime, sys
 
-REGISTRY_PATH = "$REGISTRY"
-ISSUE_ID = "$ISSUE_ID"
-DECISION = "$DECISION"
-PAYLOAD_ARG = """$PAYLOAD_ARG"""
+REGISTRY_PATH = _REGISTRY
+ISSUE_ID = _ISSUE_ID
+DECISION = _DECISION
+PAYLOAD_ARG = ""_PAYLOAD_ARG""
 
 try:
     with open(REGISTRY_PATH, 'r') as f:

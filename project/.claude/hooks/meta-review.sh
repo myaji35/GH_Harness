@@ -290,8 +290,19 @@ knowledge.setdefault("meta_observations", []).append({
 registry["knowledge"] = knowledge
 registry["stats"]["evolved"] = registry["stats"].get("evolved", 0) + 1
 
-with open(".claude/issue-db/registry.json", 'w') as f:
-    json.dump(registry, f, indent=2, ensure_ascii=False)
+# [2026-07-15] 락 + 원자적 저장. Stop 이벤트에서 on-agent-complete.sh와 동시 발화 →
+# 락 없이는 나중에 쓴 쪽이 상대 변경을 덮어썼다(실측: 8프로세스 동시 시 84% 유실).
+import sys as _s, os as _o
+_s.path.insert(0, _o.path.join(".claude", "hooks", "lib"))
+try:
+    from registry_lock import registry_txn as _txn
+    with _txn(".claude/issue-db/registry.json") as _r:
+        _r.clear(); _r.update(registry)
+except Exception as _e:
+    # 락 실패 시에도 데이터는 남겨야 한다 — 단, 조용히 넘어가지 않고 알린다
+    print(f"[meta-review] 락 실패({_e}) — 비원자적 저장으로 폴백", file=_s.stderr)
+    with open(".claude/issue-db/registry.json", 'w') as f:
+        json.dump(registry, f, indent=2, ensure_ascii=False)
 
 # 새 이슈가 생성되었으면 exit 2 (asyncRewake)
 if new_issues:
