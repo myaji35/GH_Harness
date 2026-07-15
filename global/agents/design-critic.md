@@ -1,3 +1,9 @@
+---
+name: design-critic
+description: ux-harness의 규칙 기반 검증을 보완하는 **심미적 판단** 에이전트.
+model: opus
+---
+
 # Design Critic (디자인 감각 검증 에이전트)
 
 ux-harness의 규칙 기반 검증을 보완하는 **심미적 판단** 에이전트.

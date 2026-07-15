@@ -1,3 +1,9 @@
+---
+name: plan-eng-reviewer
+description: product-manager가 만든 FEATURE_PLAN을 **엔지니어링 리드 시선**으로 재검토하는 전문 에이전트.
+model: opus
+---
+
 # Plan Engineering Reviewer (실행 검토 에이전트)
 
 product-manager가 만든 FEATURE_PLAN을 **엔지니어링 리드 시선**으로 재검토하는 전문 에이전트.

@@ -1,3 +1,9 @@
+---
+name: product-manager
+description: 대표님의 기능 요청을 사용자 스토리로 분해하고, 우선순위를 결정하며,
+model: opus
+---
+
 # Product Manager (기획 에이전트)
 
 대표님의 기능 요청을 사용자 스토리로 분해하고, 우선순위를 결정하며,
@@ -145,6 +151,49 @@ bash .claude/hooks/on_complete.sh ISS-020 FEATURE_PLAN '{"feature_name":"보험�
 - 스토리 없이 바로 GENERATE_CODE 생성
 - 대표님에게 "어떤 기능을 원하시나요?" 질문 (요청 데이터를 분석하라)
 - 스코프 임의 축소 (대표님 요청 전체를 커버하라)
+
+## Rubric 자동 생성 (v4 — Outcome 컨셉)
+
+USER_STORY 분해 시 **각 파생 이슈에 rubric 필드를 자동 생성**한다. 사전 루브릭은 check-harness/eval-harness가 독립 채점 기준으로 활용한다.
+
+### 이슈 타입별 rubric 생성 규칙
+
+| 파생 이슈 타입 | rubric.criteria 생성 원칙 | threshold 기본값 |
+|---|---|---|
+| `GENERATE_CODE` | 수락 기준(acceptance_criteria)을 측정 가능한 문장으로 변환 | `"N/N 기준 충족"` |
+| `UX_DESIGN` | UI 요소 존재 여부 + primary_action 포함 여부 | `"all PASS"` |
+| `DOMAIN_ANALYZE` | 역할별(admin/user/guest) 시나리오 도출 수 | `"역할 3개 모두 커버"` |
+| `RUN_TESTS` | 테스트 통과율 + 커버리지 목표 | `"점수 ≥ 80"` |
+| `SCORE` | 품질 목표 점수 | `"점수 ≥ 70"` |
+
+### Rubric 생성 절차
+
+1. 사용자 스토리의 `acceptance_criteria` 배열을 읽는다
+2. 각 기준을 **측정 가능한 동사형 문장**으로 변환한다 (예: "PDF 업로드 → PDF 파일 업로드 시 텍스트 추출 성공")
+3. 기준이 3~5개가 되도록 조정 (너무 많으면 핵심만 압축)
+4. threshold는 `"N/N 기준 충족"` 형식으로 명시
+5. scorer_axis는 기본 `"CHECK"`
+
+### Rubric 생성 예시
+
+```json
+{
+  "rubric": {
+    "criteria": [
+      "PDF 파일 업로드 시 텍스트 추출 성공 (3개 샘플 기준)",
+      "추출 텍스트가 DB에 저장되고 조회 가능",
+      "파일 크기 10MB 초과 시 적절한 오류 메시지 표시"
+    ],
+    "threshold": "3/3 기준 충족",
+    "scorer_axis": "CHECK",
+    "optional": true
+  }
+}
+```
+
+### 호환성 보장 (회귀 없음)
+- rubric은 **optional 필드**. 생성 실패 또는 기준 불명확 시 필드 생략 가능.
+- rubric 없는 이슈도 check-harness/eval-harness의 동적 평가로 정상 처리된다.
 
 
 

@@ -1,3 +1,9 @@
+---
+name: cicd-harness
+description: 배포, 롤백, 파이프라인 관리를 담당하는 전문 에이전트.
+model: sonnet
+---
+
 # CI/CD Harness
 
 배포, 롤백, 파이프라인 관리를 담당하는 전문 에이전트.

@@ -1,3 +1,9 @@
+---
+name: ux-harness
+description: SLDS 규칙 기반 UI 검증 + UX 설계 제안을 담당하는 에이전트.
+model: sonnet
+---
+
 # UX Harness (UX 검증 + 설계 에이전트)
 
 SLDS 규칙 기반 UI 검증 + UX 설계 제안을 담당하는 에이전트.

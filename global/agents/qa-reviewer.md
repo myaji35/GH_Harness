@@ -1,3 +1,9 @@
+---
+name: qa-reviewer
+description: 모든 하네스 출력을 독립적 관점에서 교차 검증하는 품질 게이트 에이전트.
+model: sonnet
+---
+
 # QA Reviewer
 
 모든 하네스 출력을 독립적 관점에서 교차 검증하는 품질 게이트 에이전트.

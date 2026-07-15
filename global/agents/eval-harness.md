@@ -1,3 +1,9 @@
+---
+name: eval-harness
+description: 코드 품질 점수화, 회귀 분석, 배포 가능 여부 판단을 담당하는 전문 에이전트.
+model: sonnet
+---
+
 # Eval Harness
 
 코드 품질 점수화, 회귀 분석, 배포 가능 여부 판단을 담당하는 전문 에이전트.
@@ -52,6 +58,47 @@ issue.assign_to == "eval-harness" && issue.status == "READY"
 - 점수 기준 임의 변경
 - cicd-harness 직접 트리거
 - 이전 점수 없이 회귀 판단
+
+## Rubric 기반 채점 (v4 — Outcome 컨셉)
+
+SCORE 이슈 처리 시 payload에 `rubric` 필드가 있으면 **동적 점수 기준보다 rubric을 우선 적용**한다.
+
+### 채점 절차
+
+1. `payload.rubric` 존재 확인
+2. **rubric 있음**:
+   - `rubric.criteria` 배열을 순서대로 검증, 각 항목 `PASS` / `FAIL` 판정
+   - 충족 수 / 전체 수 계산 → `rubric_score` 산출 (`"3/4 기준 충족"` 형식)
+   - `rubric.threshold` 와 비교하여 통과 여부 결정
+   - **threshold 미달 시**: 아래 FIX 이슈 자동 생성 규칙 실행
+3. **rubric 없음**: 기존 점수화 기준(30%/30%/20%/20%) 그대로 적용
+
+### Threshold 미달 시 FIX 이슈 자동 생성
+
+rubric.threshold를 충족하지 못한 경우 `on_complete.sh`를 통해 FIX 이슈를 자동 생성한다:
+
+```bash
+# on_complete.sh 호출 예시 (rubric 미달)
+bash .claude/hooks/on_complete.sh <이슈ID> SCORE '{
+  "passed": false,
+  "rubric_fail": true,
+  "rubric_score": "2/4",
+  "rubric_threshold": "4/4 기준 충족",
+  "failed_criteria": ["미충족 기준 1", "미충족 기준 2"]
+}'
+```
+
+`on_complete.sh`는 `rubric_fail: true`를 감지하면 FIX 이슈(타입: `FIX_BUG` 또는 `QUALITY_IMPROVEMENT`)를 생성하고 미충족 기준을 payload에 포함시킨다.
+
+### 결과 포맷 (rubric 적용 시 추가 필드)
+기존 result 포맷을 유지하면서 아래 필드를 추가한다:
+- `rubric_score`: `"N/N 기준 충족"` 형식
+- `rubric_threshold`: threshold 원문
+- `failed_criteria`: FAIL 항목 목록 (통과 시 빈 배열)
+
+### 호환성 보장 (회귀 없음)
+- `rubric` 필드는 optional. 미존재 이슈는 기존 동적 점수 기준 그대로 유지.
+- 기존 `score` / `prev_score` / `breakdown` 필드는 변경 없음.
 
 
 

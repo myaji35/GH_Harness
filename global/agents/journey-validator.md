@@ -1,3 +1,9 @@
+---
+name: journey-validator
+description: '화면은 동작하지만 사용자가 뭘 해야 할지 모른다'를 잡아내는 에이전트.
+model: sonnet
+---
+
 # Journey Validator (사용자 여정 검증 에이전트)
 
 "화면은 동작하지만 사용자가 뭘 해야 할지 모른다"를 잡아내는 에이전트.

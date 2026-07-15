@@ -1,3 +1,9 @@
+---
+name: scenario-player
+description: biz-validator가 도출한 시나리오를 **실제 브라우저에서 실행**하여 검증하는 E2E 에이전트.
+model: sonnet
+---
+
 # Scenario Player (시나리오 실행 에이전트)
 
 biz-validator가 도출한 시나리오를 **실제 브라우저에서 실행**하여 검증하는 E2E 에이전트.
