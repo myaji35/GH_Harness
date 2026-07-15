@@ -153,10 +153,18 @@ syn_bad=""
 for f in $hooks; do bash -n "$f" 2>/dev/null || syn_bad="$syn_bad $(basename "$f")"; done
 [ -z "$syn_bad" ] && ok "훅 ${hcount}개 bash 문법 정상" || no "훅 문법 오류" "$syn_bad"
 
-# 실행 권한
-noexec=""
-for f in $hooks; do [ -x "$f" ] || noexec="$noexec $(basename "$f")"; done
-[ -z "$noexec" ] && ok "훅 전부 실행 권한 보유" || no "실행 권한 없음" "$noexec"
+# 실행 권한 — git 인덱스 기준으로 검사한다.
+# 워킹트리 [-x] 로 보면 안 된다: 이 리포는 exFAT 외장 SSD에 있고 core.fileMode=false라
+# 로컬에서는 전부 실행 가능해 보인다. 그러나 git에는 27개가 100644로 커밋돼 있었고
+# CI(ext4)에서만 드러났다 — clone한 다른 머신에서는 훅이 실행되지 않는다.
+noexec=$(git ls-files -s project/.claude/hooks/ 2>/dev/null \
+         | awk '$1=="100644" && $4 ~ /\.sh$/ {print $4}')
+if [ -z "$noexec" ]; then
+  ok "훅 ${hcount}개 실행 권한 보유 (git index 100755)"
+else
+  cnt=$(printf '%s\n' "$noexec" | grep -c .)
+  no "git index에 실행 비트 없음 (${cnt}개)" "clone한 머신에서 훅 실행 불가: $(printf '%s' "$noexec" | head -2 | tr '\n' ' ')…"
+fi
 
 # ─────────────────────────────────────────────────────────────
 section "5. 알려진 미해결 결함 (3·4순위 — 수정 시 이 테스트가 초록불로 전환)"
