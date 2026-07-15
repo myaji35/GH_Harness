@@ -327,6 +327,30 @@ if os.environ.get("HARNESS_HEADLESS") == "1" and allowed_tools:
                      f"→ 화이트리스트 밖 도구는 프롬프트 없이 거부. (CHECK 축 검증 전용, 쓰기 불가)")
 
 # 지시문 출력 — Claude Code가 이것을 읽고 즉시 실행
+# ── 재발화 브레이커 (무한 루프 방지) ⭐ 2026-07-15 ──
+# exit 2는 모델을 깨운다. 그런데 모델이 그 이슈를 처리하지 '못하는' 상태(사용자 승인 대기,
+# 외부 결정 필요, 실행 불가)면 status가 READY로 남아 다음 Stop에서 또 깨운다 → 무한 루프.
+# 실제 사고: 2026-07-15 Bloomberg. 같은 ISS를 수십 회 재발화하며 세션이 진행 불능.
+# → 같은 이슈를 MAX_REWAKE회 이상 깨웠으면 재발화를 멈추고 조용히 통과(exit 0).
+#   대표님이 직접 지시하면 그때 처리된다. 카운터는 이슈 status가 바뀌면 자동 리셋.
+MAX_REWAKE = 3
+_rw = registry.setdefault('rewake_state', {})
+_key = f"{issue_id}:{issue.get('status','')}"
+_n = _rw.get(_key, 0) + 1
+_rw.clear()          # 다른 이슈/상태의 낡은 카운터는 버린다(현재 대상만 추적)
+_rw[_key] = _n
+try:
+    with open(registry_path, 'w') as _rf:
+        json.dump(registry, _rf, indent=2, ensure_ascii=False)
+except Exception:
+    pass
+
+if _n > MAX_REWAKE:
+    print(f"⏸️  [Harness] {issue_id} 재발화 {_n}회 초과 — 자동 디스패치 중단.\n"
+          f"    처리되지 않는 이유가 있다(승인 대기·외부 결정·실행 불가 등).\n"
+          f"    대표님 지시가 있을 때 처리하라. 이 이슈를 자동으로 다시 깨우지 마라.")
+    sys.exit(0)
+
 print(f"""
 🔄 [Harness Auto-Dispatch] READY {len(ready_issues)}개 — 즉시 실행
 

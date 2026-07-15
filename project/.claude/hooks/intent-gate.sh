@@ -15,6 +15,19 @@ INPUT="$(cat)"
 PROMPT="$(printf '%s' "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('prompt',''))" 2>/dev/null || true)"
 [ -n "$PROMPT" ] || exit 0
 
+# ── 시스템 알림 차단 (무한 루프 방지) ⭐ 2026-07-15 ──
+# UserPromptSubmit에는 사람이 친 것뿐 아니라 하네스/하네스가 뱉은 알림도 들어온다.
+# 이걸 지시로 오분류하면: 알림 → 이슈 생성 → READY 증가 → dispatch-ready exit 2(rewake)
+#                        → 응답 → Stop 훅 → 또 알림 → ... 무한 루프.
+# 실제 사고: 2026-07-15 Bloomberg. 제목이 "[지시] <task-notification>..."인 쓰레기 이슈가
+#            반복 생성되고 Stop 훅이 수십 회 재발화. payload.raw_prompt에 훅 자기 출력이 그대로 박힘.
+case "$PROMPT" in
+  *"<task-notification>"*|*"<system-reminder>"*|*"[SYSTEM NOTIFICATION"*|\
+  *"Stop hook feedback"*|*"Harness Auto-Dispatch"*|*"[자동 실행 지시]"*|\
+  *"[지시 분류 게이트]"*|*"hook blocking error"*|*"[Harness Freeze]"*)
+    exit 0 ;;
+esac
+
 # ── 분류 ──
 # 즉답/조회형(이슈화 제외): 짧은 조회·상태·값변경·하네스 메타 명령
 # 실작업형(이슈화 강제): 코드 산출물을 만들거나 바꾸는 동사
