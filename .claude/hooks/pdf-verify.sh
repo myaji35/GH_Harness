@@ -1,1 +1,0 @@
-/Users/gangseungsig/.claude/harness-core/hooks/pdf-verify.sh

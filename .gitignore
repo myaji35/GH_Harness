@@ -40,3 +40,11 @@ site/
 .claude/hooks/.webhook.log
 .gstack/
 graphify-obsidian-input/
+
+# 로컬 전용 심링크 (2026-07-15)
+# .claude/hooks/* 는 install.sh가 harness-core로 거는 절대경로 심링크다.
+# git에 커밋되면 다른 머신·CI에서 깨진 링크가 되어 bash -n이 전부 실패한다.
+# (2026-06-29부터 CI가 이 이유로 계속 빨간불이었다)
+# 배포 원본은 project/.claude/hooks/ 의 실파일이다.
+.claude/hooks/*.sh
+.claude/hooks/lib/

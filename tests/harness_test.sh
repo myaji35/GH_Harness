@@ -202,7 +202,30 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────────
-section "6. registry 스키마"
+section "6. 이식성 (2026-06-29~07-15: CI가 2주간 빨간불이었음)"
+# ─────────────────────────────────────────────────────────────
+
+# git에 커밋된 절대경로 심링크는 다른 머신/CI에서 깨진 링크가 된다.
+# .claude/hooks/*.sh 36개가 /Users/gangseungsig/... 를 가리킨 채 커밋돼 있어
+# CI의 bash -n이 "No such file or directory"로 전부 실패했다.
+# 로컬에서는 대상이 실재하므로 절대 재현되지 않는다 — 그래서 2주간 몰랐다.
+abs_links=$(
+  git ls-files -s 2>/dev/null | awk '$1=="120000"{print $4}' | while read -r l; do
+    t=$(git cat-file -p ":$l" 2>/dev/null)
+    if [ "${t#/Users/}" != "$t" ] || [ "${t#/Volumes/}" != "$t" ] || [ "${t#/home/}" != "$t" ]; then
+      printf '%s\n' "$l"
+    fi
+  done
+)
+if [ -z "$abs_links" ]; then
+  ok "커밋된 절대경로 심링크 없음 (다른 머신·CI에서 이식 가능)"
+else
+  cnt=$(printf '%s\n' "$abs_links" | grep -c .)
+  no "절대경로 심링크 ${cnt}개 커밋됨 → CI에서 깨짐" "$(printf '%s' "$abs_links" | head -2 | tr '\n' ' ')…"
+fi
+
+# ─────────────────────────────────────────────────────────────
+section "7. registry 스키마"
 # ─────────────────────────────────────────────────────────────
 
 REG=".claude/issue-db/registry.json"

@@ -1,1 +1,0 @@
-/Users/gangseungsig/.claude/harness-core/hooks/parked-revival.sh
