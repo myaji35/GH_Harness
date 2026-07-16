@@ -65,6 +65,70 @@ QUESTION = ['?', '？', '나요', '습니까', '까요', '는가', '은가', '�
 def asks():
     p = prompt.strip()
     return any(p.endswith(q) or q in p for q in QUESTION)
+
+# 0-b-2) ⭐ 아이디어 포착 레인 (2026-07-16, 대표님 "맨날 이렇게 누수가 되는것이 스트레스네")
+# 문제: 대표님은 아이디어를 **제안형·회상형**으로 말한다 — "~하자", "~하면 좋겠어",
+#   "~보고 싶었거든", "~생각했어". 이 말투엔 WORK 동사('추가/구현/만들어')가 없어서
+#   위 `not has(WORK)` 통과로 **전량 유실**됐고, "~하자 했는데 ...있나?"는 QUESTION에도 걸려
+#   이중으로 샜다. 실유실 사례: reset 버튼(대표님 재지적으로 발견), 상황판 탭 순환, 공격 지도.
+# 해법: 순수 질문("이거 뭐야?")과 아이디어("~하면 좋겠어")를 분리해, 아이디어만 BACKLOG로 적재.
+#   - READY가 아니라 **BACKLOG**로 넣는다: 지나가듯 한 말에 에이전트가 즉시 착수하면 안 된다.
+#     대표님이 나중에 훑어보고 올리는 대기열이다(포착이 목적, 실행 강제가 아님).
+#   - QUESTION보다 **먼저** 판정한다: "~하자 했는데 있나?"를 잡으려면 순서가 앞서야 한다.
+# 어미 중심으로 잡는다 — 앞 동사가 뭐든('하면/보여주면/붙이면/넣으면...') 걸리도록
+# '~면 좋겠'처럼 조각으로 둔다. 특정 동사를 나열하면 반드시 빠지는 게 생긴다
+# (2026-07-16: '하면 좋겠'만 넣었다가 "보여주면 좋겠어"를 놓쳐 실패).
+IDEA = ['면 좋겠', '면 좋을', '으면 해', '했으면', '좋겠어', '좋겠네', '좋겠다',
+        '하자', '넣자', '만들자', '붙이자', '해보자', '가자',
+        '보고 싶', '하고 싶', '생각했어', '생각중', '생각이야', '아이디어',
+        '어때', '어떨까', '하는게 좋', '하는 게 좋',
+        '필요할듯', '필요할 듯', '필요해 보', '있으면 좋', '있었으면']
+# 아이디어 신호가 있어도 이것만 있으면 단순 의견/평가라 적재하지 않는다.
+IDEA_EXCLUDE = ['좋아', '맞아', '그래', '고마워', '수고']
+
+def is_idea():
+    p = prompt.strip()
+    if len(p) < 12:
+        return False
+    if not any(k in p for k in IDEA):
+        return False
+    # 순수 감탄/동의는 제외
+    if p in IDEA_EXCLUDE:
+        return False
+    return True
+
+if is_idea():
+    try:
+        REG_I = ".claude/issue-db/registry.json"
+        reg_i = json.load(open(REG_I))
+        raw = prompt.strip().replace('\n', ' ')
+        title_i = ('[아이디어] ' + raw)[:80]
+        # 중복 방지: 같은 제목이 이미 있으면 재적재 안 함
+        dup = any(i.get('title') == title_i for i in reg_i.get('issues', []))
+        if not dup:
+            def num_i(iid):
+                try: return int(''.join(c for c in str(iid).split('-')[-1] if c.isdigit()) or 0)
+                except: return 0
+            nums_i = [num_i(i.get('id', '')) for i in reg_i.get('issues', [])]
+            nxt_i = (max(nums_i) if nums_i else 0) + 1
+            while any(i.get('id') == f'ISS-{nxt_i:03d}' for i in reg_i['issues']):
+                nxt_i += 1
+            now_i = datetime.datetime.now().isoformat()
+            reg_i['issues'].append({
+                'id': f'ISS-{nxt_i:03d}', 'title': title_i, 'type': 'IDEA',
+                'status': 'BACKLOG', 'priority': 'P3', 'assign_to': 'product-manager',
+                'depth': 0, 'created_at': now_i, 'updated_at': now_i,
+                'payload': {'origin': 'intent-gate:idea', 'raw_prompt': raw,
+                            'note': '대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — '
+                                    '검토 후 READY로 올려야 실행된다.'},
+            })
+            json.dump(reg_i, open(REG_I, 'w'), indent=2, ensure_ascii=False)
+            print(f"[아이디어 포착] {f'ISS-{nxt_i:03d}'} BACKLOG 등재 — 유실 방지. "
+                  f"지금 실행할지는 대표님 지시를 따르되, 기록은 남았다.")
+    except Exception:
+        pass  # 포착 실패가 대화를 막으면 안 된다(보수)
+    # 아이디어는 적재만 하고 통과 — 실작업 이슈화는 아래 WORK 로직이 별도 판정.
+
 if asks():
     sys.exit(0)
 # 실작업형 동사(이것이 있으면 이슈화)
