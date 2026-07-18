@@ -47,7 +47,7 @@ import json, datetime, sys
 REGISTRY_PATH = _REGISTRY
 ISSUE_ID = _ISSUE_ID
 DECISION = _DECISION
-PAYLOAD_ARG = ""_PAYLOAD_ARG""
+PAYLOAD_ARG = _PAYLOAD_ARG
 
 try:
     with open(REGISTRY_PATH, 'r') as f:

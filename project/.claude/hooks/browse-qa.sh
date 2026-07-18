@@ -68,8 +68,8 @@ _ARTIFACT_DIR, _URL, _CONSOLE_ERR, _NET_ERR = (_sysargv.argv[1:5] + ['']*4)[:4]
 
 import json, os
 
-console_lines = ""_CONSOLE_ERR"".strip().split("\n") if ""_CONSOLE_ERR"".strip() else []
-net_lines = ""_NET_ERR"".strip().split("\n") if ""_NET_ERR"".strip() else []
+console_lines = _CONSOLE_ERR.strip().split("\n") if _CONSOLE_ERR.strip() else []
+net_lines = _NET_ERR.strip().split("\n") if _NET_ERR.strip() else []
 
 result = {
     "url": _URL,
