@@ -53,7 +53,7 @@ import json, datetime, sys
 REGISTRY_PATH = _REGISTRY
 ISSUE_ID = _ISSUE_ID
 CATEGORY = _CATEGORY
-QUESTION = ""_QUESTION""
+QUESTION = _QUESTION
 
 try:
     with open(REGISTRY_PATH, 'r') as f:
