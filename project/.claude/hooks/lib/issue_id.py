@@ -52,11 +52,16 @@ def validate_sequence(registry: dict[str, Any]) -> list[str]:
     problems: list[str] = []
     issue_ids: list[str] = []
 
+    # 종결 상태의 비표준 ID는 과거 dedupe 잔재이므로 형식 경고에서 제외한다(ISS-1367 정리).
+    _CLOSED = {"CLOSED_DUPLICATE", "CLOSED_STALE", "CLOSED_INVALID", "ARCHIVED"}
     for index, issue in enumerate(_issues(registry)):
         issue_id = issue.get("id") if isinstance(issue, dict) else None
+        status = issue.get("status") if isinstance(issue, dict) else None
         if isinstance(issue_id, str):
             issue_ids.append(issue_id)
         if not isinstance(issue_id, str) or not _ISSUE_ID_RE.fullmatch(issue_id):
+            if status in _CLOSED:
+                continue
             problems.append(f"non-standard issue ID at issues[{index}]: {issue_id!r}")
 
     for issue_id, count in sorted(Counter(issue_ids).items()):
