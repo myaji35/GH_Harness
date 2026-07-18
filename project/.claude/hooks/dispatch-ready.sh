@@ -142,6 +142,26 @@ if len(ready_issues) > 20:
     if not ready_issues:
         sys.exit(0)
 
+# ── 재디스패치 쿨다운 (반복 Stop hook 폭주 방지) ──────────────
+import os
+from datetime import datetime
+_COOLDOWN = int(os.environ.get("HARNESS_DISPATCH_COOLDOWN_SEC", "900"))
+_cooldown_total = len(ready_issues)
+_cooldown_ready = []
+for _iss in ready_issues:
+    try:
+        _last = datetime.fromisoformat(_iss["last_dispatched_at"])
+        _now = datetime.now(_last.tzinfo) if _last.tzinfo else datetime.now()
+        if (_now - _last).total_seconds() < _COOLDOWN:
+            continue
+    except (KeyError, TypeError, ValueError):
+        pass
+    _cooldown_ready.append(_iss)
+ready_issues = _cooldown_ready
+if not ready_issues:
+    print(f"⏳ [Cooldown] READY {_cooldown_total}개 전부 재디스패치 쿨다운({_COOLDOWN}s) 중 — 이번 턴 통과")
+    sys.exit(0)
+
 # 우선순위 정렬: P0 > P1 > P2 > P3, 동일 우선순위 내 실패 이슈(retry_count>0) 우선 (ISS-374, BR-014)
 priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
 ready_issues.sort(key=lambda x: (
@@ -249,6 +269,12 @@ if issue_type == "RACE_MODE":
             ], capture_output=True, timeout=3)
     except Exception:
         pass
+    issue["last_dispatched_at"] = datetime.now().isoformat(timespec="seconds")
+    try:
+        with open(registry_path, 'w') as _rf:
+            json.dump(registry, _rf, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
     sys.exit(2)
 
 # ── 자동 freeze 설정 ─────────────────────────────────
@@ -335,10 +361,17 @@ if os.environ.get("HARNESS_HEADLESS") == "1" and allowed_tools:
 #   대표님이 직접 지시하면 그때 처리된다. 카운터는 이슈 status가 바뀌면 자동 리셋.
 MAX_REWAKE = 3
 _rw = registry.setdefault('rewake_state', {})
+_valid_rewake_keys = {
+    f"{_iss.get('id')}:{_iss.get('status', '')}"
+    for _iss in registry.get('issues', [])
+}
+for _stale_key in list(_rw):
+    if _stale_key not in _valid_rewake_keys:
+        del _rw[_stale_key]
 _key = f"{issue_id}:{issue.get('status','')}"
 _n = _rw.get(_key, 0) + 1
-_rw.clear()          # 다른 이슈/상태의 낡은 카운터는 버린다(현재 대상만 추적)
 _rw[_key] = _n
+issue["last_dispatched_at"] = datetime.now().isoformat(timespec="seconds")
 try:
     with open(registry_path, 'w') as _rf:
         json.dump(registry, _rf, indent=2, ensure_ascii=False)

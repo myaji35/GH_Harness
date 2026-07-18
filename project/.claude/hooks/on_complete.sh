@@ -27,7 +27,7 @@ if [ -x "$SCRIPT_DIR/decision-trace.sh" ]; then
 fi
 
 python3 - "$REGISTRY" "$ISSUE_ID" "$ISSUE_TYPE" "$RESULT" << 'PYEOF'
-import json, datetime, sys
+import json, datetime, re, sys
 
 # 인자는 argv로 받는다 (heredoc 보간 금지 — RCE 차단, 2026-07-15)
 _REG, issue_id, issue_type, result_raw = sys.argv[1:5]
@@ -150,6 +150,12 @@ if not target_issue:
     print(f"[오류] {issue_id} 찾을 수 없음")
     sys.exit(1)
 
+# 파생 판단은 호출 인자보다 registry에 저장된 실제 이슈 타입을 우선한다.
+registry_issue_type = target_issue.get('type') or issue_type
+if registry_issue_type != issue_type:
+    print(f"  → 호출 타입 불일치: {issue_type} → {registry_issue_type} (registry 기준으로 파생 판단)")
+    issue_type = registry_issue_type
+
 # 이슈 상태 업데이트
 target_issue['status'] = 'DONE'
 target_issue['completed_at'] = now
@@ -195,6 +201,15 @@ except:
     result = {'raw': result_raw}
 
 target_issue['result'] = result
+
+VERIFICATION_TYPES = {
+    'RUN_TESTS', 'RETEST', 'LINT_CHECK', 'TYPE_CHECK', 'SCORE',
+    'DOMAIN_ANALYZE', 'BIZ_VALIDATE', 'JOURNEY_VALIDATE', 'UI_REVIEW',
+    'COVERAGE_CHECK', 'REGRESSION_CHECK'
+}
+skip_verification_trio = issue_type in VERIFICATION_TYPES
+if skip_verification_trio:
+    print("  → 검증 이슈 완료: 재파생 생략")
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 결과 분석 → Plan 수립 → 파생 이슈 생성
@@ -340,32 +355,42 @@ elif issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT
     files = target_issue.get('payload', {}).get('files', [])
     all_files = list(set(files_changed + files))
 
-    # [v4.1 Gate B] LINT_CHECK P0를 blocking gate로 선행 생성
-    # 실패 시 STYLE_FIX P0 체인만 활성, SCORE/DEPLOY 차단
-    add_issue(
-        f"[Plan:게이트] {issue_id} 계산적 센서 검증 (lint/type-check)",
-        'LINT_CHECK', 'P0', 'code-quality',
-        {
-            'files': all_files,
-            'source_issue': issue_id,
-            'gate': True,
-            'gate_blocks': ['SCORE', 'DEPLOY_READY'],
-            'bypass_env': 'HARNESS_BYPASS_GATE'
-        }
-    )
+    if not skip_verification_trio:
+        # [v4.1 Gate B] LINT_CHECK P0를 blocking gate로 선행 생성
+        # 실패 시 STYLE_FIX P0 체인만 활성, SCORE/DEPLOY 차단
+        add_issue(
+            f"[Plan:게이트] {issue_id} 계산적 센서 검증 (lint/type-check)",
+            'LINT_CHECK', 'P0', 'code-quality',
+            {
+                'files': all_files,
+                'source_issue': issue_id,
+                'gate': True,
+                'gate_blocks': ['SCORE', 'DEPLOY_READY'],
+                'bypass_env': 'HARNESS_BYPASS_GATE'
+            }
+        )
 
-    add_issue(
-        f"[Plan:테스트] {issue_id} 변경사항 검증",
-        'RUN_TESTS', 'P1', 'test-harness',
-        {'files': all_files, 'source_issue': issue_id, 'scope': 'changed'}
-    )
+        add_issue(
+            f"[Plan:테스트] {issue_id} 변경사항 검증",
+            'RUN_TESTS', 'P1', 'test-harness',
+            {'files': all_files, 'source_issue': issue_id, 'scope': 'changed'}
+        )
 
-    # 도메인 분석 → 비즈니스 검증 → 시나리오 실행 체인
-    add_issue(
-        f"[Plan:도메인분석] {issue_id} 비즈니스 규칙/시나리오 도출",
-        'DOMAIN_ANALYZE', 'P1', 'domain-analyst',
-        {'files': all_files, 'source_issue': issue_id}
-    )
+        # 도메인 분석 → 비즈니스 검증 → 시나리오 실행 체인
+        result_files_changed = result.get('files_changed', [])
+        has_business_logic_change = (
+            isinstance(result_files_changed, list)
+            and any(re.search(r'app/(models|services|controllers|jobs|lib)/', str(path))
+                    for path in result_files_changed)
+        )
+        if has_business_logic_change:
+            add_issue(
+                f"[Plan:도메인분석] {issue_id} 비즈니스 규칙/시나리오 도출",
+                'DOMAIN_ANALYZE', 'P1', 'domain-analyst',
+                {'files': all_files, 'source_issue': issue_id}
+            )
+        else:
+            print("  → 비즈니스 로직 변경 없음: DOMAIN_ANALYZE 생략")
 
     # UI 관련 파일이면 UX 리뷰 + Brand Guard + Browser QA 추가
     ui_files = [f for f in all_files if any(ext in f for ext in ['.tsx', '.jsx', '.vue', '.html', '.css', '.svelte'])]
