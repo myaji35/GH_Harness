@@ -15,14 +15,18 @@ BRAND_DNA="brand-dna.json"
 # ── 프로젝트 디자인 아젠다 자동 주입 ──
 # brand-dna.json이 있으면 design_tokens + agenda를 컨텍스트에 출력
 if [ -f "$BRAND_DNA" ]; then
-  python3 - "$BRAND_DNA" << 'PYEOF'
-import sys as _sa
+  python3 - "$SCRIPT_DIR" "$BRAND_DNA" << 'PYEOF'
+import sys
 # heredoc 보간 금지 — argv로 수신 (RCE 차단, 2026-07-15)
-_ARGV = (_sa.argv[1:2] + ['']*1)[:1]
+_ARGV = (sys.argv[1:3] + ['']*2)[:2]
 
-import json
+import json, os
+__file__ = os.path.join(_ARGV[0], "session-resume.sh")
+sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
+from issue_id import next_id
+
 try:
-    with open(_ARGV[0], 'r') as f:
+    with open(_ARGV[1], 'r') as f:
         dna = json.load(f)
     status = dna.get("_status", "unknown")
     agenda = dna.get("agenda", "")
@@ -48,24 +52,17 @@ try:
                           and i.get("status") in ("READY", "IN_PROGRESS")
                           for i in _reg.get("issues", []))
             if not _exists:
-                def _n(iid):
-                    try: return int(str(iid).split("-")[-1])
-                    except: return 0
-                _nums = [_n(i.get("id","")) for i in _reg.get("issues", [])]
-                _nx = max((max(_nums) if _nums else 0)+1,
-                          _reg.get("stats", {}).get("total_issues", 0)+1)
-                while any(i.get("id") == f"ISS-{_nx:03d}" for i in _reg["issues"]):
-                    _nx += 1
+                _new_id = next_id(_reg)
                 _now = _dt.datetime.now().isoformat()
                 _reg["issues"].append({
-                    "id": f"ISS-{_nx:03d}", "title": _title, "type": "BRAND_DEFINE",
+                    "id": _new_id, "title": _title, "type": "BRAND_DEFINE",
                     "status": "READY", "priority": "P1", "assign_to": "brand-guardian",
                     "depth": 0, "created_at": _now, "updated_at": _now,
                     "payload": {"origin": "session-resume", "action": "draft_brand_dna"},
                 })
                 _reg.setdefault("stats", {})["total_issues"] = _reg["stats"].get("total_issues", 0)+1
                 json.dump(_reg, open(_REG, "w"), ensure_ascii=False, indent=2)
-                print(f"⚠️  brand-dna.json 미초기화 → BRAND_DEFINE 이슈 ISS-{_nx:03d} 자동 생성 (brand-guardian)")
+                print(f"⚠️  brand-dna.json 미초기화 → BRAND_DEFINE 이슈 {_new_id} 자동 생성 (brand-guardian)")
             else:
                 print("⚠️  brand-dna.json 미초기화 — BRAND_DEFINE 이슈 이미 존재")
         except Exception as _e:
@@ -127,8 +124,12 @@ if [ ! -f "$REGISTRY" ]; then
   exit 0
 fi
 
-python3 << 'PYEOF'
-import json, sys
+python3 - "$SCRIPT_DIR" << 'PYEOF'
+import json, sys, os
+
+__file__ = os.path.join(sys.argv[1], "session-resume.sh")
+sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
+from issue_id import next_id
 
 try:
     with open(".claude/issue-db/registry.json", 'r') as f:
@@ -144,7 +145,7 @@ stats = registry.get("stats", {})
 # session-resume.sh 셸 영역에서 detect-cicd-gap.sh 결과를 env로 전달.
 # 중복 방지: 활성(READY/IN_PROGRESS/AWAITING_USER) CICD_BOOTSTRAP 있으면 skip.
 # 일일 한도: registry.cicd_bootstrap_state.last_date 로 1일 1회.
-import os, datetime
+import datetime
 if os.environ.get("CICD_GAP_VERDICT", "OK") == "GAP":
     active = [i for i in issues if i.get("type") == "CICD_BOOTSTRAP"
               and i.get("status") in ("READY", "IN_PROGRESS", "AWAITING_USER")]
@@ -153,9 +154,7 @@ if os.environ.get("CICD_GAP_VERDICT", "OK") == "GAP":
     cb_state = registry.setdefault("cicd_bootstrap_state", {"last_date": ""})
     today = datetime.date.today().isoformat()
     if not active and not done_before and cb_state.get("last_date") != today:
-        # ID 생성: ISS-<max+1>
-        nums = [int(i["id"].split("-")[1]) for i in issues if i.get("id","").startswith("ISS-") and i["id"].split("-")[1].isdigit()]
-        new_id = f"ISS-{(max(nums)+1 if nums else 1):03d}"
+        new_id = next_id(registry)
         new_issue = {
             "id": new_id,
             "type": "CICD_BOOTSTRAP",
@@ -172,6 +171,7 @@ if os.environ.get("CICD_GAP_VERDICT", "OK") == "GAP":
             }
         }
         issues.append(new_issue)
+        registry.setdefault("stats", {})["total_issues"] = registry["stats"].get("total_issues", 0) + 1
         cb_state["last_date"] = today
         try:
             with open(".claude/issue-db/registry.json", "w") as wf:

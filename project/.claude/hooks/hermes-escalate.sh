@@ -19,6 +19,7 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REGISTRY=".claude/issue-db/registry.json"
 EXECUTOR_ISSUE_ID="$1"
 REASON_CODE="$2"
@@ -45,17 +46,21 @@ fi
 
 echo "[hermes-escalate] 이슈=$EXECUTOR_ISSUE_ID reason=$REASON_CODE"
 
-python3 - "$REGISTRY" "$EXECUTOR_ISSUE_ID" "$REASON_CODE" "$CONTEXT_HINT" << 'PYEOF'
+python3 - "$SCRIPT_DIR" "$REGISTRY" "$EXECUTOR_ISSUE_ID" "$REASON_CODE" "$CONTEXT_HINT" << 'PYEOF'
 import sys as _sa
 # heredoc 보간 금지 — argv로 수신 (RCE 차단, 2026-07-15)
-_ARGV = (_sa.argv[1:5] + ['']*4)[:4]
+_ARGV = (_sa.argv[1:6] + ['']*5)[:5]
 
 import json, datetime, sys, os
 
-REGISTRY_PATH = _ARGV[0]
-EXECUTOR_ID = _ARGV[1]
-REASON = _ARGV[2]
-CONTEXT_HINT = _ARGV[3]
+__file__ = os.path.join(_ARGV[0], "hermes-escalate.sh")
+sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
+from issue_id import next_id
+
+REGISTRY_PATH = _ARGV[1]
+EXECUTOR_ID = _ARGV[2]
+REASON = _ARGV[3]
+CONTEXT_HINT = _ARGV[4]
 
 # Circuit Breaker 임계치
 MAX_PER_ISSUE = 3        # 이슈당 Hermes 호출 제한
@@ -100,7 +105,7 @@ if this_issue_count >= MAX_PER_ISSUE:
 elif daily_count >= MAX_PER_DAY:
     breaker_reason = f"일일 호출 제한 초과 ({daily_count}/{MAX_PER_DAY})"
 elif daily_cost >= MAX_COST_USD_PER_DAY:
-    breaker_reason = f"일일 비용 제한 초과 (\${daily_cost:.2f}/\${MAX_COST_USD_PER_DAY})"
+    breaker_reason = f"일일 비용 제한 초과 (${daily_cost:.2f}/${MAX_COST_USD_PER_DAY})"
 
 # ── SCOPE_CONFLICT 연속 재발 감지 (무한 루프 조기 차단) ──
 if REASON == "SCOPE_CONFLICT" and not breaker_reason:
@@ -116,9 +121,9 @@ if REASON == "SCOPE_CONFLICT" and not breaker_reason:
 
 if breaker_reason:
     # Circuit Breaker 발동 → meta-agent로 승격
-    next_id = f"ISS-{registry['stats']['total_issues'] + 1:03d}"
+    new_issue_id = next_id(registry)
     escalation = {
-        "id": next_id,
+        "id": new_issue_id,
         "title": f"[Hermes Circuit Break] {EXECUTOR_ID} — {breaker_reason}",
         "type": "SYSTEMIC_ISSUE",
         "status": "READY",
@@ -149,13 +154,13 @@ if breaker_reason:
         json.dump(registry, f, indent=2, ensure_ascii=False)
 
     print(f"[Circuit Breaker] {breaker_reason}")
-    print(f"[Circuit Breaker] → {next_id} SYSTEMIC_ISSUE 생성 (meta-agent로 인계)")
+    print(f"[Circuit Breaker] → {new_issue_id} SYSTEMIC_ISSUE 생성 (meta-agent로 인계)")
     sys.exit(3)
 
 # ── 통과: HERMES_CONSULT 이슈 생성 ──────────────────────
-next_id = f"ISS-{registry['stats']['total_issues'] + 1:03d}"
+new_issue_id = next_id(registry)
 consult_issue = {
-    "id": next_id,
+    "id": new_issue_id,
     "title": f"[Hermes 자문] {EXECUTOR_ID} — {REASON}",
     "type": "HERMES_CONSULT",
     "status": "READY",
@@ -195,7 +200,7 @@ for iss in registry["issues"]:
     if iss["id"] == EXECUTOR_ID:
         iss.setdefault("hermes_invocations", 0)
         iss["hermes_invocations"] += 1
-        iss.setdefault("hermes_consults", []).append(next_id)
+        iss.setdefault("hermes_consults", []).append(new_issue_id)
         break
 
 with open(REGISTRY_PATH, 'w') as f:
@@ -206,13 +211,13 @@ lock_path = f"/tmp/harness-hermes-{EXECUTOR_ID}.lock"
 try:
     with open(lock_path, 'w') as _lf:
         _lf.write(f"issue={EXECUTOR_ID}\n")
-        _lf.write(f"consult={next_id}\n")
+        _lf.write(f"consult={new_issue_id}\n")
         _lf.write(f"reason={REASON}\n")
         _lf.write(f"started_at={datetime.datetime.now().isoformat()}\n")
 except Exception:
     pass
 
-print(f"[hermes-escalate] {next_id} HERMES_CONSULT 생성 (이슈당 {this_issue_count+1}/{MAX_PER_ISSUE}, 일일 {daily_count+1}/{MAX_PER_DAY})")
+print(f"[hermes-escalate] {new_issue_id} HERMES_CONSULT 생성 (이슈당 {this_issue_count+1}/{MAX_PER_ISSUE}, 일일 {daily_count+1}/{MAX_PER_DAY})")
 print(f"[hermes-escalate] Lock: {lock_path}")
 PYEOF
 

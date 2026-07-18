@@ -7,6 +7,7 @@
 # 근거: 대표님 "단순 지시도 이슈화→구현→검증 강제" 요청(2026-06-29). 강도=실작업형만.
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REGISTRY=".claude/issue-db/registry.json"
 [ -f "$REGISTRY" ] || exit 0   # 하네스 미설치 프로젝트는 통과
 
@@ -31,10 +32,14 @@ esac
 # ── 분류 ──
 # 즉답/조회형(이슈화 제외): 짧은 조회·상태·값변경·하네스 메타 명령
 # 실작업형(이슈화 강제): 코드 산출물을 만들거나 바꾸는 동사
-python3 - "$PROMPT" <<'PY'
-import sys, re, json, datetime
+python3 - "$SCRIPT_DIR" "$PROMPT" <<'PY'
+import sys, re, json, datetime, os
 
-prompt = sys.argv[1]
+__file__ = os.path.join(sys.argv[1], "intent-gate.sh")
+sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
+from issue_id import next_id
+
+prompt = sys.argv[2]
 low = prompt.lower()
 
 # 0) 제외: 너무 짧거나(즉답), 하네스 메타 트리거(이미 자체 파이프라인 보유), 조회/설명형
@@ -106,24 +111,19 @@ if is_idea():
         # 중복 방지: 같은 제목이 이미 있으면 재적재 안 함
         dup = any(i.get('title') == title_i for i in reg_i.get('issues', []))
         if not dup:
-            def num_i(iid):
-                try: return int(''.join(c for c in str(iid).split('-')[-1] if c.isdigit()) or 0)
-                except: return 0
-            nums_i = [num_i(i.get('id', '')) for i in reg_i.get('issues', [])]
-            nxt_i = (max(nums_i) if nums_i else 0) + 1
-            while any(i.get('id') == f'ISS-{nxt_i:03d}' for i in reg_i['issues']):
-                nxt_i += 1
+            iid_i = next_id(reg_i)
             now_i = datetime.datetime.now().isoformat()
             reg_i['issues'].append({
-                'id': f'ISS-{nxt_i:03d}', 'title': title_i, 'type': 'IDEA',
+                'id': iid_i, 'title': title_i, 'type': 'IDEA',
                 'status': 'BACKLOG', 'priority': 'P3', 'assign_to': 'product-manager',
                 'depth': 0, 'created_at': now_i, 'updated_at': now_i,
                 'payload': {'origin': 'intent-gate:idea', 'raw_prompt': raw,
                             'note': '대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — '
                                     '검토 후 READY로 올려야 실행된다.'},
             })
+            reg_i.setdefault('stats', {})['total_issues'] = reg_i['stats'].get('total_issues', 0) + 1
             json.dump(reg_i, open(REG_I, 'w'), indent=2, ensure_ascii=False)
-            print(f"[아이디어 포착] {f'ISS-{nxt_i:03d}'} BACKLOG 등재 — 유실 방지. "
+            print(f"[아이디어 포착] {iid_i} BACKLOG 등재 — 유실 방지. "
                   f"지금 실행할지는 대표님 지시를 따르되, 기록은 남았다.")
     except Exception:
         pass  # 포착 실패가 대화를 막으면 안 된다(보수)
@@ -171,15 +171,8 @@ for iss in reg['issues']:
     if iss.get('title') == title and iss.get('status') in ('READY','IN_PROGRESS'):
         sys.exit(0)
 
-# ID 계산(on_complete.sh add_issue와 동일 규칙)
-def num(iid):
-    try: return int(str(iid).split('-')[-1])
-    except: return 0
-nums = [num(i.get('id','')) for i in reg.get('issues',[])]
-nxt = max((max(nums) if nums else 0)+1, reg.get('stats',{}).get('total_issues',0)+1)
-while any(i.get('id')==f'ISS-{nxt:03d}' for i in reg['issues']):
-    nxt += 1
-iid = f'ISS-{nxt:03d}'
+# 공용 발급기: 정규 ID와 stats.total_issues를 함께 기준으로 사용한다.
+iid = next_id(reg)
 
 now = datetime.datetime.now().isoformat()
 reg['issues'].append({

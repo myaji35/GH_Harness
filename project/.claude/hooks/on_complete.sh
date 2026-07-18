@@ -26,11 +26,15 @@ if [ -x "$SCRIPT_DIR/decision-trace.sh" ]; then
   bash "$SCRIPT_DIR/decision-trace.sh" completed "$ISSUE_ID" type="$ISSUE_TYPE" 2>/dev/null || true
 fi
 
-python3 - "$REGISTRY" "$ISSUE_ID" "$ISSUE_TYPE" "$RESULT" << 'PYEOF'
-import json, datetime, re, sys
+python3 - "$SCRIPT_DIR" "$REGISTRY" "$ISSUE_ID" "$ISSUE_TYPE" "$RESULT" << 'PYEOF'
+import json, datetime, re, sys, os
 
 # 인자는 argv로 받는다 (heredoc 보간 금지 — RCE 차단, 2026-07-15)
-_REG, issue_id, issue_type, result_raw = sys.argv[1:5]
+__file__ = os.path.join(sys.argv[1], "on_complete.sh")
+sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
+from issue_id import next_id
+
+_REG, issue_id, issue_type, result_raw = sys.argv[2:6]
 
 try:
     with open(_REG, 'r') as f:
@@ -43,18 +47,7 @@ except:
 now = datetime.datetime.now().isoformat()
 new_issues = []
 
-# ID 계산: max ID + 1 과 stats.total_issues + 1 중 큰 값 사용 (ISS-201 중복 ID 방어)
-def _extract_num(iid):
-    try:
-        return int(str(iid).split('-')[-1])
-    except Exception:
-        return 0
-_existing_nums = [_extract_num(iss.get('id','')) for iss in registry.get('issues', [])]
-_stats_next = registry.get('stats', {}).get('total_issues', 0) + 1
-next_num = max((max(_existing_nums) if _existing_nums else 0) + 1, _stats_next)
-
 def add_issue(title, itype, priority, assign_to, payload=None):
-    global next_num
     payload = payload or {}
     src = payload.get('source_issue')
 
@@ -111,12 +104,13 @@ def add_issue(title, itype, priority, assign_to, payload=None):
             initial_status = 'GATE_PENDING'
             print(f"[Gate] {itype} src={src} — LINT_CHECK 미통과 → GATE_PENDING")
 
-    # ID 충돌 회피 (edge case: 레지스트리에 동일 ID 잔존 시)
-    while any(iss.get('id') == f'ISS-{next_num:03d}' for iss in registry['issues']):
-        next_num += 1
+    # 아직 registry에 합치지 않은 같은 배치의 파생 이슈도 발급 기준에 포함한다.
+    allocation_registry = registry.copy()
+    allocation_registry['issues'] = registry.get('issues', []) + new_issues
+    new_issue_id = next_id(allocation_registry)
 
     iss = {
-        'id': f'ISS-{next_num:03d}',
+        'id': new_issue_id,
         'title': title,
         'type': itype,
         'status': initial_status,
@@ -133,7 +127,6 @@ def add_issue(title, itype, priority, assign_to, payload=None):
     }
     if iss['depth'] <= 3:
         new_issues.append(iss)
-        next_num += 1
         _budget['created_today'] = _budget.get('created_today', 0) + 1  # cap 카운트 (ISS-372)
         print(f"[Plan] {iss['id']} [{priority}] {itype} — {title} → {assign_to}" + (f" ({initial_status})" if initial_status != 'READY' else ""))
     else:
