@@ -6,8 +6,40 @@
 #   에이전트 작업 완료 → on_complete.sh (파생 이슈 생성)
 #                     → dispatch-ready.sh (다음 이슈 자동 감지/스폰 지시)
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응
+_src="${BASH_SOURCE[0]}"
+while [ -L "$_src" ]; do
+  _dir="$(cd -P "$(dirname "$_src")" && pwd)"
+  _src="$(readlink "$_src")"
+  [[ "$_src" != /* ]] && _src="$_dir/$_src"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$_src")" && pwd)"
 REGISTRY=".claude/issue-db/registry.json"
+
+# stdin의 Stop hook 입력 JSON을 먼저 읽는다(아래 stop_hook_active 판정에 필요).
+HOOK_INPUT="$(cat 2>/dev/null || true)"
+
+# ── 무한 루프 차단 (공식 규약) ──
+# Stop hook이 exit 2를 반환하면 "멈추지 말고 대화를 계속하라"는 뜻이다.
+# 그런데 이 hook은 READY 이슈가 있으면 무조건 exit 2를 낸다. READY는 디스패치
+# 지시만으로는 사라지지 않으므로 조건이 영원히 참 → 매 턴 재개 요구가 반복된다.
+# 공식 문서: "stop_hook_active is true when Claude Code is already continuing as a
+# result of a stop hook. Check this value ... to avoid blocking on a condition that
+# will never resolve."  ← 이 체크가 하네스 전체에 0건이었다(2026-07-20 실측).
+#
+# 증상: claude -p(비대화 단발)에서 이 루프에 갇혀 "Execution error"로 죽는다.
+#       저니2~5가 전부 두뇌 스폰에 의존하므로 저니 검증 체계 전체가 마비됐다.
+# 처방: 이미 stop-hook으로 재개된 턴이면 블로킹하지 않고 통과(exit 0)한다.
+#       디스패치 안내는 그 턴에 이미 전달됐다.
+if printf '%s' "$HOOK_INPUT" | python3 -c "
+import sys, json
+try:
+    sys.exit(0 if json.load(sys.stdin).get('stop_hook_active') else 1)
+except Exception:
+    sys.exit(1)
+" 2>/dev/null; then
+  exit 0
+fi
 
 if [ ! -f "$REGISTRY" ]; then
   exit 0
