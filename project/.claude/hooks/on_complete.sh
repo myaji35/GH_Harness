@@ -17,7 +17,6 @@ echo "[Hook:on_complete] 이슈 완료: $ISSUE_ID ($ISSUE_TYPE)"
 # [v4.1 D] Decision Trace 기록 (completed)
 # 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
 # BASH_SOURCE는 링크 경로라 lib/ 를 프로젝트 쪽에서 찾다 ModuleNotFoundError로 죽는다.
-# UserPromptSubmit/SessionStart hook이 죽으면 claude 실행 자체가 실패한다.
 _src="${BASH_SOURCE[0]}"
 while [ -L "$_src" ]; do
   _dir="$(cd -P "$(dirname "$_src")" && pwd)"
@@ -55,6 +54,23 @@ except:
 
 now = datetime.datetime.now().isoformat()
 new_issues = []
+
+def _verify_evidence(paths, since_ts=None):
+    ok_list = []
+    bad_list = []
+    for path in paths:
+        try:
+            if not os.path.exists(path):
+                bad_list.append((path, 'not_found'))
+            elif os.path.getsize(path) == 0:
+                bad_list.append((path, 'empty'))
+            elif since_ts is not None and os.path.getmtime(path) < since_ts:
+                bad_list.append((path, 'stale'))
+            else:
+                ok_list.append(path)
+        except Exception as e:
+            bad_list.append((path, str(e)))
+    return ok_list, bad_list
 
 def add_issue(title, itype, priority, assign_to, payload=None):
     payload = payload or {}
@@ -158,11 +174,6 @@ if registry_issue_type != issue_type:
     print(f"  → 호출 타입 불일치: {issue_type} → {registry_issue_type} (registry 기준으로 파생 판단)")
     issue_type = registry_issue_type
 
-# 이슈 상태 업데이트
-target_issue['status'] = 'DONE'
-target_issue['completed_at'] = now
-registry['stats']['completed'] = registry['stats'].get('completed', 0) + 1
-
 # ── Hermes가 확장한 freeze 범위 해제 (v2+) ──────────
 # 이 이슈 한정으로 FREEZE_DIR이 확장되었다면 복원 또는 해제
 import os as _os
@@ -204,6 +215,51 @@ except:
 
 target_issue['result'] = result
 
+evidence_rejected = False
+if issue_type in ('SCENARIO_PLAY', 'E2E_VERIFY', 'FLOW_REPLAY', 'UI_REVIEW', 'JOURNEY_VALIDATE'):
+    evidence_paths = list(result.get('evidence', []))
+    evidence_paths.extend(
+        item.get('screenshot') for item in result.get('results', [])
+        if isinstance(item, dict) and item.get('screenshot')
+    )
+    evidence_paths.extend(result.get('screenshots', []))
+
+    since_ts = None
+    for timestamp in (target_issue.get('started_at'), target_issue.get('updated_at')):
+        if timestamp is None:
+            continue
+        try:
+            since_ts = float(timestamp)
+        except (TypeError, ValueError):
+            try:
+                since_ts = datetime.datetime.fromisoformat(
+                    str(timestamp).replace('Z', '+00:00')
+                ).timestamp()
+            except (TypeError, ValueError, OverflowError):
+                continue
+        break
+
+    if not evidence_paths:
+        print('[on_complete] 경고: 증거 경로 없음', file=sys.stderr)
+    else:
+        _, bad_evidence = _verify_evidence(evidence_paths, since_ts)
+        if bad_evidence:
+            evidence_rejected = True
+            target_issue['status'] = 'EVIDENCE_REJECTED'
+            add_issue(
+                f'[증거 누락] {issue_id} 증거 {len(bad_evidence)}건',
+                'EVIDENCE_MISSING', 'P0',
+                target_issue.get('owner_agent') or 'scenario-player',
+                {'bad_list': bad_evidence, 'source_issue': issue_id}
+            )
+            for path, reason in bad_evidence:
+                print(f'[on_complete] 증거 거부: {path} ({reason})', file=sys.stderr)
+
+if not evidence_rejected:
+    target_issue['status'] = 'DONE'
+    target_issue['completed_at'] = now
+    registry['stats']['completed'] = registry['stats'].get('completed', 0) + 1
+
 VERIFICATION_TYPES = {
     'RUN_TESTS', 'RETEST', 'LINT_CHECK', 'TYPE_CHECK', 'SCORE',
     'DOMAIN_ANALYZE', 'BIZ_VALIDATE', 'JOURNEY_VALIDATE', 'UI_REVIEW',
@@ -219,7 +275,9 @@ if skip_verification_trio:
 
 print(f"\n[분석] {issue_type} 결과 기반 Plan 수립:")
 
-if issue_type == 'SCREEN_GAP':
+if evidence_rejected:
+    pass
+elif issue_type == 'SCREEN_GAP':
     # 화면 갭 → 빠진 기능별 USER_STORY 생성
     missing = result.get('missing_features', target_issue.get('payload', {}).get('missing_features', []))
     route = result.get('route', target_issue.get('payload', {}).get('route', ''))
@@ -622,7 +680,7 @@ elif issue_type in ('SCENARIO_PLAY', 'E2E_VERIFY', 'FLOW_REPLAY'):
 
 elif issue_type in ('BIZ_VALIDATE', 'SCENARIO_GAP'):
     # 비즈니스 로직 검증 결과 분석
-    biz_coverage = result.get('coverage_rate', 0)
+    biz_coverage = result.get('coverage_rate', result.get('coverage_pct'))
     gaps = result.get('gaps', [])
     critical_gaps = [g for g in gaps if g.get('level') == 'CRITICAL']
     major_gaps = [g for g in gaps if g.get('level') == 'MAJOR']
@@ -650,7 +708,9 @@ elif issue_type in ('BIZ_VALIDATE', 'SCENARIO_GAP'):
                 'action': 'fix_major_gaps'
             }
         )
-    elif biz_coverage < 70:
+    elif biz_coverage is None:
+        print('[on_complete] coverage 키 부재 — 커버리지 판정 생략', file=sys.stderr)
+    elif biz_coverage is not None and biz_coverage < 70:
         # 커버리지 낮음 → 설계 문제 의심
         add_issue(
             f"[Plan:설계검토] 비즈니스 시나리오 커버리지 {biz_coverage}%",
@@ -961,8 +1021,14 @@ registry.setdefault('hooks', {}).setdefault('on_complete', []).append({
     'timestamp': now
 })
 
-with open(_REG, 'w') as f:
-    json.dump(registry, f, indent=2, ensure_ascii=False)
+try:
+    from registry_lock import registry_txn as _txn
+    with _txn(_REG) as _r:
+        _r.clear(); _r.update(registry)
+except Exception as _e:
+    print(f'[on_complete] 락 실패({_e}) — 비원자적 저장으로 폴백', file=sys.stderr)
+    with open(_REG, 'w') as f:
+        json.dump(registry, f, indent=2, ensure_ascii=False)
 
 print(f"[on_complete] 처리 완료")
 PYEOF
@@ -970,7 +1036,6 @@ PYEOF
 # Plan 생성 후 자동 디스패치 — 질문 없이 즉시 실행
 # 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
 # BASH_SOURCE는 링크 경로라 lib/ 를 프로젝트 쪽에서 찾다 ModuleNotFoundError로 죽는다.
-# UserPromptSubmit/SessionStart hook이 죽으면 claude 실행 자체가 실패한다.
 _src="${BASH_SOURCE[0]}"
 while [ -L "$_src" ]; do
   _dir="$(cd -P "$(dirname "$_src")" && pwd)"
