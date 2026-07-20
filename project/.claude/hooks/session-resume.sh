@@ -8,7 +8,16 @@
 #   3. IN_PROGRESS / READY 이슈 목록 출력
 #   4. 다음 실행 지시 제공
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
+# BASH_SOURCE는 링크 경로라 lib/ 를 프로젝트 쪽에서 찾다 ModuleNotFoundError로 죽는다.
+# UserPromptSubmit/SessionStart hook이 죽으면 claude 실행 자체가 실패한다.
+_src="${BASH_SOURCE[0]}"
+while [ -L "$_src" ]; do
+  _dir="$(cd -P "$(dirname "$_src")" && pwd)"
+  _src="$(readlink "$_src")"
+  [[ "$_src" != /* ]] && _src="$_dir/$_src"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$_src")" && pwd)"
 REGISTRY=".claude/issue-db/registry.json"
 BRAND_DNA="brand-dna.json"
 
@@ -125,6 +134,16 @@ if [ ! -f "$REGISTRY" ]; then
 fi
 
 python3 - "$SCRIPT_DIR" << 'PYEOF'
+# 구버전 이슈(assign_to 필드 없음)용 타입→담당 폴백. CLAUDE.md 에이전트 표 기준.
+# 직접 인덱싱하면 KeyError로 SessionStart hook 전체가 죽는다.
+TYPE_DEFAULT_AGENT = {
+    "FEATURE": "product-manager", "FEATURE_PLAN": "product-manager",
+    "USER_STORY": "product-manager", "EVAL": "eval-harness",
+    "FIX_BUG": "agent-harness", "REFACTOR": "agent-harness",
+    "GENERATE_CODE": "agent-harness", "UX_FIX": "ux-harness",
+    "UI_REVIEW": "ux-harness", "RUN_TESTS": "test-harness",
+    "LINT_CHECK": "code-quality",
+}
 import json, sys, os
 
 __file__ = os.path.join(sys.argv[1], "session-resume.sh")
@@ -222,15 +241,16 @@ if in_progress:
         "hermes": "sonnet", "advisor": "fable",
         "audience-researcher": "sonnet", "journey-validator": "sonnet",
     }
-    model = MODEL_MAP.get(iss.get("assign_to", ""), "sonnet")
+    assignee = iss.get("assign_to") or TYPE_DEFAULT_AGENT.get(iss.get("type", ""), "agent-harness")
+    model = MODEL_MAP.get(assignee, "sonnet")
     print(f"\n⚠️  중단된 작업 즉시 재개:")
-    print(f"  → {iss['id']} ({iss['type']}) — {iss['title']} → {iss['assign_to']}")
+    print(f"  → {iss['id']} ({iss['type']}) — {iss['title']} → {assignee}")
     print(f"\n[자동 실행 지시]")
     print(f"중단된 이슈를 즉시 이어서 처리합니다. 질문하지 마라.")
     print(f"  이슈: {iss['id']} ({iss['type']})")
     print(f"  제목: {iss['title']}")
-    print(f"  담당: {iss['assign_to']} (model: {model})")
-    print(f"  1. {iss['assign_to']} 에이전트를 model={model}로 즉시 스폰")
+    print(f"  담당: {assignee} (model: {model})")
+    print(f"  1. {assignee} 에이전트를 model={model}로 즉시 스폰")
     print(f"  2. 처리 완료 후 on_complete.sh 호출")
     sys.exit(2)  # asyncRewake
 
@@ -238,7 +258,7 @@ if in_progress:
 if ready and not in_progress:
     print(f"\n📋 대기 중인 작업 (READY):")
     for iss in ready[:5]:
-        print(f"  → {iss['id']} ({iss['type']}) [{iss.get('priority','P1')}] — {iss['title']} → {iss['assign_to']}")
+        print(f"  → {iss['id']} ({iss['type']}) [{iss.get('priority','P1')}] — {iss['title']} → {assignee}")
     if len(ready) > 5:
         print(f"  ... 외 {len(ready) - 5}개")
 
@@ -257,14 +277,15 @@ if ready and not in_progress:
         "hermes": "sonnet", "advisor": "fable",
         "audience-researcher": "sonnet", "journey-validator": "sonnet",
     }
-    model = MODEL_MAP.get(next_iss.get("assign_to", ""), "sonnet")
+    next_assignee = next_iss.get("assign_to") or TYPE_DEFAULT_AGENT.get(next_iss.get("type", ""), "agent-harness")
+    model = MODEL_MAP.get(next_assignee, "sonnet")
     print(f"\n[자동 실행 지시]")
     print(f"질문하지 마라. 즉시 실행하라.")
     print(f"  이슈: {next_iss['id']} ({next_iss['type']})")
     print(f"  제목: {next_iss['title']}")
-    print(f"  담당: {next_iss['assign_to']} (model: {model})")
+    print(f"  담당: {next_assignee} (model: {model})")
     print(f"  1. registry.json에서 {next_iss['id']}의 status를 IN_PROGRESS로 변경")
-    print(f"  2. {next_iss['assign_to']} 에이전트를 model={model}로 즉시 스폰")
+    print(f"  2. {next_assignee} 에이전트를 model={model}로 즉시 스폰")
     sys.exit(2)  # asyncRewake
 
 if not in_progress and not ready:

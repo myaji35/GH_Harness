@@ -15,7 +15,16 @@ RESULT="$3"
 echo "[Hook:on_complete] 이슈 완료: $ISSUE_ID ($ISSUE_TYPE)"
 
 # [v4.1 D] Decision Trace 기록 (completed)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
+# BASH_SOURCE는 링크 경로라 lib/ 를 프로젝트 쪽에서 찾다 ModuleNotFoundError로 죽는다.
+# UserPromptSubmit/SessionStart hook이 죽으면 claude 실행 자체가 실패한다.
+_src="${BASH_SOURCE[0]}"
+while [ -L "$_src" ]; do
+  _dir="$(cd -P "$(dirname "$_src")" && pwd)"
+  _src="$(readlink "$_src")"
+  [[ "$_src" != /* ]] && _src="$_dir/$_src"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$_src")" && pwd)"
 
 # ── background 카운터 안전망 해제 (ISS-349) ──
 # 스폰 측이 release를 깜빡해도 완료 시 자동 정리. background 아니면 no-op.
@@ -959,7 +968,16 @@ print(f"[on_complete] 처리 완료")
 PYEOF
 
 # Plan 생성 후 자동 디스패치 — 질문 없이 즉시 실행
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
+# BASH_SOURCE는 링크 경로라 lib/ 를 프로젝트 쪽에서 찾다 ModuleNotFoundError로 죽는다.
+# UserPromptSubmit/SessionStart hook이 죽으면 claude 실행 자체가 실패한다.
+_src="${BASH_SOURCE[0]}"
+while [ -L "$_src" ]; do
+  _dir="$(cd -P "$(dirname "$_src")" && pwd)"
+  _src="$(readlink "$_src")"
+  [[ "$_src" != /* ]] && _src="$_dir/$_src"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$_src")" && pwd)"
 echo "[on_complete] → dispatch-ready 실행"
 bash "$SCRIPT_DIR/dispatch-ready.sh" "$REGISTRY"
 echo ""
