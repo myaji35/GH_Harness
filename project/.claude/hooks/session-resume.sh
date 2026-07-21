@@ -8,6 +8,24 @@
 #   3. IN_PROGRESS / READY 이슈 목록 출력
 #   4. 다음 실행 지시 제공
 
+# ── headless(claude -p) 차단 (ISS-076) ──
+# 이 hook은 READY 이슈가 있으면 sys.exit(2)로 "즉시 실행하라"를 지시한다(asyncRewake).
+# 대화형 세션에서는 그게 자동 디스패치 파이프라인의 핵심이라 반드시 유지한다.
+# 그러나 `claude -p`는 단발 실행이라 그 재개 지시를 수행할 세션이 없다
+# → 시작 단계에서 블로킹되어 "Execution error"로 죽는다.
+#
+# 파급(실측 2026-07-20): 저니2~5가 전부 두뇌(claude -p) 스폰에 의존하므로
+# 저니 검증 체계 전체가 마비됐다. 동일 프롬프트 6회 중 4회 실패(67%)로 관측.
+#
+# 공식 문서상 headless 전용 환경변수/입력필드는 없고, SessionStart 입력에는
+# Stop hook의 stop_hook_active 같은 필드도 없다. 조상 프로세스의 -p 검사는
+# 오탐(대화형도 headless로 판정)으로 실패했다 — 쓰지 마라.
+# 그래서 스폰하는 쪽(src/brain/claude.ts)이 HARNESS_HEADLESS=1을 명시 주입한다.
+if [ "${HARNESS_HEADLESS:-}" = "1" ]; then
+  echo "[session-resume] headless(HARNESS_HEADLESS=1) — 자동 디스패치 지시 생략(블로킹 금지)."
+  exit 0
+fi
+
 # 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
 # BASH_SOURCE는 링크 경로라 lib/ 를 프로젝트 쪽에서 찾다 ModuleNotFoundError로 죽는다.
 # UserPromptSubmit/SessionStart hook이 죽으면 claude 실행 자체가 실패한다.
