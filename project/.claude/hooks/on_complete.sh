@@ -177,7 +177,10 @@ if registry_issue_type != issue_type:
 # ── Hermes가 확장한 freeze 범위 해제 (v2+) ──────────
 # 이 이슈 한정으로 FREEZE_DIR이 확장되었다면 복원 또는 해제
 import os as _os
-freeze_path = "/tmp/harness-freeze.env"
+import hashlib
+# ISS-044: 32개 프로젝트가 /tmp를 공유하므로 타 프로젝트 임무의 편집 차단을 막기 위해 프로젝트별로 분리
+freeze_key = hashlib.sha256(_os.getcwd().encode()).hexdigest()[:12]
+freeze_path = f"/tmp/harness-freeze-{freeze_key}.env"
 if _os.path.exists(freeze_path):
     try:
         env_data = {}

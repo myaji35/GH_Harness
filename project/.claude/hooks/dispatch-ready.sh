@@ -280,6 +280,9 @@ if issue_type == "RACE_MODE":
 # ── 자동 freeze 설정 ─────────────────────────────────
 # 이슈 payload에 scope_dir 있거나 files에서 공통 dir 추출 가능하면 freeze
 import os
+import hashlib
+freeze_key = hashlib.sha256(os.getcwd().encode()).hexdigest()[:12]
+freeze_file = f"/tmp/harness-freeze-{freeze_key}.env"
 freeze_dir = payload_obj.get("scope_dir")
 if not freeze_dir:
     files = payload_obj.get("files") or payload_obj.get("files_changed") or []
@@ -291,7 +294,7 @@ if not freeze_dir:
 
 if freeze_dir:
     try:
-        with open("/tmp/harness-freeze.env", "w") as f:
+        with open(freeze_file, "w") as f:
             f.write(f'FREEZE_DIR="{freeze_dir}"\n')
             f.write(f'FREEZE_ISSUE="{issue_id}"\n')
         print(f"🔒 [Freeze] {freeze_dir} (이슈 {issue_id} 한정)")
@@ -300,8 +303,8 @@ if freeze_dir:
 else:
     # freeze 해제 (이슈 범위 알 수 없음)
     try:
-        if os.path.exists("/tmp/harness-freeze.env"):
-            os.remove("/tmp/harness-freeze.env")
+        if os.path.exists(freeze_file):
+            os.remove(freeze_file)
     except Exception:
         pass
 
