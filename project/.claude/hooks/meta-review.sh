@@ -17,7 +17,9 @@ if [ ! -f "$REGISTRY" ]; then
 fi
 
 python3 << 'PYEOF'
-import json, datetime, sys
+import json, datetime, sys, os
+sys.path.insert(0, os.path.join(".claude", "hooks", "lib"))
+from issue_id import next_id
 
 try:
     with open(".claude/issue-db/registry.json", 'r') as f:
@@ -56,10 +58,8 @@ escalated = by_status.get("ESCALATED", [])
 # ── 패턴 탐지 ──
 findings = []
 new_issues = []
-next_id_num = stats.get("total_issues", len(issues)) + 1
 
 def make_issue(title, issue_type, priority, assign_to, payload=None):
-    global next_id_num
     if len(new_issues) >= 5:
         return  # 주기당 최대 5개
     # 유사 이슈 중복 체크 — DONE 포함 (완료된 동일 분석 재생성 방지)
@@ -72,7 +72,7 @@ def make_issue(title, issue_type, priority, assign_to, payload=None):
             payload.get("parent_id") is not None):
             return
     iss = {
-        "id": f"ISS-{next_id_num:03d}",
+        "id": next_id(registry),
         "title": title,
         "type": issue_type,
         "status": "READY",
@@ -88,7 +88,7 @@ def make_issue(title, issue_type, priority, assign_to, payload=None):
         "spawn_rules": []
     }
     new_issues.append(iss)
-    next_id_num += 1
+    registry["issues"].append(iss)
 
 # ── Hermes Lock 파일 로드 (레이스 방어 v2+) ────────────
 import glob as _glob
@@ -266,9 +266,8 @@ else:
 print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
 # ── registry 업데이트 ──
-# 새 이슈 추가
+# 새 이슈 통계 갱신
 for ni in new_issues:
-    registry["issues"].append(ni)
     registry["stats"]["total_issues"] = registry["stats"].get("total_issues", 0) + 1
 
 # meta_observations 기록
