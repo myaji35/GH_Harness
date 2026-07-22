@@ -105,8 +105,21 @@ for lock_file in _glob.glob("/tmp/harness-hermes-*.lock"):
 # 패턴 1: 반복 실패 — 같은 파일에서 FIX_BUG 3회+
 # v2+: Hermes가 이미 개입 중인 이슈(hermes_invocations > 0 또는 lock 존재)는 건너뜀
 file_failures = {}
+failure_window_start = datetime.datetime.now() - datetime.timedelta(days=14)
 for iss in issues:
     if iss.get("type") == "FIX_BUG":
+        if not (iss.get("retry_count", 0) > 0 or
+                iss.get("status") in ("FAILED", "ESCALATED", "NEEDS_FIX")):
+            continue
+        issue_time = iss.get("created_at") or iss.get("updated_at")
+        try:
+            issue_dt = datetime.datetime.fromisoformat(
+                issue_time.replace("Z", "+00:00")
+            ).replace(tzinfo=None)
+        except (AttributeError, TypeError, ValueError):
+            continue
+        if issue_dt < failure_window_start:
+            continue
         # Hermes 개입 중이면 스킵 (레이스 방어)
         iss_id = iss.get("id", "")
         if iss_id in hermes_locked_issues or iss.get("hermes_invocations", 0) > 0:
