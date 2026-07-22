@@ -76,7 +76,9 @@ for iss in registry.get("issues", []):
     if not ts:
         continue
     try:
-        started = datetime.datetime.fromisoformat(str(ts).replace("Z", ""))
+        # tz-aware(+00:00)와 naive가 섞이면 뺄셈에서 TypeError로 좌초 감지 전체가 죽는다.
+        # 파싱 후 tzinfo를 벗겨 now(naive)와 통일한다(어느 형식이 와도 안전).
+        started = datetime.datetime.fromisoformat(str(ts).replace("Z", "+00:00")).replace(tzinfo=None)
     except Exception:
         continue
     if (now - started).total_seconds() > stall_min * 60:
