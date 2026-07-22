@@ -147,12 +147,29 @@ if backlog_count > 30:
     )
 
 # 패턴 3: 에스컬레이션 누적
-if len(escalated) >= 3:
-    findings.append(f"🔴 에스컬레이션 누적: {len(escalated)}개")
+review_window_start = datetime.datetime.now() - datetime.timedelta(days=14)
+TERMINAL_STATUSES = {"DONE", "COMPLETED", "CANCELLED", "ARCHIVED"}
+
+def is_recent_active(iss):
+    status = iss.get("status", "")
+    if status in TERMINAL_STATUSES or status.startswith("CLOSED"):
+        return False
+    issue_time = iss.get("created_at") or iss.get("updated_at")
+    try:
+        issue_dt = datetime.datetime.fromisoformat(
+            issue_time.replace("Z", "+00:00")
+        ).replace(tzinfo=None)
+    except (AttributeError, TypeError, ValueError):
+        return False
+    return issue_dt >= review_window_start
+
+recent_escalated = [e for e in escalated if is_recent_active(e)]
+if len(recent_escalated) >= 3:
+    findings.append(f"🔴 에스컬레이션 누적: {len(recent_escalated)}개")
     make_issue(
         "[Meta] 에스컬레이션 근본 원인 분석",
         "SYSTEMIC_ISSUE", "P0", "meta-agent",
-        {"escalated_ids": [e["id"] for e in escalated]}
+        {"escalated_ids": [e["id"] for e in recent_escalated]}
     )
 
 # 패턴 4: 에이전트 간 핑퐁 — 같은 parent에서 3회+ 왕복
@@ -167,18 +184,15 @@ GATE_FANOUT_TYPES = {
 parent_chains = {}
 for iss in issues:
     pid = iss.get("parent_id")
-    if pid:
+    if pid and is_recent_active(iss):
         parent_chains.setdefault(pid, []).append(iss)
 for pid, children in parent_chains.items():
     if len(children) >= 3:
         agents = set(c.get("assign_to") for c in children)
         child_types = [c.get("type") for c in children]
-        # 모든 child 가 서로 다른 게이트 검증 타입이면 = fan-out (정상). 핑퐁 아님.
-        is_gate_fanout = (
-            all(t in GATE_FANOUT_TYPES for t in child_types)
-            and len(set(child_types)) == len(child_types)  # 타입 중복 없음 = 왕복 아님
-        )
-        if len(agents) >= 2 and not is_gate_fanout:
+        non_gate_types = [t for t in child_types if t not in GATE_FANOUT_TYPES]
+        has_repeated_non_gate = len(set(non_gate_types)) < len(non_gate_types)
+        if len(agents) >= 2 and has_repeated_non_gate:
             findings.append(f"🟠 핑퐁 감지: {pid} → {len(children)}회 파생 ({', '.join(agents)})")
             make_issue(
                 f"[Meta] {pid} 이슈 체인 근본 원인 분석",
