@@ -42,9 +42,11 @@ def next_id(registry: dict[str, Any]) -> str:
 
     number = max(max(nums, default=0), _total_issues(registry)) + 1
     existing = set(ids)
-    while f"ISS-{number}" in existing:
+    # 3자리 제로패딩으로 발급(ISS-091). 비패딩(ISS-91)·패딩(ISS-091) 둘 다 중복으로 본다
+    # — 과거 혼입(ISS-77/79/91) 재발 방지. 100+ 는 :03d가 그대로 3+자리를 낸다.
+    while f"ISS-{number:03d}" in existing or f"ISS-{number}" in existing:
         number += 1
-    return f"ISS-{number}"
+    return f"ISS-{number:03d}"
 
 
 def validate_sequence(registry: dict[str, Any]) -> list[str]:
