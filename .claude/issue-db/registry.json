@@ -3352,7 +3352,7 @@
       "id": "ISS-378",
       "title": "[지시] github에 저장되어 있는 key 값을 우선 삭제해줘.",
       "type": "FEATURE_PLAN",
-      "status": "COMPLETED",
+      "status": "ARCHIVED",
       "priority": "P1",
       "assign_to": "product-manager",
       "depth": 0,
@@ -3364,6 +3364,253 @@
       },
       "result": {
         "note": "보안 즉시조치로 직접 처리됨"
+      },
+      "archived_at": "2026-07-13T08:40:21.128Z"
+    },
+    {
+      "id": "ISS-379",
+      "title": "[지시] USB 포멧해서라도 우분투 전용으로 바꿔줘. 우분투 파일도 복사안되어 있더군. 새로 다운 받아야 할거야.",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-07-14T11:20:20.419714",
+      "updated_at": "2026-07-14T11:20:20.419714",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "USB 포멧해서라도 우분투 전용으로 바꿔줘. 우분투 파일도 복사안되어 있더군. 새로 다운 받아야 할거야."
+      },
+      "completed_at": "2026-07-14T11:21:39.199318",
+      "result": {
+        "resolution": "already_satisfied",
+        "summary": "USB(disk4) is already a valid Ubuntu 24.04.4 bootable medium with EFI ESP partition. Format/re-download unnecessary. Finder-invisible files are normal dd-hybrid-ISO behavior, not a copy failure.",
+        "verified": true,
+        "user_choice": "keep_usb_as_is"
+      }
+    },
+    {
+      "id": "ISS-380",
+      "title": "[Plan:CEO검토] ISS-379 전략 검토",
+      "type": "PLAN_CEO_REVIEW",
+      "status": "CLOSED_INVALID",
+      "priority": "P1",
+      "assign_to": "plan-ceo-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-379",
+      "depends_on": [],
+      "created_at": "2026-07-14T11:21:39.199318",
+      "payload": {
+        "source_issue": "ISS-379",
+        "source_plan": {
+          "resolution": "already_satisfied",
+          "summary": "USB(disk4) is already a valid Ubuntu 24.04.4 bootable medium with EFI ESP partition. Format/re-download unnecessary. Finder-invisible files are normal dd-hybrid-ISO behavior, not a copy failure.",
+          "verified": true,
+          "user_choice": "keep_usb_as_is"
+        },
+        "feature": "ISS-379"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-381",
+      "title": "[Plan:Eng검토] ISS-379 실행가능성 검토",
+      "type": "PLAN_ENG_REVIEW",
+      "status": "CLOSED_INVALID",
+      "priority": "P1",
+      "assign_to": "plan-eng-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-379",
+      "depends_on": [],
+      "created_at": "2026-07-14T11:21:39.199318",
+      "payload": {
+        "source_issue": "ISS-379",
+        "source_plan": {
+          "resolution": "already_satisfied",
+          "summary": "USB(disk4) is already a valid Ubuntu 24.04.4 bootable medium with EFI ESP partition. Format/re-download unnecessary. Finder-invisible files are normal dd-hybrid-ISO behavior, not a copy failure.",
+          "verified": true,
+          "user_choice": "keep_usb_as_is"
+        },
+        "feature": "ISS-379"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-382",
+      "title": "[지시] 디스크 지우구 우분투 설치/ 고급 기능 보고 있어. 안내해줘.",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-07-14T11:46:59.688105",
+      "updated_at": "2026-07-14T11:46:59.688105",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "디스크 지우구 우분투 설치/ 고급 기능 보고 있어. 안내해줘."
+      },
+      "result": {
+        "resolution": "Guidance delivered: select Advanced features=None, Erase disk and install Ubuntu on sda. Hardware install, no code artifact."
+      }
+    },
+    {
+      "id": "ISS-383",
+      "title": "[지시] 리눅스 환경에는 처음 등록해 보는거야. 그러니까 해당명령어에 버그는 없는 지가 1차 테스트 목적이야.",
+      "type": "FIX_BUG",
+      "status": "COMPLETED",
+      "priority": "P0",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-07-14T13:29:08.680790",
+      "updated_at": "2026-07-14T13:29:08.680790",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "리눅스 환경에는 처음 등록해 보는거야. 그러니까 해당명령어에 버그는 없는 지가 1차 테스트 목적이야."
+      },
+      "result": {
+        "test_finding": "리눅스 등록 1차 테스트: 버그 2건 실증됨. (1) 갓 설치한 우분투에 curl 미설치 → command not found. (2) /i/:token 엔드포인트가 리눅스에도 PowerShell 스크립트를 반환 → bash 파싱 오류(exit 2), 등록 API 도달 실패. 근본 원인은 서버컴 installers_controller.rb의 OS 미분기(항상 PowerShell). 서버컴 수정은 대표님이 보류 지시.",
+        "awaiting": "curl 설치 방법(passwordless sudo A / curl만 B) 대표님 선택 대기",
+        "close_note": "ISS-384 harness hook 1차 테스트로 해소"
+      }
+    },
+    {
+      "id": "ISS-384",
+      "title": "[지시] ISS-383 [지시] 리눅스 환경에는 처음 등록해 보는거야. 그러니까 해당명령어에 버그는 없는 지가 1차 테스트 목적이야. 이슈를 처",
+      "type": "FIX_BUG",
+      "status": "COMPLETED",
+      "priority": "P0",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-07-14T18:20:29.044576",
+      "updated_at": "2026-07-14T18:20:29.044576",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "ISS-383 [지시] 리눅스 환경에는 처음 등록해 보는거야. 그러니까 해당명령어에 버그는 없는 지가 1차 테스트 목적이야. 이슈를 처리하고 registry에서 완료 처리하라\n\n[임무 규칙] 완료 시 수행한 작업을 한국어로 간결히 요약 보고하라.",
+        "files_changed": []
+      },
+      "completed_at": "2026-07-14T18:25:14.359284",
+      "result": {
+        "test_type": "harness_hook_smoke_test",
+        "env": "macOS_bash3.2",
+        "syntax_pass": 40,
+        "syntax_fail": 0,
+        "bash4_risks": 0,
+        "runtime_ok": true,
+        "registry_valid": true,
+        "bugs_found": 0,
+        "close_note": "hook 40개 문법·런타임 무결 확인, 버그 0"
+      }
+    },
+    {
+      "id": "ISS-385",
+      "title": "[Plan:게이트] ISS-384 계산적 센서 검증 (lint/type-check)",
+      "type": "LINT_CHECK",
+      "status": "CLOSED_INVALID",
+      "priority": "P0",
+      "assign_to": "code-quality",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-384",
+      "depends_on": [],
+      "created_at": "2026-07-14T18:25:14.359284",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-384",
+        "gate": true,
+        "gate_blocks": [
+          "SCORE",
+          "DEPLOY_READY"
+        ],
+        "bypass_env": "HARNESS_BYPASS_GATE"
+      },
+      "result": {
+        "close_note": "변경 파일 0 — 셸 hook 스모크 테스트, lint 대상 없음"
+      },
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-386",
+      "title": "[Plan:테스트] ISS-384 변경사항 검증",
+      "type": "RUN_TESTS",
+      "status": "CLOSED_INVALID",
+      "priority": "P1",
+      "assign_to": "test-harness",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-384",
+      "depends_on": [],
+      "created_at": "2026-07-14T18:25:14.359284",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-384",
+        "scope": "changed"
+      },
+      "result": {
+        "close_note": "변경 파일 0 — 실행 검증은 ISS-384에서 직접 수행"
+      },
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-387",
+      "title": "[Plan:도메인분석] ISS-384 비즈니스 규칙/시나리오 도출",
+      "type": "DOMAIN_ANALYZE",
+      "status": "CLOSED_INVALID",
+      "priority": "P1",
+      "assign_to": "domain-analyst",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-384",
+      "depends_on": [],
+      "created_at": "2026-07-14T18:25:14.359284",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-384"
+      },
+      "result": {
+        "close_note": "인프라 테스트 — 도메인 규칙 분석 대상 아님"
+      },
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-388",
+      "type": "REFACTOR",
+      "title": "업종별 안티패턴 프리셋 도입 — harness-ui-trends-2026 skill에 industry→금지목록 라이브러리 추가 (Eric Park UI/UX Pro Max 영상 인사이트)",
+      "priority": "P2",
+      "status": "DONE",
+      "depth": 0,
+      "created_at": "2026-07-23T09:19:38.643215",
+      "payload": {
+        "source": "youtube JmU203ktmm0 (Eric Park)",
+        "insight": "업종 정해지면 스타일/컬러/폰트/차트/금지목록이 연쇄 결정. 특히 '금지 목록'(AI 보라핑크 그라데이션 금지 등)이 디자인 하한선을 지킴.",
+        "scope_files": [
+          "global/skills/harness-ui-trends-2026/skill.md",
+          ".claude/brand-dna.json"
+        ],
+        "target_industries": [
+          "insurance",
+          "certification",
+          "community",
+          "finance_dashboard",
+          "saas",
+          "meditation",
+          "kids_edu"
+        ],
+        "requires_user_confirm": false,
+        "files_changed": []
+      },
+      "completed_at": "2026-07-23T09:21:06.273783",
+      "result": {
+        "files_modified": [
+          "global/skills/harness-ui-trends-2026/skill.md",
+          ".claude/brand-dna.json"
+        ],
+        "presets_added": 10,
+        "universal_anti_patterns": 4,
+        "opt_in": true
       }
     }
   ],
@@ -3544,6 +3791,18 @@
         "issue_type": "USER_STORY",
         "plan_created": 1,
         "timestamp": "2026-06-15T19:35:20.611099"
+      },
+      {
+        "issue_id": "ISS-379",
+        "issue_type": "FEATURE_PLAN",
+        "plan_created": 2,
+        "timestamp": "2026-07-14T11:21:39.199318"
+      },
+      {
+        "issue_id": "ISS-384",
+        "issue_type": "FIX_BUG",
+        "plan_created": 3,
+        "timestamp": "2026-07-14T18:25:14.359284"
       }
     ],
     "on_fail": [],
@@ -3590,11 +3849,15 @@
         "evidence_issues": [
           "ISS-302",
           "ISS-323",
-          "ISS-326"
+          "ISS-326",
+          "ISS-370",
+          "ISS-371",
+          "ISS-383",
+          "ISS-384"
         ],
-        "frequency": 7,
+        "frequency": 11,
         "first_seen": "2026-05-12T00:36:42Z",
-        "last_seen": "2026-05-13T06:42:31Z"
+        "last_seen": "2026-07-14T09:26:27Z"
       },
       {
         "pattern": "배치 일괄 주입(injected_count 필드) 패턴 — 반복 수정보다 일괄 처리가 효율적",
@@ -3617,11 +3880,12 @@
       {
         "pattern": "에이전트 'agent-harness' 완료율 높음 (8건 COMPLETED)",
         "evidence_issues": [
-          "ISS-301"
+          "ISS-301",
+          "ISS-370"
         ],
-        "frequency": 2,
+        "frequency": 3,
         "first_seen": "2026-05-12T01:08:55Z",
-        "last_seen": "2026-05-12T01:09:00Z"
+        "last_seen": "2026-07-01T00:00:20Z"
       },
       {
         "pattern": "에이전트 'agent-harness' 완료율 높음 (11건 COMPLETED)",
@@ -3667,6 +3931,24 @@
         "frequency": 1,
         "first_seen": "2026-05-13T06:42:31Z",
         "last_seen": "2026-05-13T06:42:31Z"
+      },
+      {
+        "pattern": "에이전트 'product-manager' 완료율 높음 (2건 COMPLETED)",
+        "evidence_issues": [
+          "ISS-379"
+        ],
+        "frequency": 1,
+        "first_seen": "2026-07-14T09:26:27Z",
+        "last_seen": "2026-07-14T09:26:27Z"
+      },
+      {
+        "pattern": "에이전트 'agent-harness' 완료율 높음 (2건 COMPLETED)",
+        "evidence_issues": [
+          "ISS-383"
+        ],
+        "frequency": 1,
+        "first_seen": "2026-07-14T09:26:27Z",
+        "last_seen": "2026-07-14T09:26:27Z"
       }
     ],
     "failure_patterns": [],
@@ -9191,36 +9473,1654 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 328,
+        "timestamp": "2026-06-29T12:53:40.725287",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 329,
+        "timestamp": "2026-06-29T12:56:47.362671",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 330,
+        "timestamp": "2026-06-29T13:03:51.550439",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 331,
+        "timestamp": "2026-06-29T13:05:32.226372",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 332,
+        "timestamp": "2026-06-29T13:08:40.325142",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 333,
+        "timestamp": "2026-07-08T09:22:05.394901",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 334,
+        "timestamp": "2026-07-08T09:22:17.465321",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 335,
+        "timestamp": "2026-07-08T09:22:51.195739",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 336,
+        "timestamp": "2026-07-08T09:22:56.143170",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 337,
+        "timestamp": "2026-07-08T09:33:42.682548",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 338,
+        "timestamp": "2026-07-08T11:54:33.482157",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 339,
+        "timestamp": "2026-07-08T11:55:32.492843",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 340,
+        "timestamp": "2026-07-08T13:21:11.714580",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 341,
+        "timestamp": "2026-07-14T10:44:00.204869",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 342,
+        "timestamp": "2026-07-14T10:44:02.168622",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 343,
+        "timestamp": "2026-07-14T10:45:19.616404",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 344,
+        "timestamp": "2026-07-14T10:45:21.584979",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 345,
+        "timestamp": "2026-07-14T10:47:28.377827",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 346,
+        "timestamp": "2026-07-14T10:47:30.312376",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 347,
+        "timestamp": "2026-07-14T10:50:33.577891",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 348,
+        "timestamp": "2026-07-14T10:52:33.929309",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 349,
+        "timestamp": "2026-07-14T10:52:36.109868",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 350,
+        "timestamp": "2026-07-14T10:53:29.036700",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 351,
+        "timestamp": "2026-07-14T10:53:32.064249",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 352,
+        "timestamp": "2026-07-14T10:54:16.501514",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 353,
+        "timestamp": "2026-07-14T10:54:19.013381",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 354,
+        "timestamp": "2026-07-14T10:57:20.506350",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 355,
+        "timestamp": "2026-07-14T11:21:27.830219",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 80,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 356,
+        "timestamp": "2026-07-14T11:22:05.390370",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 357,
+        "timestamp": "2026-07-14T11:22:07.894311",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 358,
+        "timestamp": "2026-07-14T11:22:27.580449",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, test-harness, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 359,
+        "timestamp": "2026-07-14T11:25:31.626962",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 360,
+        "timestamp": "2026-07-14T11:34:49.565133",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 361,
+        "timestamp": "2026-07-14T11:34:51.902402",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 362,
+        "timestamp": "2026-07-14T11:36:15.660330",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 363,
+        "timestamp": "2026-07-14T11:36:17.201174",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 364,
+        "timestamp": "2026-07-14T11:36:41.742202",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 365,
+        "timestamp": "2026-07-14T11:36:43.762291",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 366,
+        "timestamp": "2026-07-14T11:37:44.394625",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 367,
+        "timestamp": "2026-07-14T11:40:14.759511",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 368,
+        "timestamp": "2026-07-14T11:40:17.591791",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 369,
+        "timestamp": "2026-07-14T11:43:57.687420",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 370,
+        "timestamp": "2026-07-14T11:44:01.670007",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, test-harness, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 371,
+        "timestamp": "2026-07-14T11:47:21.850148",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 372,
+        "timestamp": "2026-07-14T11:47:25.785963",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 373,
+        "timestamp": "2026-07-14T11:47:54.760177",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 374,
+        "timestamp": "2026-07-14T11:48:02.147461",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 375,
+        "timestamp": "2026-07-14T11:50:59.021251",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 376,
+        "timestamp": "2026-07-14T11:56:56.051332",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, test-harness, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 377,
+        "timestamp": "2026-07-14T11:56:58.255638",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 378,
+        "timestamp": "2026-07-14T12:42:54.099450",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 379,
+        "timestamp": "2026-07-14T12:42:56.285432",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 380,
+        "timestamp": "2026-07-14T12:46:29.371793",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 381,
+        "timestamp": "2026-07-14T12:46:32.718676",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 382,
+        "timestamp": "2026-07-14T12:47:08.901955",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 383,
+        "timestamp": "2026-07-14T12:47:15.467709",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 384,
+        "timestamp": "2026-07-14T12:48:24.126868",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 385,
+        "timestamp": "2026-07-14T12:48:30.086476",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 386,
+        "timestamp": "2026-07-14T12:50:51.556562",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 387,
+        "timestamp": "2026-07-14T12:50:57.058159",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 388,
+        "timestamp": "2026-07-14T12:51:28.574201",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 389,
+        "timestamp": "2026-07-14T12:51:30.215686",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 390,
+        "timestamp": "2026-07-14T13:07:52.119452",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 391,
+        "timestamp": "2026-07-14T13:07:54.494710",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 392,
+        "timestamp": "2026-07-14T13:19:40.428645",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 393,
+        "timestamp": "2026-07-14T13:19:43.350748",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 394,
+        "timestamp": "2026-07-14T13:20:31.722576",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 395,
+        "timestamp": "2026-07-14T13:20:33.818835",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, plan-ceo-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 396,
+        "timestamp": "2026-07-14T13:20:47.896610",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, test-harness, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 397,
+        "timestamp": "2026-07-14T13:20:50.190559",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 398,
+        "timestamp": "2026-07-14T13:23:33.879885",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 399,
+        "timestamp": "2026-07-14T13:23:36.814711",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 400,
+        "timestamp": "2026-07-14T13:25:28.289037",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 401,
+        "timestamp": "2026-07-14T13:25:30.928419",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 402,
+        "timestamp": "2026-07-14T13:30:06.954019",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 403,
+        "timestamp": "2026-07-14T13:30:10.099387",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 404,
+        "timestamp": "2026-07-14T13:31:46.537714",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 405,
+        "timestamp": "2026-07-14T13:31:49.883628",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 406,
+        "timestamp": "2026-07-14T13:32:12.879937",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 407,
+        "timestamp": "2026-07-14T13:33:51.861347",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 408,
+        "timestamp": "2026-07-14T13:33:54.015773",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 409,
+        "timestamp": "2026-07-14T13:34:52.817459",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 410,
+        "timestamp": "2026-07-14T13:34:54.396761",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 411,
+        "timestamp": "2026-07-14T13:36:10.174696",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 412,
+        "timestamp": "2026-07-14T13:36:12.406274",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 413,
+        "timestamp": "2026-07-14T13:38:13.187029",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, plan-ceo-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 414,
+        "timestamp": "2026-07-14T13:45:31.243757",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 415,
+        "timestamp": "2026-07-14T13:45:33.667273",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 416,
+        "timestamp": "2026-07-14T13:50:45.974974",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 417,
+        "timestamp": "2026-07-14T13:53:53.953606",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 418,
+        "timestamp": "2026-07-14T13:55:15.649638",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 419,
+        "timestamp": "2026-07-14T13:55:18.882461",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 420,
+        "timestamp": "2026-07-14T18:24:24.047117",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 85,
+          "done": 26,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 421,
+        "timestamp": "2026-07-14T18:26:26.336322",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 88,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 422,
+        "timestamp": "2026-07-15T16:55:38.628640",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 88,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 366,
-    "completed": 39,
+    "total_issues": 375,
+    "completed": 41,
     "failed": 0,
-    "evolved": 327
+    "evolved": 422
   },
   "hermes_state": {
     "invocations_by_issue": {},
     "daily_log": [],
-    "total_invocations": 0
+    "total_invocations": 0,
+    "last_run": "2026-07-10T06:47:42Z",
+    "interval_min": 10,
+    "started_at": "2026-07-10T06:45:12.679691+00:00"
   },
   "opus_budget_state": {
     "daily": {
-      "date": "2026-05-12",
-      "cost_usd": 3.16,
-      "calls": 6
+      "date": "2026-07-15",
+      "cost_usd": 0.23,
+      "calls": 1
     },
     "monthly": {
-      "month": "2026-05",
-      "cost_usd": 3.16,
-      "calls": 6
+      "month": "2026-07",
+      "cost_usd": 0.23,
+      "calls": 1
     },
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "2026-06-15",
-    "created_today": 0
+    "date": "2026-07-14",
+    "created_today": 5
   },
   "proactive_scan_state": {
     "date": "2026-05-10",
@@ -9238,12 +11138,12 @@
       "opus_budget_before": {
         "daily": {
           "date": "",
-          "cost_usd": 0.0,
+          "cost_usd": 0,
           "calls": 0
         },
         "monthly": {
           "month": "",
-          "cost_usd": 0.0,
+          "cost_usd": 0,
           "calls": 0
         },
         "demotion_active": false
@@ -9272,5 +11172,296 @@
   },
   "cicd_bootstrap_state": {
     "last_date": "2026-06-15"
-  }
+  },
+  "learned_skills": [],
+  "moa_runs": [
+    {
+      "ts": "2026-07-08T00:22:57.542200+00:00",
+      "prompt": "1+1은?",
+      "refs": "claude",
+      "valid_responses": 1
+    }
+  ],
+  "hermes_runs": [
+    {
+      "ts": "2026-07-08T00:39:01Z",
+      "action": "render",
+      "detail": "READY 이슈 없음, 렌더만",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T00:49:54Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-044 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T01:47:02Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-045 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T01:48:45Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-048 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:06:21Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-049 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:08:26Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-050 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:14:18Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-052 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:21:53Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate/ISS-055 자문 실패: Command '['claude', '-p', \"프로젝트 '0050_ShortsAffiliate'의 하네스 이슈에 대해 충분한 의견을 주세요. 코드는 수정하지 말고(자문만), 다음 4가지를 한국어로 간결히: 1)핵심 접근 2)주의점 3)다음 실행 3단계 4)리스크. 이슈: [ISS-055] [MIRROR-ISSUE-022] ⭐ 어필리에이트 CTA 동선 — S1.5 카드 + 영상 오버레이 + 발행 메타 3곳 명시\"]' timed out after 150 seconds",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:29:01Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-055 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:36:54Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate/ISS-038 자문 실패: Command '['claude', '-p', \"프로젝트 '0050_ShortsAffiliate'의 하네스 이슈에 대해 충분한 의견을 주세요. 코드는 수정하지 말고(자문만), 다음 4가지를 한국어로 간결히: 1)핵심 접근 2)주의점 3)다음 실행 3단계 4)리스크. 이슈: [ISS-038] [MIRROR-ISSUE-004] 실 상품 이미지 → nano-banana 첫 프레임 연결\"]' timed out after 150 seconds",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:43:40Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-038 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:49:46Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-040 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:56:24Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-046 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:03:03Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-051 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:08:58Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-053 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:16:05Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-058 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:22:44Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:29:10Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:36:45Z",
+      "action": "patrol",
+      "detail": "0000_master/ISS-021 자문 실패: Command '['claude', '-p', \"프로젝트 '0000_master'의 하네스 이슈에 대해 충분한 의견을 주세요. 코드는 수정하지 말고(자문만), 다음 4가지를 한국어로 간결히: 1)핵심 접근 2)주의점 3)다음 실행 3단계 4)리스크. 이슈: [ISS-021] [Plan:테스트] ISS-018 변경사항 검증\"]' timed out after 150 seconds",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:43:56Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:51:30Z",
+      "action": "patrol",
+      "detail": "0000_master/ISS-021 자문 실패: Command '['claude', '-p', \"프로젝트 '0000_master'의 하네스 이슈에 대해 충분한 의견을 주세요. 코드는 수정하지 말고(자문만), 다음 4가지를 한국어로 간결히: 1)핵심 접근 2)주의점 3)다음 실행 3단계 4)리스크. 이슈: [ISS-021] [Plan:테스트] ISS-018 변경사항 검증\"]' timed out after 150 seconds",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:58:12Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:04:36Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:11:05Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:18:10Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:24:42Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:31:16Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:37:52Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:44:10Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:52:00Z",
+      "action": "patrol",
+      "detail": "0000_master/ISS-021 자문 실패: Command '['claude', '-p', \"프로젝트 '0000_master'의 하네스 이슈에 대해 충분한 의견을 주세요. 코드는 수정하지 말고(자문만), 다음 4가지를 한국어로 간결히: 1)핵심 접근 2)주의점 3)다음 실행 3단계 4)리스크. 이슈: [ISS-021] [Plan:테스트] ISS-018 변경사항 검증\"]' timed out after 150 seconds",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:59:20Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 52",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-10T06:37:51Z",
+      "action": "patrol",
+      "detail": "0025_CEO · ISS-283 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-10T06:42:32Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 65",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-10T06:42:38Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 65",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-10T06:47:42Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 65",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    }
+  ]
 }
