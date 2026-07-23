@@ -3643,6 +3643,30 @@
         "enforcement_layers": 3,
         "mode": "warn-not-block"
       }
+    },
+    {
+      "id": "ISS-390",
+      "title": "[지시] 새로 만들어진 기능 전체 포로젝트에 전파해줘.",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-07-23T09:34:02.327854",
+      "updated_at": "2026-07-23T09:34:02.327854",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "새로 만들어진 기능 전체 포로젝트에 전파해줘.",
+        "files_changed": []
+      },
+      "completed_at": "2026-07-23T09:45:30.885563",
+      "result": {
+        "projects_registered": 38,
+        "symlinks_created": 114,
+        "missing": 0,
+        "deploy_source": "project/.claude/hooks + harness-core",
+        "verified": "direct-exec 3/3 + settings 38/38"
+      }
     }
   ],
   "hooks": {
@@ -11135,14 +11159,46 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 424,
+        "timestamp": "2026-07-23T09:27:00.862038",
+        "findings": [
+          "✅ 정상 운영 — 완료율 31% (28/90)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 90,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 425,
+        "timestamp": "2026-07-23T09:30:05.842742",
+        "findings": [
+          "✅ 정상 운영 — 완료율 31% (28/90)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 90,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 375,
+    "total_issues": 376,
     "completed": 41,
     "failed": 0,
-    "evolved": 423
+    "evolved": 425
   },
   "hermes_state": {
     "invocations_by_issue": {},
