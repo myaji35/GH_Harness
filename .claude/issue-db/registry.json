@@ -3612,6 +3612,37 @@
         "universal_anti_patterns": 4,
         "opt_in": true
       }
+    },
+    {
+      "id": "ISS-389",
+      "type": "REFACTOR",
+      "title": "오케스트레이션 3대 규칙 사후 강제(enforcement) hook 전역 도입 — 사전 리마인더만으론 위반 못 막음",
+      "priority": "P1",
+      "status": "DONE",
+      "depth": 0,
+      "created_at": "2026-07-23T09:24:03.401670",
+      "payload": {
+        "problem": "orchestration-label.sh는 사전 주입만. 읽고도 안 지키면 강제 불가.",
+        "solution": "PreToolUse(Edit|Write)=직접코딩 감지 경고, Stop=라벨/요약표 미출력 검사, 위반로그",
+        "scope_files": [
+          "~/.claude/hooks/orch-enforce-precode.sh",
+          "~/.claude/hooks/orch-enforce-label.sh",
+          "~/.claude/settings.json"
+        ],
+        "design": "차단 아닌 경고. 1~2줄/문서/설정은 예외 통과(오탐 방지).",
+        "requires_user_confirm": false,
+        "files_changed": []
+      },
+      "completed_at": "2026-07-23T09:25:55.868632",
+      "result": {
+        "hooks_created": [
+          "orch-enforce-precode.sh",
+          "orch-enforce-label.sh"
+        ],
+        "tests_passed": "7/7",
+        "enforcement_layers": 3,
+        "mode": "warn-not-block"
+      }
     }
   ],
   "hooks": {
@@ -11088,6 +11119,22 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 423,
+        "timestamp": "2026-07-23T09:21:26.447451",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (27/89)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 89,
+          "done": 27,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -11095,7 +11142,7 @@
     "total_issues": 375,
     "completed": 41,
     "failed": 0,
-    "evolved": 422
+    "evolved": 423
   },
   "hermes_state": {
     "invocations_by_issue": {},
