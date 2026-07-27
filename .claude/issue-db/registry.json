@@ -3710,6 +3710,37 @@
         "raw_prompt": "카카오뱅크 <계좌번호 .env 참조> 강승식 전역변수에 넣어서 시작하자.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
       }
+    },
+    {
+      "id": "ISS-393",
+      "title": "[지시] 0단계 이슈 등록하고 착수안 ../0013 폴더에 만들어줘. 폴더 변경후 실행할게.",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-07-27T15:34:40.097589",
+      "updated_at": "2026-07-27T15:34:40.097589",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "0단계 이슈 등록하고 착수안 ../0013 폴더에 만들어줘. 폴더 변경후 실행할게."
+      },
+      "result": {
+        "deliverable": "0031_LandCheck/docs/phase0-gtm-착수안.md",
+        "issues_registered": [
+          "ISS-018",
+          "ISS-019",
+          "ISS-020",
+          "ISS-021",
+          "ISS-022"
+        ],
+        "target_repo": "0031_LandCheck",
+        "key_findings": [
+          "서비스 접속불가(DNS 오지정+컨테이너 미기동)",
+          "교통접근성·개발여건 항상 mock",
+          "@parcels.first 다필지 미지원"
+        ]
+      }
     }
   ],
   "hooks": {
@@ -11730,14 +11761,286 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 457,
+        "timestamp": "2026-07-27T15:12:51.285979",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 458,
+        "timestamp": "2026-07-27T15:12:55.557542",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 459,
+        "timestamp": "2026-07-27T15:16:33.572618",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 460,
+        "timestamp": "2026-07-27T15:16:37.299297",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 461,
+        "timestamp": "2026-07-27T15:20:33.767283",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 462,
+        "timestamp": "2026-07-27T15:20:58.717830",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 463,
+        "timestamp": "2026-07-27T15:21:51.528648",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 464,
+        "timestamp": "2026-07-27T15:22:00.863325",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 465,
+        "timestamp": "2026-07-27T15:22:04.581412",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 466,
+        "timestamp": "2026-07-27T15:22:30.402709",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 467,
+        "timestamp": "2026-07-27T15:23:01.804786",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 468,
+        "timestamp": "2026-07-27T15:23:39.807370",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 469,
+        "timestamp": "2026-07-27T15:24:25.823489",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 470,
+        "timestamp": "2026-07-27T15:25:43.350709",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 471,
+        "timestamp": "2026-07-27T15:27:08.332088",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 472,
+        "timestamp": "2026-07-27T15:27:08.704465",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 473,
+        "timestamp": "2026-07-27T15:27:12.779449",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 378,
+    "total_issues": 379,
     "completed": 41,
     "failed": 0,
-    "evolved": 456
+    "evolved": 473
   },
   "hermes_state": {
     "invocations_by_issue": {},
