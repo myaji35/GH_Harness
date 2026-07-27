@@ -55,7 +55,12 @@ const SITE = {
     loginIdInput: '#inputUsername, input[name="username"]',
     loginPwInput: '#inputPassword, input[name="password"]',
     loginSubmit: '#login-btn, button.login-btn, button[type="submit"]',
-    loggedInIndicator: 'a[href*="logout"], .logout, button:has-text("로그아웃")',
+    // Playwright API(waitForSelector/$)용 — `:has-text()` 확장 문법 사용 가능.
+    loggedInIndicator: 'a[href*="logout"], a[href*="Logout"], .logout, button:has-text("로그아웃")',
+    // 브라우저 document.querySelector용 — 순수 CSS만. `:has-text()`를 넣으면
+    // waitForFunction 안에서 SyntaxError로 죽는다(2026-07-27 실장애).
+    loggedInIndicatorCss: 'a[href*="logout"], a[href*="Logout"], .logout',
+    loggedInTextHint: '로그아웃',
     myKeysTable: 'table tbody tr',
     searchResultRow: '.result-list li, .data-list li, table.list tbody tr',
     // CAPTCHA: name=captcha, id=captcha (필수 입력)
@@ -230,13 +235,24 @@ async function cmdRefresh() {
       }
     }
 
-    // 로그인 버튼 클릭
+    // 로그인 버튼 클릭.
+    // #login-btn은 type="button"이라 폼 자동제출이 아니라 JS 핸들러로 동작한다.
+    // 클릭이 먹지 않는 경우가 있어(핸들러 미바인딩 타이밍) 제출 실패 시 폼 submit으로 폴백한다.
+    // form.submit() 폴백은 쓰지 않는다 — 이 사이트는 JS 핸들러가 별도 엔드포인트로 보내는 구조라
+    // raw submit은 404("페이지를 찾을 수 없습니다")가 된다(2026-07-27 확인).
     await page.click(SITE.selectors.loginSubmit);
+    await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
 
     // 성공 감지 (마이페이지 리다이렉트 또는 로그아웃 링크)
     await page.waitForFunction(
-      (sel) => document.querySelector(sel) || /\/mypage\//.test(location.pathname),
-      SITE.selectors.loggedInIndicator,
+      ({ sel, hint }) => {
+        if (document.querySelector(sel)) return true;
+        if (/\/mypage\//.test(location.pathname)) return true;
+        // 링크 텍스트로도 확인한다(사이트가 href 대신 onclick으로 로그아웃을 거는 경우).
+        return [...document.querySelectorAll('a, button')]
+          .some((el) => el.textContent?.includes(hint));
+      },
+      { sel: SITE.selectors.loggedInIndicatorCss, hint: SITE.selectors.loggedInTextHint },
       { timeout: 15_000 }
     );
 
@@ -246,6 +262,19 @@ async function cmdRefresh() {
     console.error('[datago] L1/L2 자동 갱신 성공');
   } catch (e) {
     console.error('[datago] 자동 로그인 실패:', e.message);
+    // 실패 원인은 화면에 적혀 있다(CAPTCHA 오답 / 비번 불일치 / 추가 인증).
+    // 로그만으로는 구분이 안 되므로 스크린샷과 에러 문구를 남긴다.
+    try {
+      const shot = `${process.env.TMPDIR || '/tmp'}/datago-fail.png`;
+      await page.screenshot({ path: shot, fullPage: true });
+      const msg = await page.evaluate(() =>
+        [...document.querySelectorAll('.error, .alert, .txt_error, [class*="error" i]')]
+          .map((el) => el.textContent?.trim()).filter(Boolean).slice(0, 3).join(' | ')
+      );
+      console.error(`[datago] 실패 화면: ${shot}`);
+      if (msg) console.error(`[datago] 화면 메시지: ${msg}`);
+      console.error(`[datago] 현재 URL: ${page.url()}`);
+    } catch {}
     await closeSession({ browser, context });
     process.exit(5);
   }
