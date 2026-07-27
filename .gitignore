@@ -48,3 +48,9 @@ graphify-obsidian-input/
 # 배포 원본은 project/.claude/hooks/ 의 실파일이다.
 .claude/hooks/*.sh
 .claude/hooks/lib/
+
+# 수금 계좌 등 실값 환경변수 (2026-07-27)
+.env
+.env.local
+.env*.local
+.env.production

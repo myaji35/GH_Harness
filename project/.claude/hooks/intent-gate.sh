@@ -7,9 +7,10 @@
 # 근거: 대표님 "단순 지시도 이슈화→구현→검증 강제" 요청(2026-06-29). 강도=실작업형만.
 set -euo pipefail
 
-# 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
+# 심볼릭 링크로 설치된 경우(프로젝트 .claude/hooks/ → harness-core/hooks/)
 # BASH_SOURCE는 링크 경로라 lib/ 를 프로젝트 쪽에서 찾다 ModuleNotFoundError로 죽는다.
-# UserPromptSubmit/SessionStart hook이 죽으면 claude 실행 자체가 실패한다.
+# UserPromptSubmit hook이 죽으면 claude -p 전체가 "Execution error"가 되므로
+# 링크를 끝까지 해제해 실제 스크립트가 있는 디렉터리를 잡는다.
 _src="${BASH_SOURCE[0]}"
 while [ -L "$_src" ]; do
   _dir="$(cd -P "$(dirname "$_src")" && pwd)"
@@ -51,6 +52,30 @@ from issue_id import next_id
 prompt = sys.argv[2]
 low = prompt.lower()
 
+# 0-a) PII/시크릿 마스킹 — registry.json 은 git 추적 파일이고 원격이 공개 저장소다.
+#      대표님 프롬프트를 raw 로 저장하면 계좌번호·연락처·키가 그대로 커밋된다.
+#      근거: 2026-07-27 — 대표님 계좌번호 발화가 registry.json 에 평문 적재됨
+#      (커밋 전 발견해 차단). 2026-06 Gemini 키 유출과 동일 경로이므로 입력단에서 막는다.
+#      규칙 순서가 중요하다: 좁은 패턴(휴대폰·주민·사업자)을 먼저 소진시킨 뒤
+#      넓은 계좌 패턴을 적용해야 서로 잡아먹지 않는다.
+_MASK_RULES = [
+    # 시크릿 — \b 는 '-'/'_' 뒤에서 경계가 성립하지 않으므로 쓰지 않는다
+    (re.compile(r'(?<![A-Za-z0-9])(?:AIza[0-9A-Za-z_-]{35}'
+                r'|sk-ant-[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9]{20,}'
+                r'|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{22,}'
+                r'|AKIA[0-9A-Z]{16})'), '<시크릿>'),
+    (re.compile(r'(?<!\d)01[016-9]-?\d{3,4}-?\d{4}(?!\d)'), '<휴대폰번호>'),  # 휴대폰
+    (re.compile(r'(?<!\d)\d{6}-[1-4]\d{6}(?!\d)'), '<주민번호>'),             # 주민등록번호
+    (re.compile(r'(?<!\d)\d{3}-\d{2}-\d{5}(?!\d)'), '<사업자번호>'),          # 사업자등록번호
+    (re.compile(r'(?<!\d)\d{3,6}-\d{2,6}-\d{4,8}(?!\d)'), '<계좌번호>'),      # 은행 계좌(광의)
+]
+
+def mask_pii(text):
+    """registry 등 git 추적 파일에 저장하기 전 반드시 통과시킨다."""
+    for rx, repl in _MASK_RULES:
+        text = rx.sub(repl, text)
+    return text
+
 # 0) 제외: 너무 짧거나(즉답), 하네스 메타 트리거(이미 자체 파이프라인 보유), 조회/설명형
 # 주의: 'harness'/'하네스'는 여기 두지 않는다. 대표님이 "harness, 00 구현해줘"처럼
 #       하네스를 호출하며 작업을 지시하는 습관이 있어, EXCLUDE에 두면 오히려 자동화가 꺼진다.
@@ -75,7 +100,12 @@ HARNESS_META_CMD = ['harness 시작', '하네스 시작', 'harness init', 'harne
 #      (ISS-074: '~기능 반영되고 있나?' 같은 메타질문이 WORK 동사에 걸려 오탐하던 버그)
 #      조회형 통과는 이슈를 '안 만드는' 안전 방향이라 전역 적용해도 부작용이 적다.
 QUESTION = ['?', '？', '나요', '습니까', '까요', '는가', '은가', '했는데', '하는데',
-            '되는지', '있는지', '인지', '될까', '할까']
+            '되는지', '있는지', '인지', '될까', '할까',
+            # 추정·의견형 어미 (2026-07-24 ISS-059): '~같은데/것 같다/~듯/필요할' 이 WORK 동사에
+            # 걸려 실작업으로 오탐. ISS-051("...필요(추가개발)할것 같은데")이 '개발'에 걸린 사례.
+            # 조회형 통과는 '이슈를 안 만드는' 안전 방향이라 전역 적용해도 부작용이 적다.
+            '같은데', '것 같', '것같', '듯한데', '듯하다', '듯 하다', '을까', '려나',
+            '필요할', '필요하지', '해야 할까', '어야 할까', '아야 할까']
 def asks():
     p = prompt.strip()
     return any(p.endswith(q) or q in p for q in QUESTION)
@@ -115,7 +145,7 @@ if is_idea():
     try:
         REG_I = ".claude/issue-db/registry.json"
         reg_i = json.load(open(REG_I))
-        raw = prompt.strip().replace('\n', ' ')
+        raw = mask_pii(prompt.strip().replace('\n', ' '))
         title_i = ('[아이디어] ' + raw)[:80]
         # 중복 방지: 같은 제목이 이미 있으면 재적재 안 함
         dup = any(i.get('title') == title_i for i in reg_i.get('issues', []))
@@ -174,10 +204,22 @@ elif has(['리팩터','리팩토링','refactor','정리']):
 else:
     itype, assign, prio = 'FEATURE_PLAN', 'product-manager', 'P1'
 
-# 중복 체크: 동일 title 활성 이슈 있으면 skip
-title = ('[지시] ' + prompt.strip().replace('\n',' '))[:80]
+# 중복 체크: 동일 지시(raw_prompt) 이슈가 있으면 skip.
+# ISS-278: 종전에는 title 로 대조했는데, title 은 사람이 정리하며 바뀌는 가변 필드다.
+# 제목을 다듬는 순간 훅이 새 이슈로 오판해 진행 중 작업이 매 턴 재등록됐다(중복 ID 유발).
+# raw_prompt 는 payload 에 이미 불변으로 저장되므로 이것을 안정 키로 쓴다.
+# 판정 범위도 활성(READY/IN_PROGRESS)에 더해 최근 6시간 내 동일 지시의 모든 status 로 넓혀,
+# 완료 직후 같은 프롬프트가 재유입돼 다시 이슈화되는 것을 막는다.
+title = ('[지시] ' + mask_pii(prompt.strip().replace('\n',' ')))[:80]
+_norm_prompt = ' '.join(prompt.strip().split())
+_recent_cutoff = (datetime.datetime.now() - datetime.timedelta(hours=6)).isoformat()
 for iss in reg['issues']:
-    if iss.get('title') == title and iss.get('status') in ('READY','IN_PROGRESS'):
+    _iss_prompt = ' '.join((iss.get('payload', {}).get('raw_prompt') or '').split())
+    if not _iss_prompt or _iss_prompt != _norm_prompt:
+        continue
+    if iss.get('status') in ('READY', 'IN_PROGRESS'):
+        sys.exit(0)
+    if (iss.get('created_at') or '') >= _recent_cutoff:
         sys.exit(0)
 
 # 공용 발급기: 정규 ID와 stats.total_issues를 함께 기준으로 사용한다.
@@ -188,7 +230,7 @@ reg['issues'].append({
     'id': iid, 'title': title, 'type': itype, 'status': 'READY',
     'priority': prio, 'assign_to': assign, 'depth': 0,
     'created_at': now, 'updated_at': now,
-    'payload': {'origin': 'intent-gate', 'raw_prompt': prompt.strip()},
+    'payload': {'origin': 'intent-gate', 'raw_prompt': mask_pii(prompt.strip())},
 })
 reg.setdefault('stats', {})['total_issues'] = reg['stats'].get('total_issues',0)+1
 json.dump(reg, open(REG,'w'), ensure_ascii=False, indent=2)
