@@ -3900,18 +3900,18 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-08T20:37:12"
+      "last_dispatched_at": "2026-08-08T20:52:46"
     },
     {
       "id": "ISS-399",
       "title": "[지시] 최근 좋아요 영상 100건 새 기준으로 옵시디언 정리 후 삭제",
       "type": "GENERATE_CODE",
-      "status": "PARTIAL",
+      "status": "COMPLETED",
       "priority": "P1",
       "assign_to": "agent-harness",
       "depth": 0,
       "created_at": "2026-08-08T20:08:39.132884",
-      "updated_at": "2026-08-08T20:52:09.340460",
+      "updated_at": "2026-08-08T21:29:44.451449",
       "payload": {
         "origin": "대표님 지시 2026-08-08",
         "scope": "LL(좋아요) 최근 100건",
@@ -3957,19 +3957,20 @@
         },
         "moc": "8→10개 (건강·지식관리 신규), INDEX 458개",
         "report": "📋일자별보고서/2026-08-08_작업보고서.md (링크 99/99 정합)",
-        "INCOMPLETE": "좋아요 목록 삭제 실패 — 좌표클릭·DOM click·ref클릭 3방식 모두 목록 미반영. 지식화는 100% 완료, 삭제만 미실행"
+        "INCOMPLETE": null,
+        "deletion": "ISS-400에서 100건 전량 완료 (4880→4780)"
       }
     },
     {
       "id": "ISS-400",
       "title": "[youtube-archiver] 좋아요(LL) 목록 삭제 UI 동작 실패 — 삭제 경로 재확립",
       "type": "FIX_BUG",
-      "status": "READY",
+      "status": "COMPLETED",
       "priority": "P1",
       "assign_to": "agent-harness",
       "depth": 1,
       "created_at": "2026-08-08T20:52:09.340460",
-      "updated_at": "2026-08-08T20:52:09.340460",
+      "updated_at": "2026-08-08T21:29:44.451449",
       "payload": {
         "origin": "ISS-399 미완",
         "symptom": "⋮ → '좋아요 표시한 동영상에서 삭제' 클릭이 목록에 반영 안 됨. 메뉴는 정상 노출·클릭됨(토스트 없음, 항목 잔존)",
@@ -3979,7 +3980,19 @@
           "computer left_click ref"
         ],
         "pending_ids": "scratchpad/ll/deletable.txt (100건, 전부 볼트 저장 검증 완료)",
-        "next": "영상 페이지에서 좋아요 버튼 토글 해제 방식 / YouTube Data API / UI 변경 재조사"
+        "next": "영상 페이지에서 좋아요 버튼 토글 해제 방식 / YouTube Data API / UI 변경 재조사",
+        "approach_confirmed": "대표님 지시 2026-08-08 — 영상 페이지에서 좋아요 버튼 토글 해제 방식"
+      },
+      "last_dispatched_at": "2026-08-08T20:52:43",
+      "result": {
+        "deleted": 100,
+        "list_before": 4880,
+        "list_after": 4780,
+        "delta": 100,
+        "target_remaining": 0,
+        "method": "영상 페이지 좋아요 버튼 aria-pressed true→false 토글 (browser_batch 4건씩)",
+        "root_cause_correction": "당초 '삭제 실패'로 판정했던 ⋮메뉴 방식은 실제로는 성공했었음. 같은 페이지에서 DOM 재조회로 검증해 유튜브 지연로드 때문에 갱신 전 목록을 읽은 것이 원인. 새로고침 후 총계로 검증해야 함",
+        "retry": "m2maDNtho7Y 1건 NOBTN(로딩지연) → 대기시간 6초로 늘려 재시도 성공"
       }
     }
   ],
@@ -12512,6 +12525,102 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 488,
+        "timestamp": "2026-08-08T20:52:43.466835",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 489,
+        "timestamp": "2026-08-08T20:52:46.700611",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 490,
+        "timestamp": "2026-08-08T20:53:00.590152",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 491,
+        "timestamp": "2026-08-08T20:53:06.337235",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 492,
+        "timestamp": "2026-08-08T20:53:14.360681",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 493,
+        "timestamp": "2026-08-08T20:53:17.367618",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -12519,7 +12628,7 @@
     "total_issues": 379,
     "completed": 41,
     "failed": 1,
-    "evolved": 487
+    "evolved": 493
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -12889,7 +12998,7 @@
     }
   ],
   "rewake_state": {
-    "ISS-398:READY": 2,
-    "ISS-399:READY": 1
+    "ISS-398:READY": 3,
+    "ISS-400:READY": 1
   }
 }
