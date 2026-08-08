@@ -4088,12 +4088,12 @@
       "id": "ISS-405",
       "title": "[지시] 나중에볼영상(WL) 최근 300건 지식화",
       "type": "GENERATE_CODE",
-      "status": "READY",
+      "status": "PARTIAL",
       "priority": "P1",
       "assign_to": "agent-harness",
       "depth": 0,
       "created_at": "2026-08-09T07:29:03.366778",
-      "updated_at": "2026-08-09T07:52:18.516234",
+      "updated_at": "2026-08-09T08:52:49.107306",
       "payload": {
         "scope": "WL 최근 300건",
         "note": "지식화는 300건 전량. 유튜브 삭제는 하루 100개 상한 준수 → 삭제는 별도 판단",
@@ -4103,18 +4103,23 @@
         "files_changed": []
       },
       "retry_count": 1,
-      "last_dispatched_at": "2026-08-09T08:22:22"
+      "last_dispatched_at": "2026-08-09T08:43:42",
+      "result": {
+        "done": "WL 1차 100건 지식화 완료 (자막47/폴백53, 실패0)",
+        "vault": "458→558",
+        "remaining": "200건 — WL은 100건씩만 로드되므로 삭제 선행 필요. 삭제는 비가역이라 대표님 지시 대기"
+      }
     },
     {
       "id": "ISS-406",
       "title": "[지시] 이메일수집 SaaS 영상 검색 — WL 300건 포함 전수",
       "type": "GENERATE_CODE",
-      "status": "READY",
+      "status": "CLOSED_NOT_FOUND",
       "priority": "P1",
       "assign_to": "agent-harness",
       "depth": 0,
       "created_at": "2026-08-09T07:29:03.366778",
-      "updated_at": "2026-08-09T08:40:13.786873",
+      "updated_at": "2026-08-09T08:52:49.107306",
       "payload": {
         "target": "브랜드 홍보전략 맥락에서 소제목 분량으로 소개된 이메일 수집 SaaS 홈페이지",
         "tried_failed": [
@@ -4125,7 +4130,7 @@
         "depends_on": "ISS-405",
         "origin": "대표님 지시 2026-08-09"
       },
-      "last_dispatched_at": "2026-08-09T08:20:14",
+      "last_dispatched_at": "2026-08-09T08:52:29",
       "result": {
         "searched": "볼트 558건 (기존458+WL신규100)",
         "methods": [
@@ -4135,7 +4140,10 @@
         ],
         "false_positive": "Loops 4건 — 'agent loops'를 제품 Loops로 오인",
         "email_saas": "미발견",
-        "TTS_correction": "TTS는 검색한 적 없었음(대표님 미언급) → 검색 결과 7건 발견: Fish Audio 2건, TT스튜디오(로컬TTS), Typecast, ElevenLabs, ElevenLabs CLI, Mistral Voxtral"
+        "TTS_correction": "TTS는 검색한 적 없었음(대표님 미언급) → 검색 결과 7건 발견: Fish Audio 2건, TT스튜디오(로컬TTS), Typecast, ElevenLabs, ElevenLabs CLI, Mistral Voxtral",
+        "final": "볼트 558건(기존458+WL신규100) 5개 축 검색 완료 — 이메일수집 SaaS 미발견",
+        "ms_tts_search": "구독피드 104건 0건 / 유튜브 이번주 필터 4건 전부 미구독. 유력후보: 김에듀 AI강사 '마이크로소프트 클립챔프로 무료 AI 성우 만들기'(7일전, zLbG_ASwQ08)",
+        "remaining_scope": "WL 2,285건 + 좋아요 4,780건 미처리 — 대상 영상이 이 범위에 있을 가능성"
       }
     }
   ],
@@ -13094,6 +13102,70 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 514,
+        "timestamp": "2026-08-09T08:41:21.765286",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 515,
+        "timestamp": "2026-08-09T08:43:42.292166",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 516,
+        "timestamp": "2026-08-09T08:43:56.258774",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 517,
+        "timestamp": "2026-08-09T08:52:29.830009",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -13101,7 +13173,7 @@
     "total_issues": 382,
     "completed": 41,
     "failed": 3,
-    "evolved": 513
+    "evolved": 517
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -13472,8 +13544,7 @@
   ],
   "rewake_state": {
     "ISS-398:READY": 7,
-    "ISS-403:READY": 2,
-    "ISS-406:READY": 1,
-    "ISS-405:READY": 1
+    "ISS-406:READY": 2,
+    "ISS-405:READY": 2
   }
 }
