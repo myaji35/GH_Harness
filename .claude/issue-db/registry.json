@@ -3899,6 +3899,87 @@
         "why": "제목 토큰 Jaccard 유사도로는 같은 사건 식별 불가 — how-tutorial 클러스터가 금융대시보드/디자인/AI에이전트를 묶음",
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
+      },
+      "last_dispatched_at": "2026-08-08T20:37:12"
+    },
+    {
+      "id": "ISS-399",
+      "title": "[지시] 최근 좋아요 영상 100건 새 기준으로 옵시디언 정리 후 삭제",
+      "type": "GENERATE_CODE",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-08T20:08:39.132884",
+      "updated_at": "2026-08-08T20:52:09.340460",
+      "payload": {
+        "origin": "대표님 지시 2026-08-08",
+        "scope": "LL(좋아요) 최근 100건",
+        "override": "스킬 기본 배분은 WL70+LL30이나 대표님 명시값 LL100 우선. 하루 100개 상한 준수, WL 오늘 미처리",
+        "new_standard": [
+          "topic 단일축 부여",
+          "depth 3단(심층/표준/로그)",
+          "actionable 판정",
+          "태그 최대 5개",
+          "유령링크 금지 — 실존 노트만 [[링크]]",
+          "인사이트는 접점 있을 때만",
+          "자막없으면 status=미검증로그"
+        ],
+        "steps": [
+          "LL ID 수집(브라우저)",
+          "기존 359개 video_id와 dedup",
+          "yt-dlp 자막추출",
+          "Sonnet 병렬요약→write_note.py",
+          "저장검증",
+          "LL에서 삭제",
+          "build_report.py",
+          "build_moc.py"
+        ],
+        "files_changed": []
+      },
+      "retry_count": 1,
+      "last_dispatched_at": "2026-08-08T20:38:45",
+      "result": {
+        "collected": 100,
+        "dedup_new": 99,
+        "already_known": 1,
+        "notes_created": 99,
+        "failures": 0,
+        "vault_total": "359→458",
+        "transcript": "자막59/폴백40",
+        "new_standard_applied": {
+          "insight_conditional": "34% (이전 51% 억지연결)",
+          "ghost_links": 0,
+          "topic_assigned": "11개 주제",
+          "depth": "심층19/표준40/로그40",
+          "actionable": 13,
+          "source": "LL 99/99"
+        },
+        "moc": "8→10개 (건강·지식관리 신규), INDEX 458개",
+        "report": "📋일자별보고서/2026-08-08_작업보고서.md (링크 99/99 정합)",
+        "INCOMPLETE": "좋아요 목록 삭제 실패 — 좌표클릭·DOM click·ref클릭 3방식 모두 목록 미반영. 지식화는 100% 완료, 삭제만 미실행"
+      }
+    },
+    {
+      "id": "ISS-400",
+      "title": "[youtube-archiver] 좋아요(LL) 목록 삭제 UI 동작 실패 — 삭제 경로 재확립",
+      "type": "FIX_BUG",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 1,
+      "created_at": "2026-08-08T20:52:09.340460",
+      "updated_at": "2026-08-08T20:52:09.340460",
+      "payload": {
+        "origin": "ISS-399 미완",
+        "symptom": "⋮ → '좋아요 표시한 동영상에서 삭제' 클릭이 목록에 반영 안 됨. 메뉴는 정상 노출·클릭됨(토스트 없음, 항목 잔존)",
+        "tried": [
+          "computer left_click 좌표",
+          "javascript DOM .click()",
+          "computer left_click ref"
+        ],
+        "pending_ids": "scratchpad/ll/deletable.txt (100건, 전부 볼트 저장 검증 완료)",
+        "next": "영상 페이지에서 좋아요 버튼 토글 해제 방식 / YouTube Data API / UI 변경 재조사"
       }
     }
   ],
@@ -4093,7 +4174,13 @@
         "timestamp": "2026-07-14T18:25:14.359284"
       }
     ],
-    "on_fail": [],
+    "on_fail": [
+      {
+        "issue_id": "ISS-399",
+        "retry_count": 1,
+        "timestamp": "2026-08-08T20:38:45.814136"
+      }
+    ],
     "on_learn": []
   },
   "knowledge": {
@@ -12297,14 +12384,142 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 480,
+        "timestamp": "2026-08-08T20:00:09.425042",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/99)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 99,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 481,
+        "timestamp": "2026-08-08T20:00:24.680648",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/99)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 99,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 482,
+        "timestamp": "2026-08-08T20:03:29.703562",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/99)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 99,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 483,
+        "timestamp": "2026-08-08T20:37:11.949420",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/100)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 100,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 484,
+        "timestamp": "2026-08-08T20:37:43.053092",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/100)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 100,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 485,
+        "timestamp": "2026-08-08T20:38:45.735357",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/100)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 100,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 486,
+        "timestamp": "2026-08-08T20:40:14.090475",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/100)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 100,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 487,
+        "timestamp": "2026-08-08T20:41:02.869443",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/100)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 100,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
     "total_issues": 379,
     "completed": 41,
-    "failed": 0,
-    "evolved": 479
+    "failed": 1,
+    "evolved": 487
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -12328,8 +12543,8 @@
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "2026-07-14",
-    "created_today": 5
+    "date": "2026-08-08",
+    "created_today": 0
   },
   "proactive_scan_state": {
     "date": "2026-05-10",
@@ -12672,5 +12887,9 @@
       "render_ok": true,
       "token_source": "subscription"
     }
-  ]
+  ],
+  "rewake_state": {
+    "ISS-398:READY": 2,
+    "ISS-399:READY": 1
+  }
 }
