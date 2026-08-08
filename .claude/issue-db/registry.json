@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-08T20:52:46"
+      "last_dispatched_at": "2026-08-09T07:26:56"
     },
     {
       "id": "ISS-399",
@@ -3993,6 +3993,125 @@
         "method": "영상 페이지 좋아요 버튼 aria-pressed true→false 토글 (browser_batch 4건씩)",
         "root_cause_correction": "당초 '삭제 실패'로 판정했던 ⋮메뉴 방식은 실제로는 성공했었음. 같은 페이지에서 DOM 재조회로 검증해 유튜브 지연로드 때문에 갱신 전 목록을 읽은 것이 원인. 새로고침 후 총계로 검증해야 함",
         "retry": "m2maDNtho7Y 1건 NOBTN(로딩지연) → 대기시간 6초로 늘려 재시도 성공"
+      }
+    },
+    {
+      "id": "ISS-401",
+      "title": "[아이디어] 좋아요를 삭제하자 했는데 의미가 있나. 좋아요로만 검색하는 것이.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T07:06:10.612620",
+      "updated_at": "2026-08-09T07:06:10.612620",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "좋아요를 삭제하자 했는데 의미가 있나. 좋아요로만 검색하는 것이.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-402",
+      "title": "[아이디어] 자막을 상세 검색하는 방법 해보자.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T07:09:12.223974",
+      "updated_at": "2026-08-09T07:09:12.223974",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "자막을 상세 검색하는 방법 해보자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-403",
+      "title": "[지시] 자막 재추출로 '이메일 수집 SaaS' 언급 영상 상세 검색",
+      "type": "GENERATE_CODE",
+      "status": "IN_PROGRESS",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T07:09:29.264241",
+      "updated_at": "2026-08-09T07:09:29.264241",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09",
+        "goal": "영상 중간에 짧게 소개된 이메일 수집 SaaS 솔루션 특정",
+        "why": "요약 4섹션 틀이 부차 언급을 버림 + 자막 원본은 지식화 후 삭제됨. 노트 본문 grep으로는 못 찾음",
+        "method": "볼트 노트의 video_id로 yt-dlp 자막 재추출 → 전문 grep",
+        "scope": "analysis_method=자막 전문인 노트 (약 273건)",
+        "cost": "$0 (yt-dlp)"
+      }
+    },
+    {
+      "id": "ISS-404",
+      "title": "[지시] 미비한 기능 개선해주고, 나중에볼영상 최근 300건 진행후, 내가 찾고 있는 영상 검색해줘.",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T07:28:35.564422",
+      "updated_at": "2026-08-09T07:52:18.516234",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "미비한 기능 개선해주고, 나중에볼영상 최근 300건 진행후, 내가 찾고 있는 영상 검색해줘."
+      },
+      "result": {
+        "feature": "mentions 필드 — 영상 등장 제품·도구명 자동 기록",
+        "why_needed": "요약 4섹션이 스쳐간 도구명을 버려 검색 불가했던 문제. 검증: 요약엔 '이메일 수집'만 있는데 mentions에 ConvertKit·Beehiiv 정확히 포착",
+        "fields": [
+          "mentions: [...]",
+          "mentions_source: 자막|설명문|노트본문"
+        ],
+        "backfill": "458개 노트 소급 적용",
+        "defect_fixed": "img.youtube.com이 458건 전부에 오염 → STOPLIST 서브도메인 대응 + 프론트매터·썸네일라인 제외로 수정. 잔여 0 확인",
+        "flags": [
+          "--extract-mentions",
+          "--force-mentions"
+        ]
+      }
+    },
+    {
+      "id": "ISS-405",
+      "title": "[지시] 나중에볼영상(WL) 최근 300건 지식화",
+      "type": "GENERATE_CODE",
+      "status": "IN_PROGRESS",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T07:29:03.366778",
+      "updated_at": "2026-08-09T07:52:18.516234",
+      "payload": {
+        "scope": "WL 최근 300건",
+        "note": "지식화는 300건 전량. 유튜브 삭제는 하루 100개 상한 준수 → 삭제는 별도 판단",
+        "depends_on": "ISS-404 (mentions 적용 후 처리해야 재작업 없음)",
+        "origin": "대표님 지시 2026-08-09",
+        "constraint_note": "WL은 유튜브가 100건까지만 로드. 대표님 승인으로 100건×3회 반복 방식 확정(하루 상한 초과 승인)"
+      }
+    },
+    {
+      "id": "ISS-406",
+      "title": "[지시] 이메일수집 SaaS 영상 검색 — WL 300건 포함 전수",
+      "type": "GENERATE_CODE",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T07:29:03.366778",
+      "updated_at": "2026-08-09T07:29:03.366778",
+      "payload": {
+        "target": "브랜드 홍보전략 맥락에서 소제목 분량으로 소개된 이메일 수집 SaaS 홈페이지",
+        "tried_failed": [
+          "볼트 458건 노트 grep",
+          "좋아요 목록(논리적 모순으로 중단)",
+          "자막 재추출 193건 섹션탐지"
+        ],
+        "depends_on": "ISS-405",
+        "origin": "대표님 지시 2026-08-09"
       }
     }
   ],
@@ -12621,14 +12740,190 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 494,
+        "timestamp": "2026-08-08T21:31:33.166415",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 495,
+        "timestamp": "2026-08-08T21:31:37.886955",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 496,
+        "timestamp": "2026-08-09T07:04:00.971190",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 497,
+        "timestamp": "2026-08-09T07:05:15.686923",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 498,
+        "timestamp": "2026-08-09T07:05:18.411899",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 499,
+        "timestamp": "2026-08-09T07:06:29.967820",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 500,
+        "timestamp": "2026-08-09T07:06:32.153950",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 501,
+        "timestamp": "2026-08-09T07:07:51.068697",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 502,
+        "timestamp": "2026-08-09T07:07:54.219655",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 503,
+        "timestamp": "2026-08-09T07:08:46.380060",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 504,
+        "timestamp": "2026-08-09T07:08:49.473978",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 379,
+    "total_issues": 382,
     "completed": 41,
     "failed": 1,
-    "evolved": 493
+    "evolved": 504
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -12652,7 +12947,7 @@
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "2026-08-08",
+    "date": "2026-08-09",
     "created_today": 0
   },
   "proactive_scan_state": {
@@ -12998,7 +13293,6 @@
     }
   ],
   "rewake_state": {
-    "ISS-398:READY": 3,
-    "ISS-400:READY": 1
+    "ISS-398:READY": 6
   }
 }
