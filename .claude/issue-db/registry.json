@@ -3741,6 +3741,165 @@
           "@parcels.first 다필지 미지원"
         ]
       }
+    },
+    {
+      "id": "ISS-394",
+      "title": "[youtube-archiver] 메타데이터 스키마 확장 + 태그 노이즈 제거 (write_note.py)",
+      "type": "REFACTOR",
+      "status": "COMPLETED",
+      "priority": "P0",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-08T19:34:07.656238",
+      "updated_at": "2026-08-08T19:57:07.601471",
+      "payload": {
+        "scope": "~/.claude/skills/youtube-archiver/scripts/write_note.py",
+        "why": "태그 영상제작 92.8%(333/359)·튜토리얼 51% — 서브스트링 '영상'/'video' 매칭으로 변별력 0",
+        "changes": [
+          "보편어 트리거 제거",
+          "tags 3~5개 상한",
+          "topic 단일축 신규",
+          "depth(심층/표준/로그) 신규",
+          "duration_min·source(WL/LL)·actionable 신규",
+          "date→published 개명 + archived를 파일명 기준축으로",
+          "파일명 40자 절단 → 단어경계 보존"
+        ],
+        "origin": "대표님 지시 — B안 승인 (2026-08-08)"
+      },
+      "result": {
+        "tags_noise_removed": "영상제작 333→0개",
+        "schema_added": [
+          "topic",
+          "depth",
+          "duration_min",
+          "source",
+          "actionable",
+          "depth_source",
+          "published"
+        ],
+        "filename_word_boundary": true
+      }
+    },
+    {
+      "id": "ISS-395",
+      "title": "[youtube-archiver] 유령 위키링크 차단 — 볼트 실존노트 조회 후에만 [[링크]] 생성",
+      "type": "FIX_BUG",
+      "status": "COMPLETED",
+      "priority": "P0",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-08T19:34:07.656238",
+      "updated_at": "2026-08-08T19:57:07.601471",
+      "payload": {
+        "scope": "~/.claude/skills/youtube-archiver/scripts/write_note.py + SKILL.md L91",
+        "why": "[[링크]] 1267개 중 실존 해소 9개(0.7%). 유튜브노트끼리 링크 0, 볼트 백링크 0",
+        "root_cause": "SKILL.md L91 '## 🔗 관련 [[태그]]' — 사양이 태그를 링크로 감싸라고 지시. 볼트 조회 단계 부재",
+        "changes": [
+          "볼트 stem 인덱스 대조 후 실존 노트만 링크",
+          "미존재 시 평문",
+          "같은 배치 내 유사주제 노트 상호링크"
+        ],
+        "origin": "대표님 지시 — B안 승인 (2026-08-08)"
+      },
+      "result": {
+        "ghost_links_before": 1258,
+        "ghost_links_after": 0,
+        "resolved_real_links": 9,
+        "method": "볼트 stem 인덱스 대조 후 미존재 링크 평문화"
+      }
+    },
+    {
+      "id": "ISS-396",
+      "title": "[youtube-archiver] 주제 MOC 레이어 10~15개 생성 + 00-MOC 편입",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-08T19:34:07.656238",
+      "updated_at": "2026-08-08T19:57:07.601471",
+      "payload": {
+        "scope": "옵시디언 볼트 00-MOC/ + 신규 build_moc.py",
+        "why": "359개 평면 폴더, MOC 편입 0, Home MOC 미갱신 → 회수 불가",
+        "changes": [
+          "topic축 기반 주제허브 자동생성",
+          "기존 00-MOC 체계 편입 → Home에서 도달가능",
+          "신규 노트 생성 시 MOC 자동 갱신"
+        ],
+        "origin": "대표님 지시 — B안 승인 (2026-08-08)"
+      },
+      "result": {
+        "moc_created": 8,
+        "index": "00-MOC/유튜브-INDEX.md",
+        "home_linked": true,
+        "topics": {
+          "AI/ClaudeCode": 142,
+          "AI/에이전트": 108,
+          "AI/LLM일반": 41,
+          "개발/일반": 20,
+          "비즈니스/마케팅": 17,
+          "기타": 17,
+          "개발/인프라": 6,
+          "금융/투자": 3
+        }
+      }
+    },
+    {
+      "id": "ISS-397",
+      "title": "[youtube-archiver] 기존 359개 소급 정리 (유령링크·태그·MOC분류)",
+      "type": "REFACTOR",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-08T19:34:07.656238",
+      "updated_at": "2026-08-08T19:57:07.601471",
+      "payload": {
+        "scope": "옵시디언 볼트 📥아카이브/유튜브/ 359개",
+        "why": "기존 자산 구제 — 재요약 불필요, 분류·연결만",
+        "depends_on": [
+          "ISS-394",
+          "ISS-395",
+          "ISS-396"
+        ],
+        "changes": [
+          "유령링크 1258개 제거",
+          "노이즈 태그 정리",
+          "topic 부여 후 MOC 연결",
+          "폴백 145건 status→미검증로그"
+        ],
+        "safety": "백업 필수. 삭제 없음(수정만). iCloud 동기화 주의",
+        "origin": "대표님 지시 — B안 승인 (2026-08-08)"
+      },
+      "result": {
+        "backfilled": 359,
+        "actionable_detected": 52,
+        "depth": {
+          "심층": "7.5%",
+          "표준": "52.1%",
+          "로그": "40.4%"
+        },
+        "backup": ".backup-유튜브-20260808-195629 (360파일)",
+        "deleted": 0,
+        "deferred": "중복 클러스터 종합노트 — 제목 Jaccard로 의미 클러스터 식별 실패(2회). --clusters 플래그 뒤로 비활성화. 의미 임베딩 방식으로 재설계 필요"
+      }
+    },
+    {
+      "id": "ISS-398",
+      "title": "[youtube-archiver] 중복 클러스터 종합노트 — 의미 임베딩 기반 재설계",
+      "type": "FEATURE_PLAN",
+      "status": "READY",
+      "priority": "P3",
+      "assign_to": "agent-harness",
+      "depth": 1,
+      "created_at": "2026-08-08T19:57:07.601471",
+      "updated_at": "2026-08-08T19:57:07.601471",
+      "payload": {
+        "origin": "ISS-397 이월",
+        "why": "제목 토큰 Jaccard 유사도로는 같은 사건 식별 불가 — how-tutorial 클러스터가 금융대시보드/디자인/AI에이전트를 묶음",
+        "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
+        "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
+      }
     }
   ],
   "hooks": {
@@ -4078,6 +4237,15 @@
         "frequency": 1,
         "first_seen": "2026-07-14T09:26:27Z",
         "last_seen": "2026-07-14T09:26:27Z"
+      },
+      {
+        "pattern": "에이전트 'product-manager' 완료율 높음 (3건 COMPLETED)",
+        "evidence_issues": [
+          "ISS-390"
+        ],
+        "frequency": 1,
+        "first_seen": "2026-07-27T09:51:40Z",
+        "last_seen": "2026-07-27T09:51:40Z"
       }
     ],
     "failure_patterns": [],
@@ -12033,6 +12201,102 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 474,
+        "timestamp": "2026-07-27T15:38:10.606024",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 475,
+        "timestamp": "2026-07-27T15:38:13.266052",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 476,
+        "timestamp": "2026-07-27T15:50:43.998029",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 477,
+        "timestamp": "2026-08-08T19:13:01.628465",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 478,
+        "timestamp": "2026-08-08T19:28:52.974924",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 479,
+        "timestamp": "2026-08-08T19:30:07.356810",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -12040,7 +12304,7 @@
     "total_issues": 379,
     "completed": 41,
     "failed": 0,
-    "evolved": 473
+    "evolved": 479
   },
   "hermes_state": {
     "invocations_by_issue": {},
