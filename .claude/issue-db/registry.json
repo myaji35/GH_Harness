@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-09T10:34:36"
+      "last_dispatched_at": "2026-08-09T11:05:17"
     },
     {
       "id": "ISS-399",
@@ -4428,6 +4428,50 @@
           "cpo·saas-member-standard는 untracked 상태였음"
         ],
         "secret_guard_fix": "편입 중 secret-guard가 os.environ 참조를 오탐해 커밋 차단 → 제외규칙에 Python/JS/Go/Java/PHP 환경변수 패턴 추가(v4). 6케이스 직접검증 통과(환경변수 3 PASS / 실제키 3 BLOCK)"
+      }
+    },
+    {
+      "id": "ISS-417",
+      "title": "[지시] Hermes 도구 자가복구 패턴 이식 — 실패 시 진단·복구 힌트 제공",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T11:23:01.902381",
+      "updated_at": "2026-08-09T11:27:15.704225",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09 — Hermes v0.20.0 리서치 후 1번 항목 승인",
+        "reference": "NousResearch/hermes-agent v0.20.0 'Tools that fix themselves'",
+        "evidence_today": [
+          "edge-tts --rate \"-10%\" 인자파싱 실패 → 수동으로 --rate=\"-10%\" 재시도",
+          "for d in $LIST 변수확장 실패로 27개 복사가 0개 → 원인 찾아 재실행",
+          "secret-guard 검증 시 source 방식 오류로 정반대 결과 → 방식 바꿔 재검증"
+        ],
+        "scope": "자주 겪는 실패 패턴에 진단 힌트를 붙이는 경량 hook. Hermes 도입 아님",
+        "principle": "Karpathy #2 — 50줄로 될 것을 200줄로 만들지 않는다",
+        "files_changed": []
+      },
+      "result": {
+        "file": "hooks/tool-recover.sh (3.2KB)",
+        "registered": "settings.json PostToolUseFailure — 기존 orca hook 보존, 배열에 추가(1→2개)",
+        "patterns": 10,
+        "pattern_list": [
+          "argparse 음수값",
+          "셸 변수 단어분리",
+          "zsh glob 실패",
+          "파일없음",
+          "권한거부",
+          "명령없음",
+          "타임아웃",
+          "git 커밋차단",
+          "Python 모듈없음",
+          "JSON 파싱실패"
+        ],
+        "verified": "5케이스 직접 실행 — 진단 4건 정확 출력, 정상케이스 1건 무출력 확인",
+        "design": "매칭 없으면 무출력·항상 exit 0 — 노이즈 방지, 도구 실패를 악화시키지 않음",
+        "source": "Hermes v0.20.0 'Tools that fix themselves' 패턴 차용. Hermes 도입 아님",
+        "evidence": "오늘 세션 실패 3건(edge-tts --rate 음수·$LIST 확장실패·source 함수미등록)이 설계 근거"
       }
     }
   ],
@@ -13850,6 +13894,70 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 543,
+        "timestamp": "2026-08-09T11:05:17.111520",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 117,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 544,
+        "timestamp": "2026-08-09T11:08:26.102247",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 117,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 545,
+        "timestamp": "2026-08-09T11:12:22.807855",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 117,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 546,
+        "timestamp": "2026-08-09T11:15:28.925475",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 117,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -13857,7 +13965,7 @@
     "total_issues": 387,
     "completed": 41,
     "failed": 3,
-    "evolved": 542
+    "evolved": 546
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -14227,6 +14335,6 @@
     }
   ],
   "rewake_state": {
-    "ISS-398:READY": 12
+    "ISS-398:READY": 13
   }
 }
