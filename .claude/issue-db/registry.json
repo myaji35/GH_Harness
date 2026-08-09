@@ -4503,19 +4503,54 @@
       "id": "ISS-419",
       "title": "[지시] 음성 스택 비교 — Hermes 음성 vs 오늘 만든 Edge-TTS",
       "type": "GENERATE_CODE",
-      "status": "READY",
+      "status": "COMPLETED",
       "priority": "P2",
       "assign_to": "agent-harness",
       "depth": 0,
       "created_at": "2026-08-09T11:28:48.574455",
-      "updated_at": "2026-08-09T11:28:48.574455",
+      "updated_at": "2026-08-09T11:45:56.232318",
       "payload": {
         "goal": "어느 쪽이 나은지 판정",
         "ours": "media-use edge.tts — 한국어 3종, 키 불필요, 실측 검증 완료",
         "theirs": "Hermes 통합 음성 — 스트리밍TTS·barge-in·온디바이스 웨이크워드·STT 통합",
-        "origin": "대표님 지시 2026-08-09 — 2·3번 승인"
+        "origin": "대표님 지시 2026-08-09 — 2·3번 승인",
+        "method": "B — v0.18.2 현 상태로 비교(업데이트 없음). 대표님 선택"
       },
-      "last_dispatched_at": "2026-08-09T11:30:15"
+      "last_dispatched_at": "2026-08-09T11:30:15",
+      "result": {
+        "finding": "Hermes에도 edge provider 존재 — 오늘 만든 것과 같은 edge-tts 엔진",
+        "hermes_providers": "10종 — edge(기본)/elevenlabs/gemini/minimax/openai/piper/xai/mistral/kittentts/neutts",
+        "korean": "Hermes 기본값 en-US-AriaNeural, 코드에 한국어 언급 없음. 우리는 ko-KR-SunHiNeural + 한글 자동분기",
+        "cloning": "Hermes는 MiniMax로 가능하나 유료키 필요. 우리는 VoiceBox(MIT·무료·설치완료)로 대체 가능",
+        "verdict": "한국어 나레이션 목적에는 우리 쪽 우위. 오늘 만든 것 유지 권고",
+        "takeaway": "Hermes의 tts.providers.<name>: type: command 방식 — 파이썬 코드 없이 외부 스크립트를 TTS provider로 등록. VoiceBox 연동 시 참고"
+      }
+    },
+    {
+      "id": "ISS-420",
+      "title": "[지시] TARS 그래프 UI 진단 → 0032_AgenticOS 이슈 이관",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T11:44:19.423832",
+      "updated_at": "2026-08-09T11:45:56.232318",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "../0032에 수정이슈 넘겨줘. 이동해서 할게."
+      },
+      "result": {
+        "diagnosed": "0032_AgenticOS/web/src/orgGraph.ts 소스 직접 분석",
+        "root_cause": "DEPARTMENT_COLORS 6색이 baseColor에만 저장되고 렌더링용 color에는 IDLE_COLOR(#475569) 대입. 278행 idle 분기가 평상시 항상 적용돼 부서색이 영원히 안 보임",
+        "why_prev_fix_failed": "ISS-116~119 UI재설계는 헤더/위험스트립/오브/styles.css 대상이었고 orgGraph.ts는 범위 밖. DONE인데 이 화면만 그대로였던 이유",
+        "transferred": [
+          "ISS-120 P0 색 복원",
+          "ISS-121 P1 등간격 배치",
+          "ISS-122 P2 크기 균일"
+        ],
+        "target": "0032_AgenticOS/.claude/issue-db/registry.json (130→133건)"
+      }
     }
   ],
   "hooks": {
@@ -14049,14 +14084,78 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 550,
+        "timestamp": "2026-08-09T11:30:57.262571",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 120,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 551,
+        "timestamp": "2026-08-09T11:34:13.527227",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 120,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 552,
+        "timestamp": "2026-08-09T11:37:54.235292",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 120,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 553,
+        "timestamp": "2026-08-09T11:41:00.437258",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 120,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 387,
+    "total_issues": 388,
     "completed": 41,
     "failed": 3,
-    "evolved": 549
+    "evolved": 553
   },
   "hermes_state": {
     "invocations_by_issue": {},
