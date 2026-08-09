@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-09T09:04:10"
+      "last_dispatched_at": "2026-08-09T09:41:43"
     },
     {
       "id": "ISS-399",
@@ -4238,6 +4238,58 @@
           "CamelCase 3회+ 반복어 신규제품 포착"
         ],
         "verified": "VibeVoice 3/3 포함 · valley 오탐 0 · 노이즈도메인 0 · MOC 10→12"
+      }
+    },
+    {
+      "id": "ISS-409",
+      "title": "[아이디어] Edge-TTS 표준으로 VibeVoice 구현하자.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T09:42:20.762508",
+      "updated_at": "2026-08-09T09:42:20.762508",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "Edge-TTS 표준으로 VibeVoice 구현하자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-410",
+      "title": "[지시] 공통 TTS 인터페이스 + Edge-TTS/VibeVoice 두 백엔드 구현",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T09:46:14.319419",
+      "updated_at": "2026-08-09T09:58:06.081542",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09 (AskUserQuestion으로 방향 확정)",
+        "design": "TTS 추상화 계층 1개 + 교체 가능한 백엔드 어댑터 2개",
+        "backends": {
+          "edge-tts": "기본. pip 한 줄, MS 공식, 무료, 클로닝 불가",
+          "vibevoice": "선택. 보이스클로닝·최대4화자. GPU+모델 필요, 커뮤니티 사본이라 라이선스 미검증"
+        },
+        "rationale": "Edge-TTS로 먼저 동작시키고 VibeVoice는 나중에 끼움. 라이선스 리스크 분리",
+        "constraint": "VibeVoice는 어댑터 골격만 — 실제 모델 다운로드/GPU 실행은 대표님 승인 후 별건",
+        "files_changed": []
+      },
+      "result": {
+        "approach": "기존 media-use provider 레지스트리에 어댑터 2개 추가 (신규 추상화 계층 만들지 않음 — 이미 존재)",
+        "files_new": [
+          "scripts/lib/tts-edge-provider.mjs",
+          "scripts/lib/tts-vibevoice-provider.mjs",
+          "+ 테스트 2개"
+        ],
+        "chain": "heygen.tts(P) → kokoro.local(A) → edge.tts(N) → vibevoice.local(A)",
+        "edge_tts": "완전 동작. pip install edge-tts, 키 불필요. 한글 ko-KR-SunHiNeural / 영문 en-US-AriaNeural 자동 분기",
+        "vibevoice": "골격만. VIBEVOICE_HOME 미설정 시 null 폴백. 실제 모델 실행은 라이선스 검증 후 별건",
+        "tests": "25/25 통과 (registry 15 + 신규 6 + kokoro 3 + heygen 1), 회귀 0",
+        "live_verification": "실제 합성 성공 — 한글 10.03초(무음20%, 규약30% 통과) / 어댑터 경유 duration 4.992 실측 / 영문 3.6초. mp3 24kHz 48kbps 정상",
+        "regression_caught": "1차 구현에서 voice 체인 순서를 무료·로컬 우선으로 임의 변경해 기존 테스트 'HeyGen TTS first' 파괴 → 범위 초과 판정하고 원복. 화이트리스트 등록은 정당한 절차로 판단해 별도 처리"
       }
     }
   ],
@@ -13372,14 +13424,46 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 525,
+        "timestamp": "2026-08-09T09:38:21.838470",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 109,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 526,
+        "timestamp": "2026-08-09T09:41:42.297777",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 109,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 383,
+    "total_issues": 384,
     "completed": 41,
     "failed": 3,
-    "evolved": 524
+    "evolved": 526
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -13749,6 +13833,6 @@
     }
   ],
   "rewake_state": {
-    "ISS-398:READY": 8
+    "ISS-398:READY": 9
   }
 }
