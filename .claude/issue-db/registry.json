@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-09T11:05:17"
+      "last_dispatched_at": "2026-08-09T11:27:38"
     },
     {
       "id": "ISS-399",
@@ -4473,6 +4473,49 @@
         "source": "Hermes v0.20.0 'Tools that fix themselves' 패턴 차용. Hermes 도입 아님",
         "evidence": "오늘 세션 실패 3건(edge-tts --rate 음수·$LIST 확장실패·source 함수미등록)이 설계 근거"
       }
+    },
+    {
+      "id": "ISS-418",
+      "title": "[지시] hermes import-agent 호환성 확인 — 우리 스킬이 어떻게 변환되나",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P2",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T11:28:48.574455",
+      "updated_at": "2026-08-09T11:30:41.339816",
+      "payload": {
+        "goal": "Hermes 도입이 아니라 호환성 탐색. 우리 스킬 38개가 어떻게 변환되는지 확인",
+        "reversible": "되돌리기 쉬움 — 읽기 위주",
+        "origin": "대표님 지시 2026-08-09 — 2·3번 승인"
+      },
+      "result": {
+        "finding_1": "Hermes가 이미 설치돼 있었음 — v0.18.2, 1.8GB, auth.json 인증완료, config.yaml 백업 2개(실사용 이력)",
+        "finding_2": "import-agent는 v0.20.0 신규라 v0.18.2에 없음. 그러나 불필요 — 스킬 형식이 100% 동일",
+        "format_check": "embedded-captions 양쪽 비교 — 디렉터리 구조·프론트매터 글자단위 동일. 변환 불요",
+        "recognition": "Hermes 인식 91개 중 우리 자체제작 스킬 0개",
+        "root_cause": "디렉터리 분리 — ~/.hermes/skills 36개 vs ~/.claude/skills 116개. 공통19/Hermes만17/Claude만97",
+        "verdict": "스킬 이전은 복사만으로 가능(비용 낮음). 그러나 규약(registry.json 파이프라인·3-Tier 컨펌·모델티어·예산Cap)은 대응물이 없어 이전 불가",
+        "implication": "ISS-417 4번(전면이전) 반대 근거를 뒷받침 — '스킬 이전은 쉽고 규약 이전은 불가능'"
+      }
+    },
+    {
+      "id": "ISS-419",
+      "title": "[지시] 음성 스택 비교 — Hermes 음성 vs 오늘 만든 Edge-TTS",
+      "type": "GENERATE_CODE",
+      "status": "READY",
+      "priority": "P2",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T11:28:48.574455",
+      "updated_at": "2026-08-09T11:28:48.574455",
+      "payload": {
+        "goal": "어느 쪽이 나은지 판정",
+        "ours": "media-use edge.tts — 한국어 3종, 키 불필요, 실측 검증 완료",
+        "theirs": "Hermes 통합 음성 — 스트리밍TTS·barge-in·온디바이스 웨이크워드·STT 통합",
+        "origin": "대표님 지시 2026-08-09 — 2·3번 승인"
+      },
+      "last_dispatched_at": "2026-08-09T11:30:15"
     }
   ],
   "hooks": {
@@ -13958,6 +14001,54 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 547,
+        "timestamp": "2026-08-09T11:27:37.950422",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 118,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 548,
+        "timestamp": "2026-08-09T11:27:42.313353",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 118,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 549,
+        "timestamp": "2026-08-09T11:30:15.174962",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 120,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -13965,7 +14056,7 @@
     "total_issues": 387,
     "completed": 41,
     "failed": 3,
-    "evolved": 546
+    "evolved": 549
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -14335,6 +14426,7 @@
     }
   ],
   "rewake_state": {
-    "ISS-398:READY": 13
+    "ISS-398:READY": 14,
+    "ISS-419:READY": 1
   }
 }
