@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-09T08:20:20"
+      "last_dispatched_at": "2026-08-09T09:04:10"
     },
     {
       "id": "ISS-399",
@@ -4175,6 +4175,69 @@
           "31bZOIk53_I Helena Liu 3일전 미구독",
           "X-_rG6OtgfU Bijan Bowen 11개월전"
         ]
+      }
+    },
+    {
+      "id": "ISS-408",
+      "title": "[지시] VibeVoice 관련 영상 3건 볼트 정리 + mentions 사전 결함 수정",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T09:19:55.140122",
+      "updated_at": "2026-08-09T09:37:25.454406",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09",
+        "targets": [
+          {
+            "id": "YXwhBTsN1EY",
+            "title": "마이크로소프트가 막은 역대급 AI 음성 모델, VibeVoice 사용법",
+            "ch": "잇테크",
+            "src": "LL(좋아요)"
+          },
+          {
+            "id": "F1AxsaCZqj4",
+            "title": "[바이브 뉴스] 앤스로픽 차세대 AI '미토스' 유출! 1장으로 얼굴 바꾸는 딥라이브캠까지",
+            "ch": "바이브랩스",
+            "src": "HISTORY(시청기록)"
+          }
+        ],
+        "note": "시청기록에서 발견 — 좋아요/WL 범위 밖이라 기존 지식화에서 누락됐던 건",
+        "files_changed": []
+      },
+      "result": {
+        "notes_created": 3,
+        "targets": [
+          {
+            "id": "YXwhBTsN1EY",
+            "t": "마이크로소프트가 막은 역대급 AI 음성 모델, VibeVoice 사용법",
+            "ch": "잇테크",
+            "src": "LL"
+          },
+          {
+            "id": "F1AxsaCZqj4",
+            "t": "[바이브 뉴스] 앤스로픽 미토스 유출 + VibeVoice + 딥라이브캠",
+            "ch": "바이브랩스",
+            "src": "HISTORY"
+          },
+          {
+            "id": "31bZOIk53_I",
+            "t": "FREE Unlimited AI Voices (Microsoft Banned It) — 대표님이 실제 보신 영상",
+            "ch": "Helena Liu",
+            "src": "HISTORY"
+          }
+        ],
+        "vault": "558→561",
+        "defect_found": "mentions가 핵심 제품 VibeVoice를 3건 모두 누락. 사전 미등록 신규제품 + 도메인 노이즈(blog.naver/yes24/productcamps)가 상한 잠식",
+        "fix": [
+          "KNOWN_PRODUCTS 음성·영상·모델·개발·에이전트 60여종 보강",
+          "한글별칭(바이브보이스/일레븐랩스/딥라이브캠) 정규화",
+          "VALL-E 등 짧은명 단어경계 적용(valley 오탐 방지)",
+          "도메인은 사전매칭 3개 미만일 때만 보조, 최대 2개",
+          "CamelCase 3회+ 반복어 신규제품 포착"
+        ],
+        "verified": "VibeVoice 3/3 포함 · valley 오탐 0 · 노이즈도메인 0 · MOC 10→12"
       }
     }
   ],
@@ -13229,6 +13292,86 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 520,
+        "timestamp": "2026-08-09T09:01:29.037041",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 521,
+        "timestamp": "2026-08-09T09:04:10.207051",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 522,
+        "timestamp": "2026-08-09T09:04:13.035996",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 523,
+        "timestamp": "2026-08-09T09:07:27.800192",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 524,
+        "timestamp": "2026-08-09T09:10:38.938839",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -13236,7 +13379,7 @@
     "total_issues": 383,
     "completed": 41,
     "failed": 3,
-    "evolved": 519
+    "evolved": 524
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -13606,7 +13749,6 @@
     }
   ],
   "rewake_state": {
-    "ISS-398:READY": 7,
-    "ISS-407:READY": 1
+    "ISS-398:READY": 8
   }
 }
