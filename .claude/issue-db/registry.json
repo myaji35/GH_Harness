@@ -4145,6 +4145,37 @@
         "ms_tts_search": "구독피드 104건 0건 / 유튜브 이번주 필터 4건 전부 미구독. 유력후보: 김에듀 AI강사 '마이크로소프트 클립챔프로 무료 AI 성우 만들기'(7일전, zLbG_ASwQ08)",
         "remaining_scope": "WL 2,285건 + 좋아요 4,780건 미처리 — 대상 영상이 이 범위에 있을 가능성"
       }
+    },
+    {
+      "id": "ISS-407",
+      "title": "[지시] MS VibeVoice(딥페이크 우려로 철회→커뮤니티 포크) 영상 찾기",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T08:57:20.994349",
+      "updated_at": "2026-08-09T09:01:08.785072",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "이거 아니야. 내용 기억은 ms가 TTS 기능을 과거에 오픈한적이 있고 딥페이크등을 우려해서 공개취수 했었는데 그당시 git정보를 수집해놨던 사용자들이 오픈소스로 공개해서 사용할수 있나는 내용이었어."
+      },
+      "last_dispatched_at": "2026-08-09T09:00:42",
+      "result": {
+        "found": "마이크로소프트가 막은 역대급 AI 음성 모델, VibeVoice 사용법",
+        "video_id": "YXwhBTsN1EY",
+        "channel": "잇테크 (@eduitech)",
+        "url": "https://www.youtube.com/watch?v=YXwhBTsN1EY",
+        "evidence": "aria-pressed=true — 대표님이 실제 좋아요 누른 영상으로 확인",
+        "published": "10개월 전 (조회 5천, 4분2초)",
+        "fact_check": "MS가 VibeVoice 공개 → 음성복제 악용 발견 후 GitHub 레포 삭제/HF 404 → 커뮤니티 포크(vibevoice-community) 보존 → MS가 AI고지+워터마크 넣어 재공개",
+        "why_not_in_vault": "10개월 전 영상. 처리 범위는 좋아요 최근 100건+WL 100건뿐이라 미포함. 좋아요 4,780건 미처리분에 있었음",
+        "false_positive_noted": "볼트 자막 검색에서 VALL-E 정규식이 'valley'를 오탐(미시령 계곡 영상 18회)",
+        "related": [
+          "31bZOIk53_I Helena Liu 3일전 미구독",
+          "X-_rG6OtgfU Bijan Bowen 11개월전"
+        ]
+      }
     }
   ],
   "hooks": {
@@ -13166,14 +13197,46 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 518,
+        "timestamp": "2026-08-09T08:53:10.944910",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 519,
+        "timestamp": "2026-08-09T09:00:41.941761",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 382,
+    "total_issues": 383,
     "completed": 41,
     "failed": 3,
-    "evolved": 517
+    "evolved": 519
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -13544,7 +13607,6 @@
   ],
   "rewake_state": {
     "ISS-398:READY": 7,
-    "ISS-406:READY": 2,
-    "ISS-405:READY": 2
+    "ISS-407:READY": 1
   }
 }
