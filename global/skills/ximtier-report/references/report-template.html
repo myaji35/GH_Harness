@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>[고객사] [산업] AX 진단 보고서</title>
+<style>
+/* ── 심티어[산업별]보고서 표준 스타일 ──────────────────────────
+   Chrome headless --print-to-pdf 전제 (한글 겹침 방지 1순위 도구).
+   마진 12mm×14mm (상하 최소화 룰), 표지 단색 #16325C.               */
+@page { size: A4; margin: 14mm 14mm 13mm 14mm; }
+*, *::before, *::after {
+  -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+  box-sizing: border-box;
+}
+body { margin:0; line-height:1.45; letter-spacing:.02em; word-spacing:.05em;
+  font-family:"Apple SD Gothic Neo", system-ui, sans-serif; color:#1a1a1a; }
+
+/* 페이지 단위 — 1페이지 = 1 .page */
+.page { page-break-after: always; position: relative; min-height: 262mm;
+        padding-bottom: 10mm; }
+.page:last-child { page-break-after: auto; }
+
+/* 머릿글 / 아랫글 */
+.hd { display:flex; justify-content:space-between; align-items:baseline;
+      border-bottom:1px solid #d5d8dd; padding-bottom:3px; margin-bottom:10px;
+      font-size:8.5px; color:#6b7280; }
+.hd .part { font-weight:700; color:#16325C; }
+.ft { position:absolute; bottom:0; left:0; right:0;
+      display:flex; justify-content:space-between;
+      border-top:1px solid #e5e7eb; padding-top:4px; font-size:8px; color:#8b91a0; }
+
+/* 제목 — 전부 메시지문(액션 타이틀) */
+h1 { font-size:19px; margin:0 0 8px; color:#16325C; line-height:1.3; }
+h2 { font-size:13px; margin:14px 0 6px; color:#16325C;
+     border-bottom:2px solid #00A1E0; padding-bottom:3px; }
+h3 { font-size:11.5px; margin:9px 0 4px; color:#16325C; }
+p, li { font-size:10.5px; margin:4px 0; }
+.lead { font-size:11.5px; color:#374151; margin:6px 0 10px; }
+
+/* 표 */
+table { width:100%; border-collapse:collapse; margin:6px 0; font-size:9.5px; }
+th { background:#F3F2F2; color:#16325C; text-align:left; font-weight:700; }
+th, td { padding:5px 7px; border:1px solid #dcdcdc; vertical-align:top; }
+td.num, th.num { text-align:right; }
+table.dense { font-size:8.8px; }
+table.dense th, table.dense td { padding:4px 5px; }
+
+/* KPI */
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin:10px 0; }
+.kpi-card { padding:9px; background:#F3F2F2; border-top:3px solid #00A1E0; }
+.kpi-label { font-size:8.5px; color:#555; }
+.kpi-value { font-size:19px; font-weight:700; color:#16325C; line-height:1.2; }
+.kpi-sub { font-size:8px; color:#666; }
+
+/* Callout */
+.callout { padding:8px 12px; margin:8px 0; font-size:10px; background:#F8F9FB; }
+.c-info { border-left:4px solid #00A1E0; }
+.c-ok { border-left:4px solid #10B981; }
+.c-warn { border-left:4px solid #F59E0B; background:#FFFBEB; }
+.c-risk { border-left:4px solid #EF4444; background:#FEF2F2; }
+
+/* 배지 */
+.b { display:inline-block; padding:1px 6px; border-radius:3px; font-size:8.5px; font-weight:700; }
+.b-blue{background:#DBEAFE;color:#1E40AF} .b-green{background:#D1FAE5;color:#065F46}
+.b-yellow{background:#FEF3C7;color:#92400E} .b-red{background:#FEE2E2;color:#991B1B}
+.b-gray{background:#E5E7EB;color:#374151}
+.assume { background:#FEF3C7; color:#92400E; padding:0 4px; font-size:8.5px; font-weight:700; }
+
+/* 2열 */
+.col2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.col3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+
+/* 그림 */
+figure { margin:8px 0; }
+figure img { width:100%; border:1px solid #ccc; }
+figcaption { font-size:9px; color:#374151; margin-top:4px; }
+figcaption strong { color:#16325C; }
+
+/* ── 판단 차트 (HTML/CSS 렌더 — 카드 숫자를 다시 그린다) ── */
+/* 토네이도 */
+.tornado-row { display:grid; grid-template-columns:120px 1fr 70px; gap:6px;
+               align-items:center; font-size:9px; margin:3px 0; }
+.tornado-bar { height:14px; background:#e5e7eb; position:relative; }
+.tornado-bar i { display:block; height:100%; background:#00A1E0; }
+.tornado-bar i.neg { background:#94a3b8; }
+
+/* 불릿(목표 대비) */
+.bullet { position:relative; height:26px; background:#eef0f3; margin:8px 0; }
+.bullet .range { position:absolute; top:0; bottom:0; background:#dfe3e8; }
+.bullet .actual { position:absolute; top:7px; height:12px; background:#16325C; }
+.bullet .target { position:absolute; top:1px; bottom:1px; width:3px; background:#EF4444; }
+.bullet-labels { display:flex; justify-content:space-between; font-size:8px; color:#6b7280; }
+
+/* 워터폴 */
+.waterfall { display:flex; align-items:flex-end; gap:6px; height:120px; margin:10px 0; }
+.wf-col { flex:1; display:flex; flex-direction:column; justify-content:flex-end;
+          align-items:center; font-size:8px; }
+.wf-bar { width:100%; background:#00A1E0; }
+.wf-bar.neg { background:#EF4444; }
+.wf-bar.base { background:#16325C; }
+
+/* 2×2 */
+.matrix { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
+          gap:4px; height:150px; margin:8px 0; }
+.matrix > div { padding:7px; font-size:9px; border:1px solid #dcdcdc; }
+.q1 { background:#D1FAE5; } .q2 { background:#FEF3C7; }
+.q3 { background:#F3F4F6; } .q4 { background:#FEE2E2; }
+
+/* 간트 */
+.gantt-row { display:grid; grid-template-columns:110px 1fr; gap:6px;
+             align-items:center; font-size:9px; margin:3px 0; }
+.gantt-track { height:15px; background:#eef0f3; position:relative; }
+.gantt-track i { position:absolute; top:0; bottom:0; background:#00A1E0; }
+
+/* 표지 — 흰 바탕에 심티어 로고를 크게 (대표님 확정 2026-07-29).
+   딥네이비는 로고·제목·라인에만. 배경을 채우지 않는다.                    */
+.cover { page-break-after:always; background:#fff;
+  margin:-14mm -14mm 0 -14mm; padding:46mm 46px 34mm 46px; min-height:262mm; text-align:center; }
+.cover .logo-mark { width:112px; height:112px; color:#16325C; display:block; margin:0 auto 14px; }
+.cover .wordmark { font-size:44px; font-weight:800; color:#16325C; letter-spacing:-.5px; line-height:1; }
+.cover .tagline { font-size:11px; color:#6b7280; margin-top:9px; letter-spacing:.06em; }
+.cover .rule { width:74px; height:4px; background:#00A1E0; margin:26mm auto 20px; }
+.cover h1 { font-size:31px; color:#16325C; margin:0 0 14px; line-height:1.32; }
+.cover .sub { font-size:14.5px; color:#374151; }
+.cover .sub2 { font-size:11.5px; color:#6b7280; margin-top:9px; }
+.cover .meta-wrap { margin-top:24mm; }
+.cover .meta { font-size:10.5px; color:#6b7280; padding-top:12px;
+  border-top:1px solid #e5e7eb; display:inline-block; }
+.cover .notice-wrap { margin-top:18px; }
+.cover .notice { font-size:9.5px; color:#4b5563; padding:13px 22px;
+  background:#F8F9FB; border-left:4px solid #00A1E0; display:inline-block;
+  text-align:left; line-height:1.6; }
+.cover .notice strong { color:#16325C; }
+/* ⚠️ meta·notice를 wrap 없이 나란히 두면 inline-block끼리 한 줄에 붙어 좌우로 갈린다.
+   각각 -wrap div로 감싸 한 줄씩 차지하게 한다(실측으로 확인). */
+</style>
+</head>
+<body>
+
+<!-- ══════ p1 표지 — 산업·고객사만 바꿔 쓴다 ══════ -->
+<div class="cover">
+  <!-- XimTier X 4-blade 심볼 (원본: ximtier_gateway/app/views/layouts/application.html.erb #x-mark) -->
+  <svg class="logo-mark" viewBox="0 0 64 64" aria-label="XimTier">
+    <path d="M6 6 L18 6 L34 30 L28 38 Z" fill="currentColor"/>
+    <path d="M46 6 L58 6 L36 38 L30 30 Z" fill="currentColor"/>
+    <path d="M6 58 L18 58 L34 34 L28 26 Z" fill="currentColor" opacity=".55"/>
+    <path d="M46 58 L58 58 L36 26 L30 34 Z" fill="currentColor" opacity=".55"/>
+  </svg>
+  <div class="wordmark">XimTier</div>
+  <div class="tagline">설명가능 AI 분석 · Gagahoho, Inc.</div>
+
+  <div class="rule"></div>
+
+  <h1>[산업] AX 진단 보고서</h1>
+  <div class="sub">[성과지표] [X]% 향상의 처방과 월차 검증</div>
+  <div class="sub2">데이터 진단 · 인과 분석 · 목표 역산 처방 · 1개월 성적표</div>
+
+  <div class="meta-wrap"><div class="meta">[작성일] · v1.0 · 대외비</div></div>
+  <div class="notice-wrap"><div class="notice">
+    <strong>데이터 출처와 검증 방법</strong><br>
+    [실데이터면 출처·기간 / 모의 데이터면 그 사실을 여기 명시한다 — 감추면 신뢰가 무너진다]
+  </div></div>
+</div>
+
+<!-- 각 페이지는 아래 골격:
+<section class="page">
+  <div class="hd"><span>심티어 [산업] 진단 보고서 — [고객사]</span><span class="part">C 데이터 진단</span></div>
+  <h1>메시지문 제목 — 명사구 금지</h1>
+  ...본문...
+  <div class="ft"><span>대외비 — [고객사] 배포 한정</span><span>ⓒ 2026 Gagahoho, Inc. · XimTier</span><span>13 / 50</span></div>
+</section>
+-->
+</body>
+</html>

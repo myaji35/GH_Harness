@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-09T09:41:43"
+      "last_dispatched_at": "2026-08-09T10:34:36"
     },
     {
       "id": "ISS-399",
@@ -4290,6 +4290,144 @@
         "tests": "25/25 통과 (registry 15 + 신규 6 + kokoro 3 + heygen 1), 회귀 0",
         "live_verification": "실제 합성 성공 — 한글 10.03초(무음20%, 규약30% 통과) / 어댑터 경유 duration 4.992 실측 / 영문 3.6초. mp3 24kHz 48kbps 정상",
         "regression_caught": "1차 구현에서 voice 체인 순서를 무료·로컬 우선으로 임의 변경해 기존 테스트 'HeyGen TTS first' 파괴 → 범위 초과 판정하고 원복. 화이트리스트 등록은 정당한 절차로 판단해 별도 처리"
+      }
+    },
+    {
+      "id": "ISS-411",
+      "title": "[아이디어] 좋군 사용하자. 전역 환경에 기존 Qwen tts와 더불어 MS TTS라고 이름지어 저장해줘,",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T10:16:44.440575",
+      "updated_at": "2026-08-09T10:16:44.440575",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "좋군 사용하자. 전역 환경에 기존 Qwen tts와 더불어 MS TTS라고 이름지어 저장해줘,",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-412",
+      "title": "[지시] Edge-TTS를 'MS TTS' 명칭으로 전역 환경 등록",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T10:31:45.323656",
+      "updated_at": "2026-08-09T10:35:33.520689",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09 — 샘플 청취 후 채택 결정",
+        "scope": "edge.tts를 사람이 읽는 명칭 'MS TTS'로 등록. 기존 kokoro.local 유지",
+        "note": "대표님이 '기존 Qwen TTS'라 하셨으나 실제 로컬 TTS는 Kokoro-82M. Qwen은 미설치 — AskUserQuestion으로 확인 후 'MS TTS만 등록'으로 확정",
+        "targets": [
+          "media-use displayName",
+          "전역 CLAUDE.md TTS 정책",
+          "brand-dna tts_voice_id 기본값"
+        ],
+        "files_changed": []
+      },
+      "result": {
+        "registered": "MS TTS (Edge)",
+        "docs": [
+          "audio/references/tts.md 라우트 표 4행 추가 + 전용 설명 블록",
+          "SKILL.md voice 행 갱신"
+        ],
+        "content": "pip install edge-tts, 키 불필요, 한국어 3종, 한글/라틴 자동분기, rate/pitch/volume, --rate=\"-10%\" 등호 함정 명시",
+        "vibevoice_note": "골격만 + 라이선스 경고 문단 병기",
+        "verified": "문서 실물 직접 확인"
+      }
+    },
+    {
+      "id": "ISS-413",
+      "title": "[아이디어] 설치하고 테스트 해보자.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T10:35:15.302842",
+      "updated_at": "2026-08-09T10:35:15.302842",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "설치하고 테스트 해보자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-414",
+      "title": "[지시] VoiceBox 설치 + 한국어 보이스클로닝 품질 테스트",
+      "type": "GENERATE_CODE",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T10:35:33.520689",
+      "updated_at": "2026-08-09T10:42:14.423029",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09",
+        "goal": "자기 목소리 TTS — 대표님 음성 복제",
+        "why_voicebox": "MIT 라이선스(VibeVoice 커뮤니티사본 리스크 없음) + 데스크톱 앱(설치 간편) + 43k stars",
+        "verify": "한국어 클로닝 품질 실측 — 공개 후기 미발견이라 직접 확인 필요",
+        "caution": "동의 잠금 없음(No Consent Lock) — 대표님 본인 목소리만 사용, 타인 음성 금지"
+      },
+      "result": {
+        "installed": "/Applications/Voicebox.app (528MB) — Apple 공증 통과, 서버 포트 17493 기동 확인",
+        "repo_correction": "aurodev/VoiceBox는 포크(0★). 원본은 jamiepine/voicebox (49,818★, MIT)",
+        "engines": "7종 — Qwen3-TTS(대표님이 말한 Qwen이 이것), Chatterbox Multilingual(23개국어·한국어), Chatterbox Turbo, Kokoro, LuxTTS, TADA, Qwen CustomVoice",
+        "pending": "대표님 목소리 녹음 → 한국어 클로닝 품질 실측. 대표님 지시로 보류",
+        "next_trigger": "대표님이 녹음 후 재개 지시"
+      }
+    },
+    {
+      "id": "ISS-415",
+      "title": "[아이디어] 내 목소리 녹음은나중에.. buzz에 집중하자.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T10:41:58.234863",
+      "updated_at": "2026-08-09T10:41:58.234863",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "내 목소리 녹음은나중에.. buzz에 집중하자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-416",
+      "title": "[지시] ~/.claude/skills 자체제작 스킬 GH_Harness 편입 — 버전관리 밖 코드 정리",
+      "type": "REFACTOR",
+      "status": "COMPLETED",
+      "priority": "P0",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T10:49:56.511890",
+      "updated_at": "2026-08-09T11:04:51.861294",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09",
+        "problem": "오늘 만든 build_moc.py(26KB)·TTS어댑터 4개가 git 밖. 다른 세션 충돌 감지 불가, 이력 소실",
+        "scale": "skills 116개 1.1GB 중 자체제작 38개 식별. gstack(1.1GB·자체git)·hyperframes 등 외부 78개 제외",
+        "found_issue": "기존 편입 10개 중 5개가 이미 원본과 불일치. SKILL.md vs skill.md 대소문자 차이 포함",
+        "special": "media-use는 외부 스킬인데 우리가 TTS 어댑터 추가 — 전체복사 아닌 변경분만 관리 필요",
+        "files_changed": []
+      },
+      "result": {
+        "skills_committed": 38,
+        "files": 68,
+        "actual_size": "0.5MB",
+        "newly_added": 27,
+        "resynced": 5,
+        "excluded": "gstack(1.1GB·자체git)·hyperframes·superpowers 등 외부 78개",
+        "skill_patches": "media-use TTS 어댑터 7파일 별도 보관 + 복원절차 README",
+        "found_issues": [
+          "기존 편입 10개 중 5개 원본과 불일치(SKILL.md vs skill.md 대소문자)",
+          "cpo·saas-member-standard는 untracked 상태였음"
+        ],
+        "secret_guard_fix": "편입 중 secret-guard가 os.environ 참조를 오탐해 커밋 차단 → 제외규칙에 Python/JS/Go/Java/PHP 환경변수 패턴 추가(v4). 6케이스 직접검증 통과(환경변수 3 PASS / 실제키 3 BLOCK)"
       }
     }
   ],
@@ -13456,14 +13594,270 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 527,
+        "timestamp": "2026-08-09T09:58:28.589386",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 528,
+        "timestamp": "2026-08-09T10:01:39.566251",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 529,
+        "timestamp": "2026-08-09T10:03:37.796006",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 530,
+        "timestamp": "2026-08-09T10:10:40.027884",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 531,
+        "timestamp": "2026-08-09T10:10:43.393753",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 532,
+        "timestamp": "2026-08-09T10:12:27.903011",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 533,
+        "timestamp": "2026-08-09T10:13:39.660497",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 534,
+        "timestamp": "2026-08-09T10:34:36.682308",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 113,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 535,
+        "timestamp": "2026-08-09T10:41:57.623258",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 115,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 536,
+        "timestamp": "2026-08-09T10:42:02.256928",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 537,
+        "timestamp": "2026-08-09T10:43:52.145759",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 538,
+        "timestamp": "2026-08-09T10:43:57.077871",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 539,
+        "timestamp": "2026-08-09T10:45:03.576271",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 540,
+        "timestamp": "2026-08-09T10:45:07.161278",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 541,
+        "timestamp": "2026-08-09T10:46:12.400015",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 542,
+        "timestamp": "2026-08-09T10:47:06.975836",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 384,
+    "total_issues": 387,
     "completed": 41,
     "failed": 3,
-    "evolved": 526
+    "evolved": 542
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -13833,6 +14227,6 @@
     }
   ],
   "rewake_state": {
-    "ISS-398:READY": 9
+    "ISS-398:READY": 12
   }
 }

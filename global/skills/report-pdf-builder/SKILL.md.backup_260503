@@ -1,0 +1,63 @@
+---
+name: report-pdf-builder
+description: Use when the user asks for a report ("보고서 만들어줘", "보고서로 만들어줘", "보고서 작성해줘", "리포트로", "PDF 보고서") — always produces a PDF as the final deliverable, not just markdown/HTML
+trigger: report-pdf
+---
+
+# 보고서 생성 규칙 (PDF 최종 산출물 필수) ⭐
+
+대표님이 "보고서 만들어줘 / 보고서로 만들어줘 / 보고서 작성해줘" 등 보고서를 요청하면 **반드시 PDF 파일까지 생성**한다. 마크다운/HTML만 만들고 끝내면 규칙 위반.
+
+## 핵심 룰
+
+- **최종 산출물은 PDF**. 중간 HTML/MD는 보조 산출물.
+- **저장 위치**: `~/Downloads/{주제}_{YYMMDD}.pdf` (별도 지정 없으면 기본값)
+- **생성 완료 후**: `open {경로}` 로 자동 미리보기 열어 대표님께 보여드림
+- **중간 산출물(HTML, 마크다운)**: `/tmp/` 또는 프로젝트 `docs/` 에 저장 (영구 위치 X)
+- 대표님이 명시적으로 "PDF는 빼" 라고 할 때까지 이 규칙 유지
+
+## PDF 변환 도구 우선순위 (한글 렌더링 보장)
+
+1. **`wkhtmltopdf`** — 우선 사용 (시스템 설치됨, Apple SD Gothic Neo 폰트 사용)
+2. fallback 1: `pandoc + xelatex`
+3. fallback 2: `weasyprint`
+4. fallback 3: `reportlab`
+
+## 디자인 (SLDS 스타일)
+
+- **메인 컬러**: Salesforce Blue `#00A1E0`
+- **중립 배경**: `#F3F2F2`
+- **강조 텍스트**: `#16325C`
+- **폰트**: 한글 — Apple SD Gothic Neo / 영문 — system-ui
+
+## 필수 페이지 구성
+
+```
+1. 표지 페이지 (제목 + 부제 + 작성일 + 작성자)
+2. 목차 (TOC)
+3. 본문 (섹션별)
+4. 푸터: 페이지 번호 (모든 페이지)
+```
+
+## 실행 순서
+
+1. 사용자 요청에서 주제 추출 → 파일명 결정
+2. HTML 또는 MD로 본문 초안 작성 (SLDS 톤 + 한글 가독성)
+3. wkhtmltopdf로 PDF 변환:
+   ```bash
+   wkhtmltopdf --encoding UTF-8 \
+     --margin-top 20mm --margin-bottom 20mm \
+     --footer-center "[page]/[topage]" --footer-font-size 9 \
+     /tmp/report.html ~/Downloads/{주제}_{YYMMDD}.pdf
+   ```
+4. 변환 실패 시 → fallback 순서대로 자동 시도
+5. 성공 시 → `open ~/Downloads/{주제}_{YYMMDD}.pdf`
+6. 대표님께 경로 + 페이지 수 + 미리보기 자동 오픈 보고
+
+## 자가 점검 체크리스트
+
+- [ ] PDF 파일이 실제로 `~/Downloads/`에 생성됐는가?
+- [ ] 한글이 깨지지 않는가? (wkhtmltopdf로 변환 후 시각 확인)
+- [ ] 표지/목차/본문/푸터 4요소 갖춰졌는가?
+- [ ] `open` 명령으로 미리보기 자동 노출했는가?
+- [ ] 중간 HTML/MD가 사용자 작업 디렉터리를 더럽히지 않는가? (/tmp 또는 docs/)
