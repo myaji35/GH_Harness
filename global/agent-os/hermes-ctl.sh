@@ -37,7 +37,8 @@ json.dump(d,os.fdopen(fd,'w',encoding='utf-8'),ensure_ascii=False,indent=2); shu
 " 2>/dev/null || true
     echo "🤖 Hermes 무인 운영 시작 — ${INTERVAL}분 간격 cron 등록."
     echo "   구독 토큰(claude -p) 사용 · API 비용 없음 · 정지: agent-os hermes stop"
-    bash "$RUN" >/dev/null 2>&1 || true
+    # 즉시 첫 순회는 백그라운드로 분리 — claude -p(최대 150s)가 호출자(API 등)를 블로킹하지 않도록
+    nohup bash "$RUN" >/dev/null 2>&1 &
     ;;
   stop)
     touch "$KILL"

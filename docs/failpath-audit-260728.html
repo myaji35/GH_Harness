@@ -1,0 +1,220 @@
+<meta charset="utf-8">
+<title>실패경로 4문항 전수 점검 보고서</title>
+<style>
+@page { size: A4; margin: 12mm 14mm; }
+*, *::before, *::after { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing: border-box; }
+body { margin: 0; font-family: "Apple SD Gothic Neo", system-ui, sans-serif; line-height: 1.45;
+       letter-spacing: 0.02em; word-spacing: 0.05em; color: #2b2b2b; }
+
+.cover { page-break-after: always; page-break-inside: avoid; background-color: #16325C !important;
+         color: #fff !important; text-align: center; margin: -12mm -14mm 0 -14mm;
+         padding: 88mm 40px 88mm 40px; min-height: 250mm; }
+.cover * { color: #fff !important; }
+.cover h1 { font-size: 30px; margin: 0 0 10px; letter-spacing: -0.01em; }
+.cover .sub { font-size: 14px; opacity: .9; margin-bottom: 30px; }
+.cover .meta { font-size: 11px; opacity: .75; line-height: 1.9; }
+.cover .rule { width: 60px; height: 3px; background: #00A1E0 !important; margin: 22px auto; }
+
+h1 { font-size: 22px; margin: 0 0 6px; color: #16325C; }
+h2 { font-size: 16px; margin: 18px 0 8px; color: #16325C; border-bottom: 2px solid #00A1E0; padding-bottom: 4px; }
+h3 { font-size: 13px; margin: 10px 0 5px; color: #16325C; }
+p, li { font-size: 11px; margin: 4px 0; }
+ul { padding-left: 16px; margin: 4px 0; }
+ul.tight li { margin-bottom: 2px; }
+strong { color: #16325C; }
+code { background:#F3F2F2; padding:1px 4px; border-radius:3px; font-size:10px; font-family:ui-monospace,monospace; }
+
+table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 10px; }
+th { background: #16325C !important; color: #fff !important; padding: 5px 7px; text-align: left; font-weight: 600; }
+td { padding: 5px 7px; border-bottom: 1px solid #E5E5E5; vertical-align: top; }
+tr:nth-child(even) td { background: #FAFAF9 !important; }
+
+.kpi-grid { display: flex; gap: 6px; margin: 8px 0; }
+.kpi-card { flex: 1; background: #F3F2F2 !important; padding: 8px; border-radius: 5px; border-left: 3px solid #00A1E0; }
+.kpi-label { font-size: 9px; color: #666; }
+.kpi-value { font-size: 19px; font-weight: 700; color: #16325C; line-height: 1.2; }
+.kpi-sub { font-size: 8.5px; color: #888; }
+
+.callout { padding: 7px 12px; margin: 8px 0; border-radius: 4px; font-size: 10.5px; }
+.callout-info { background:#EAF5FE !important; border-left: 4px solid #00A1E0; }
+.callout-success { background:#E9F8F1 !important; border-left: 4px solid #10B981; }
+.callout-warn { background:#FEF6E7 !important; border-left: 4px solid #F59E0B; }
+.callout-danger { background:#FDECEC !important; border-left: 4px solid #EF4444; }
+
+.b { display:inline-block; padding:1px 6px; border-radius:9px; font-size:8.5px; font-weight:700; }
+.b-red { background:#FDECEC !important; color:#B91C1C !important; }
+.b-yellow { background:#FEF6E7 !important; color:#92400E !important; }
+.b-green { background:#E9F8F1 !important; color:#047857 !important; }
+.b-gray { background:#F3F2F2 !important; color:#555 !important; }
+.pagebreak { page-break-before: always; }
+.foot { margin-top:14px; padding-top:6px; border-top:1px solid #E5E5E5; font-size:9px; color:#999; text-align:center; }
+</style>
+
+<div class="cover">
+  <h1>실패경로 4문항<br>전수 점검 보고서</h1>
+  <div class="rule"></div>
+  <div class="sub">30개 프로젝트 외부 의존 실패 처리 감사</div>
+  <div class="meta">
+    점검일 2026년 7월 28일<br>
+    Opus 5 오케스트레이션 · Explore 서브에이전트 8기 병렬<br>
+    Gagahoho, Inc.
+  </div>
+</div>
+<div style="page-break-before: always;"></div>
+
+<h1>실패경로 4문항 전수 점검</h1>
+<p style="color:#666;font-size:10px;margin-bottom:10px;">외부 의존이 실패할 때 시스템이 사용자에게 무엇을 보여주는가 — 30개 프로젝트 감사</p>
+
+<h2>1. 한 장 요약</h2>
+<p>30개 프로젝트를 외부 호출 보유 여부로 필터링해 <strong>32개가 해당</strong>, 이 중 금전 흐름·호출량 기준 상위 <strong>9개를 정밀 점검</strong>했다.</p>
+
+<div class="kpi-grid">
+  <div class="kpi-card"><div class="kpi-label">정밀 점검</div><div class="kpi-value">9</div><div class="kpi-sub">개 프로젝트</div></div>
+  <div class="kpi-card" style="border-left-color:#EF4444"><div class="kpi-label">P0 결함</div><div class="kpi-value">7</div><div class="kpi-sub">건</div></div>
+  <div class="kpi-card" style="border-left-color:#F59E0B"><div class="kpi-label">P1 결함</div><div class="kpi-value">9</div><div class="kpi-sub">건</div></div>
+  <div class="kpi-card" style="border-left-color:#10B981"><div class="kpi-label">즉시 수정</div><div class="kpi-value">4</div><div class="kpi-sub">건 완료·검증</div></div>
+</div>
+
+<div class="callout callout-danger">
+  <strong>핵심 발견</strong> — 결함이 특정 프로젝트에 몰려 있지 않고 <strong>9개 중 8개에서 같은 유형이 반복</strong>됐다.
+  개별 실수가 아니라 <strong>공통 코딩 습관</strong>의 문제다.
+</div>
+
+<h2>2. 반복된 결함 패턴 3가지</h2>
+
+<h3>패턴 A — "실패를 성공으로 위장하는 mock" (7개 프로젝트)</h3>
+<p>외부 호출이 실패하면 하드코딩된 값을 반환하고, 호출자는 그것이 실패인지 알 수 없다.</p>
+<table>
+<tr><th style="width:19%">프로젝트</th><th style="width:33%">위장된 값</th><th>결과</th></tr>
+<tr><td><strong>LandCheck</strong></td><td><code>mock_land</code> 500㎡ × 350,000원</td><td>모든 필지가 동일한 <strong>1억 7,500만원 참고가액</strong></td></tr>
+<tr><td><strong>CEO</strong></td><td><code>mock_result</code> level:4</td><td>허구의 "CEO 네트워킹 식대 50만원" <strong>긴급 알림 발송</strong></td></tr>
+<tr><td><strong>SocialDoctors</strong></td><td><code>Math.random()</code> 도달 500~5,500</td><td>조작 수치가 <strong>성과 데이터로 표시</strong></td></tr>
+<tr><td><strong>OmniVibePro</strong></td><td><code>_generate_fallback</code> 템플릿</td><td>"기본 전략/일반/Brand" 더미를 <strong>200 OK로 반환</strong></td></tr>
+<tr><td><strong>InsureGraph</strong></td><td><code>rand(-1.0..1.0)</code> 1536차원</td><td><strong>랜덤 벡터</strong>를 임베딩으로 저장 (죽은 코드)</td></tr>
+<tr><td><strong>ExamsGraph</strong></td><td><code>concept_gap_prob = 0.5</code></td><td>하드코딩 0.5가 <strong>가중치 80%</strong>로 학습 진단 반영</td></tr>
+<tr><td><strong>CPOFlow2</strong></td><td><code>IN_PRICE.to_f</code> → 0.0</td><td>단가 결측이 <strong>AED 0.00</strong>으로 카탈로그 표시</td></tr>
+</table>
+<div class="callout callout-warn">
+  <strong>공통점</strong> — mock 값이 <em>구체적</em>이다. <code>nil</code>이나 빈 값이 아니라 그럴듯한 숫자·문장이어서 진짜와 구별되지 않는다.
+</div>
+
+<h3>패턴 B — "출처를 알려주고도 버리는 UI" (3개 프로젝트)</h3>
+<p>API는 <code>source: 'mock'</code> 같은 마커를 보내는데 <strong>화면이 그 필드를 참조하지 않는다.</strong></p>
+<ul class="tight">
+  <li><strong>SocialDoctors</strong> — <code>InsightsResponse</code>에 <code>source</code>가 있으나 프론트 <code>InsightsData</code> 타입에 <strong>애초에 선언조차 없어</strong> 값이 버려짐</li>
+  <li><strong>CEO</strong> — <code>Disclaimer</code> 모듈이 존재하나 <code>attach</code>/<code>wrap</code> 호출부가 <strong>grep 0건</strong> (죽은 코드)</li>
+  <li><strong>Townin</strong> — <code>forecast</code>는 <code>fallback: true</code>를 잘 표기하는데, AEO 리라이트는 <code>source</code> 필드 자체가 없음</li>
+</ul>
+<p style="color:#B91C1C;"><strong>시사점</strong> — 백엔드가 정직해도 프론트가 버리면 사용자에겐 거짓말이다. 양쪽을 함께 봐야 한다.</p>
+
+<h3>패턴 C — "실패해도 돈은 빠진다" (3개 프로젝트)</h3>
+<table>
+<tr><th style="width:19%">프로젝트</th><th style="width:55%">결함</th><th>상태</th></tr>
+<tr><td>LandCheck</td><td>차감 → 분석 순서, 트랜잭션 없음</td><td><span class="b b-green">수정 완료</span></td></tr>
+<tr><td>Townin</td><td>AEO 유료 리라이트 실패해도 크레딧 영구 차감 (<code>status</code> 미필터)</td><td><span class="b b-red">미처리 P0</span></td></tr>
+<tr><td>Townin</td><td><code>TOSS_SECRET_KEY</code> 미설정 시 <strong>결제 검증 없이 자동 승인</strong></td><td><span class="b b-red">미처리 P0</span></td></tr>
+</table>
+<p>Townin의 두 번째 건은 방향이 반대다 — 돈을 안 받고 크레딧을 주는 구조로, <strong>운영에서 환경변수가 비면 즉시 손실</strong>이 발생한다.</p>
+
+<h2>3. 프로젝트별 결과</h2>
+<table>
+<tr><th style="width:5%">#</th><th style="width:18%">프로젝트</th><th>1. 가짜채우기</th><th>2. 무음실패</th><th>3. 사용자인지</th><th>4. 금전정합</th><th style="width:13%">최고 심각도</th></tr>
+<tr><td>1</td><td><strong>LandCheck</strong></td><td>위반→수정</td><td>위반→수정</td><td>위반→수정</td><td>위반→수정</td><td><span class="b b-green">해소</span></td></tr>
+<tr><td>2</td><td><strong>CEO</strong></td><td>위반 (9개 서비스)</td><td>부분위반</td><td>위반</td><td>해당없음</td><td><span class="b b-red">P0</span></td></tr>
+<tr><td>3</td><td><strong>Townin Graph</strong></td><td>위반</td><td>P2</td><td>부분위반</td><td><strong>위반</strong></td><td><span class="b b-red">P0</span></td></tr>
+<tr><td>4</td><td><strong>OmniVibePro</strong></td><td>위반</td><td>없음</td><td>위반</td><td>해당없음</td><td><span class="b b-red">P0</span></td></tr>
+<tr><td>5</td><td><strong>ExamsGraph</strong></td><td>위반</td><td>부분위반</td><td>위반</td><td>없음</td><td><span class="b b-red">P0</span></td></tr>
+<tr><td>6</td><td><strong>infraGrid</strong></td><td>위반</td><td>없음</td><td>부분위반</td><td>해당없음</td><td><span class="b b-red">P0</span></td></tr>
+<tr><td>7</td><td><strong>SocialDoctors</strong></td><td>위반</td><td>P2</td><td>위반→수정</td><td><strong>없음</strong></td><td><span class="b b-green">해소</span></td></tr>
+<tr><td>8</td><td><strong>CPOFlow2</strong></td><td>위반</td><td>없음</td><td>부분위반</td><td>해당없음</td><td><span class="b b-yellow">P1</span></td></tr>
+<tr><td>9</td><td><strong>InsureGraph</strong></td><td>위반(죽은코드)</td><td><strong>없음</strong></td><td><strong>없음</strong></td><td>해당없음</td><td><span class="b b-yellow">P1</span></td></tr>
+</table>
+
+<div class="callout callout-success">
+  <strong>금전 정합은 대체로 견고했다.</strong> SocialDoctors의 Toss 결제·커미션은 트랜잭션 원자성과 검증 순서(외부 승인 → DB 반영)가 지켜져 있었고,
+  ExamsGraph의 환불도 즉시 완료가 아닌 <code>refund_requested</code> 상태 전이로 올바르게 설계돼 있었다.
+  OmniVibePro의 quota는 <strong>응답 성공 시에만 차감</strong>한다. 결제는 신경 써서 만들었다는 뜻이다.
+</div>
+
+<p><strong>InsureGraph는 로깅·사용자 인지 2문항 모두 "위반 없음"</strong> — 유일한 결함이 호출되지 않는 죽은 코드였다. OCR 실패를 <code>ocr_status: failed</code> + 에러 메시지로 화면에 그대로 노출하는 구조가 모범적이다.</p>
+<p><strong>infraGrid의 결함은 성격이 다르다.</strong> 결측 텔레메트리를 <code>to_f</code>로 0 변환해 그래프에 그리면, 센서 미보고 구간이 <strong>"온도 급락"처럼 보인다.</strong> 인프라 모니터링에서 이건 장애 오판으로 직결된다.</p>
+
+<h2>4. 즉시 수정 완료 (4건)</h2>
+<table>
+<tr><th style="width:11%">이슈</th><th style="width:15%">프로젝트</th><th>수정 내용</th><th style="width:27%">검증 방법</th></tr>
+<tr><td><strong>ISS-028</strong></td><td>LandCheck</td><td>mock 3종 제거, 참고가액 미산출 시 nil, credits 동적 생성, HTTP 실패 로깅(키 마스킹)</td><td>Rails runner 렌더 3케이스 <strong>전부 PASS</strong></td></tr>
+<tr><td><strong>ISS-029</strong></td><td>LandCheck</td><td>분석 선행 → 트랜잭션 결합, 전체 실패 시 무과금 중단</td><td>실 Wallet 롤백 실측 <strong>PASS</strong> (2,900원 복구)</td></tr>
+<tr><td><strong>ISS-158</strong></td><td>SocialDoctors</td><td><code>InsightsData</code>에 <code>source</code> 필드 추가, mock이면 수치 미표시 + "미연동" 안내</td><td><code>tsc --noEmit</code> 에러 0</td></tr>
+<tr><td><strong>ISS-333</strong></td><td>CEO</td><td><code>mock_result</code> 제거 → <code>ClientUnavailable</code> 예외 → <code>default_result</code>(level 3)</td><td>Rails runner 실행, <strong>level=3 알림 미발송</strong> 확인</td></tr>
+</table>
+<div class="callout callout-info">
+  <strong>검증은 전부 직접 실행했다.</strong> 문법 검사만으로 완료 처리한 건은 없으며,
+  LandCheck 검증 과정에서 실제로 결함 2건(총액 "0원" 표시, 테스트 판정 기준 오류)을 <strong>추가 발견해 수정</strong>했다.
+</div>
+
+<h2>5. 미처리 P0 (6건) — 우선순위 순</h2>
+<table>
+<tr><th style="width:6%">순위</th><th style="width:15%">프로젝트</th><th>결함</th><th style="width:26%">왜 P0인가</th></tr>
+<tr><td><strong>1</strong></td><td>Townin</td><td>AEO 유료 리라이트 실패해도 크레딧 차감 (<code>aeo.service.ts:371</code>)</td><td>사용자 <strong>실제 금전 손실</strong></td></tr>
+<tr><td><strong>2</strong></td><td>Townin</td><td><code>TOSS_SECRET_KEY</code> 미설정 시 결제 무검증 승인</td><td>환경변수 누락 시 <strong>회사 손실</strong></td></tr>
+<tr><td>3</td><td>ExamsGraph</td><td>자동제출 채점 실패해도 "완료" + stale/nil 점수 표시</td><td>시험 결과 오인, <code>nil &gt;= threshold</code> <strong>크래시 가능</strong></td></tr>
+<tr><td>4</td><td>OmniVibePro</td><td>전략 생성 LLM 이중 실패 시 더미 템플릿을 200 OK로 반환</td><td>생성물이 <strong>곧 상품</strong></td></tr>
+<tr><td>5</td><td>CEO</td><td>9개 AI 서비스 전반의 mock 판정값 (절세액·등급·"pass")</td><td>세무 판단 근거 오염</td></tr>
+<tr><td>6</td><td>infraGrid</td><td>텔레메트리 결측 → 0 → 그래프 급락</td><td><strong>장애 오판</strong></td></tr>
+</table>
+<p><strong>Townin 2건이 최우선</strong>인 이유는 유일하게 <strong>실제 금전이 오가는 미처리 결함</strong>이기 때문이다. 나머지는 거짓 정보 문제지만, 이 둘은 돈이 잘못 움직인다.</p>
+
+<div class="pagebreak"></div>
+
+<h2>6. 규칙 등록 — 재발 방지</h2>
+<p>전역 <code>~/.claude/CLAUDE.md</code>에 <strong>"실패경로 4문항"</strong> 45줄 섹션을 등록했다 (2026-07-28).</p>
+<table>
+<tr><th style="width:6%">#</th><th style="width:30%">질문</th><th>위반 신호</th></tr>
+<tr><td>1</td><td><strong>가짜 채우기</strong> — 실패 시 하드코딩·mock으로 채우는가?</td><td><code>foo_api || mock_foo</code> / 기본값 상수 / 평균치 대입</td></tr>
+<tr><td>2</td><td><strong>무음 실패</strong> — 실패가 로그에 남는가?</td><td><code>rescue =&gt; nil</code> / <code>catch {}</code> / <code>except: pass</code> 후 로깅 없음</td></tr>
+<tr><td>3</td><td><strong>사용자 인지</strong> — 실패를 사용자가 아는가?</td><td>출처·근거 표기가 실패 여부와 무관하게 고정</td></tr>
+<tr><td>4</td><td><strong>금전 정합</strong> — 실패해도 돈·크레딧이 빠지는가?</td><td>차감이 작업보다 선행 / 차감·산출이 같은 트랜잭션 아님</td></tr>
+</table>
+
+<div class="callout callout-info">
+  <strong>판정 기준</strong> — <em>"모르는 것을 아는 척하는 값을 내보내면 안 된다."</em><br>
+  <code>nil</code>·"조회 불가"는 정직한 출력이고, 평균값·기본값·mock은 거짓 정보다.
+  특히 그 값이 <strong>금액·점수·판정</strong>으로 이어지면 결함이 아니라 <strong>책임 문제</strong>가 된다.
+</div>
+
+<div class="callout callout-warn">
+  <strong>순서 고정</strong> — ① 폴백 정책 확정 → ② 워터폴·캐시로 실패 확률 축소.<br>
+  폴백을 정하지 않고 공급사를 늘리면 전부 실패했을 때 여전히 가짜 값이 나온다. <strong>비용만 늘고 문제는 그대로</strong>다.
+</div>
+
+<p>이제 어느 프로젝트에서든 외부 API 코드를 건드리면 이 4문항이 컨텍스트에 자동 로드된다.</p>
+
+<h2>7. 이 점검이 시작된 경위</h2>
+<p>대표님이 요청한 것은 <strong>"LandCheck 워터폴 적용 시나리오"</strong>였다. 워터폴 설계에는 반드시 정해야 할 항목이 하나 있다 — <strong>"전부 실패하면 어떻게 되는가"</strong>, 즉 폭포의 마지막 칸이다.</p>
+<p>그 자리를 확인하러 코드를 열었더니 이미 채워져 있었다. <code>mock_land</code>로.</p>
+<div class="callout callout-info">
+  워터폴이라는 개념이 결함을 탐지한 것이 아니라, <strong>워터폴을 설계하려면 반드시 봐야 하는 위치에 결함이 있었다.</strong>
+  그 질문을 30개 프로젝트로 확장한 것이 이 점검이다.
+</div>
+
+<h2>8. 권고</h2>
+<h3>즉시 (첫 유료 고객 전)</h3>
+<ul class="tight">
+  <li><strong>Townin P0 2건</strong> — 금전이 직접 걸린 유일한 미처리 건</li>
+  <li><strong>ExamsGraph 채점 실패 처리</strong> — <code>nil &gt;= threshold</code> 크래시 가능성</li>
+</ul>
+<h3>다음 (고객 확보 후)</h3>
+<ul class="tight">
+  <li>CEO · OmniVibePro · infraGrid의 mock 마커 추가</li>
+  <li>워터폴 · 캐시 최적화 (LandCheck 시나리오 A~D)</li>
+</ul>
+<h3>하지 말 것</h3>
+<div class="callout callout-danger">
+  <strong>유료 고객 0명인 프로젝트의 실패경로를 전부 정비하는 것은 회피 행동이 될 수 있다.</strong>
+  아무도 안 쓰는 시스템의 정직성을 높이는 일에는 상한이 있다.
+  이번 점검의 가치는 <strong>결함 목록</strong>이 아니라 <strong>규칙 등록</strong>에 있다 — 앞으로 만드는 코드가 같은 실수를 반복하지 않는다는 것.
+  <br><br>
+  LandCheck 4건과 Townin 2건은 예외다. 전자는 유료 리포트가 실제로 발행되는 경로이고, 후자는 지금도 돈이 잘못 움직일 수 있다.
+</div>
+
+<div class="foot">실패경로 4문항 전수 점검 보고서 · 2026-07-28 · Gagahoho, Inc.</div>

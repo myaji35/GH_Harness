@@ -54,3 +54,30 @@ graphify-obsidian-input/
 .env.local
 .env*.local
 .env.production
+
+# graphify 빌드 산출물·벡터캐시 (2026-08-15)
+# graphify는 실행할 때마다 graph.json/graph.html/cache를 재생성한다.
+# 소스가 아니라 산출물이므로 커밋 대상이 아니다.
+graphify-out/
+.claude/graphify/graphify-out/
+.claude/graphify/semantic/__pycache__/
+.claude/graphify/semantic/fixtures/
+.claude/graphify/*.vector_cache.json
+.claude/graphify/**/.vector_cache.json
+.claude/graphify/autobuild.log
+.claude/graphify/.rebuild-needed
+
+# Python 캐시
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# knowledge-db 런타임 로그 (패턴 JSON은 추적)
+.claude/knowledge-db/.dream.*
+
+# harness 런타임 상태 파일 (세션마다 변함)
+.claude/.last-dispatch-hash
+.claude/.user-input-pending
+.claude/issue-db/registry.json.lock
+global/agent-os/hermes.daemon.log
+global/agent-os/hermes.log

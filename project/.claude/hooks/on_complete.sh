@@ -258,7 +258,15 @@ if issue_type in ('SCENARIO_PLAY', 'E2E_VERIFY', 'FLOW_REPLAY', 'UI_REVIEW', 'JO
             for path, reason in bad_evidence:
                 print(f'[on_complete] 증거 거부: {path} ({reason})', file=sys.stderr)
 
-if not evidence_rejected:
+# AWAITING_USER 는 사용자 액션 대기 상태다 — 훅이 완료로 덮어쓰면 안 된다.
+# 근거(2026-07-28, 0019_XimTier): GHCR_PAT 부재로 실패한 배포 이슈가 DEPLOY_READY
+# 타입이라는 이유로 2회 연속 DONE 처리됐고, 그걸 근거로 파생 이슈까지 생성됐다.
+# 미해결 P0가 완료로 위장되면 사용자 액션이 묻힌다.
+_prev_status = target_issue.get('status')
+if _prev_status == 'AWAITING_USER':
+    print(f'[on_complete] {issue_id} 는 AWAITING_USER — 완료 처리 건너뜀 (사용자 액션 대기)',
+          file=sys.stderr)
+elif not evidence_rejected:
     target_issue['status'] = 'DONE'
     target_issue['completed_at'] = now
     registry['stats']['completed'] = registry['stats'].get('completed', 0) + 1
