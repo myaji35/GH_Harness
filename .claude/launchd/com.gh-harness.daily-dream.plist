@@ -9,7 +9,7 @@
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>cd /Volumes/E_SSD/02_GitHub.nosync/GH_Harness && exec /bin/bash .claude/hooks/daily-dream.sh</string>
+        <string>cd /Volumes/E_SSD/02_GitHub.nosync/GH_Harness &amp;&amp; exec /bin/bash .claude/hooks/daily-dream.sh</string>
     </array>
 
     <key>StartCalendarInterval</key>
