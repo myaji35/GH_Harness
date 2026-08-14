@@ -1,0 +1,68 @@
+site_name: {{site_name}} Wiki
+site_description: {{site_description}}
+repo_url: {{repo_url}}
+docs_dir: docs
+site_dir: site
+strict: true
+dev_addr: '127.0.0.1:8765'
+
+theme:
+  name: material
+  language: ko
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.instant
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/git-alt
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search:
+      lang:
+        - ko
+        - en
+
+# nav 미정의 → Material 자동 트리 사용 (docs/*.md 자동 사이드바 생성)
+# 카테고리 명시가 필요하면 install 후 mkdocs.yml에서 직접 nav: 블록 추가:
+#
+# nav:
+#   - Home: index.md
+#   - Architecture: architecture/   # 폴더 단위
+#   - Incidents: incidents/

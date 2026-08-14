@@ -17,7 +17,9 @@ if [ ! -f "$REGISTRY" ]; then
 fi
 
 python3 << 'PYEOF'
-import json, datetime, sys
+import json, datetime, sys, os
+sys.path.insert(0, os.path.join(".claude", "hooks", "lib"))
+from issue_id import next_id
 
 try:
     with open(".claude/issue-db/registry.json", 'r') as f:
@@ -56,10 +58,8 @@ escalated = by_status.get("ESCALATED", [])
 # ── 패턴 탐지 ──
 findings = []
 new_issues = []
-next_id_num = stats.get("total_issues", len(issues)) + 1
 
 def make_issue(title, issue_type, priority, assign_to, payload=None):
-    global next_id_num
     if len(new_issues) >= 5:
         return  # 주기당 최대 5개
     # 유사 이슈 중복 체크 — DONE 포함 (완료된 동일 분석 재생성 방지)
@@ -72,7 +72,7 @@ def make_issue(title, issue_type, priority, assign_to, payload=None):
             payload.get("parent_id") is not None):
             return
     iss = {
-        "id": f"ISS-{next_id_num:03d}",
+        "id": next_id(registry),
         "title": title,
         "type": issue_type,
         "status": "READY",
@@ -88,7 +88,7 @@ def make_issue(title, issue_type, priority, assign_to, payload=None):
         "spawn_rules": []
     }
     new_issues.append(iss)
-    next_id_num += 1
+    registry["issues"].append(iss)
 
 # ── Hermes Lock 파일 로드 (레이스 방어 v2+) ────────────
 import glob as _glob
@@ -105,8 +105,21 @@ for lock_file in _glob.glob("/tmp/harness-hermes-*.lock"):
 # 패턴 1: 반복 실패 — 같은 파일에서 FIX_BUG 3회+
 # v2+: Hermes가 이미 개입 중인 이슈(hermes_invocations > 0 또는 lock 존재)는 건너뜀
 file_failures = {}
+failure_window_start = datetime.datetime.now() - datetime.timedelta(days=14)
 for iss in issues:
     if iss.get("type") == "FIX_BUG":
+        if not (iss.get("retry_count", 0) > 0 or
+                iss.get("status") in ("FAILED", "ESCALATED", "NEEDS_FIX")):
+            continue
+        issue_time = iss.get("created_at") or iss.get("updated_at")
+        try:
+            issue_dt = datetime.datetime.fromisoformat(
+                issue_time.replace("Z", "+00:00")
+            ).replace(tzinfo=None)
+        except (AttributeError, TypeError, ValueError):
+            continue
+        if issue_dt < failure_window_start:
+            continue
         # Hermes 개입 중이면 스킵 (레이스 방어)
         iss_id = iss.get("id", "")
         if iss_id in hermes_locked_issues or iss.get("hermes_invocations", 0) > 0:
@@ -134,12 +147,29 @@ if backlog_count > 30:
     )
 
 # 패턴 3: 에스컬레이션 누적
-if len(escalated) >= 3:
-    findings.append(f"🔴 에스컬레이션 누적: {len(escalated)}개")
+review_window_start = datetime.datetime.now() - datetime.timedelta(days=14)
+TERMINAL_STATUSES = {"DONE", "COMPLETED", "CANCELLED", "ARCHIVED"}
+
+def is_recent_active(iss):
+    status = iss.get("status", "")
+    if status in TERMINAL_STATUSES or status.startswith("CLOSED"):
+        return False
+    issue_time = iss.get("created_at") or iss.get("updated_at")
+    try:
+        issue_dt = datetime.datetime.fromisoformat(
+            issue_time.replace("Z", "+00:00")
+        ).replace(tzinfo=None)
+    except (AttributeError, TypeError, ValueError):
+        return False
+    return issue_dt >= review_window_start
+
+recent_escalated = [e for e in escalated if is_recent_active(e)]
+if len(recent_escalated) >= 3:
+    findings.append(f"🔴 에스컬레이션 누적: {len(recent_escalated)}개")
     make_issue(
         "[Meta] 에스컬레이션 근본 원인 분석",
         "SYSTEMIC_ISSUE", "P0", "meta-agent",
-        {"escalated_ids": [e["id"] for e in escalated]}
+        {"escalated_ids": [e["id"] for e in recent_escalated]}
     )
 
 # 패턴 4: 에이전트 간 핑퐁 — 같은 parent에서 3회+ 왕복
@@ -154,18 +184,15 @@ GATE_FANOUT_TYPES = {
 parent_chains = {}
 for iss in issues:
     pid = iss.get("parent_id")
-    if pid:
+    if pid and is_recent_active(iss):
         parent_chains.setdefault(pid, []).append(iss)
 for pid, children in parent_chains.items():
     if len(children) >= 3:
         agents = set(c.get("assign_to") for c in children)
         child_types = [c.get("type") for c in children]
-        # 모든 child 가 서로 다른 게이트 검증 타입이면 = fan-out (정상). 핑퐁 아님.
-        is_gate_fanout = (
-            all(t in GATE_FANOUT_TYPES for t in child_types)
-            and len(set(child_types)) == len(child_types)  # 타입 중복 없음 = 왕복 아님
-        )
-        if len(agents) >= 2 and not is_gate_fanout:
+        non_gate_types = [t for t in child_types if t not in GATE_FANOUT_TYPES]
+        has_repeated_non_gate = len(set(non_gate_types)) < len(non_gate_types)
+        if len(agents) >= 2 and has_repeated_non_gate:
             findings.append(f"🟠 핑퐁 감지: {pid} → {len(children)}회 파생 ({', '.join(agents)})")
             make_issue(
                 f"[Meta] {pid} 이슈 체인 근본 원인 분석",
@@ -266,9 +293,8 @@ else:
 print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
 # ── registry 업데이트 ──
-# 새 이슈 추가
+# 새 이슈 통계 갱신
 for ni in new_issues:
-    registry["issues"].append(ni)
     registry["stats"]["total_issues"] = registry["stats"].get("total_issues", 0) + 1
 
 # meta_observations 기록
@@ -290,8 +316,19 @@ knowledge.setdefault("meta_observations", []).append({
 registry["knowledge"] = knowledge
 registry["stats"]["evolved"] = registry["stats"].get("evolved", 0) + 1
 
-with open(".claude/issue-db/registry.json", 'w') as f:
-    json.dump(registry, f, indent=2, ensure_ascii=False)
+# [2026-07-15] 락 + 원자적 저장. Stop 이벤트에서 on-agent-complete.sh와 동시 발화 →
+# 락 없이는 나중에 쓴 쪽이 상대 변경을 덮어썼다(실측: 8프로세스 동시 시 84% 유실).
+import sys as _s, os as _o
+_s.path.insert(0, _o.path.join(".claude", "hooks", "lib"))
+try:
+    from registry_lock import registry_txn as _txn
+    with _txn(".claude/issue-db/registry.json") as _r:
+        _r.clear(); _r.update(registry)
+except Exception as _e:
+    # 락 실패 시에도 데이터는 남겨야 한다 — 단, 조용히 넘어가지 않고 알린다
+    print(f"[meta-review] 락 실패({_e}) — 비원자적 저장으로 폴백", file=_s.stderr)
+    with open(".claude/issue-db/registry.json", 'w') as f:
+        json.dump(registry, f, indent=2, ensure_ascii=False)
 
 # 새 이슈가 생성되었으면 exit 2 (asyncRewake)
 if new_issues:

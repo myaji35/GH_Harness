@@ -1,0 +1,56 @@
+#!/bin/bash
+# agent-os — Agent OS 통합 진입점 CLI (GH_Harness 확장)
+#
+# 세 유튜브 영상(Hermes / Agent OS)의 핵심 기능을 하나의 명령으로 통합:
+#   moa      — Mixture of Agents 멀티모델 합의 라우팅
+#   learn    — URL을 재사용 스킬로 자동 생성
+#   journey  — 스킬↔메모리 연결 그래프 생성
+#   hub      — 통합 허브 대시보드(한국어) 렌더
+#
+# 사용법: agent-os <command> [args]
+
+set -euo pipefail
+
+HARNESS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+AOS="$HARNESS_ROOT/global/agent-os"
+
+usage() {
+  cat <<'EOF'
+🛰️  Agent OS — GH_Harness 확장 (세 영상 통합)
+
+사용법:
+  agent-os moa "<프롬프트>" [참조모델]   여러 모델에 병렬 질의 후 합의 종합
+  agent-os learn <URL> [slug]           URL(유튜브/웹) → 재사용 스킬 자동 생성
+  agent-os journey [--deep]             스킬↔메모리 연결 그래프 HTML 생성
+  agent-os hub [--open]                 통합 허브 대시보드(한글) 렌더
+  agent-os hermes start [분]            무인 운영 시작 (cron, 구독토큰, 기본 30분)
+  agent-os hermes stop                  킬스위치 · 즉시 정지
+  agent-os hermes status                운영 상태 조회
+  agent-os hermes run                   지금 1 tick 수동 실행
+  agent-os help                         이 도움말
+
+예시:
+  agent-os moa "이번 주 만들 SaaS 아이디어 5개"
+  agent-os learn https://youtu.be/A3mddB8WsVM
+  agent-os journey
+  agent-os hub --open
+EOF
+}
+
+CMD="${1:-help}"
+shift || true
+
+case "$CMD" in
+  moa)     exec bash "$AOS/router/moa-route.sh" "$@" ;;
+  learn)   exec bash "$AOS/learn/learn-url.sh" "$@" ;;
+  journey) exec bash "$AOS/journey/journey-build.sh" "$@" ;;
+  hub)     exec bash "$AOS/hub/hub-render.sh" "$@" ;;
+  hermes)  exec bash "$AOS/hermes-ctl.sh" "$@" ;;
+  help|-h|--help) usage ;;
+  *)
+    echo "[agent-os] 알 수 없는 명령: $CMD" >&2
+    echo "" >&2
+    usage >&2
+    exit 1
+    ;;
+esac

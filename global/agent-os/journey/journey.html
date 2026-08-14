@@ -1,0 +1,43 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent OS · Journey 그래프</title>
+<style>
+:root{--bg:#0f1116;--card:#181b23;--line:#2a2f3a;--txt:#e6e9ef;--sub:#9aa4b2;--mem:#4f8cff;--skill:#22c55e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,'Apple SD Gothic Neo',sans-serif}
+header{padding:16px 20px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:18px}.sub{color:var(--sub);font-size:13px;margin-top:4px}
+.legend{display:flex;gap:16px;margin-top:8px;font-size:12px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle}
+#cv{display:block;width:100%;height:calc(100vh - 90px)}
+</style></head><body>
+<header><h1>🧭 Agent OS · Journey 그래프</h1>
+<div class="sub">스킬과 메모리의 연결 — 메모리 12개 · 스킬 8개 · 연결 6개</div>
+<div class="legend"><span><span class="dot" style="background:var(--mem)"></span>메모리</span>
+<span><span class="dot" style="background:var(--skill)"></span>스킬</span></div>
+</header>
+<canvas id="cv"></canvas>
+<script>
+const DATA = {"nodes": [{"id": "mem:feedback_verification_always", "label": "feedback_verification_always", "group": "memory"}, {"id": "mem:ui-readability", "label": "0000_master UI 가독성 전역 규칙", "group": "memory"}, {"id": "mem:gdrive_internal_organize", "label": "gdrive_internal_organize", "group": "memory"}, {"id": "mem:feedback_opinion_no_implement", "label": "feedback_opinion_no_implement", "group": "memory"}, {"id": "mem:project_rpi_setup", "label": "project_rpi_setup", "group": "memory"}, {"id": "mem:project_palantir_console", "label": "개인용 팔란티어 온톨로지 콘솔 (구상 단계, 2026-", "group": "memory"}, {"id": "mem:org_smg", "label": "org_smg", "group": "memory"}, {"id": "mem:feedback_harness_autorun", "label": "feedback_harness_autorun", "group": "memory"}, {"id": "mem:feedback_terminal_input_only", "label": "feedback_terminal_input_only", "group": "memory"}, {"id": "mem:incident_gemini_key_leak", "label": "incident_gemini_key_leak", "group": "memory"}, {"id": "mem:download_organizer", "label": "download_organizer", "group": "memory"}, {"id": "mem:feedback_no_llm_api_first", "label": "feedback_no_llm_api_first", "group": "memory"}, {"id": "skill:harness-orchestrator", "label": "harness-orchestrator", "group": "skill"}, {"id": "skill:graphify-integration", "label": "graphify-integration", "group": "skill"}, {"id": "skill:hook-registry", "label": "hook-registry", "group": "skill"}, {"id": "skill:datago-fetch", "label": "datago-fetch", "group": "skill"}, {"id": "skill:issue-registry", "label": "issue-registry", "group": "skill"}, {"id": "skill:meta-evolution", "label": "meta-evolution", "group": "skill"}, {"id": "skill:progressive-disclosure", "label": "progressive-disclosure", "group": "skill"}, {"id": "skill:harness-ui-trends-2026", "label": "harness-ui-trends-2026", "group": "skill"}], "edges": [{"from": "skill:graphify-integration", "to": "mem:feedback_opinion_no_implement", "kind": "topic"}, {"from": "skill:graphify-integration", "to": "mem:project_rpi_setup", "kind": "topic"}, {"from": "skill:graphify-integration", "to": "mem:feedback_terminal_input_only", "kind": "topic"}, {"from": "skill:datago-fetch", "to": "mem:gdrive_internal_organize", "kind": "topic"}, {"from": "skill:datago-fetch", "to": "mem:project_palantir_console", "kind": "topic"}, {"from": "skill:datago-fetch", "to": "mem:org_smg", "kind": "topic"}], "stats": {"memories": 12, "skills": 8, "edges": 6}};
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+function fit(){cv.width=cv.clientWidth;cv.height=cv.clientHeight;}
+fit();addEventListener('resize',()=>{fit();});
+const N=DATA.nodes.map((n,i)=>({...n,x:cv.width/2+Math.cos(i)*200*Math.random()+((i%7)-3)*90,y:cv.height/2+Math.sin(i)*200*Math.random()+((i%5)-2)*90,vx:0,vy:0}));
+const idx=Object.fromEntries(N.map((n,i)=>[n.id,i]));
+const E=DATA.edges.filter(e=>idx[e.from]!=null&&idx[e.to]!=null);
+function step(){
+ for(let a=0;a<N.length;a++)for(let b=a+1;b<N.length;b++){
+  let dx=N[b].x-N[a].x,dy=N[b].y-N[a].y,d=Math.hypot(dx,dy)||1,f=1400/(d*d);
+  N[a].vx-=dx/d*f;N[a].vy-=dy/d*f;N[b].vx+=dx/d*f;N[b].vy+=dy/d*f;}
+ for(const e of E){let a=N[idx[e.from]],b=N[idx[e.to]],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,f=(d-110)*0.01;
+  a.vx+=dx/d*f;a.vy+=dy/d*f;b.vx-=dx/d*f;b.vy-=dy/d*f;}
+ for(const n of N){n.vx*=0.85;n.vy*=0.85;n.x+=n.vx;n.y+=n.vy;
+  n.x=Math.max(40,Math.min(cv.width-40,n.x));n.y=Math.max(40,Math.min(cv.height-40,n.y));}}
+function draw(){
+ ctx.clearRect(0,0,cv.width,cv.height);
+ ctx.strokeStyle='rgba(150,160,180,.25)';ctx.lineWidth=1;
+ for(const e of E){let a=N[idx[e.from]],b=N[idx[e.to]];ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+ for(const n of N){ctx.beginPath();ctx.fillStyle=n.group==='memory'?'#4f8cff':'#22c55e';
+  ctx.arc(n.x,n.y,6,0,7);ctx.fill();
+  ctx.fillStyle='#c8cfda';ctx.font='11px sans-serif';ctx.fillText(n.label,n.x+9,n.y+4);}}
+let t=0;(function loop(){if(t++<300)step();draw();requestAnimationFrame(loop);})();
+</script></body></html>

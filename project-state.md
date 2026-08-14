@@ -28,30 +28,20 @@ _(아직 정의되지 않음 — 'harness 시작'으로 FEATURE_PLAN을 만들�
 
 ## 5. 최근 변경 이력 (git log, 자동 갱신)
 <!-- GITLOG_BEGIN -->
-- 2026-04-14 docs(incident): 사용자 명시값 무시 incident + CLAUDE.md 규칙 추가
-- 2026-04-14 Revert "feat(harness): Gemma 로컬 토글 + keep_alive 전략 (로컬 30m / 배포 영구)"
-- 2026-04-14 Revert "feat(harness): Gemma 4 E4B 로컬 LLM 통합 — 'gemma 사용하자' 트리거"
-- 2026-04-14 Revert "feat(harness): Gemma 4 E4B 안정화 (M2 16GB 전용 ultrathink 튜닝)"
-- 2026-04-14 feat(harness): Gemma 4 E4B 안정화 (M2 16GB 전용 ultrathink 튜닝)
-- 2026-04-14 feat(harness): Gemma 로컬 토글 + keep_alive 전략 (로컬 30m / 배포 영구)
-- 2026-04-14 feat(harness): Gemma 4 E4B 로컬 LLM 통합 — 'gemma 사용하자' 트리거
-- 2026-04-14 feat(harness): Graphify 통합 + Pre-Delivery 검증 훅 + LLM Wiki lane
-- 2026-04-13 feat(harness): 토큰 최적화 프로파일 --optimize-tokens 추가
-- 2026-04-10 feat(harness): VIEW_AUDIT + 비즈니스 로직 점검 통합 트리거
-- 2026-04-10 fix: 듀얼 랜딩 맹점 인시던트 보고서 + design-critic 다크 배경 가독성 체크 추가
-- 2026-04-10 feat(harness): brand-dna 템플릿에 motion/animation 확장 토큰 반영
-- 2026-04-10 feat(harness): 10개 프로젝트 brand-dna 재구성 + motion/animation 토큰 확장
-- 2026-04-10 feat(harness): Journey Validator — 사용자 여정/역할별/인팩트/온보딩 검증
-- 2026-04-10 feat(harness): Design Token System — 프로젝트별 UI 개성 차별화
-- 2026-04-10 fix(harness): 뻔한 후속 작업은 컨펌 없이 즉시 실행 원칙 추가
-- 2026-04-10 feat(harness): install.sh v3 업그레이드 — 신규 에이전트/훅/디렉터리 배포 + CLI 우선 원칙
-- 2026-04-10 feat(harness): v3 — Hermes/Advisor + 3-Tier 컨펌 + UI 5 Levels + Audience Researcher
+- 2026-07-08 fix: Hermes 자율운영 데몬 (launchd 외장볼륨 제약 우회)
+- 2026-07-08 fix: Hermes launchd 전환 + PATH 주입 (cron 미발화 근본 수정)
+- 2026-07-08 chore: graphify-obsidian-input 산출물 gitignore
+- 2026-07-08 docs: Agent OS 웹앱 설계 스펙 (0000_master 흡수, localhost:3737)
+- 2026-07-08 feat: Hermes 22개 프로젝트 순회 자문 (관제탑)
+- 2026-07-08 feat: Hermes 무인 운영 (Claude Code 기반, 구독토큰 전용)
+- 2026-07-08 feat: Agent OS 4모듈 구현 (moa/learn/journey/hub)
+- 2026-07-08 docs: Agent OS 설계 스펙 추가 (GH_Harness 확장, 3영상 기반)
 <!-- GITLOG_END -->
 
 ## 6. 살아있는 이슈 (READY/IN_PROGRESS, 자동 갱신)
 <!-- ISSUES_BEGIN -->
-- _(살아있는 이슈 없음 — 새 기획 필요)_
+- **[IN_PROGRESS]** ISS-384 (FIX_BUG) [P0] — [지시] ISS-383 [지시] 리눅스 환경에는 처음 등록해 보는거야. 그러니까 해당명령어에 버그는 없는 지가 1차 테스트 목적이야. 이슈를 처
 <!-- ISSUES_END -->
 
 ---
-_마지막 갱신: 2026-04-16 17:42_
+_마지막 갱신: 2026-07-14 18:24_

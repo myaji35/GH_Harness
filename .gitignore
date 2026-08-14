@@ -38,3 +38,46 @@ site/
 
 # harness 런타임 로그
 .claude/hooks/.webhook.log
+.gstack/
+graphify-obsidian-input/
+
+# 로컬 전용 심링크 (2026-07-15)
+# .claude/hooks/* 는 install.sh가 harness-core로 거는 절대경로 심링크다.
+# git에 커밋되면 다른 머신·CI에서 깨진 링크가 되어 bash -n이 전부 실패한다.
+# (2026-06-29부터 CI가 이 이유로 계속 빨간불이었다)
+# 배포 원본은 project/.claude/hooks/ 의 실파일이다.
+.claude/hooks/*.sh
+.claude/hooks/lib/
+
+# 수금 계좌 등 실값 환경변수 (2026-07-27)
+.env
+.env.local
+.env*.local
+.env.production
+
+# graphify 빌드 산출물·벡터캐시 (2026-08-15)
+# graphify는 실행할 때마다 graph.json/graph.html/cache를 재생성한다.
+# 소스가 아니라 산출물이므로 커밋 대상이 아니다.
+graphify-out/
+.claude/graphify/graphify-out/
+.claude/graphify/semantic/__pycache__/
+.claude/graphify/semantic/fixtures/
+.claude/graphify/*.vector_cache.json
+.claude/graphify/**/.vector_cache.json
+.claude/graphify/autobuild.log
+.claude/graphify/.rebuild-needed
+
+# Python 캐시
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# knowledge-db 런타임 로그 (패턴 JSON은 추적)
+.claude/knowledge-db/.dream.*
+
+# harness 런타임 상태 파일 (세션마다 변함)
+.claude/.last-dispatch-hash
+.claude/.user-input-pending
+.claude/issue-db/registry.json.lock
+global/agent-os/hermes.daemon.log
+global/agent-os/hermes.log

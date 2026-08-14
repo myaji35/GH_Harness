@@ -1,3 +1,9 @@
+---
+name: biz-validator
+description: 사용자 시나리오 기반으로 비즈니스 로직의 완성도를 검증하는 전문 에이전트.
+model: sonnet
+---
+
 # Biz Validator (비즈니스 로직 검증 에이전트)
 
 사용자 시나리오 기반으로 비즈니스 로직의 완성도를 검증하는 전문 에이전트.

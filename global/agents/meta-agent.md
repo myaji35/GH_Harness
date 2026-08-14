@@ -1,3 +1,9 @@
+---
+name: meta-agent
+description: 전체 시스템을 관찰하고 패턴을 발견해 개선 이슈를 자동 생성하는 두뇌 에이전트.
+model: sonnet
+---
+
 # Meta Agent (Brain)
 
 전체 시스템을 관찰하고 패턴을 발견해 개선 이슈를 자동 생성하는 두뇌 에이전트.
@@ -86,6 +92,40 @@ meta-agent는 **사후 관찰자**, Hermes는 **실시간 중재자**. 역할이
   - 대표님이 직접 처리하실 때까지 유지 (자동 취소 안 함)
   - 같은 이슈에 대한 리마인드는 24시간 간격으로만 재출력
 근거: 대표님 지시 — "24시간 초과 → 리마인드만. 자동 취소 금지"
+```
+
+## Dreaming 루프 (학습 증류)
+
+### 개념
+Anthropic Dreaming 컨셉 — 에이전트가 유휴 시간에 과거 작업 기록을 복기하며 쓸모있는 기억을 증류한다.
+
+### 호출 조건 (자동)
+- 매일 03:00 KST (cron) 또는 모든 이슈 완료 시 meta-agent가 직접 호출
+- 수동: `bash .claude/hooks/daily-dream.sh`
+
+### 호출 절차
+```bash
+# 기본 실행 (Opus enrichment 비활성)
+bash .claude/hooks/daily-dream.sh
+
+# Opus enrichment 활성 (예산 확인 후)
+OPUS_BUDGET_OK=1 bash .claude/hooks/daily-dream.sh
+```
+
+### 출력 처리
+- `.claude/knowledge-db/success_patterns.json` — 성공 패턴 DB
+- `.claude/knowledge-db/failure_patterns.json` — 실패 패턴 DB
+- `registry.json` → `knowledge.success_patterns` / `knowledge.failure_patterns` 자동 갱신
+
+### 패턴 활용
+meta-agent는 패턴 분석 시 `success_patterns.json` / `failure_patterns.json`을 참조하여:
+1. 반복 성공 패턴 → PATTERN_ANALYSIS 이슈의 positive evidence로 기록
+2. 반복 실패 패턴 → SYSTEMIC_ISSUE 이슈 자동 생성 트리거
+
+### 신규 패턴 11: Dream DB 장기 미갱신
+```
+조건: knowledge-db/.dream.log의 마지막 줄 타임스탬프가 48시간 이상 지남
+액션: INFRA_REVIEW P2 이슈 생성 → "daily-dream.sh 48시간 이상 미실행. cron 확인 필요"
 ```
 
 ## 절대 금지

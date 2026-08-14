@@ -15,7 +15,15 @@ RESULT="$3"
 echo "[Hook:on_complete] 이슈 완료: $ISSUE_ID ($ISSUE_TYPE)"
 
 # [v4.1 D] Decision Trace 기록 (completed)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
+# BASH_SOURCE는 링크 경로라 lib/ 를 프로젝트 쪽에서 찾다 ModuleNotFoundError로 죽는다.
+_src="${BASH_SOURCE[0]}"
+while [ -L "$_src" ]; do
+  _dir="$(cd -P "$(dirname "$_src")" && pwd)"
+  _src="$(readlink "$_src")"
+  [[ "$_src" != /* ]] && _src="$_dir/$_src"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$_src")" && pwd)"
 
 # ── background 카운터 안전망 해제 (ISS-349) ──
 # 스폰 측이 release를 깜빡해도 완료 시 자동 정리. background 아니면 no-op.
@@ -26,35 +34,45 @@ if [ -x "$SCRIPT_DIR/decision-trace.sh" ]; then
   bash "$SCRIPT_DIR/decision-trace.sh" completed "$ISSUE_ID" type="$ISSUE_TYPE" 2>/dev/null || true
 fi
 
-python3 << PYEOF
-import json, datetime, sys
+python3 - "$SCRIPT_DIR" "$REGISTRY" "$ISSUE_ID" "$ISSUE_TYPE" "$RESULT" << 'PYEOF'
+import json, datetime, re, sys, os
+
+# 인자는 argv로 받는다 (heredoc 보간 금지 — RCE 차단, 2026-07-15)
+__file__ = os.path.join(sys.argv[1], "on_complete.sh")
+sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
+from issue_id import next_id
+
+_REG, issue_id, issue_type, result_raw = sys.argv[2:6]
 
 try:
-    with open('$REGISTRY', 'r') as f:
+    with open(_REG, 'r') as f:
         registry = json.load(f)
 except:
     print("registry.json 읽기 실패")
     sys.exit(1)
 
-issue_id = '$ISSUE_ID'
-issue_type = '$ISSUE_TYPE'
-result_raw = '''$RESULT'''
 
 now = datetime.datetime.now().isoformat()
 new_issues = []
 
-# ID 계산: max ID + 1 과 stats.total_issues + 1 중 큰 값 사용 (ISS-201 중복 ID 방어)
-def _extract_num(iid):
-    try:
-        return int(str(iid).split('-')[-1])
-    except Exception:
-        return 0
-_existing_nums = [_extract_num(iss.get('id','')) for iss in registry.get('issues', [])]
-_stats_next = registry.get('stats', {}).get('total_issues', 0) + 1
-next_num = max((max(_existing_nums) if _existing_nums else 0) + 1, _stats_next)
+def _verify_evidence(paths, since_ts=None):
+    ok_list = []
+    bad_list = []
+    for path in paths:
+        try:
+            if not os.path.exists(path):
+                bad_list.append((path, 'not_found'))
+            elif os.path.getsize(path) == 0:
+                bad_list.append((path, 'empty'))
+            elif since_ts is not None and os.path.getmtime(path) < since_ts:
+                bad_list.append((path, 'stale'))
+            else:
+                ok_list.append(path)
+        except Exception as e:
+            bad_list.append((path, str(e)))
+    return ok_list, bad_list
 
 def add_issue(title, itype, priority, assign_to, payload=None):
-    global next_num
     payload = payload or {}
     src = payload.get('source_issue')
 
@@ -111,12 +129,13 @@ def add_issue(title, itype, priority, assign_to, payload=None):
             initial_status = 'GATE_PENDING'
             print(f"[Gate] {itype} src={src} — LINT_CHECK 미통과 → GATE_PENDING")
 
-    # ID 충돌 회피 (edge case: 레지스트리에 동일 ID 잔존 시)
-    while any(iss.get('id') == f'ISS-{next_num:03d}' for iss in registry['issues']):
-        next_num += 1
+    # 아직 registry에 합치지 않은 같은 배치의 파생 이슈도 발급 기준에 포함한다.
+    allocation_registry = registry.copy()
+    allocation_registry['issues'] = registry.get('issues', []) + new_issues
+    new_issue_id = next_id(allocation_registry)
 
     iss = {
-        'id': f'ISS-{next_num:03d}',
+        'id': new_issue_id,
         'title': title,
         'type': itype,
         'status': initial_status,
@@ -133,7 +152,6 @@ def add_issue(title, itype, priority, assign_to, payload=None):
     }
     if iss['depth'] <= 3:
         new_issues.append(iss)
-        next_num += 1
         _budget['created_today'] = _budget.get('created_today', 0) + 1  # cap 카운트 (ISS-372)
         print(f"[Plan] {iss['id']} [{priority}] {itype} — {title} → {assign_to}" + (f" ({initial_status})" if initial_status != 'READY' else ""))
     else:
@@ -150,15 +168,19 @@ if not target_issue:
     print(f"[오류] {issue_id} 찾을 수 없음")
     sys.exit(1)
 
-# 이슈 상태 업데이트
-target_issue['status'] = 'DONE'
-target_issue['completed_at'] = now
-registry['stats']['completed'] = registry['stats'].get('completed', 0) + 1
+# 파생 판단은 호출 인자보다 registry에 저장된 실제 이슈 타입을 우선한다.
+registry_issue_type = target_issue.get('type') or issue_type
+if registry_issue_type != issue_type:
+    print(f"  → 호출 타입 불일치: {issue_type} → {registry_issue_type} (registry 기준으로 파생 판단)")
+    issue_type = registry_issue_type
 
 # ── Hermes가 확장한 freeze 범위 해제 (v2+) ──────────
 # 이 이슈 한정으로 FREEZE_DIR이 확장되었다면 복원 또는 해제
 import os as _os
-freeze_path = "/tmp/harness-freeze.env"
+import hashlib
+# ISS-044: 32개 프로젝트가 /tmp를 공유하므로 타 프로젝트 임무의 편집 차단을 막기 위해 프로젝트별로 분리
+freeze_key = hashlib.sha256(_os.getcwd().encode()).hexdigest()[:12]
+freeze_path = f"/tmp/harness-freeze-{freeze_key}.env"
 if _os.path.exists(freeze_path):
     try:
         env_data = {}
@@ -196,13 +218,77 @@ except:
 
 target_issue['result'] = result
 
+evidence_rejected = False
+if issue_type in ('SCENARIO_PLAY', 'E2E_VERIFY', 'FLOW_REPLAY', 'UI_REVIEW', 'JOURNEY_VALIDATE'):
+    evidence_paths = list(result.get('evidence', []))
+    evidence_paths.extend(
+        item.get('screenshot') for item in result.get('results', [])
+        if isinstance(item, dict) and item.get('screenshot')
+    )
+    evidence_paths.extend(result.get('screenshots', []))
+
+    since_ts = None
+    for timestamp in (target_issue.get('started_at'), target_issue.get('updated_at')):
+        if timestamp is None:
+            continue
+        try:
+            since_ts = float(timestamp)
+        except (TypeError, ValueError):
+            try:
+                since_ts = datetime.datetime.fromisoformat(
+                    str(timestamp).replace('Z', '+00:00')
+                ).timestamp()
+            except (TypeError, ValueError, OverflowError):
+                continue
+        break
+
+    if not evidence_paths:
+        print('[on_complete] 경고: 증거 경로 없음', file=sys.stderr)
+    else:
+        _, bad_evidence = _verify_evidence(evidence_paths, since_ts)
+        if bad_evidence:
+            evidence_rejected = True
+            target_issue['status'] = 'EVIDENCE_REJECTED'
+            add_issue(
+                f'[증거 누락] {issue_id} 증거 {len(bad_evidence)}건',
+                'EVIDENCE_MISSING', 'P0',
+                target_issue.get('owner_agent') or 'scenario-player',
+                {'bad_list': bad_evidence, 'source_issue': issue_id}
+            )
+            for path, reason in bad_evidence:
+                print(f'[on_complete] 증거 거부: {path} ({reason})', file=sys.stderr)
+
+# AWAITING_USER 는 사용자 액션 대기 상태다 — 훅이 완료로 덮어쓰면 안 된다.
+# 근거(2026-07-28, 0019_XimTier): GHCR_PAT 부재로 실패한 배포 이슈가 DEPLOY_READY
+# 타입이라는 이유로 2회 연속 DONE 처리됐고, 그걸 근거로 파생 이슈까지 생성됐다.
+# 미해결 P0가 완료로 위장되면 사용자 액션이 묻힌다.
+_prev_status = target_issue.get('status')
+if _prev_status == 'AWAITING_USER':
+    print(f'[on_complete] {issue_id} 는 AWAITING_USER — 완료 처리 건너뜀 (사용자 액션 대기)',
+          file=sys.stderr)
+elif not evidence_rejected:
+    target_issue['status'] = 'DONE'
+    target_issue['completed_at'] = now
+    registry['stats']['completed'] = registry['stats'].get('completed', 0) + 1
+
+VERIFICATION_TYPES = {
+    'RUN_TESTS', 'RETEST', 'LINT_CHECK', 'TYPE_CHECK', 'SCORE',
+    'DOMAIN_ANALYZE', 'BIZ_VALIDATE', 'JOURNEY_VALIDATE', 'UI_REVIEW',
+    'COVERAGE_CHECK', 'REGRESSION_CHECK'
+}
+skip_verification_trio = issue_type in VERIFICATION_TYPES
+if skip_verification_trio:
+    print("  → 검증 이슈 완료: 재파생 생략")
+
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 결과 분석 → Plan 수립 → 파생 이슈 생성
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 print(f"\n[분석] {issue_type} 결과 기반 Plan 수립:")
 
-if issue_type == 'SCREEN_GAP':
+if evidence_rejected:
+    pass
+elif issue_type == 'SCREEN_GAP':
     # 화면 갭 → 빠진 기능별 USER_STORY 생성
     missing = result.get('missing_features', target_issue.get('payload', {}).get('missing_features', []))
     route = result.get('route', target_issue.get('payload', {}).get('route', ''))
@@ -340,32 +426,42 @@ elif issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT
     files = target_issue.get('payload', {}).get('files', [])
     all_files = list(set(files_changed + files))
 
-    # [v4.1 Gate B] LINT_CHECK P0를 blocking gate로 선행 생성
-    # 실패 시 STYLE_FIX P0 체인만 활성, SCORE/DEPLOY 차단
-    add_issue(
-        f"[Plan:게이트] {issue_id} 계산적 센서 검증 (lint/type-check)",
-        'LINT_CHECK', 'P0', 'code-quality',
-        {
-            'files': all_files,
-            'source_issue': issue_id,
-            'gate': True,
-            'gate_blocks': ['SCORE', 'DEPLOY_READY'],
-            'bypass_env': 'HARNESS_BYPASS_GATE'
-        }
-    )
+    if not skip_verification_trio:
+        # [v4.1 Gate B] LINT_CHECK P0를 blocking gate로 선행 생성
+        # 실패 시 STYLE_FIX P0 체인만 활성, SCORE/DEPLOY 차단
+        add_issue(
+            f"[Plan:게이트] {issue_id} 계산적 센서 검증 (lint/type-check)",
+            'LINT_CHECK', 'P0', 'code-quality',
+            {
+                'files': all_files,
+                'source_issue': issue_id,
+                'gate': True,
+                'gate_blocks': ['SCORE', 'DEPLOY_READY'],
+                'bypass_env': 'HARNESS_BYPASS_GATE'
+            }
+        )
 
-    add_issue(
-        f"[Plan:테스트] {issue_id} 변경사항 검증",
-        'RUN_TESTS', 'P1', 'test-harness',
-        {'files': all_files, 'source_issue': issue_id, 'scope': 'changed'}
-    )
+        add_issue(
+            f"[Plan:테스트] {issue_id} 변경사항 검증",
+            'RUN_TESTS', 'P1', 'test-harness',
+            {'files': all_files, 'source_issue': issue_id, 'scope': 'changed'}
+        )
 
-    # 도메인 분석 → 비즈니스 검증 → 시나리오 실행 체인
-    add_issue(
-        f"[Plan:도메인분석] {issue_id} 비즈니스 규칙/시나리오 도출",
-        'DOMAIN_ANALYZE', 'P1', 'domain-analyst',
-        {'files': all_files, 'source_issue': issue_id}
-    )
+        # 도메인 분석 → 비즈니스 검증 → 시나리오 실행 체인
+        result_files_changed = result.get('files_changed', [])
+        has_business_logic_change = (
+            isinstance(result_files_changed, list)
+            and any(re.search(r'app/(models|services|controllers|jobs|lib)/', str(path))
+                    for path in result_files_changed)
+        )
+        if has_business_logic_change:
+            add_issue(
+                f"[Plan:도메인분석] {issue_id} 비즈니스 규칙/시나리오 도출",
+                'DOMAIN_ANALYZE', 'P1', 'domain-analyst',
+                {'files': all_files, 'source_issue': issue_id}
+            )
+        else:
+            print("  → 비즈니스 로직 변경 없음: DOMAIN_ANALYZE 생략")
 
     # UI 관련 파일이면 UX 리뷰 + Brand Guard + Browser QA 추가
     ui_files = [f for f in all_files if any(ext in f for ext in ['.tsx', '.jsx', '.vue', '.html', '.css', '.svelte'])]
@@ -595,7 +691,7 @@ elif issue_type in ('SCENARIO_PLAY', 'E2E_VERIFY', 'FLOW_REPLAY'):
 
 elif issue_type in ('BIZ_VALIDATE', 'SCENARIO_GAP'):
     # 비즈니스 로직 검증 결과 분석
-    biz_coverage = result.get('coverage_rate', 0)
+    biz_coverage = result.get('coverage_rate', result.get('coverage_pct'))
     gaps = result.get('gaps', [])
     critical_gaps = [g for g in gaps if g.get('level') == 'CRITICAL']
     major_gaps = [g for g in gaps if g.get('level') == 'MAJOR']
@@ -623,7 +719,9 @@ elif issue_type in ('BIZ_VALIDATE', 'SCENARIO_GAP'):
                 'action': 'fix_major_gaps'
             }
         )
-    elif biz_coverage < 70:
+    elif biz_coverage is None:
+        print('[on_complete] coverage 키 부재 — 커버리지 판정 생략', file=sys.stderr)
+    elif biz_coverage is not None and biz_coverage < 70:
         # 커버리지 낮음 → 설계 문제 의심
         add_issue(
             f"[Plan:설계검토] 비즈니스 시나리오 커버리지 {biz_coverage}%",
@@ -695,6 +793,34 @@ elif issue_type == 'SCORE':
             'REGRESSION_CHECK', 'P0', 'eval-harness',
             {'prev_score': prev_score, 'current_score': score, 'source_issue': issue_id}
         )
+
+elif issue_type == 'CICD_BOOTSTRAP':
+    # CI/CD 골격 주입 완료 → 워크플로 생성 검증 + CD 갭 후속 처리
+    created = result.get('workflows_created', [])
+    cd_skipped = result.get('cd_skipped', False)
+    if not created:
+        # 워크플로가 실제로 안 생겼으면 재시도 (bootstrap 실패)
+        add_issue(
+            f"[Plan:CICD재시도] {issue_id} 워크플로 미생성 — CI 골격 주입 재시도",
+            'CICD_BOOTSTRAP', 'P1', 'cicd-harness',
+            {'source_issue': issue_id, 'retry': True}
+        )
+    else:
+        print(f"[Plan:CICD] CI 워크플로 {len(created)}개 생성 — {', '.join(created)}")
+        registry.setdefault('knowledge', {}).setdefault('success_patterns', []).append({
+            'pattern': 'cicd_bootstrap',
+            'context': f'{issue_id} created {created}',
+            'frequency': 1,
+            'discovered_at': now
+        })
+        # 배포 흔적은 있는데 CD가 스킵됐으면 → 배포 게이트 도입 기회로 기록(오버 방지: 이슈 강제 생성 안 함)
+        if cd_skipped:
+            registry.setdefault('pending_opportunity_signals', []).append({
+                'signal': 'cd_gap',
+                'source_issue': issue_id,
+                'note': 'CI는 깔았으나 CD(배포 자동화) 미도입 — 배포 게이트 도입 검토 대상',
+                'at': now
+            })
 
 elif issue_type == 'DEPLOY_READY':
     # 배포 완료 → 파이프라인 종료, 학습 기록
@@ -906,14 +1032,28 @@ registry.setdefault('hooks', {}).setdefault('on_complete', []).append({
     'timestamp': now
 })
 
-with open('$REGISTRY', 'w') as f:
-    json.dump(registry, f, indent=2, ensure_ascii=False)
+try:
+    from registry_lock import registry_txn as _txn
+    with _txn(_REG) as _r:
+        _r.clear(); _r.update(registry)
+except Exception as _e:
+    print(f'[on_complete] 락 실패({_e}) — 비원자적 저장으로 폴백', file=sys.stderr)
+    with open(_REG, 'w') as f:
+        json.dump(registry, f, indent=2, ensure_ascii=False)
 
 print(f"[on_complete] 처리 완료")
 PYEOF
 
 # Plan 생성 후 자동 디스패치 — 질문 없이 즉시 실행
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
+# BASH_SOURCE는 링크 경로라 lib/ 를 프로젝트 쪽에서 찾다 ModuleNotFoundError로 죽는다.
+_src="${BASH_SOURCE[0]}"
+while [ -L "$_src" ]; do
+  _dir="$(cd -P "$(dirname "$_src")" && pwd)"
+  _src="$(readlink "$_src")"
+  [[ "$_src" != /* ]] && _src="$_dir/$_src"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$_src")" && pwd)"
 echo "[on_complete] → dispatch-ready 실행"
 bash "$SCRIPT_DIR/dispatch-ready.sh" "$REGISTRY"
 echo ""

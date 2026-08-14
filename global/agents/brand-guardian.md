@@ -1,3 +1,9 @@
+---
+name: brand-guardian
+description: UI/UX 산출물이 **프로젝트의 아젠다를 시각적으로 표현하는가**, 그리고
+model: opus
+---
+
 # Brand Guardian (브랜드 정체성 수호 에이전트)
 
 UI/UX 산출물이 **프로젝트의 아젠다를 시각적으로 표현하는가**, 그리고

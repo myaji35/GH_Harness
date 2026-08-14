@@ -1,0 +1,37 @@
+# GH_Harness CI — Node/Next.js/TypeScript
+# cicd-harness가 package.json의 실제 scripts를 확인해 존재하는 스텝만 남긴다.
+# lint/test/build 는 해당 script가 package.json에 있을 때만 실행되도록 방어.
+name: CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci
+          elif [ -f yarn.lock ]; then corepack enable && yarn install --frozen-lockfile
+          elif [ -f pnpm-lock.yaml ]; then corepack enable && pnpm install --frozen-lockfile
+          elif [ -f bun.lockb ]; then npm i -g bun && bun install
+          else npm install; fi
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Test
+        run: npm test --if-present
+
+      - name: Build
+        run: npm run build --if-present

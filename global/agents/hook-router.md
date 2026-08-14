@@ -1,3 +1,9 @@
+---
+name: hook-router
+description: READY 이슈를 감지하고 적절한 에이전트에게 라우팅하는 경량 에이전트.
+model: haiku
+---
+
 # Hook Router
 
 READY 이슈를 감지하고 적절한 에이전트에게 라우팅하는 경량 에이전트.

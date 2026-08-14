@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+@page { size: A4; margin: 12mm 14mm; }
+*, *::before, *::after { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; box-sizing: border-box; }
+body { margin: 0; font-family: "Apple SD Gothic Neo", system-ui, sans-serif; line-height: 1.45; color: #1a1a1a; letter-spacing: 0.01em; }
+h1 { font-size: 21px; margin: 0 0 6px; color: #16325C; }
+h2 { font-size: 15.5px; margin: 15px 0 8px; color: #16325C; border-bottom: 2px solid #00A1E0; padding-bottom: 4px; }
+h3 { font-size: 12.5px; margin: 10px 0 5px; color: #16325C; }
+h4 { font-size: 11.5px; margin: 8px 0 4px; color: #00557A; }
+p, li { font-size: 11px; margin: 4px 0; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 10px; }
+th { background: #16325C; color: #fff; padding: 5px 6px; text-align: left; font-size: 10px; }
+td { padding: 4px 6px; border-bottom: 1px solid #ddd; vertical-align: top; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr:nth-child(even) td { background: #F3F2F2; }
+ul { padding-left: 16px; margin: 4px 0; }
+ul.tight li { margin-bottom: 2px; }
+.cover { page-break-after: always; page-break-inside: avoid; background-color: #16325C !important; color: #fff !important; text-align: center; margin: -12mm -14mm 0 -14mm; padding: 68mm 40px 68mm 40px; min-height: 250mm; }
+.cover * { color: #fff !important; }
+.cover .tag { font-size: 13px; letter-spacing: 4px; opacity: 0.8; margin-bottom: 20px; }
+.cover .title { font-size: 29px; font-weight: 800; margin: 10px 0; }
+.cover .sub { font-size: 14.5px; opacity: 0.9; margin: 16px 0 36px; line-height:1.5; }
+.cover .meta { font-size: 12px; opacity: 0.7; }
+.cover .conf { margin-top: 34px; font-size: 11px; border:1px solid rgba(255,255,255,0.4); display:inline-block; padding:4px 14px; border-radius:4px; }
+.callout { padding: 7px 12px; margin: 8px 0; border-radius: 4px; font-size: 11px; }
+.callout-info { background: #E8F6FC; border-left: 4px solid #00A1E0; }
+.callout-success { background: #E9F9F1; border-left: 4px solid #10B981; }
+.callout-warn { background: #FEF6E7; border-left: 4px solid #F59E0B; }
+.callout-danger { background: #FDECEC; border-left: 4px solid #EF4444; }
+.badge { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 9px; font-weight: 700; }
+.b-green { background: #D1FAE5; color: #065F46; }
+.b-yellow { background: #FEF3C7; color: #92400E; }
+.b-red { background: #FEE2E2; color: #991B1B; }
+.kpi-grid { display: flex; gap: 6px; margin: 8px 0; }
+.kpi-card { flex: 1; background: #F3F2F2; border-radius: 6px; padding: 8px; text-align: center; border-top: 3px solid #00A1E0; }
+.kpi-label { font-size: 9px; color: #555; }
+.kpi-value { font-size: 14px; font-weight: 800; color: #16325C; margin: 2px 0; }
+.kpi-sub { font-size: 8.5px; color: #777; }
+.pagebreak { page-break-before: always; }
+.lead { font-size: 12px; color: #333; margin: 6px 0 10px; }
+.formula { background:#16325C; color:#fff !important; padding:8px 12px; border-radius:4px; font-size:11px; margin:6px 0; }
+.formula * { color:#fff !important; }
+.formula b { color:#7FD7F7 !important; }
+.mapimg { width:100%; border:1px solid #ccc; border-radius:4px; }
+.col2 { display:flex; gap:10px; }
+.col2 > div { flex:1; }
+.score { font-weight:800; }
+.s-o { color:#10B981; } .s-t { color:#F59E0B; } .s-x { color:#EF4444; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">SHILLA MEDICAL &middot; SITE SUITABILITY</div>
+  <div class="title">법원리 표준사업장<br>적정성 평가 보고서</div>
+  <div class="sub">경기도 파주시 법원읍 법원리 산40 외 24필지<br>스마트팜 컨소시엄형 장애인 표준사업장 부지 적정성</div>
+  <div class="meta">2026. 07. 08 &middot; 5대 축 평가 · VWorld·DEM·통근 실측</div>
+  <div class="conf">INTERNAL &middot; 부지 의사결정용 &middot; 대외비</div>
+</div>
+
+<h1>법원리 표준사업장 부지 적정성 평가 — 종합보고서</h1>
+<p class="lead">파주시 법원읍 법원리 <b>산40 외 24필지(합 50,099.78㎡)</b>를 <b>스마트팜 기반 컨소시엄형 장애인 표준사업장</b> 부지로 사용할 수 있는지, <b>①물리조건 ②표준사업장 요건 ③통근 적정성 ④임야 개발부담 ⑤시세·감정</b> 5대 축으로 평가했습니다. 표준사업장 요건은 기존 누리팜 괴산점 자료에서 학습해 기준으로 삼았고, 부지 데이터는 VWorld·공개 DEM·통근 실측으로 검증했습니다.</p>
+
+<div class="kpi-grid">
+  <div class="kpi-card"><div class="kpi-label">① 물리조건</div><div class="kpi-value s-t">△ 보통</div><div class="kpi-sub">취락+경사임야</div></div>
+  <div class="kpi-card"><div class="kpi-label">② 표준사업장</div><div class="kpi-value s-o">○ 가능</div><div class="kpi-sub">인프라 우수</div></div>
+  <div class="kpi-card"><div class="kpi-label">③ 통근</div><div class="kpi-value s-t">△ 조건부</div><div class="kpi-sub">2단셔틀 전제</div></div>
+  <div class="kpi-card"><div class="kpi-label">④ 개발부담</div><div class="kpi-value s-t">△ 부담</div><div class="kpi-sub">33~64억</div></div>
+  <div class="kpi-card"><div class="kpi-label">⑤ 시세</div><div class="kpi-value s-o">○ 적정</div><div class="kpi-sub">약 24억</div></div>
+</div>
+
+<div class="callout-warn callout">
+<b>핵심 판정 요약:</b> 법원리는 <b>표준사업장 부지로 "조건부 적합"</b>. 결정 변수는 <b>발달장애인 통근</b>이며, 도어투도어(집앞 픽업)로는 편도 50~70분으로 부담이 커 부적합하나, <b>양주역·의정부역 집결 후 전용 승합차(27~33분)</b> 2단 구조라면 성립. 임야 산40은 <b>평균경사 13.2°로 개발가능하나 조성·산림전용 부담이 33~64억</b>으로 커, 초기 개발은 <b>취락 평탄부(1,024㎡) 중심</b>이 현실적.
+</div>
+
+<h2>0. 표준사업장 요건 (괴산 사례 학습 → 부지 평가 기준)</h2>
+<table>
+<tr><th>요건</th><th>기준 (장애인고용촉진법·KEAD)</th><th>부지에 주는 함의</th></tr>
+<tr><td>장애인 고용</td><td>최소 10인 + 상시근로 30%↑, 중증 비율 충족</td><td><b>발달장애인이 실제 출근 가능한 위치</b>여야 인원 충족</td></tr>
+<tr><td>안정 고용</td><td>최저임금 이상·주5일 정규</td><td>원거리·단기 불가 → <b>통근 반경 = 채용풀</b></td></tr>
+<tr><td>편의시설</td><td>편의증진법 기준 구비</td><td>평탄지·건축 가능 용도지역</td></tr>
+<tr><td>무상지원</td><td>일반 15억 / 컨소시엄 20억 (<b>토지구입비 제외</b>)</td><td>부지는 자기자본, 지원금은 시설·편의</td></tr>
+<tr><td>최적 용도</td><td>계획관리(건폐율 40%)가 Best</td><td>법원리는 <b>제1종주거(건폐율↓)</b> → 괴산 대비 열위</td></tr>
+</table>
+<div class="callout-info callout">
+<b>학습 결론(괴산의 교훈):</b> 괴산점은 수도권 발달장애인을 100km+ 원거리로 데려오느라 <b>기숙사(약 19억)를 강제로 떠안는 구조</b>였음. 부지 선정의 제1원칙은 <b>"채용풀(발달장애인 거주지)에서 통근 가능한 거리"</b>. 법원리는 이 관점에서 괴산보다 명백히 우월(수도권 근접).
+</div>
+
+<h2>1. 부지 개요 — 위치·필지 (VWorld 실측)</h2>
+<div class="col2">
+<div>
+<img class="mapimg" src="file:///Volumes/E_SSD/02_GitHub.nosync/0021_shilla_medical/상권분석/김성록대표 시흥시부지/상권분석/파주법원리/samples/파주법원리_1원거리.png" alt="원거리">
+<p style="font-size:8.5px;color:#777;margin-top:2px">▲ <b>원거리</b> — 수도권제2순환고속 법원IC 인접, 법원읍 중심부</p>
+</div>
+<div>
+<img class="mapimg" src="file:///Volumes/E_SSD/02_GitHub.nosync/0021_shilla_medical/상권분석/김성록대표 시흥시부지/상권분석/파주법원리/samples/파주법원리_4필지경계.png" alt="폴리곤">
+<p style="font-size:8.5px;color:#777;margin-top:2px">▲ <b>취락 24필지 경계</b> — 율곡고·행정복지센터·근린공원 인접</p>
+</div>
+</div>
+<table>
+<tr><th>구분</th><th>면적</th><th>지목·용도</th><th>비고</th></tr>
+<tr><td><b>취락 24필지</b></td><td class="num">6,672.78㎡ (2,019평)</td><td>대·전·도 / 제1종일반주거</td><td>평탄, 생활인프라 인접 → <b>주 사업부지</b></td></tr>
+<tr><td><b>임야 산40</b></td><td class="num">43,427㎡ (13,137평)</td><td>임 / 자연녹지·준보전산지</td><td>경사, 도시계획시설 저촉 → <b>배후·확장</b></td></tr>
+<tr><td><b>합계</b></td><td class="num">50,099.78㎡ (15,155평)</td><td>—</td><td>전 필지 토지거래허가·군사보호</td></tr>
+</table>
+
+<h2>2. 통근 적정성 — 발달장애인 통근버스 운행조건 ⭐</h2>
+<p style="font-size:10.5px">발달장애인은 <b>장시간 차내 대기가 인지·정서 부담</b>이라 일반 근로자(60~90분)보다 엄격한 <b>편도 40분 기준</b>을 적용. 두 가지 운행방식을 비교.</p>
+
+<h4>방식 A — 거주지 도어투도어 순회 픽업 (직접 통근버스)</h4>
+<table>
+<tr><th>출발지</th><th>주행거리</th><th>통근버스 편도(픽업 포함)</th><th>40분 기준</th></tr>
+<tr><td>양주 덕정·양주역</td><td class="num">21km</td><td class="num">약 50분</td><td class="s-x">🔴 부적합</td></tr>
+<tr><td>의정부역</td><td class="num">25km</td><td class="num">약 57분</td><td class="s-x">🔴 부적합</td></tr>
+<tr><td>일산 백석·대화</td><td class="num">31~32km</td><td class="num">약 68~70분</td><td class="s-x">🔴 부적합</td></tr>
+</table>
+<p style="font-size:9px;color:#777">※ 표정속도 33km/h + 거주지 순회 픽업 12분. <b>도어투도어 방식은 3개 거주지 모두 부담선 초과.</b></p>
+
+<h4>방식 B — 양주역·의정부역 집결 + 전용 승합차 (2단 셔틀) ⭐ 권장</h4>
+<table>
+<tr><th>집결역</th><th>철도 접근성</th><th>역→부지 승합차(무정차)</th><th>판정</th></tr>
+<tr><td><b>양주역·덕정역</b></td><td>1호선 직결</td><td class="num">약 22km · <b>27분</b></td><td class="s-o">🟢 최적 집결지</td></tr>
+<tr><td><b>의정부역</b></td><td>1호선 + GTX-C(예정)</td><td class="num">약 26km · <b>33분</b></td><td class="s-o">🟢 양호(광역흡수)</td></tr>
+<tr><td>일산</td><td>의정부역 환승 40분+</td><td class="num">+33분</td><td class="s-x">🔴 여전히 부담</td></tr>
+</table>
+<div class="callout-success callout">
+<b>통근 결론:</b> <b>"거주지→집결역은 각자/보호자, 집결역→부지는 근로지원사 동승 전용 승합차 무정차 27~33분"</b> 2단 구조라면 <b>양주·의정부 거주 발달장애인 통근이 성립</b>(총 편도 35~45분). <b>양주역 집결이 1순위</b>. 기존 <b>35번 시내버스</b>(민락2-의정부-양주역-법원읍 직결)가 이 동선을 뒷받침. <b>단, 일산 채용풀은 이 구조로도 무리</b>이므로 양주·의정부로 한정 권장.
+</div>
+<h4>승합차 운행조건 (필수 설계)</h4>
+<ul class="tight">
+<li><b>차량</b>: 카운티/스타렉스급 + 휠체어리프트·안전벨트 (편의증진법)</li>
+<li><b>동승 인력</b>: 운전원 외 <b>근로지원사/생활관리사 1인 필수 동승</b> (차내 안전관리)</li>
+<li><b>배차</b>: 집결역별 출근 1회·퇴근 1회, <b>정시 고정</b> (발달장애인 예측가능성)</li>
+<li><b>목표</b>: 역→부지 <b>무정차 30분 내외</b> 유지 (40분 부담선 하회)</li>
+</ul>
+
+<div class="pagebreak"></div>
+<h2>3. 임야 산40 경사 분석 — 개발부담 ⭐</h2>
+<p style="font-size:10.5px">면적의 86.7%인 <b>임야 산40(43,427㎡)</b>을 공개 DEM(SRTM 30m) 격자 64점으로 표고·경사 실측.</p>
+<div class="col2">
+<div style="flex:1.5">
+<img class="mapimg" src="file:///Volumes/E_SSD/02_GitHub.nosync/0021_shilla_medical/상권분석/김성록대표 시흥시부지/상권분석/파주법원리/samples/파주법원리_5임야경사.png" alt="경사도">
+<p style="font-size:8.5px;color:#777;margin-top:2px">▲ <b>임야 산40 경사·표고도</b> — <b style="color:#3C9A3C">초록(저지 62m)</b>→<b style="color:#E63C32">빨강(고지 142m)</b>. 서측(도로변·근린공원 인접) 완경사=개발가능, 동측 급경사 고지=존치.</p>
+</div>
+<div style="flex:1">
+<h4>경사 통계</h4>
+<table>
+<tr><th>지표</th><th>값</th></tr>
+<tr><td>표고 범위</td><td class="num">62~142m</td></tr>
+<tr><td>고저차</td><td class="num">80m</td></tr>
+<tr><td>평균 경사</td><td class="num"><b>13.2°</b></td></tr>
+<tr><td>중앙값</td><td class="num">11.3°</td></tr>
+<tr><td>최대</td><td class="num">29.3°</td></tr>
+</table>
+<h4>경사 구간 분포</h4>
+<table>
+<tr><td>완경사(0-10°)</td><td class="num">39%</td></tr>
+<tr><td>보통(10-20°)</td><td class="num">38%</td></tr>
+<tr><td>급경사(20-30°)</td><td class="num">22%</td></tr>
+<tr><td>험준(30°+)</td><td class="num">0%</td></tr>
+</table>
+</div>
+</div>
+<div class="callout-info callout">
+<b>지형 판정:</b> 평균경사 <b>13.2°(산지관리법 전용기준 25° 이하)</b>로 <b>산지전용 가능권</b>. 경사 20° 미만 <b>개발가능부가 약 33,699㎡(10,194평, 78%)</b>, 급경사 개발곤란부 약 2,943평(22%). 다만 <b>동고서저 사면(고저차 80m)</b>이라 절·성토·옹벽 부담이 발생.
+</div>
+
+<h4>개발부담(조성·전용) 추정 — 스크리닝</h4>
+<table>
+<tr><th>항목</th><th>산정 근거</th><th>금액</th></tr>
+<tr><td>대지조성비(완만 가정)</td><td>개발가능부 10,194평 × 평당 30만</td><td class="num">약 30.6억</td></tr>
+<tr><td>대지조성비(경사보정)</td><td>개발가능부 10,194평 × 평당 60만</td><td class="num">약 61.2억</td></tr>
+<tr><td>대체산림자원조성비</td><td>준보전산지 약 8,326원/㎡ × 개발가능부</td><td class="num">약 2.8억</td></tr>
+<tr><td colspan="2"><b>종합 개발부담(임야만)</b></td><td class="num"><b>약 33 ~ 64억</b></td></tr>
+</table>
+<div class="callout-danger callout">
+<b>개발부담 경고:</b> 임야 산40 전면 개발 시 조성·산림전용만 <b>33~64억</b>(토지가와 별개)이 발생. 게다가 산40은 <b>체육공원·고등학교·공공청사 도시계획시설 저촉</b>으로 개발 자체가 제한될 수 있어, <b>초기 사업은 취락 평탄부(제1종주거) 중심</b>으로 하고 임야는 <b>장기·단계 개발 또는 존치·보상</b>이 합리적. 취락 답(畓) 필지는 별도 <b>농지전용부담금</b>도 발생.
+</div>
+
+<h2>4. 시세·감정 요약 (앞선 실측)</h2>
+<div class="kpi-grid">
+  <div class="kpi-card"><div class="kpi-label">공시지가 총액</div><div class="kpi-value">26.4억</div><div class="kpi-sub">하한선</div></div>
+  <div class="kpi-card"><div class="kpi-label">제시단가 평가</div><div class="kpi-value">약 24.4억</div><div class="kpi-sub">대90만·임10만/평</div></div>
+  <div class="kpi-card"><div class="kpi-label">추정 감정가</div><div class="kpi-value">39.6~52.8억</div><div class="kpi-sub">현실화 1.5~2.0배</div></div>
+  <div class="kpi-card"><div class="kpi-label">+ 개발부담(임야)</div><div class="kpi-value s-x">33~64억</div><div class="kpi-sub">조성·전용</div></div>
+</div>
+<h4>시세감정 대비 제시가격 비교표 ⭐</h4>
+<table>
+<tr><th>평가 기준</th><th>산정 방식</th><th>대지·취락</th><th>임야 산40</th><th>총액</th><th>공시 대비</th></tr>
+<tr><td><b>① 공시지가</b></td><td>2026 개별공시 × 면적</td><td class="num">16.2억</td><td class="num">10.2억</td><td class="num"><b>26.4억</b></td><td class="num">1.00배</td></tr>
+<tr><td><b>② 제시단가(대표님)</b></td><td>대 90만/평 · 임 10만/평</td><td class="num">10.6억</td><td class="num">13.8억</td><td class="num"><b>약 24.4억</b></td><td class="num">0.92배</td></tr>
+<tr><td>③ 추정감정 하한</td><td>공시 × 현실화율 1.5</td><td class="num" colspan="2" style="text-align:center">—</td><td class="num">39.6억</td><td class="num">1.50배</td></tr>
+<tr><td>③ 추정감정 중앙</td><td>공시 × 현실화율 1.8</td><td class="num" colspan="2" style="text-align:center">—</td><td class="num">47.5억</td><td class="num">1.80배</td></tr>
+<tr><td>③ 추정감정 상한</td><td>공시 × 현실화율 2.0</td><td class="num" colspan="2" style="text-align:center">—</td><td class="num">52.8억</td><td class="num">2.00배</td></tr>
+</table>
+<div class="callout-info callout">
+<b>가격 해석:</b> 대표님 <b>제시단가(약 24.4억)는 공시지가(26.4억)보다도 낮은 0.92배</b> 수준으로, 추정감정가 하한(39.6억)의 <b>약 62%</b>. 이는 <b>임야에 평당 10만원(㎡당 3.3만)</b>을 적용한 결과로, 산40의 <b>도시계획시설 저촉·경사·개발부담(33~64억)</b>을 감안하면 <b>보수적·현실적 매입 관점</b>과 정합. 즉 제시가는 "개발부담을 매도인이 아닌 매수인이 떠안는" 전제의 <b>합리적 하한가</b>로 평가됨.
+</div>
+<p style="font-size:10px;color:#555">제시단가 기준 토지비 <b>약 24.4억</b>. 여기에 임야 전면개발 시 <b>개발부담 33~64억</b>이 얹히므로, <b>총 투입은 토지+조성 합산으로 판단</b>해야 함. 표준사업장 무상지원금(15~20억)은 <b>토지·조성 아닌 시설·편의</b>에만 쓸 수 있음(토지구입비 제외).</p>
+
+<h2>5. 종합 판정 및 권고</h2>
+<table>
+<tr><th>평가 축</th><th>판정</th><th>근거</th></tr>
+<tr><td>① 부지 물리조건</td><td class="s-t score">△ 보통</td><td>취락 평탄부 양호 / 임야 경사·시설저촉</td></tr>
+<tr><td>② 표준사업장 요건</td><td class="s-o score">○ 가능</td><td>제1종주거(건폐율↓)이나 학교·관공서 인프라 우수</td></tr>
+<tr><td>③ 통근 적정성</td><td class="s-t score">△ 조건부</td><td>2단 셔틀(양주역·의정부역)만 성립, 일산 제외</td></tr>
+<tr><td>④ 임야 개발부담</td><td class="s-t score">△ 부담 큼</td><td>조성·전용 33~64억, 시설저촉</td></tr>
+<tr><td>⑤ 시세·감정</td><td class="s-o score">○ 적정</td><td>토지비 약 24억, 공시 대비 합리</td></tr>
+</table>
+<div class="callout-success callout">
+<b>최종 판정 — "조건부 적합":</b> 법원리는 <b>취락 평탄부(제1종주거 2,019평)를 주 사업부지로, 양주·의정부 발달장애인을 양주역/의정부역 2단 셔틀로 통근시키는 모델</b>에 한해 표준사업장 부지로 적합. 괴산(통근불가→기숙사강제) 대비 <b>통근형 운영으로 기숙사 CAPEX 절감</b>이 핵심 강점. <b>단, ①임야 산40은 초기 개발 배제(개발부담·시설저촉), ②채용풀은 양주·의정부로 한정(일산 제외), ③승합차 근로지원사 동승</b>이 전제.
+</div>
+<h4>권고 다음 단계</h4>
+<ul class="tight">
+<li><b>통근 확정:</b> 양주역·의정부역 → 부지 실주행 시간 현장 측정(러시아워 포함) + 35번 버스 배차 확인</li>
+<li><b>채용풀 조사:</b> 양주·의정부 등록 발달장애인 현황 → 40명 확보 가능성 검증(공단·복지관)</li>
+<li><b>임야 저촉 확인:</b> 파주시에 산40 <b>도시계획시설(공원·학교·청사) 저촉 범위</b> + 군사보호 협의 확인</li>
+<li><b>개발부담 정밀화:</b> 취락 농지전용부담금 + 임야 단계개발 시 조성비 실적산 견적</li>
+<li><b>권리 확인:</b> 취락 개인(0) 필지·소유공란 필지 등기부 열람</li>
+</ul>
+<p style="font-size:9px; color:#888; margin-top:12px;">※ 통근 소요시간은 거리기반 추정(표정속도 가정), 임야 경사는 공개 DEM(SRTM 30m) 스크리닝으로 정밀측량이 아님. 개발부담·감정가는 스크리닝 추정으로 정식 견적·감정을 대체하지 않음. 도시계획시설 저촉·군사보호·전용가능성은 파주시·군부대 확인 필요. 표준사업장 요건은 KEAD 최신 기준 재확인 전제. <b>대외비.</b></p>
+
+</body>
+</html>

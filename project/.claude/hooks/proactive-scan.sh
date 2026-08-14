@@ -209,6 +209,30 @@ try:
 except:
     pass
 
+# ── 5.6. gh 토큰 유효성 사전 감지 (배포 프로젝트) ──
+# 근거: ISS-029(0019_XimTier) — gh 토큰 만료가 '사용 시점'에 발견돼
+# CI 조회와 kamal GHCR 로그인이 동시 차단됨. 만료는 예고 없이 오므로 선제 확인.
+if os.path.exists(".kamal") or os.path.exists("config/deploy.yml"):
+    try:
+        gh_auth = subprocess.run(["gh", "auth", "status", "-h", "github.com"],
+                                 capture_output=True, text=True, timeout=15)
+        gh_out = (gh_auth.stdout or "") + (gh_auth.stderr or "")
+        gh_invalid = (gh_auth.returncode != 0
+                      or "invalid" in gh_out.lower()
+                      or "failed to log in" in gh_out.lower())
+        scan_results["gh_token_valid"] = not gh_invalid
+        if gh_invalid:
+            findings.append({
+                "type": "FIX_BUG",
+                "priority": "P0",
+                "title": "gh 토큰 무효 — 배포 경로 차단 (CI 조회·kamal GHCR 로그인 불가)",
+                "assign_to": "agent-harness",
+                "detail": ("복구: gh auth refresh -h github.com -s write:packages "
+                           "/ 급할 때 GHCR_TOKEN=<PAT> bin/kamal deploy. 참조: 0019 ISS-029")
+            })
+    except:
+        pass
+
 # ── 6. Gemfile (Ruby) ───────────────────────────────
 if os.path.exists("Gemfile"):
     try:

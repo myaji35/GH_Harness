@@ -1,0 +1,312 @@
+<meta charset="utf-8">
+<title>SaaS 포트폴리오 부검 보고서</title>
+<style>
+@page { size: A4; margin: 12mm 14mm; }
+*, *::before, *::after { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing: border-box; }
+body { margin:0; line-height:1.45; letter-spacing:0.02em; word-spacing:0.05em;
+  font-family:"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif; color:#181818; }
+h1 { font-size:22px; margin:0 0 6px; color:#16325C; }
+h2 { font-size:16px; margin:18px 0 8px; color:#16325C; border-bottom:2px solid #00A1E0; padding-bottom:4px; }
+h3 { font-size:13px; margin:10px 0 5px; color:#16325C; }
+p, li { font-size:11px; margin:4px 0; }
+table { width:100%; border-collapse:collapse; margin:6px 0; font-size:10px; }
+th { background:#16325C; color:#fff; padding:5px 7px; text-align:left; font-weight:600; }
+td { padding:5px 7px; border-bottom:1px solid #E5E5E5; vertical-align:top; }
+tr:nth-child(even) td { background:#FAFAFA; }
+ul { padding-left:16px; margin:4px 0; }
+ul.tight li { margin-bottom:2px; }
+.callout { padding:7px 12px; margin:8px 0; font-size:11px; background:#F3F2F2; }
+.callout-info { border-left:4px solid #00A1E0; }
+.callout-warn { border-left:4px solid #F59E0B; }
+.callout-danger { border-left:4px solid #EF4444; background:#FEF2F2; }
+.callout-success { border-left:4px solid #10B981; }
+.kpi-grid { display:flex; gap:6px; margin:8px 0; }
+.kpi-card { flex:1; padding:8px; background:#F3F2F2; border-top:3px solid #00A1E0; }
+.kpi-label { font-size:9px; color:#666; }
+.kpi-value { font-size:19px; font-weight:700; color:#16325C; line-height:1.2; }
+.kpi-sub { font-size:8.5px; color:#888; }
+.b { display:inline-block; padding:1px 6px; border-radius:3px; font-size:9px; font-weight:600; }
+.b-red{background:#FEE2E2;color:#991B1B;} .b-yellow{background:#FEF3C7;color:#92400E;}
+.b-green{background:#D1FAE5;color:#065F46;} .b-gray{background:#E5E7EB;color:#374151;}
+.b-blue{background:#DBEAFE;color:#1E40AF;}
+.cover { page-break-after:always; page-break-inside:avoid; background-color:#16325C !important;
+  color:#fff !important; text-align:center; margin:-12mm -14mm 0 -14mm;
+  padding:90mm 40px 90mm 40px; min-height:250mm; }
+.cover * { color:#fff !important; }
+.pagebreak { page-break-before:always; }
+.q { font-size:10.5px; color:#444; border-left:3px solid #ccc; padding-left:8px; margin:5px 0; font-style:italic; }
+.col2 { display:flex; gap:10px; }
+.col2 > div { flex:1; }
+code { font-family:ui-monospace,Menlo,monospace; font-size:9.5px; background:#F3F2F2; padding:1px 3px; }
+</style>
+
+<div class="cover">
+  <div style="font-size:12px;letter-spacing:3px;opacity:.75;">GAGAHOHO, INC.</div>
+  <h1 style="font-size:32px;margin:18px 0 8px;color:#fff !important;">SaaS 포트폴리오 부검</h1>
+  <div style="font-size:15px;opacity:.9;">왜 아직 성공한 SaaS가 없는가</div>
+  <div style="width:70px;height:2px;background:#00A1E0;margin:22px auto;"></div>
+  <div style="font-size:11px;opacity:.8;line-height:1.9;">
+    분석 대상 · 29개 저장소 / 13,973 커밋 / 9개월<br>
+    판정 기준 · YC · MicroConf · SaaStr · David Skok · Mom Test · CB Insights<br>
+    작성일 · 2026-07-27 · ISS-391
+  </div>
+</div>
+
+<h2>0. 한 줄 결론</h2>
+<div class="callout callout-danger">
+<b>대표님은 SaaS를 못 만든 게 아니라, 아직 한 번도 팔아본 적이 없습니다.</b><br>
+13,973 커밋 중 결제·과금 관련 커밋은 51개(<b>0.37%</b>)입니다. 29개 프로젝트 어디에도
+실제 유료 고객·MRR·첫 매출을 기록한 파일이 <b>단 1개도 없습니다</b>.
+만드는 능력은 상위권이지만, 그 능력이 <b>돈이 들어오는 지점을 한 번도 통과하지 않았습니다</b>.
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi-card"><div class="kpi-label">저장소</div><div class="kpi-value">29</div><div class="kpi-sub">9개월간 생성</div></div>
+  <div class="kpi-card"><div class="kpi-label">총 커밋</div><div class="kpi-value">13,973</div><div class="kpi-sub">14.9M LOC</div></div>
+  <div class="kpi-card"><div class="kpi-label">결제 커밋</div><div class="kpi-value">0.37%</div><div class="kpi-sub">51건</div></div>
+  <div class="kpi-card"><div class="kpi-label">유료 고객</div><div class="kpi-value">0</div><div class="kpi-sub">증거 파일 0건</div></div>
+  <div class="kpi-card"><div class="kpi-label">7월 동시진행</div><div class="kpi-value">27</div><div class="kpi-sub">근무일 22일</div></div>
+</div>
+
+<h2>1. 방법론 — 무엇을 근거로 판정했나</h2>
+<table>
+<tr><th style="width:22%">근거 축</th><th style="width:38%">수집 방법</th><th>핵심 산출</th></tr>
+<tr><td><b>외부 플레이북</b></td><td>YC(PG·Seibel), Rob Walling <i>SaaS Playbook</i>, Lenny, SaaStr(Lemkin), David Skok, Mom Test, Andreessen, Superhuman PMF, CB Insights를 실제 URL 페치</td><td>PASS/FAIL 판정 기준 60여 항목 + 수치 벤치마크</td></tr>
+<tr><td><b>git 전수 부검</b></td><td>29개 저장소 전 커밋 이력 · 활동일 · 공백 · 배포시점 · 동시성 곡선</td><td>중단 패턴, 병렬 희석 곡선, 배포 후 이탈</td></tr>
+<tr><td><b>수익화 계층 스캔</b></td><td>10개 계층(결제·인증·테넌시·온보딩·랜딩·분석·이메일·배포·약관·고객증거)을 전 프로젝트 파일 경로 근거로 매트릭스화</td><td>"SaaS 기계장치" 보유 현황</td></tr>
+<tr><td><b>의도-현실 대조</b></td><td>README·brand-dna·issue registry·사업문서 정독</td><td>선언한 것 vs 만든 것의 격차</td></tr>
+<tr><td><b>직접 검증</b></td><td>PG SDK 실연동 여부, seeds 계정 실체, 커밋 저작자 분포를 오케스트레이터가 직접 재확인</td><td>서브에이전트 보고 2건 정정</td></tr>
+</table>
+
+<div class="callout callout-info">
+<b>검증자 독립성 적용</b> — 서브에이전트가 보고한 "XimTier_SaaS_Deploy 8,286커밋 중 7,282개가 타 계정"은 오류였습니다.
+직접 확인 결과 저작자는 <code>User</code> 46 / <code>myaji35</code> 2 / <code>Replit Agent</code> 1 / <code>Claude Code</code> 1로,
+<b>수작업 커밋은 50개</b>이고 나머지 8,236개는 Replit 플랫폼 자동 커밋(2~5월 월 1,500~2,000건)입니다.
+즉 <b>이 저장소의 8,286이라는 숫자는 노동량 지표가 아닙니다.</b>
+</div>
+
+<div class="pagebreak"></div>
+<h2>2. 플레이북 기준 채점표</h2>
+<p>확보한 플레이북에서 <b>코드베이스로 검증 가능한 기준</b>만 뽑아 포트폴리오 전체를 채점했습니다.</p>
+
+<table>
+<tr><th style="width:19%">기준</th><th style="width:15%">출처</th><th style="width:17%">통과 기준</th><th style="width:9%">판정</th><th>실측 근거</th></tr>
+<tr><td>결제 수단 존재</td><td>CB Insights, Skok</td><td>작동하는 결제 1개</td><td><span class="b b-yellow">부분</span></td><td>PG SDK 실연동 4개(VINTEE·SocialDoctors·OmniVibePro·choi-pd). 나머지 25개는 없음 또는 stub</td></tr>
+<tr><td>유료 고객 존재</td><td>YC, SaaStr</td><td>첫 10명 창업자 직접 클로징</td><td><span class="b b-red">FAIL</span></td><td>MRR·ARR·첫 결제·유료전환 언급 파일 <b>0건</b>. 전 프로젝트 seeds가 <code>password123</code> 데모</td></tr>
+<tr><td>고객 인터뷰 기록</td><td>Mom Test</td><td>인터뷰 노트 존재</td><td><span class="b b-red">FAIL</span></td><td>키워드 히트 전부 설계문서 내 단어. 실제 인터뷰록 0건. OmniVibePro에 <code>pmf-interviews/_TEMPLATE.md</code>만 있고 <b>채워진 것 없음</b></td></tr>
+<tr><td>제품 분석(퍼널·리텐션)</td><td>Lenny, Superhuman</td><td>코호트 리텐션 추적</td><td><span class="b b-red">FAIL</span></td><td>3rd-party 분석 SDK <b>전 프로젝트 0개</b>. 전부 자체 이벤트 테이블 → 퍼널·리텐션 데이터 자체가 없음</td></tr>
+<tr><td>PMF 측정</td><td>Sean Ellis 40%</td><td>설문 40% 이상</td><td><span class="b b-red">FAIL</span></td><td>측정 시도 흔적 0건</td></tr>
+<tr><td>단일 북극성 지표</td><td>YC 성장률</td><td>주간 5~7% 추적</td><td><span class="b b-red">FAIL</span></td><td>추적 지표는 이슈 종결 수·커밋 수. 성장률 계산 흔적 없음</td></tr>
+<tr><td>빠른 MVP 출시</td><td>Seibel</td><td>수주 내 첫 출시</td><td><span class="b b-green">PASS</span></td><td>배포 저장소 중 다수가 0~8일 내 첫 배포. <b>만드는 속도는 문제가 아님</b></td></tr>
+<tr><td>단일 제품 집중</td><td>Indie Hackers, Lemkin</td><td>1개 커밋 후 다음</td><td><span class="b b-red">FAIL</span></td><td>동시 진행 1→27개(9개월). <b>완전 종료된 프로젝트 0개</b></td></tr>
+<tr><td>좁은 타깃</td><td>PG "well not puddle"</td><td>실명 가능한 세그먼트</td><td><span class="b b-yellow">부분</span></td><td>세그먼트명은 존재(NPL투자사·보험설계사·소상공인). 그러나 <b>실명 리스트 0건</b></td></tr>
+<tr><td>유통 채널 실행</td><td>Walling Big 5</td><td>1개 채널 실행 로그</td><td><span class="b b-red">FAIL</span></td><td>SEO 설정 일부 외 아웃리치·광고·콘텐츠 실행 기록 없음</td></tr>
+<tr><td>약관·개인정보</td><td>PIPA(한국 필수)</td><td>실문서 게시</td><td><span class="b b-yellow">부분</span></td><td>7개 프로젝트만 보유. 실가입 받는 CEO·infraGrid에 <b>없음</b> → 법적 노출</td></tr>
+</table>
+
+<div class="callout callout-warn">
+<b>패턴이 보입니다.</b> PASS는 "혼자 완결되는 일"(빠른 출시)이고, FAIL은 전부 <b>외부와 접촉해야 완결되는 일</b>(고객·매출·인터뷰·유통·측정)입니다.
+이건 능력 문제가 아니라 <b>작업 선택의 문제</b>입니다.
+</div>
+
+<h2>3. 프로젝트별 실태 — 어디까지 갔나</h2>
+<p>10개 계층 감사 결과를 "돈을 받을 수 있는 상태까지의 거리"로 정렬했습니다.</p>
+
+<table>
+<tr><th style="width:20%">프로젝트</th><th style="width:8%">유형</th><th style="width:9%">결제</th><th style="width:8%">라이브</th><th>상태 판정</th></tr>
+<tr><td><b>0008_choi-pd</b></td><td>B2B/B2C</td><td><span class="b b-green">Stripe</span></td><td>YES</td><td><b>기계장치 최다 완비</b>(Stripe+Clerk+Resend+조직). 고객 증거는 없음</td></tr>
+<tr><td><b>0002_VINTEE</b></td><td>B2C 마켓</td><td><span class="b b-green">Toss</span></td><td>YES</td><td>결제·약관·환불정책까지 실装. <b>돈 받을 준비 완료, 안 받는 중</b></td></tr>
+<tr><td><b>0015_ExamsGraph</b></td><td>B2C</td><td><span class="b b-green">Toss+Stripe</span></td><td>YES</td><td>PG 2개+쿠폰+환불+동의/탈퇴까지. <b>법적·결제 성숙도 최고</b></td></tr>
+<tr><td><b>0030_OmniVibePro</b></td><td>B2B</td><td><span class="b b-green">Stripe</span></td><td>YES(자체도메인)</td><td>Stripe+JWT+RLS+CI/CD. 약관 링크가 <code>href="#"</code>. 고객 0</td></tr>
+<tr><td><b>0017_SocialDoctors</b></td><td>B2B제휴</td><td><span class="b b-green">Toss</span></td><td>YES</td><td>수수료·정산·지갑 엔진까지. 실거래 흔적 없음</td></tr>
+<tr><td><b>0014_Townin Graph</b></td><td>B2B2C</td><td><span class="b b-yellow">광고크레딧</span></td><td>YES</td><td>자체 크레딧 원장. PG SDK 미확인</td></tr>
+<tr><td><b>0031_LandCheck</b></td><td>B2C</td><td><span class="b b-yellow">수동이체</span></td><td>YES</td><td>"PG 미사용" 명시. 약관 최고 성숙(197·304줄). seeds는 <code>password123</code> 2계정</td></tr>
+<tr><td><b>0025_CEO</b></td><td>B2B</td><td><span class="b b-red">alert()</span></td><td>YES</td><td>플랜 게이트·402 응답까지 만들고 결제 자리에 <b><code>alert('결제 연동 준비 중입니다')</code></b></td></tr>
+<tr><td><b>0026_infraGrid</b></td><td>B2B</td><td><span class="b b-red">라이선스만</span></td><td>YES</td><td>조직·라이선스키·온보딩 완비. 청구 로직 없음</td></tr>
+<tr><td><b>0051_TowninAlpafold</b></td><td>B2B</td><td><span class="b b-red">계산만</span></td><td>YES</td><td>요금제(15만~200만원)·사용량 미터링 구현. <b>계산은 하고 청구는 안 함</b></td></tr>
+<tr><td><b>0035_XimTier_ENG2</b></td><td>B2B</td><td><span class="b b-red">NO</span></td><td>NO</td><td>테넌트·서브도메인·API키·usage_event까지. 결제·랜딩·배포대상 전무</td></tr>
+<tr><td><b>0029_SaaS_Deploy</b></td><td>데모</td><td><span class="b b-red">NO</span></td><td>부분</td><td>랜딩 페이지 있으나 <b>가입 목적지가 없음</b>. 인증은 JSON파일+SHA256("in production, use proper database" 주석)</td></tr>
+<tr><td><b>0012_InsureGraph</b></td><td>B2B</td><td><span class="b b-red">NO</span></td><td>YES</td><td>실고객 데이터 모델·조직 계층 완비. <b>과금 계층 전무</b></td></tr>
+<tr><td><b>0020_CPOFlow / 0036</b></td><td>단일고객</td><td><span class="b b-red">NO</span></td><td>YES(자체도메인)</td><td>실제 기업 도메인 운영 중. 팔지 않으므로 청구 없음 = <b>SaaS 아닌 수탁</b></td></tr>
+<tr><td>0000·0032·0034·0018·GH_Harness</td><td>내부도구</td><td><span class="b b-gray">해당없음</span></td><td>일부</td><td>1인 운영자용. <b>설계상 고객이 없음</b></td></tr>
+<tr><td>0047·0048·0049·0050</td><td>미착수</td><td><span class="b b-gray">-</span></td><td>NO</td><td><b>2026-07-15 하루에 4개 생성, 각 1커밋, 이후 침묵</b></td></tr>
+<tr><td>0021·0022·0023·0024·0027·0028·0046·0052</td><td>실험/브로슈어</td><td><span class="b b-gray">-</span></td><td>일부</td><td>0023은 설정파일 1개, 0024는 브라우저 로그만. 사실상 빈 폴더</td></tr>
+</table>
+
+<div class="callout callout-danger">
+<b>결정적 대비.</b> 배포 인프라(Kamal·GHA·Docker)는 <b>23개 프로젝트</b>에 갖춰져 있는데, 유료 고객은 0명입니다.
+배포는 혼자 완결되는 기술 작업이고, 청구는 남이 승낙해야 완결되는 사업 작업입니다.
+<b>대표님은 전자를 23번 하고 후자를 0번 했습니다.</b>
+</div>
+
+<h3>3-1. 문서는 누구를 위해 쓰였나</h3>
+<p>이슈 레지스트리 <b>약 4,700건</b>을 유형별로 보면, 전 프로젝트에서 엔지니어링 이슈가 비즈니스 이슈를
+<b>9:1 ~ 20:1</b>로 압도합니다. 더 중요한 것은, 그 소수의 비즈니스 이슈(BIZ_VALIDATE·DOMAIN_ANALYZE)조차
+<b>하네스가 자동 생성한 것</b>이지 고객 피드백에서 출발한 것이 아니라는 점입니다.</p>
+<div class="callout callout-danger">
+즉 하네스는 <b>비즈니스 검증의 외형은 생산하되 실질은 생산하지 않습니다</b> — BIZ_VALIDATE 이슈는 존재하지만,
+그것을 검증할 고객에게 연락한 적은 없습니다.
+</div>
+
+<table>
+<tr><th style="width:26%">항목</th><th style="width:12%">해당 수</th><th>실태</th></tr>
+<tr><td>실제 고객/페르소나 명시</td><td><b>2 / 35</b></td><td>infraGrid(brand-dna에 audience·jobs_to_be_done 유일 기재), CPOFlow(<b>실명 클라이언트 + 회의록</b>)</td></tr>
+<tr><td>사업 모델 문서 보유</td><td><b>2 / 35</b></td><td>ShortsAffiliate(<code>AGENDA.md</code> — 수익모델·가설표 H1~H7·피벗 결정로그), Phoenix(M&amp;A 전략 보고서)</td></tr>
+<tr><td>고객 접촉 기록</td><td><b>1 / 35</b></td><td>CPOFlow만 실재 — 날짜별 회의록에 클라이언트 지적사항·해결상태 기록</td></tr>
+<tr><td>메타툴링(제품 아님)</td><td><b>9 / 35</b></td><td>GH_Harness·0000_master·AgenticOS·simula·TimeFm·paperclip·blogger-mcp·graphify·identity-hub</td></tr>
+<tr><td>죽은 폴더</td><td><b>4 / 35</b></td><td>0001·0005·0023·0024 — 메타파일 또는 브라우저 로그만 존재</td></tr>
+<tr><td>Rails 기본 README 그대로</td><td><b>8개</b></td><td>CPOFlow·CPOFlow2·shilla_medical·CEO·LandCheck·Bloomberg·insuClaw·XimTierLab — <b>제품 설명을 한 번도 쓰지 않음</b></td></tr>
+</table>
+
+<div class="callout callout-warn">
+<b>계획 극장(planning theatre)의 극단.</b> InsureGraph Pro는 마크다운 <b>2,296개</b> 대 코드 850개 — <b>2.7:1</b>입니다.
+AgenticOS는 5.3:1. 포트폴리오 전체 마크다운은 약 9,800개.
+<b>일에 대해 쓴 글이 일을 하는 코드보다 많은 프로젝트가 여럿</b>이고, 그 글 어디에도 "누가 얼마를 낸다"는 답이 없습니다.
+</div>
+
+<div class="pagebreak"></div>
+<h2>4. git 이력이 드러낸 5가지 실패 패턴</h2>
+
+<h3>패턴 1 — 병렬 희석이 단조 증가한다 (감소 구간이 없음)</h3>
+<table>
+<tr><th>월</th><td>25-10</td><td>25-11</td><td>25-12</td><td>26-01</td><td>26-02</td><td>26-03</td><td>26-04</td><td>26-05</td><td>26-06</td><td><b>26-07</b></td></tr>
+<tr><th>동시 저장소</th><td>1</td><td>2</td><td>5</td><td>7</td><td>10</td><td>11</td><td>13</td><td>8</td><td>16</td><td><b>27</b></td></tr>
+</table>
+<p>9개월간 <b>27배</b> 증가. 5월의 일시 하락(8)은 정리가 아니라 다른 저장소가 조용해진 것이며, 곧 16→27로 재가속했습니다.
+<b>깨끗하게 종료된 프로젝트가 0개</b>입니다 — 전부 "조용해졌을" 뿐입니다. 7월 27개는 월 근무일(약 22일)보다 많습니다.</p>
+
+<h3>패턴 2 — 배포가 결승선이 아니라 이탈 지점이다</h3>
+<p>29개 중 8개(28%)는 배포 커밋이 아예 없습니다. 배포한 21개 중에서도 <b>배포 이후 실사용 기반 반복</b>이 이어진 건 3개(0029·0012·0020)뿐입니다.
+나머지 18개는 "한 번 띄우고 관심이 다음 저장소로 이동"한 형태입니다.</p>
+
+<h3>패턴 3 — 미완결 작업 1,514건이 현재 상태다</h3>
+<p>지금 이 순간 포트폴리오 전체에 <b>커밋되지 않은 변경 1,514건</b>이 떠 있습니다.
+ExamsGraph 205 · OmniVibePro 198 · LandCheck 176 · SocialDoctors 150 · CEO 117 · Townin 104.
+여기에 <b>병합되지 않은 장기 feature 브랜치 6개</b>가 더해집니다. <b>미완결이 예외가 아니라 기본 상태</b>입니다.</p>
+
+<h3>패턴 4 — 2026-07-15의 사건</h3>
+<div class="callout callout-warn">
+하루에 <b>6개 프로젝트가 시작</b>됐습니다. 0047·0048·0049·0050은 각 1커밋 후 영구 침묵(하나는 486만 줄을 한 번에 덤프),
+0034_Bloomberg는 2일 생존, 0035는 XimTier의 <b>다섯 번째 리셋</b>이었습니다.
+같은 날 신규 착수와 기존 리셋이 동시에 일어난 것은 우연이 아니라 <b>같은 감정의 두 배출구</b>로 읽힙니다.
+</div>
+
+<h3>패턴 5 — 같은 제품을 새 번호로 다시 짓는다</h3>
+<table>
+<tr><th style="width:14%">계보</th><th style="width:40%">반복 이력</th><th>의미</th></tr>
+<tr><td><b>XimTier ×6</b></td><td>0019 → 0023(lab) → 0027(Lab) → 0029(ENG) → 0029(SaaS_Deploy) → 0035(ENG2)</td><td>0029_ENG 안에 <b>동일 Streamlit 앱 사본이 4벌</b>(Origin/Repro/Deploy/V06191535P01)</td></tr>
+<tr><td><b>CPOFlow ×2</b></td><td>0020 → 0036</td><td>둘 다 라이브. 결제는 둘 다 없음</td></tr>
+<tr><td><b>Townin ×2</b></td><td>0014 → 0051</td><td>도메인 전환(지역커뮤니티→NPL)</td></tr>
+<tr><td><b>DigitalTwin ×3</b></td><td>0022 → 0024 → 0047</td><td>0024는 코드 없이 브라우저 로그만 43개</td></tr>
+</table>
+<p>리셋은 "이 시장은 돈을 안 낸다"가 아니라 <b>"코드가 지저분해서 그렇다"</b>는 판정입니다.
+6번 리셋했다는 것은 6번 모두 원인을 코드로 지목했다는 뜻인데, 안 팔리는 이유가 코드였을 가능성은 낮습니다.
+<b>새 번호는 실패 기록을 0으로 되돌리는 장치</b>로 기능합니다.</p>
+
+<div class="pagebreak"></div>
+<h2>5. 근본 원인 — 증상 10개가 아니라 원인 1개</h2>
+
+<div class="callout callout-danger">
+<b>1차 원인:</b> 대표님은 <b>"만들기"를 "사업"의 대체재로 쓰고 있습니다.</b><br>
+그 대체가 성립하는 이유는 명확합니다 — <b>만들기는 혼자 완결되지만, 사업은 타인의 거절을 통과해야 합니다.</b>
+커밋은 내가 만드는 진척 신호이고, 매출은 남이 만드는 진척 신호입니다. 9개월간 자가발전 신호만으로 운영됐습니다.
+</div>
+
+<div class="callout callout-warn">
+<b>2차 원인:</b> <b>AI 코딩이 "만들기"의 비용을 0에 가깝게 만들면서, 회피 행동의 자연 브레이크가 제거됐습니다.</b><br>
+5년 전이라면 8천 커밋짜리 제품을 여섯 번 리셋하는 데 수년이 걸렸고, 그 고통 자체가 브레이크였을 것입니다.
+지금은 리셋 비용이 거의 없어 <b>회피가 무한 지속 가능</b>해졌습니다.
+</div>
+
+<div class="callout callout-info">
+<b>그리고 GH_Harness가 그 회피 효율을 한 단계 더 올렸습니다.</b>
+에이전트 22개·이슈 레지스트리·예산 정책·4단 모델 티어링을 갖췄지만,
+이 중 <b>"이번 주에 돈 낼 사람 5명의 실명을 대라"고 요구하는 에이전트는 0개</b>입니다.
+product-manager·plan-ceo-reviewer·opportunity-scout 전부 <b>내부 산출물의 품질</b>만 봅니다.
+계기판은 정밀한데 <b>연료계와 목적지가 없는 비행기</b>입니다.
+</div>
+
+<h3>이 진단을 뒷받침하는 반대 방향 증거</h3>
+<p>대표님의 시간 배분과 수익 의도가 <b>반대로 움직입니다</b>. 결제 커밋 상위 3개(ExamsGraph 12·SocialDoctors 9·VINTEE 9)는
+전부 <b>상대적으로 적게 투입한</b> 저장소들입니다. 반면 최대 투입처는 결제 커밋이 1개 이하입니다.
+<b>돈 이야기가 없는 곳이 편하기 때문에 그곳에 시간을 더 썼다</b>고 읽는 것이 데이터에 가장 부합합니다.</p>
+
+<h2>6. 반론 검토 — 이 데이터가 똑똑한 행동일 가능성</h2>
+<table>
+<tr><th style="width:26%">반론</th><th style="width:37%">논지</th><th>검증 결과</th></tr>
+<tr><td><b>저비용 옵션 포트폴리오다</b></td><td>탐색 비용이 폭락한 시대에 29개는 낭비가 아니라 콜옵션 29장. 대부분 0, 하나가 전부를 갚는다</td><td><span class="b b-red">기각</span> 옵션은 <b>행사 또는 폐기 규율</b>이 있어야 성립. 9개월간 행사 0건·폐기 0건이고 곡선은 더 사는 방향. 게다가 한 저장소에 61%를 몰았으므로 분산도 집중도 아님</td></tr>
+<tr><td><b>제품이 아니라 능력에 투자했다</b></td><td>13,973커밋은 산출물이 아니라 훈련 로그. 이 능력은 다음 제품에 전부 실린다</td><td><span class="b b-yellow">부분 인정</span> 능력 축적은 실재. 그러나 <b>파는 근육만 0개월차</b>로 남았음. 훈련이라면 이제 종목을 바꿀 시점</td></tr>
+<tr><td><b>GH_Harness가 진짜 제품이다</b></td><td>AI 오케스트레이션 하네스는 실재 수요. 29개 프로젝트로 실전 검증까지 마쳤다</td><td><span class="b b-yellow">재검토 가치</span> 진지한 가설이나 하네스도 결제 커밋 1개·제품 취급 이력 없음. <b>무한 개선 가능해 회피처가 되기 쉬움</b></td></tr>
+<tr><td><b>9개월은 짧다</b></td><td>SaaS에서 9개월은 초기. 아직 그 단계가 아닐 뿐</td><td><span class="b b-red">기각</span> 매출 규모엔 맞지만 <b>첫 청구서</b>엔 안 맞음. 178일 중 결제 코드 1회는 시간 부족이 아니라 <b>의도 부재</b></td></tr>
+</table>
+
+<div class="callout callout-success">
+<b>살아남는 사실 하나:</b> 대표님의 실행 능력은 진짜이고 상위권입니다. 9개월에 14.9M LOC, 23개 프로젝트 배포 인프라 완비,
+Stripe·Toss·Clerk·RLS·멀티테넌시를 실제로 구현할 수 있습니다.
+<b>문제는 능력이 아니라 그 능력이 겨눈 방향입니다.</b> 그 격차는 코드로 메울 수 없고 청구서로만 메울 수 있습니다.
+</div>
+
+<div class="pagebreak"></div>
+<h2>7. 실행안 — 다음 근무일</h2>
+
+<h3>7-1. 1개로 줄인다 (3개도 아님)</h3>
+<p>선정 기준은 코드 품질도 시장 크기도 애착도 아닙니다. <b>"오늘 청구서를 보낼 수 있는 사람의 실명을 댈 수 있는가"</b> 하나입니다.</p>
+<table>
+<tr><th style="width:19%">후보</th><th style="width:30%">이미 갖춘 것</th><th style="width:16%">치명적 결손</th><th>판단</th></tr>
+<tr><td><b>0020_CPOFlow</b> <span class="b b-blue">1순위</span></td><td><b>포트폴리오 유일의 실명 고객 + 날짜별 회의록</b>. 자체 도메인 라이브, 약관, 이메일 파이프라인</td><td>결제 없음(팔지 않으므로)</td><td>이미 <b>쓰는 사람이 있는 유일한 제품</b>. 여기에 가격표를 붙이는 것이 가장 짧은 경로</td></tr>
+<tr><td><b>0015_ExamsGraph</b> <span class="b b-blue">2순위</span></td><td>Toss+Stripe 2개, 쿠폰·환불, 동의·탈퇴, 약관, 라이브. 경쟁사 실명 분석 존재</td><td>고객 0</td><td>기계장치가 가장 완비됨. <b>고객만 없음</b></td></tr>
+<tr><td><b>0050_ShortsAffiliate</b></td><td><b>유일하게 제대로 된 사업모델 문서</b>(수익모델·가설 H1~H7·피벗 근거·경쟁사 회피전략)</td><td>커밋 1개, 구현 없음</td><td>생각은 가장 깊은데 <b>손을 대지 않음</b></td></tr>
+<tr><td><b>0030_OmniVibePro</b></td><td>Stripe 4단 요금제, 자체 도메인, CI/CD, PMF 경쟁사 표</td><td>약관 <code>href="#"</code>, 고객 0</td><td>기계는 준비, 법적 결손</td></tr>
+</table>
+<div class="callout callout-warn">
+<b>주목할 비대칭.</b> 실명 고객이 있는 곳(CPOFlow)에는 결제가 없고, 결제가 있는 곳(ExamsGraph)에는 고객이 없고,
+사업모델이 있는 곳(ShortsAffiliate)에는 구현이 없습니다. <b>세 조각이 전부 다른 폴더에 흩어져 있습니다.</b>
+어느 하나에 나머지 둘을 붙이는 것이 이번 분기의 전부입니다.
+</div>
+<p>XimTier 계보(6개)는 <b>1순위가 아닙니다.</b> 투입량이 가장 크지만 그것은 자산이 아니라 매몰비용이고, 결제 계층이 여섯 번의 리셋 동안 한 번도 만들어지지 않았습니다.</p>
+
+<h3>7-2. 나머지 28개를 아카이브한다 (삭제 아님)</h3>
+<p>폴더명 앞에 <code>_ARCHIVED_</code>를 붙이거나 GitHub archive 처리합니다. 그리고 <b>새 폴더 생성 금지 90일</b>을 명시적으로 겁니다.
+0053이 생기는 순간 2026-07-15로 되돌아간 것입니다.</p>
+
+<h3>7-3. GH_Harness를 동결한다</h3>
+<p>하네스 개선 이슈를 하나도 처리하지 않습니다. <b>재개 조건은 유료 고객 1명</b>입니다.
+하네스가 나빠서가 아니라, 지금 대표님에게 <b>가장 매력적인 회피처</b>이기 때문입니다.</p>
+
+<h3>7-4. 실명 20개를 적는다</h3>
+<p>선택한 1개 제품에 대해 <b>실제 연락 가능한 사람 20명의 이름·연락처·필요 이유 한 줄</b>을 씁니다.
+페르소나 금지, "학원 원장님들" 같은 집단명사 금지. <b>20개를 못 채우면 그것이 이번 주의 유일하고도 가장 중요한 발견</b>입니다 — 9개월간 밝혀지지 않은 사실이기 때문입니다.</p>
+
+<h3>7-5. 5명에게 청구한다</h3>
+<p>무료 체험 제안이 아닙니다. <b>"월 N만원입니다. 오늘 결제 가능합니다."</b>
+5명 모두 거절할 것이고 그것이 정상입니다. <b>거절 사유 5개가 13,973커밋보다 정보량이 많습니다.</b></p>
+
+<h3>7-6. 하네스에 빠진 계층을 넣는다</h3>
+<div class="callout callout-info">
+현재 22개 에이전트 중 외부 수익을 보는 것이 0개입니다. 최소 2개를 추가해야 이 패턴이 구조적으로 재발하지 않습니다.<br>
+<b>① revenue-gate</b> — 이슈 착수 전 "이 작업이 어떤 실명 고객의 어떤 지불 의사에 연결되는가"를 요구. 답 없으면 P3 강등.<br>
+<b>② customer-contact-tracker</b> — 주간 <i>고객 접촉 횟수</i>·<i>청구 발송 건수</i>·<i>거절 사유 수집</i>을 registry에 기록. 0이면 세션 시작 시 경고.
+</div>
+
+<h3>7-7. 이번 주 성공 기준</h3>
+<table>
+<tr><th>지표</th><th style="width:18%">목표</th><th>비고</th></tr>
+<tr><td>활성 저장소</td><td><b>1개</b></td><td>나머지 아카이브</td></tr>
+<tr><td>신규 저장소 생성</td><td><b>0개</b></td><td>90일 동결</td></tr>
+<tr><td>실명 리스트</td><td><b>20명</b></td><td>연락처 포함</td></tr>
+<tr><td>결제 링크</td><td><b>라이브</b></td><td>기능 미완성이어도 무관</td></tr>
+<tr><td>청구 발송</td><td><b>5건</b></td><td>무료 체험 아님</td></tr>
+<tr><td>거절 사유 수집</td><td><b>5건</b></td><td>이번 주 핵심 산출물</td></tr>
+<tr><td>커밋 수</td><td><b>평가하지 않음</b></td><td>9개월간 잘못된 방향으로 최적화시킨 지표</td></tr>
+</table>
+
+<div class="callout callout-danger" style="margin-top:14px;">
+<b>마지막.</b> 29개 저장소는 실패의 증거가 아닙니다. <b>한 번도 실패해본 적이 없다는 증거</b>입니다.
+실패는 시장에서만 일어나고, 대표님은 9개월간 시장에 나간 적이 없습니다.
+13,973커밋은 훌륭한 방어벽이며, 그 뒤에서는 아무도 "안 사겠다"고 말할 수 없습니다.
+</div>
+
+<p style="margin-top:14px;font-size:9px;color:#888;border-top:1px solid #ddd;padding-top:6px;">
+ISS-391 · 근거: 29개 저장소 git 전수 분석, 10계층 수익화 매트릭스 감사(6배치), 외부 플레이북 9종 웹 리서치, 오케스트레이터 직접 검증.
+판정 강도: 직설 부검(대표님 지정). 한계: 정적 코드·이력 분석이므로 오프라인 영업·구두 계약 등 저장소 밖 활동은 포착되지 않음.
+</p>

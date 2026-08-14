@@ -1,0 +1,31 @@
+# GH_Harness CD 스켈레톤 — Kamal 배포 (수동 트리거 기본)
+# 원칙:
+#   - 기본 트리거는 workflow_dispatch(수동). 자동 배포는 대표님이 명시 전환할 때만.
+#   - 시크릿은 ${{ secrets.X }} 플레이스홀더만. 값은 GitHub repo Secrets에 대표님이 직접 등록(T2 SECURITY).
+#   - CI(ci.yml) green 이후에만 배포하도록 needs 게이트를 두는 것을 권장(주석 참고).
+name: Deploy (Kamal)
+
+on:
+  workflow_dispatch:   # 수동 실행 (기본). 자동 배포로 바꾸려면 push 트리거 추가.
+  # push:
+  #   branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Install Kamal
+        run: gem install kamal
+
+      - name: Deploy
+        env:
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          # 추가 배포 시크릿은 여기에 ${{ secrets.X }} 형태로 선언 (값은 repo Secrets에서 주입)
+        run: kamal deploy

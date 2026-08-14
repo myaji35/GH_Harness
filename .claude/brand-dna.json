@@ -1,6 +1,7 @@
 {
-  "_comment": "이 파일은 빈 템플릿입니다. 'brand 정의해줘' 라고 말하면 brand-guardian이 코드베이스/git/README 분석으로 자동 초안을 작성합니다. v3에서는 design_tokens가 핵심 — 이것이 프로젝트 UI 개성을 결정합니다.",
+  "_comment": "이 파일은 빈 템플릿입니다. 'brand 정의해줘' 라고 말하면 brand-guardian이 코드베이스/git/README 분석으로 자동 초안을 작성합니다. v3에서는 design_tokens가 핵심 — 이것이 프로젝트 UI 개성을 결정합니다. industry 필드는 harness-ui-trends-2026 skill.md 섹션 9의 업종 프리셋 key(finance_dashboard/banking/insurance/certification/community/saas/kids_edu/meditation/luxury/game_dev_tool)를 넣으면 업종별 금지목록이 anti_patterns에 자동 시드됩니다(옵트인).",
   "project": "",
+  "industry": "",
   "agenda": "",
   "brand_voice": "",
   "emotional_tone": [],

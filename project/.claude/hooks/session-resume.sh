@@ -8,17 +8,52 @@
 #   3. IN_PROGRESS / READY 이슈 목록 출력
 #   4. 다음 실행 지시 제공
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# ── headless(claude -p) 차단 (ISS-076) ──
+# 이 hook은 READY 이슈가 있으면 sys.exit(2)로 "즉시 실행하라"를 지시한다(asyncRewake).
+# 대화형 세션에서는 그게 자동 디스패치 파이프라인의 핵심이라 반드시 유지한다.
+# 그러나 `claude -p`는 단발 실행이라 그 재개 지시를 수행할 세션이 없다
+# → 시작 단계에서 블로킹되어 "Execution error"로 죽는다.
+#
+# 파급(실측 2026-07-20): 저니2~5가 전부 두뇌(claude -p) 스폰에 의존하므로
+# 저니 검증 체계 전체가 마비됐다. 동일 프롬프트 6회 중 4회 실패(67%)로 관측.
+#
+# 공식 문서상 headless 전용 환경변수/입력필드는 없고, SessionStart 입력에는
+# Stop hook의 stop_hook_active 같은 필드도 없다. 조상 프로세스의 -p 검사는
+# 오탐(대화형도 headless로 판정)으로 실패했다 — 쓰지 마라.
+# 그래서 스폰하는 쪽(src/brain/claude.ts)이 HARNESS_HEADLESS=1을 명시 주입한다.
+if [ "${HARNESS_HEADLESS:-}" = "1" ]; then
+  echo "[session-resume] headless(HARNESS_HEADLESS=1) — 자동 디스패치 지시 생략(블로킹 금지)."
+  exit 0
+fi
+
+# 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
+# BASH_SOURCE는 링크 경로라 lib/ 를 프로젝트 쪽에서 찾다 ModuleNotFoundError로 죽는다.
+# UserPromptSubmit/SessionStart hook이 죽으면 claude 실행 자체가 실패한다.
+_src="${BASH_SOURCE[0]}"
+while [ -L "$_src" ]; do
+  _dir="$(cd -P "$(dirname "$_src")" && pwd)"
+  _src="$(readlink "$_src")"
+  [[ "$_src" != /* ]] && _src="$_dir/$_src"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$_src")" && pwd)"
 REGISTRY=".claude/issue-db/registry.json"
 BRAND_DNA="brand-dna.json"
 
 # ── 프로젝트 디자인 아젠다 자동 주입 ──
 # brand-dna.json이 있으면 design_tokens + agenda를 컨텍스트에 출력
 if [ -f "$BRAND_DNA" ]; then
-  python3 << PYEOF
-import json
+  python3 - "$SCRIPT_DIR" "$BRAND_DNA" << 'PYEOF'
+import sys
+# heredoc 보간 금지 — argv로 수신 (RCE 차단, 2026-07-15)
+_ARGV = (sys.argv[1:3] + ['']*2)[:2]
+
+import json, os
+__file__ = os.path.join(_ARGV[0], "session-resume.sh")
+sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
+from issue_id import next_id
+
 try:
-    with open("$BRAND_DNA", 'r') as f:
+    with open(_ARGV[1], 'r') as f:
         dna = json.load(f)
     status = dna.get("_status", "unknown")
     agenda = dna.get("agenda", "")
@@ -44,24 +79,17 @@ try:
                           and i.get("status") in ("READY", "IN_PROGRESS")
                           for i in _reg.get("issues", []))
             if not _exists:
-                def _n(iid):
-                    try: return int(str(iid).split("-")[-1])
-                    except: return 0
-                _nums = [_n(i.get("id","")) for i in _reg.get("issues", [])]
-                _nx = max((max(_nums) if _nums else 0)+1,
-                          _reg.get("stats", {}).get("total_issues", 0)+1)
-                while any(i.get("id") == f"ISS-{_nx:03d}" for i in _reg["issues"]):
-                    _nx += 1
+                _new_id = next_id(_reg)
                 _now = _dt.datetime.now().isoformat()
                 _reg["issues"].append({
-                    "id": f"ISS-{_nx:03d}", "title": _title, "type": "BRAND_DEFINE",
+                    "id": _new_id, "title": _title, "type": "BRAND_DEFINE",
                     "status": "READY", "priority": "P1", "assign_to": "brand-guardian",
                     "depth": 0, "created_at": _now, "updated_at": _now,
                     "payload": {"origin": "session-resume", "action": "draft_brand_dna"},
                 })
                 _reg.setdefault("stats", {})["total_issues"] = _reg["stats"].get("total_issues", 0)+1
                 json.dump(_reg, open(_REG, "w"), ensure_ascii=False, indent=2)
-                print(f"⚠️  brand-dna.json 미초기화 → BRAND_DEFINE 이슈 ISS-{_nx:03d} 자동 생성 (brand-guardian)")
+                print(f"⚠️  brand-dna.json 미초기화 → BRAND_DEFINE 이슈 {_new_id} 자동 생성 (brand-guardian)")
             else:
                 print("⚠️  brand-dna.json 미초기화 — BRAND_DEFINE 이슈 이미 존재")
         except Exception as _e:
@@ -123,8 +151,22 @@ if [ ! -f "$REGISTRY" ]; then
   exit 0
 fi
 
-python3 << 'PYEOF'
-import json, sys
+python3 - "$SCRIPT_DIR" << 'PYEOF'
+# 구버전 이슈(assign_to 필드 없음)용 타입→담당 폴백. CLAUDE.md 에이전트 표 기준.
+# 직접 인덱싱하면 KeyError로 SessionStart hook 전체가 죽는다.
+TYPE_DEFAULT_AGENT = {
+    "FEATURE": "product-manager", "FEATURE_PLAN": "product-manager",
+    "USER_STORY": "product-manager", "EVAL": "eval-harness",
+    "FIX_BUG": "agent-harness", "REFACTOR": "agent-harness",
+    "GENERATE_CODE": "agent-harness", "UX_FIX": "ux-harness",
+    "UI_REVIEW": "ux-harness", "RUN_TESTS": "test-harness",
+    "LINT_CHECK": "code-quality",
+}
+import json, sys, os
+
+__file__ = os.path.join(sys.argv[1], "session-resume.sh")
+sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
+from issue_id import next_id
 
 try:
     with open(".claude/issue-db/registry.json", 'r') as f:
@@ -140,7 +182,7 @@ stats = registry.get("stats", {})
 # session-resume.sh 셸 영역에서 detect-cicd-gap.sh 결과를 env로 전달.
 # 중복 방지: 활성(READY/IN_PROGRESS/AWAITING_USER) CICD_BOOTSTRAP 있으면 skip.
 # 일일 한도: registry.cicd_bootstrap_state.last_date 로 1일 1회.
-import os, datetime
+import datetime
 if os.environ.get("CICD_GAP_VERDICT", "OK") == "GAP":
     active = [i for i in issues if i.get("type") == "CICD_BOOTSTRAP"
               and i.get("status") in ("READY", "IN_PROGRESS", "AWAITING_USER")]
@@ -149,9 +191,7 @@ if os.environ.get("CICD_GAP_VERDICT", "OK") == "GAP":
     cb_state = registry.setdefault("cicd_bootstrap_state", {"last_date": ""})
     today = datetime.date.today().isoformat()
     if not active and not done_before and cb_state.get("last_date") != today:
-        # ID 생성: ISS-<max+1>
-        nums = [int(i["id"].split("-")[1]) for i in issues if i.get("id","").startswith("ISS-") and i["id"].split("-")[1].isdigit()]
-        new_id = f"ISS-{(max(nums)+1 if nums else 1):03d}"
+        new_id = next_id(registry)
         new_issue = {
             "id": new_id,
             "type": "CICD_BOOTSTRAP",
@@ -168,6 +208,7 @@ if os.environ.get("CICD_GAP_VERDICT", "OK") == "GAP":
             }
         }
         issues.append(new_issue)
+        registry.setdefault("stats", {})["total_issues"] = registry["stats"].get("total_issues", 0) + 1
         cb_state["last_date"] = today
         try:
             with open(".claude/issue-db/registry.json", "w") as wf:
@@ -218,15 +259,16 @@ if in_progress:
         "hermes": "sonnet", "advisor": "fable",
         "audience-researcher": "sonnet", "journey-validator": "sonnet",
     }
-    model = MODEL_MAP.get(iss.get("assign_to", ""), "sonnet")
+    assignee = iss.get("assign_to") or TYPE_DEFAULT_AGENT.get(iss.get("type", ""), "agent-harness")
+    model = MODEL_MAP.get(assignee, "sonnet")
     print(f"\n⚠️  중단된 작업 즉시 재개:")
-    print(f"  → {iss['id']} ({iss['type']}) — {iss['title']} → {iss['assign_to']}")
+    print(f"  → {iss['id']} ({iss['type']}) — {iss['title']} → {assignee}")
     print(f"\n[자동 실행 지시]")
     print(f"중단된 이슈를 즉시 이어서 처리합니다. 질문하지 마라.")
     print(f"  이슈: {iss['id']} ({iss['type']})")
     print(f"  제목: {iss['title']}")
-    print(f"  담당: {iss['assign_to']} (model: {model})")
-    print(f"  1. {iss['assign_to']} 에이전트를 model={model}로 즉시 스폰")
+    print(f"  담당: {assignee} (model: {model})")
+    print(f"  1. {assignee} 에이전트를 model={model}로 즉시 스폰")
     print(f"  2. 처리 완료 후 on_complete.sh 호출")
     sys.exit(2)  # asyncRewake
 
@@ -234,7 +276,7 @@ if in_progress:
 if ready and not in_progress:
     print(f"\n📋 대기 중인 작업 (READY):")
     for iss in ready[:5]:
-        print(f"  → {iss['id']} ({iss['type']}) [{iss.get('priority','P1')}] — {iss['title']} → {iss['assign_to']}")
+        print(f"  → {iss['id']} ({iss['type']}) [{iss.get('priority','P1')}] — {iss['title']} → {assignee}")
     if len(ready) > 5:
         print(f"  ... 외 {len(ready) - 5}개")
 
@@ -253,14 +295,15 @@ if ready and not in_progress:
         "hermes": "sonnet", "advisor": "fable",
         "audience-researcher": "sonnet", "journey-validator": "sonnet",
     }
-    model = MODEL_MAP.get(next_iss.get("assign_to", ""), "sonnet")
+    next_assignee = next_iss.get("assign_to") or TYPE_DEFAULT_AGENT.get(next_iss.get("type", ""), "agent-harness")
+    model = MODEL_MAP.get(next_assignee, "sonnet")
     print(f"\n[자동 실행 지시]")
     print(f"질문하지 마라. 즉시 실행하라.")
     print(f"  이슈: {next_iss['id']} ({next_iss['type']})")
     print(f"  제목: {next_iss['title']}")
-    print(f"  담당: {next_iss['assign_to']} (model: {model})")
+    print(f"  담당: {next_assignee} (model: {model})")
     print(f"  1. registry.json에서 {next_iss['id']}의 status를 IN_PROGRESS로 변경")
-    print(f"  2. {next_iss['assign_to']} 에이전트를 model={model}로 즉시 스폰")
+    print(f"  2. {next_assignee} 에이전트를 model={model}로 즉시 스폰")
     sys.exit(2)  # asyncRewake
 
 if not in_progress and not ready:

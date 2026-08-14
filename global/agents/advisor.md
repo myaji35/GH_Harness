@@ -1,3 +1,9 @@
+---
+name: advisor
+description: harness의 **최상위 판단 계층**. Hermes가 전달한 명확한 질문에 대해 Opus 수준 추론으로
+model: opus
+---
+
 # Advisor Agent (Opus 자문관)
 
 harness의 **최상위 판단 계층**. Hermes가 전달한 명확한 질문에 대해 Opus 수준 추론으로

@@ -1,0 +1,169 @@
+{
+  "_schema_version": "1.0",
+  "_description": "Daily Dream 학습 증류 — 성공 패턴 DB",
+  "_last_updated": "2026-08-09T02:47:53Z",
+  "success_patterns": [
+    {
+      "pattern": "REFACTOR + scope_dir 명시 → COMPLETED (범위 한정 리팩토링 성공률 높음)",
+      "evidence_issues": [
+        "ISS-301",
+        "ISS-305",
+        "ISS-309"
+      ],
+      "frequency": 13,
+      "first_seen": "2026-05-12T00:36:42Z",
+      "last_seen": "2026-05-13T06:42:31Z"
+    },
+    {
+      "pattern": "rubric 4/4 충족 이슈는 100% COMPLETED (명시적 성공 기준 효과)",
+      "evidence_issues": [
+        "ISS-307",
+        "ISS-308",
+        "ISS-309"
+      ],
+      "frequency": 11,
+      "first_seen": "2026-05-12T00:36:42Z",
+      "last_seen": "2026-05-13T06:42:31Z"
+    },
+    {
+      "pattern": "blocked_by 의존성 해소 후 depth-0 이슈 즉시 COMPLETED",
+      "evidence_issues": [
+        "ISS-302",
+        "ISS-303",
+        "ISS-305",
+        "ISS-306"
+      ],
+      "frequency": 20,
+      "first_seen": "2026-05-12T00:36:42Z",
+      "last_seen": "2026-05-13T06:42:31Z"
+    },
+    {
+      "pattern": "P0 우선순위 이슈 신속 완료 (긴급 대응 체계 작동)",
+      "evidence_issues": [
+        "ISS-302",
+        "ISS-323",
+        "ISS-326",
+        "ISS-370",
+        "ISS-371",
+        "ISS-383",
+        "ISS-384",
+        "ISS-394",
+        "ISS-395",
+        "ISS-416"
+      ],
+      "frequency": 14,
+      "first_seen": "2026-05-12T00:36:42Z",
+      "last_seen": "2026-08-09T02:47:53Z"
+    },
+    {
+      "pattern": "배치 일괄 주입(injected_count 필드) 패턴 — 반복 수정보다 일괄 처리가 효율적",
+      "evidence_issues": [
+        "ISS-305"
+      ],
+      "frequency": 5,
+      "first_seen": "2026-05-12T00:36:42Z",
+      "last_seen": "2026-05-13T06:42:31Z"
+    },
+    {
+      "pattern": "에이전트 'agent-harness' 완료율 높음 (6건 COMPLETED)",
+      "evidence_issues": [
+        "ISS-301"
+      ],
+      "frequency": 2,
+      "first_seen": "2026-05-12T00:36:42Z",
+      "last_seen": "2026-05-12T00:36:47Z"
+    },
+    {
+      "pattern": "에이전트 'agent-harness' 완료율 높음 (8건 COMPLETED)",
+      "evidence_issues": [
+        "ISS-301",
+        "ISS-370"
+      ],
+      "frequency": 3,
+      "first_seen": "2026-05-12T01:08:55Z",
+      "last_seen": "2026-07-01T00:00:20Z"
+    },
+    {
+      "pattern": "에이전트 'agent-harness' 완료율 높음 (11건 COMPLETED)",
+      "evidence_issues": [
+        "ISS-301"
+      ],
+      "frequency": 1,
+      "first_seen": "2026-05-13T06:42:31Z",
+      "last_seen": "2026-05-13T06:42:31Z"
+    },
+    {
+      "pattern": "에이전트 'test-harness' 완료율 높음 (4건 COMPLETED)",
+      "evidence_issues": [
+        "ISS-306"
+      ],
+      "frequency": 1,
+      "first_seen": "2026-05-13T06:42:31Z",
+      "last_seen": "2026-05-13T06:42:31Z"
+    },
+    {
+      "pattern": "에이전트 'code-quality' 완료율 높음 (3건 COMPLETED)",
+      "evidence_issues": [
+        "ISS-007"
+      ],
+      "frequency": 1,
+      "first_seen": "2026-05-13T06:42:31Z",
+      "last_seen": "2026-05-13T06:42:31Z"
+    },
+    {
+      "pattern": "에이전트 'plan-harness' 완료율 높음 (5건 COMPLETED)",
+      "evidence_issues": [
+        "ISS-313"
+      ],
+      "frequency": 1,
+      "first_seen": "2026-05-13T06:42:31Z",
+      "last_seen": "2026-05-13T06:42:31Z"
+    },
+    {
+      "pattern": "에이전트 'domain-analyst' 완료율 높음 (2건 COMPLETED)",
+      "evidence_issues": [
+        "ISS-325"
+      ],
+      "frequency": 1,
+      "first_seen": "2026-05-13T06:42:31Z",
+      "last_seen": "2026-05-13T06:42:31Z"
+    },
+    {
+      "pattern": "에이전트 'product-manager' 완료율 높음 (2건 COMPLETED)",
+      "evidence_issues": [
+        "ISS-379"
+      ],
+      "frequency": 1,
+      "first_seen": "2026-07-14T09:26:27Z",
+      "last_seen": "2026-07-14T09:26:27Z"
+    },
+    {
+      "pattern": "에이전트 'agent-harness' 완료율 높음 (2건 COMPLETED)",
+      "evidence_issues": [
+        "ISS-383"
+      ],
+      "frequency": 1,
+      "first_seen": "2026-07-14T09:26:27Z",
+      "last_seen": "2026-07-14T09:26:27Z"
+    },
+    {
+      "pattern": "에이전트 'product-manager' 완료율 높음 (3건 COMPLETED)",
+      "evidence_issues": [
+        "ISS-390",
+        "ISS-404"
+      ],
+      "frequency": 2,
+      "first_seen": "2026-07-27T09:51:40Z",
+      "last_seen": "2026-08-09T02:47:53Z"
+    },
+    {
+      "pattern": "에이전트 'agent-harness' 완료율 높음 (14건 COMPLETED)",
+      "evidence_issues": [
+        "ISS-394"
+      ],
+      "frequency": 1,
+      "first_seen": "2026-08-09T02:47:53Z",
+      "last_seen": "2026-08-09T02:47:53Z"
+    }
+  ]
+}

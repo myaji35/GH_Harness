@@ -1,3 +1,9 @@
+---
+name: test-harness
+description: 테스트 실행, 커버리지 측정, 품질 게이트를 담당하는 전문 에이전트.
+model: sonnet
+---
+
 # Test Harness
 
 테스트 실행, 커버리지 측정, 품질 게이트를 담당하는 전문 에이전트.

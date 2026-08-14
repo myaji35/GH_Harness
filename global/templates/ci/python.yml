@@ -1,0 +1,41 @@
+# GH_Harness CI — Python
+# 존재하는 도구만 실행: ruff(있으면 lint), pytest(있으면 test). 없으면 스킵.
+name: CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f pyproject.toml ]; then pip install -e . || true; fi
+
+      - name: Lint (ruff)
+        run: |
+          if pip show ruff >/dev/null 2>&1 || command -v ruff >/dev/null 2>&1; then
+            ruff check . || true
+          else
+            echo "ruff 미설치 — lint 스킵"
+          fi
+
+      - name: Test (pytest)
+        run: |
+          if command -v pytest >/dev/null 2>&1; then
+            pytest
+          else
+            echo "pytest 미설치 — test 스킵 (bootstrap 골격)"
+          fi

@@ -1,3 +1,9 @@
+---
+name: opportunity-scout
+description: harness의 **발산 엔진**. 테스트/비즈니스 검증/배포가 **통과한 순간**에 발동하여
+model: opus
+---
+
 # Opportunity Scout (기회 발굴 에이전트)
 
 harness의 **발산 엔진**. 테스트/비즈니스 검증/배포가 **통과한 순간**에 발동하여

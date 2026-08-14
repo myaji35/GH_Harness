@@ -7,6 +7,17 @@
 # 근거: 대표님 "단순 지시도 이슈화→구현→검증 강제" 요청(2026-06-29). 강도=실작업형만.
 set -euo pipefail
 
+# 심볼릭 링크로 설치된 경우(프로젝트 .claude/hooks/ → harness-core/hooks/)
+# BASH_SOURCE는 링크 경로라 lib/ 를 프로젝트 쪽에서 찾다 ModuleNotFoundError로 죽는다.
+# UserPromptSubmit hook이 죽으면 claude -p 전체가 "Execution error"가 되므로
+# 링크를 끝까지 해제해 실제 스크립트가 있는 디렉터리를 잡는다.
+_src="${BASH_SOURCE[0]}"
+while [ -L "$_src" ]; do
+  _dir="$(cd -P "$(dirname "$_src")" && pwd)"
+  _src="$(readlink "$_src")"
+  [[ "$_src" != /* ]] && _src="$_dir/$_src"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$_src")" && pwd)"
 REGISTRY=".claude/issue-db/registry.json"
 [ -f "$REGISTRY" ] || exit 0   # 하네스 미설치 프로젝트는 통과
 
@@ -15,17 +26,61 @@ INPUT="$(cat)"
 PROMPT="$(printf '%s' "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('prompt',''))" 2>/dev/null || true)"
 [ -n "$PROMPT" ] || exit 0
 
+# ── 시스템 알림 차단 (무한 루프 방지) ⭐ 2026-07-15 ──
+# UserPromptSubmit에는 사람이 친 것뿐 아니라 하네스/하네스가 뱉은 알림도 들어온다.
+# 이걸 지시로 오분류하면: 알림 → 이슈 생성 → READY 증가 → dispatch-ready exit 2(rewake)
+#                        → 응답 → Stop 훅 → 또 알림 → ... 무한 루프.
+# 실제 사고: 2026-07-15 Bloomberg. 제목이 "[지시] <task-notification>..."인 쓰레기 이슈가
+#            반복 생성되고 Stop 훅이 수십 회 재발화. payload.raw_prompt에 훅 자기 출력이 그대로 박힘.
+case "$PROMPT" in
+  *"<task-notification>"*|*"<system-reminder>"*|*"[SYSTEM NOTIFICATION"*|\
+  *"Stop hook feedback"*|*"Harness Auto-Dispatch"*|*"[자동 실행 지시]"*|\
+  *"[지시 분류 게이트]"*|*"hook blocking error"*|*"[Harness Freeze]"*)
+    exit 0 ;;
+esac
+
 # ── 분류 ──
 # 즉답/조회형(이슈화 제외): 짧은 조회·상태·값변경·하네스 메타 명령
 # 실작업형(이슈화 강제): 코드 산출물을 만들거나 바꾸는 동사
-python3 - "$PROMPT" <<'PY'
-import sys, re, json, datetime
+python3 - "$SCRIPT_DIR" "$PROMPT" <<'PY'
+import sys, re, json, datetime, os
 
-prompt = sys.argv[1]
+__file__ = os.path.join(sys.argv[1], "intent-gate.sh")
+sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
+from issue_id import next_id
+
+prompt = sys.argv[2]
 low = prompt.lower()
 
+# 0-a) PII/시크릿 마스킹 — registry.json 은 git 추적 파일이고 원격이 공개 저장소다.
+#      대표님 프롬프트를 raw 로 저장하면 계좌번호·연락처·키가 그대로 커밋된다.
+#      근거: 2026-07-27 — 대표님 계좌번호 발화가 registry.json 에 평문 적재됨
+#      (커밋 전 발견해 차단). 2026-06 Gemini 키 유출과 동일 경로이므로 입력단에서 막는다.
+#      규칙 순서가 중요하다: 좁은 패턴(휴대폰·주민·사업자)을 먼저 소진시킨 뒤
+#      넓은 계좌 패턴을 적용해야 서로 잡아먹지 않는다.
+_MASK_RULES = [
+    # 시크릿 — \b 는 '-'/'_' 뒤에서 경계가 성립하지 않으므로 쓰지 않는다
+    (re.compile(r'(?<![A-Za-z0-9])(?:AIza[0-9A-Za-z_-]{35}'
+                r'|sk-ant-[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9]{20,}'
+                r'|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{22,}'
+                r'|AKIA[0-9A-Z]{16})'), '<시크릿>'),
+    (re.compile(r'(?<!\d)01[016-9]-?\d{3,4}-?\d{4}(?!\d)'), '<휴대폰번호>'),  # 휴대폰
+    (re.compile(r'(?<!\d)\d{6}-[1-4]\d{6}(?!\d)'), '<주민번호>'),             # 주민등록번호
+    (re.compile(r'(?<!\d)\d{3}-\d{2}-\d{5}(?!\d)'), '<사업자번호>'),          # 사업자등록번호
+    (re.compile(r'(?<!\d)\d{3,6}-\d{2,6}-\d{4,8}(?!\d)'), '<계좌번호>'),      # 은행 계좌(광의)
+]
+
+def mask_pii(text):
+    """registry 등 git 추적 파일에 저장하기 전 반드시 통과시킨다."""
+    for rx, repl in _MASK_RULES:
+        text = rx.sub(repl, text)
+    return text
+
 # 0) 제외: 너무 짧거나(즉답), 하네스 메타 트리거(이미 자체 파이프라인 보유), 조회/설명형
-EXCLUDE_META = ['harness', '하네스', '점검', '확인해', '상태 보여', '스캔',
+# 주의: 'harness'/'하네스'는 여기 두지 않는다. 대표님이 "harness, 00 구현해줘"처럼
+#       하네스를 호출하며 작업을 지시하는 습관이 있어, EXCLUDE에 두면 오히려 자동화가 꺼진다.
+#       harness 메타 '명령'(시작/업데이트/업그레이드)은 아래 HARNESS_META_CMD에서 별도 제외.
+EXCLUDE_META = ['점검', '확인해', '상태 보여', '스캔',
                 'biz check', '비즈', 'race mode', '레이스', '화면 갭', 'graphify',
                 '커밋', 'push', '푸시', '의견', '어떻게 생각', '알려줘', '설명',
                 '보여줘', '뭐야', '무엇', '왜', '리스트', '목록', '찾아줘',
@@ -34,14 +89,85 @@ EXCLUDE_META = ['harness', '하네스', '점검', '확인해', '상태 보여', 
                 '앞으로', '항상', '매번', '언제나', '규칙으로', '~하게 해', '하도록 해',
                 '하게 해줘', '하도록 해줘', '습관', '원칙으로']
 
+# 0-a) harness 메타 '명령'만 제외 (자체 파이프라인 보유). 작업 동사가 없을 때만 메타로 본다.
+#      "harness 시작/업데이트/업그레이드/초기화" → 메타 → 통과.
+#      "harness, 00 구현/이슈화/검증해줘" → 작업 → 아래 WORK 로직으로 진행(이슈화).
+HARNESS_META_CMD = ['harness 시작', '하네스 시작', 'harness init', 'harness 업데이트',
+                    '하네스 업데이트', 'harness update', 'harness 업그레이드',
+                    '하네스 업그레이드', 'harness 초기화', '하네스 초기화']
+
 # 0-b) 의문문/조회형 우선 통과 — 실작업 동사가 섞여도 '질문'이면 이슈화하지 않는다.
 #      (ISS-074: '~기능 반영되고 있나?' 같은 메타질문이 WORK 동사에 걸려 오탐하던 버그)
 #      조회형 통과는 이슈를 '안 만드는' 안전 방향이라 전역 적용해도 부작용이 적다.
 QUESTION = ['?', '？', '나요', '습니까', '까요', '는가', '은가', '했는데', '하는데',
-            '되는지', '있는지', '인지', '될까', '할까']
+            '되는지', '있는지', '인지', '될까', '할까',
+            # 추정·의견형 어미 (2026-07-24 ISS-059): '~같은데/것 같다/~듯/필요할' 이 WORK 동사에
+            # 걸려 실작업으로 오탐. ISS-051("...필요(추가개발)할것 같은데")이 '개발'에 걸린 사례.
+            # 조회형 통과는 '이슈를 안 만드는' 안전 방향이라 전역 적용해도 부작용이 적다.
+            '같은데', '것 같', '것같', '듯한데', '듯하다', '듯 하다', '을까', '려나',
+            '필요할', '필요하지', '해야 할까', '어야 할까', '아야 할까']
 def asks():
     p = prompt.strip()
     return any(p.endswith(q) or q in p for q in QUESTION)
+
+# 0-b-2) ⭐ 아이디어 포착 레인 (2026-07-16, 대표님 "맨날 이렇게 누수가 되는것이 스트레스네")
+# 문제: 대표님은 아이디어를 **제안형·회상형**으로 말한다 — "~하자", "~하면 좋겠어",
+#   "~보고 싶었거든", "~생각했어". 이 말투엔 WORK 동사('추가/구현/만들어')가 없어서
+#   위 `not has(WORK)` 통과로 **전량 유실**됐고, "~하자 했는데 ...있나?"는 QUESTION에도 걸려
+#   이중으로 샜다. 실유실 사례: reset 버튼(대표님 재지적으로 발견), 상황판 탭 순환, 공격 지도.
+# 해법: 순수 질문("이거 뭐야?")과 아이디어("~하면 좋겠어")를 분리해, 아이디어만 BACKLOG로 적재.
+#   - READY가 아니라 **BACKLOG**로 넣는다: 지나가듯 한 말에 에이전트가 즉시 착수하면 안 된다.
+#     대표님이 나중에 훑어보고 올리는 대기열이다(포착이 목적, 실행 강제가 아님).
+#   - QUESTION보다 **먼저** 판정한다: "~하자 했는데 있나?"를 잡으려면 순서가 앞서야 한다.
+# 어미 중심으로 잡는다 — 앞 동사가 뭐든('하면/보여주면/붙이면/넣으면...') 걸리도록
+# '~면 좋겠'처럼 조각으로 둔다. 특정 동사를 나열하면 반드시 빠지는 게 생긴다
+# (2026-07-16: '하면 좋겠'만 넣었다가 "보여주면 좋겠어"를 놓쳐 실패).
+IDEA = ['면 좋겠', '면 좋을', '으면 해', '했으면', '좋겠어', '좋겠네', '좋겠다',
+        '하자', '넣자', '만들자', '붙이자', '해보자', '가자',
+        '보고 싶', '하고 싶', '생각했어', '생각중', '생각이야', '아이디어',
+        '어때', '어떨까', '하는게 좋', '하는 게 좋',
+        '필요할듯', '필요할 듯', '필요해 보', '있으면 좋', '있었으면']
+# 아이디어 신호가 있어도 이것만 있으면 단순 의견/평가라 적재하지 않는다.
+IDEA_EXCLUDE = ['좋아', '맞아', '그래', '고마워', '수고']
+
+def is_idea():
+    p = prompt.strip()
+    if len(p) < 12:
+        return False
+    if not any(k in p for k in IDEA):
+        return False
+    # 순수 감탄/동의는 제외
+    if p in IDEA_EXCLUDE:
+        return False
+    return True
+
+if is_idea():
+    try:
+        REG_I = ".claude/issue-db/registry.json"
+        reg_i = json.load(open(REG_I))
+        raw = mask_pii(prompt.strip().replace('\n', ' '))
+        title_i = ('[아이디어] ' + raw)[:80]
+        # 중복 방지: 같은 제목이 이미 있으면 재적재 안 함
+        dup = any(i.get('title') == title_i for i in reg_i.get('issues', []))
+        if not dup:
+            iid_i = next_id(reg_i)
+            now_i = datetime.datetime.now().isoformat()
+            reg_i['issues'].append({
+                'id': iid_i, 'title': title_i, 'type': 'IDEA',
+                'status': 'BACKLOG', 'priority': 'P3', 'assign_to': 'product-manager',
+                'depth': 0, 'created_at': now_i, 'updated_at': now_i,
+                'payload': {'origin': 'intent-gate:idea', 'raw_prompt': raw,
+                            'note': '대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — '
+                                    '검토 후 READY로 올려야 실행된다.'},
+            })
+            reg_i.setdefault('stats', {})['total_issues'] = reg_i['stats'].get('total_issues', 0) + 1
+            json.dump(reg_i, open(REG_I, 'w'), indent=2, ensure_ascii=False)
+            print(f"[아이디어 포착] {iid_i} BACKLOG 등재 — 유실 방지. "
+                  f"지금 실행할지는 대표님 지시를 따르되, 기록은 남았다.")
+    except Exception:
+        pass  # 포착 실패가 대화를 막으면 안 된다(보수)
+    # 아이디어는 적재만 하고 통과 — 실작업 이슈화는 아래 WORK 로직이 별도 판정.
+
 if asks():
     sys.exit(0)
 # 실작업형 동사(이것이 있으면 이슈화)
@@ -53,7 +179,10 @@ WORK = ['추가', '구현', '만들어', '만들어줘', '생성해', '개발',
 def has(words):
     return any(w in low or w in prompt for w in words)
 
-# 우선순위: 메타/조회형이면 통과(이슈화 X)
+# 우선순위: harness 메타 '명령'(시작/업데이트 등)이면 통과 — 자체 파이프라인이 처리
+if has(HARNESS_META_CMD):
+    sys.exit(0)
+# 메타/조회형이면 통과(이슈화 X)
 if has(EXCLUDE_META):
     sys.exit(0)
 # 너무 짧으면(즉답형) 통과
@@ -75,28 +204,33 @@ elif has(['리팩터','리팩토링','refactor','정리']):
 else:
     itype, assign, prio = 'FEATURE_PLAN', 'product-manager', 'P1'
 
-# 중복 체크: 동일 title 활성 이슈 있으면 skip
-title = ('[지시] ' + prompt.strip().replace('\n',' '))[:80]
+# 중복 체크: 동일 지시(raw_prompt) 이슈가 있으면 skip.
+# ISS-278: 종전에는 title 로 대조했는데, title 은 사람이 정리하며 바뀌는 가변 필드다.
+# 제목을 다듬는 순간 훅이 새 이슈로 오판해 진행 중 작업이 매 턴 재등록됐다(중복 ID 유발).
+# raw_prompt 는 payload 에 이미 불변으로 저장되므로 이것을 안정 키로 쓴다.
+# 판정 범위도 활성(READY/IN_PROGRESS)에 더해 최근 6시간 내 동일 지시의 모든 status 로 넓혀,
+# 완료 직후 같은 프롬프트가 재유입돼 다시 이슈화되는 것을 막는다.
+title = ('[지시] ' + mask_pii(prompt.strip().replace('\n',' ')))[:80]
+_norm_prompt = ' '.join(prompt.strip().split())
+_recent_cutoff = (datetime.datetime.now() - datetime.timedelta(hours=6)).isoformat()
 for iss in reg['issues']:
-    if iss.get('title') == title and iss.get('status') in ('READY','IN_PROGRESS'):
+    _iss_prompt = ' '.join((iss.get('payload', {}).get('raw_prompt') or '').split())
+    if not _iss_prompt or _iss_prompt != _norm_prompt:
+        continue
+    if iss.get('status') in ('READY', 'IN_PROGRESS'):
+        sys.exit(0)
+    if (iss.get('created_at') or '') >= _recent_cutoff:
         sys.exit(0)
 
-# ID 계산(on_complete.sh add_issue와 동일 규칙)
-def num(iid):
-    try: return int(str(iid).split('-')[-1])
-    except: return 0
-nums = [num(i.get('id','')) for i in reg.get('issues',[])]
-nxt = max((max(nums) if nums else 0)+1, reg.get('stats',{}).get('total_issues',0)+1)
-while any(i.get('id')==f'ISS-{nxt:03d}' for i in reg['issues']):
-    nxt += 1
-iid = f'ISS-{nxt:03d}'
+# 공용 발급기: 정규 ID와 stats.total_issues를 함께 기준으로 사용한다.
+iid = next_id(reg)
 
 now = datetime.datetime.now().isoformat()
 reg['issues'].append({
     'id': iid, 'title': title, 'type': itype, 'status': 'READY',
     'priority': prio, 'assign_to': assign, 'depth': 0,
     'created_at': now, 'updated_at': now,
-    'payload': {'origin': 'intent-gate', 'raw_prompt': prompt.strip()},
+    'payload': {'origin': 'intent-gate', 'raw_prompt': mask_pii(prompt.strip())},
 })
 reg.setdefault('stats', {})['total_issues'] = reg['stats'].get('total_issues',0)+1
 json.dump(reg, open(REG,'w'), ensure_ascii=False, indent=2)

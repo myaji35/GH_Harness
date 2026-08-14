@@ -142,6 +142,26 @@ if len(ready_issues) > 20:
     if not ready_issues:
         sys.exit(0)
 
+# ── 재디스패치 쿨다운 (반복 Stop hook 폭주 방지) ──────────────
+import os
+from datetime import datetime
+_COOLDOWN = int(os.environ.get("HARNESS_DISPATCH_COOLDOWN_SEC", "900"))
+_cooldown_total = len(ready_issues)
+_cooldown_ready = []
+for _iss in ready_issues:
+    try:
+        _last = datetime.fromisoformat(_iss["last_dispatched_at"])
+        _now = datetime.now(_last.tzinfo) if _last.tzinfo else datetime.now()
+        if (_now - _last).total_seconds() < _COOLDOWN:
+            continue
+    except (KeyError, TypeError, ValueError):
+        pass
+    _cooldown_ready.append(_iss)
+ready_issues = _cooldown_ready
+if not ready_issues:
+    print(f"⏳ [Cooldown] READY {_cooldown_total}개 전부 재디스패치 쿨다운({_COOLDOWN}s) 중 — 이번 턴 통과")
+    sys.exit(0)
+
 # 우선순위 정렬: P0 > P1 > P2 > P3, 동일 우선순위 내 실패 이슈(retry_count>0) 우선 (ISS-374, BR-014)
 priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
 ready_issues.sort(key=lambda x: (
@@ -249,11 +269,20 @@ if issue_type == "RACE_MODE":
             ], capture_output=True, timeout=3)
     except Exception:
         pass
+    issue["last_dispatched_at"] = datetime.now().isoformat(timespec="seconds")
+    try:
+        with open(registry_path, 'w') as _rf:
+            json.dump(registry, _rf, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
     sys.exit(2)
 
 # ── 자동 freeze 설정 ─────────────────────────────────
 # 이슈 payload에 scope_dir 있거나 files에서 공통 dir 추출 가능하면 freeze
 import os
+import hashlib
+freeze_key = hashlib.sha256(os.getcwd().encode()).hexdigest()[:12]
+freeze_file = f"/tmp/harness-freeze-{freeze_key}.env"
 freeze_dir = payload_obj.get("scope_dir")
 if not freeze_dir:
     files = payload_obj.get("files") or payload_obj.get("files_changed") or []
@@ -265,7 +294,7 @@ if not freeze_dir:
 
 if freeze_dir:
     try:
-        with open("/tmp/harness-freeze.env", "w") as f:
+        with open(freeze_file, "w") as f:
             f.write(f'FREEZE_DIR="{freeze_dir}"\n')
             f.write(f'FREEZE_ISSUE="{issue_id}"\n')
         print(f"🔒 [Freeze] {freeze_dir} (이슈 {issue_id} 한정)")
@@ -274,8 +303,8 @@ if freeze_dir:
 else:
     # freeze 해제 (이슈 범위 알 수 없음)
     try:
-        if os.path.exists("/tmp/harness-freeze.env"):
-            os.remove("/tmp/harness-freeze.env")
+        if os.path.exists(freeze_file):
+            os.remove(freeze_file)
     except Exception:
         pass
 
@@ -327,6 +356,37 @@ if os.environ.get("HARNESS_HEADLESS") == "1" and allowed_tools:
                      f"→ 화이트리스트 밖 도구는 프롬프트 없이 거부. (CHECK 축 검증 전용, 쓰기 불가)")
 
 # 지시문 출력 — Claude Code가 이것을 읽고 즉시 실행
+# ── 재발화 브레이커 (무한 루프 방지) ⭐ 2026-07-15 ──
+# exit 2는 모델을 깨운다. 그런데 모델이 그 이슈를 처리하지 '못하는' 상태(사용자 승인 대기,
+# 외부 결정 필요, 실행 불가)면 status가 READY로 남아 다음 Stop에서 또 깨운다 → 무한 루프.
+# 실제 사고: 2026-07-15 Bloomberg. 같은 ISS를 수십 회 재발화하며 세션이 진행 불능.
+# → 같은 이슈를 MAX_REWAKE회 이상 깨웠으면 재발화를 멈추고 조용히 통과(exit 0).
+#   대표님이 직접 지시하면 그때 처리된다. 카운터는 이슈 status가 바뀌면 자동 리셋.
+MAX_REWAKE = 3
+_rw = registry.setdefault('rewake_state', {})
+_valid_rewake_keys = {
+    f"{_iss.get('id')}:{_iss.get('status', '')}"
+    for _iss in registry.get('issues', [])
+}
+for _stale_key in list(_rw):
+    if _stale_key not in _valid_rewake_keys:
+        del _rw[_stale_key]
+_key = f"{issue_id}:{issue.get('status','')}"
+_n = _rw.get(_key, 0) + 1
+_rw[_key] = _n
+issue["last_dispatched_at"] = datetime.now().isoformat(timespec="seconds")
+try:
+    with open(registry_path, 'w') as _rf:
+        json.dump(registry, _rf, indent=2, ensure_ascii=False)
+except Exception:
+    pass
+
+if _n > MAX_REWAKE:
+    print(f"⏸️  [Harness] {issue_id} 재발화 {_n}회 초과 — 자동 디스패치 중단.\n"
+          f"    처리되지 않는 이유가 있다(승인 대기·외부 결정·실행 불가 등).\n"
+          f"    대표님 지시가 있을 때 처리하라. 이 이슈를 자동으로 다시 깨우지 마라.")
+    sys.exit(0)
+
 print(f"""
 🔄 [Harness Auto-Dispatch] READY {len(ready_issues)}개 — 즉시 실행
 

@@ -3352,7 +3352,7 @@
       "id": "ISS-378",
       "title": "[지시] github에 저장되어 있는 key 값을 우선 삭제해줘.",
       "type": "FEATURE_PLAN",
-      "status": "COMPLETED",
+      "status": "ARCHIVED",
       "priority": "P1",
       "assign_to": "product-manager",
       "depth": 0,
@@ -3364,6 +3364,1192 @@
       },
       "result": {
         "note": "보안 즉시조치로 직접 처리됨"
+      },
+      "archived_at": "2026-07-13T08:40:21.128Z"
+    },
+    {
+      "id": "ISS-379",
+      "title": "[지시] USB 포멧해서라도 우분투 전용으로 바꿔줘. 우분투 파일도 복사안되어 있더군. 새로 다운 받아야 할거야.",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-07-14T11:20:20.419714",
+      "updated_at": "2026-07-14T11:20:20.419714",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "USB 포멧해서라도 우분투 전용으로 바꿔줘. 우분투 파일도 복사안되어 있더군. 새로 다운 받아야 할거야."
+      },
+      "completed_at": "2026-07-14T11:21:39.199318",
+      "result": {
+        "resolution": "already_satisfied",
+        "summary": "USB(disk4) is already a valid Ubuntu 24.04.4 bootable medium with EFI ESP partition. Format/re-download unnecessary. Finder-invisible files are normal dd-hybrid-ISO behavior, not a copy failure.",
+        "verified": true,
+        "user_choice": "keep_usb_as_is"
+      }
+    },
+    {
+      "id": "ISS-380",
+      "title": "[Plan:CEO검토] ISS-379 전략 검토",
+      "type": "PLAN_CEO_REVIEW",
+      "status": "CLOSED_INVALID",
+      "priority": "P1",
+      "assign_to": "plan-ceo-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-379",
+      "depends_on": [],
+      "created_at": "2026-07-14T11:21:39.199318",
+      "payload": {
+        "source_issue": "ISS-379",
+        "source_plan": {
+          "resolution": "already_satisfied",
+          "summary": "USB(disk4) is already a valid Ubuntu 24.04.4 bootable medium with EFI ESP partition. Format/re-download unnecessary. Finder-invisible files are normal dd-hybrid-ISO behavior, not a copy failure.",
+          "verified": true,
+          "user_choice": "keep_usb_as_is"
+        },
+        "feature": "ISS-379"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-381",
+      "title": "[Plan:Eng검토] ISS-379 실행가능성 검토",
+      "type": "PLAN_ENG_REVIEW",
+      "status": "CLOSED_INVALID",
+      "priority": "P1",
+      "assign_to": "plan-eng-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-379",
+      "depends_on": [],
+      "created_at": "2026-07-14T11:21:39.199318",
+      "payload": {
+        "source_issue": "ISS-379",
+        "source_plan": {
+          "resolution": "already_satisfied",
+          "summary": "USB(disk4) is already a valid Ubuntu 24.04.4 bootable medium with EFI ESP partition. Format/re-download unnecessary. Finder-invisible files are normal dd-hybrid-ISO behavior, not a copy failure.",
+          "verified": true,
+          "user_choice": "keep_usb_as_is"
+        },
+        "feature": "ISS-379"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-382",
+      "title": "[지시] 디스크 지우구 우분투 설치/ 고급 기능 보고 있어. 안내해줘.",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-07-14T11:46:59.688105",
+      "updated_at": "2026-07-14T11:46:59.688105",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "디스크 지우구 우분투 설치/ 고급 기능 보고 있어. 안내해줘."
+      },
+      "result": {
+        "resolution": "Guidance delivered: select Advanced features=None, Erase disk and install Ubuntu on sda. Hardware install, no code artifact."
+      }
+    },
+    {
+      "id": "ISS-383",
+      "title": "[지시] 리눅스 환경에는 처음 등록해 보는거야. 그러니까 해당명령어에 버그는 없는 지가 1차 테스트 목적이야.",
+      "type": "FIX_BUG",
+      "status": "COMPLETED",
+      "priority": "P0",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-07-14T13:29:08.680790",
+      "updated_at": "2026-07-14T13:29:08.680790",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "리눅스 환경에는 처음 등록해 보는거야. 그러니까 해당명령어에 버그는 없는 지가 1차 테스트 목적이야."
+      },
+      "result": {
+        "test_finding": "리눅스 등록 1차 테스트: 버그 2건 실증됨. (1) 갓 설치한 우분투에 curl 미설치 → command not found. (2) /i/:token 엔드포인트가 리눅스에도 PowerShell 스크립트를 반환 → bash 파싱 오류(exit 2), 등록 API 도달 실패. 근본 원인은 서버컴 installers_controller.rb의 OS 미분기(항상 PowerShell). 서버컴 수정은 대표님이 보류 지시.",
+        "awaiting": "curl 설치 방법(passwordless sudo A / curl만 B) 대표님 선택 대기",
+        "close_note": "ISS-384 harness hook 1차 테스트로 해소"
+      }
+    },
+    {
+      "id": "ISS-384",
+      "title": "[지시] ISS-383 [지시] 리눅스 환경에는 처음 등록해 보는거야. 그러니까 해당명령어에 버그는 없는 지가 1차 테스트 목적이야. 이슈를 처",
+      "type": "FIX_BUG",
+      "status": "COMPLETED",
+      "priority": "P0",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-07-14T18:20:29.044576",
+      "updated_at": "2026-07-14T18:20:29.044576",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "ISS-383 [지시] 리눅스 환경에는 처음 등록해 보는거야. 그러니까 해당명령어에 버그는 없는 지가 1차 테스트 목적이야. 이슈를 처리하고 registry에서 완료 처리하라\n\n[임무 규칙] 완료 시 수행한 작업을 한국어로 간결히 요약 보고하라.",
+        "files_changed": []
+      },
+      "completed_at": "2026-07-14T18:25:14.359284",
+      "result": {
+        "test_type": "harness_hook_smoke_test",
+        "env": "macOS_bash3.2",
+        "syntax_pass": 40,
+        "syntax_fail": 0,
+        "bash4_risks": 0,
+        "runtime_ok": true,
+        "registry_valid": true,
+        "bugs_found": 0,
+        "close_note": "hook 40개 문법·런타임 무결 확인, 버그 0"
+      }
+    },
+    {
+      "id": "ISS-385",
+      "title": "[Plan:게이트] ISS-384 계산적 센서 검증 (lint/type-check)",
+      "type": "LINT_CHECK",
+      "status": "CLOSED_INVALID",
+      "priority": "P0",
+      "assign_to": "code-quality",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-384",
+      "depends_on": [],
+      "created_at": "2026-07-14T18:25:14.359284",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-384",
+        "gate": true,
+        "gate_blocks": [
+          "SCORE",
+          "DEPLOY_READY"
+        ],
+        "bypass_env": "HARNESS_BYPASS_GATE"
+      },
+      "result": {
+        "close_note": "변경 파일 0 — 셸 hook 스모크 테스트, lint 대상 없음"
+      },
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-386",
+      "title": "[Plan:테스트] ISS-384 변경사항 검증",
+      "type": "RUN_TESTS",
+      "status": "CLOSED_INVALID",
+      "priority": "P1",
+      "assign_to": "test-harness",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-384",
+      "depends_on": [],
+      "created_at": "2026-07-14T18:25:14.359284",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-384",
+        "scope": "changed"
+      },
+      "result": {
+        "close_note": "변경 파일 0 — 실행 검증은 ISS-384에서 직접 수행"
+      },
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-387",
+      "title": "[Plan:도메인분석] ISS-384 비즈니스 규칙/시나리오 도출",
+      "type": "DOMAIN_ANALYZE",
+      "status": "CLOSED_INVALID",
+      "priority": "P1",
+      "assign_to": "domain-analyst",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-384",
+      "depends_on": [],
+      "created_at": "2026-07-14T18:25:14.359284",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-384"
+      },
+      "result": {
+        "close_note": "인프라 테스트 — 도메인 규칙 분석 대상 아님"
+      },
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-388",
+      "type": "REFACTOR",
+      "title": "업종별 안티패턴 프리셋 도입 — harness-ui-trends-2026 skill에 industry→금지목록 라이브러리 추가 (Eric Park UI/UX Pro Max 영상 인사이트)",
+      "priority": "P2",
+      "status": "DONE",
+      "depth": 0,
+      "created_at": "2026-07-23T09:19:38.643215",
+      "payload": {
+        "source": "youtube JmU203ktmm0 (Eric Park)",
+        "insight": "업종 정해지면 스타일/컬러/폰트/차트/금지목록이 연쇄 결정. 특히 '금지 목록'(AI 보라핑크 그라데이션 금지 등)이 디자인 하한선을 지킴.",
+        "scope_files": [
+          "global/skills/harness-ui-trends-2026/skill.md",
+          ".claude/brand-dna.json"
+        ],
+        "target_industries": [
+          "insurance",
+          "certification",
+          "community",
+          "finance_dashboard",
+          "saas",
+          "meditation",
+          "kids_edu"
+        ],
+        "requires_user_confirm": false,
+        "files_changed": []
+      },
+      "completed_at": "2026-07-23T09:21:06.273783",
+      "result": {
+        "files_modified": [
+          "global/skills/harness-ui-trends-2026/skill.md",
+          ".claude/brand-dna.json"
+        ],
+        "presets_added": 10,
+        "universal_anti_patterns": 4,
+        "opt_in": true
+      }
+    },
+    {
+      "id": "ISS-389",
+      "type": "REFACTOR",
+      "title": "오케스트레이션 3대 규칙 사후 강제(enforcement) hook 전역 도입 — 사전 리마인더만으론 위반 못 막음",
+      "priority": "P1",
+      "status": "DONE",
+      "depth": 0,
+      "created_at": "2026-07-23T09:24:03.401670",
+      "payload": {
+        "problem": "orchestration-label.sh는 사전 주입만. 읽고도 안 지키면 강제 불가.",
+        "solution": "PreToolUse(Edit|Write)=직접코딩 감지 경고, Stop=라벨/요약표 미출력 검사, 위반로그",
+        "scope_files": [
+          "~/.claude/hooks/orch-enforce-precode.sh",
+          "~/.claude/hooks/orch-enforce-label.sh",
+          "~/.claude/settings.json"
+        ],
+        "design": "차단 아닌 경고. 1~2줄/문서/설정은 예외 통과(오탐 방지).",
+        "requires_user_confirm": false,
+        "files_changed": []
+      },
+      "completed_at": "2026-07-23T09:25:55.868632",
+      "result": {
+        "hooks_created": [
+          "orch-enforce-precode.sh",
+          "orch-enforce-label.sh"
+        ],
+        "tests_passed": "7/7",
+        "enforcement_layers": 3,
+        "mode": "warn-not-block"
+      }
+    },
+    {
+      "id": "ISS-390",
+      "title": "[지시] 새로 만들어진 기능 전체 포로젝트에 전파해줘.",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-07-23T09:34:02.327854",
+      "updated_at": "2026-07-23T09:34:02.327854",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "새로 만들어진 기능 전체 포로젝트에 전파해줘.",
+        "files_changed": []
+      },
+      "completed_at": "2026-07-23T09:45:30.885563",
+      "result": {
+        "projects_registered": 38,
+        "symlinks_created": 114,
+        "missing": 0,
+        "deploy_source": "project/.claude/hooks + harness-core",
+        "verified": "direct-exec 3/3 + settings 38/38"
+      }
+    },
+    {
+      "id": "ISS-391",
+      "title": "SaaS 플레이북 기준 전 프로젝트 부검 — 미성공 원인 진단 보고",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-07-27T14:34:48.561471",
+      "updated_at": "2026-07-27T14:34:48.561471",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "유명한 saas play book 파일을 리서치해서 확보를한 후 ../ 예하 프로젝트를 대입해서 내가 지금까지 성공한 saas를 못만들어 내고 있는 이유를 보고해줘.",
+        "files_changed": []
+      },
+      "result": {
+        "deliverable": "docs/SaaS부검보고서_260727.pdf",
+        "pages": 7,
+        "evidence": [
+          "git 전수 29 repo",
+          "10계층 수익화 매트릭스",
+          "플레이북 9종 웹리서치",
+          "직접검증 2건 정정"
+        ],
+        "key_finding": "결제커밋 0.37%, 유료고객 0, 고객인터뷰 0, 동시진행 1->27"
+      }
+    },
+    {
+      "id": "ISS-392",
+      "title": "[아이디어] 카카오뱅크 <계좌번호 .env 참조> 강승식 전역변수에 넣어서 시작하자.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-07-27T15:02:36.487481",
+      "updated_at": "2026-07-27T15:02:36.487481",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "카카오뱅크 <계좌번호 .env 참조> 강승식 전역변수에 넣어서 시작하자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-393",
+      "title": "[지시] 0단계 이슈 등록하고 착수안 ../0013 폴더에 만들어줘. 폴더 변경후 실행할게.",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-07-27T15:34:40.097589",
+      "updated_at": "2026-07-27T15:34:40.097589",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "0단계 이슈 등록하고 착수안 ../0013 폴더에 만들어줘. 폴더 변경후 실행할게."
+      },
+      "result": {
+        "deliverable": "0031_LandCheck/docs/phase0-gtm-착수안.md",
+        "issues_registered": [
+          "ISS-018",
+          "ISS-019",
+          "ISS-020",
+          "ISS-021",
+          "ISS-022"
+        ],
+        "target_repo": "0031_LandCheck",
+        "key_findings": [
+          "서비스 접속불가(DNS 오지정+컨테이너 미기동)",
+          "교통접근성·개발여건 항상 mock",
+          "@parcels.first 다필지 미지원"
+        ]
+      }
+    },
+    {
+      "id": "ISS-394",
+      "title": "[youtube-archiver] 메타데이터 스키마 확장 + 태그 노이즈 제거 (write_note.py)",
+      "type": "REFACTOR",
+      "status": "COMPLETED",
+      "priority": "P0",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-08T19:34:07.656238",
+      "updated_at": "2026-08-08T19:57:07.601471",
+      "payload": {
+        "scope": "~/.claude/skills/youtube-archiver/scripts/write_note.py",
+        "why": "태그 영상제작 92.8%(333/359)·튜토리얼 51% — 서브스트링 '영상'/'video' 매칭으로 변별력 0",
+        "changes": [
+          "보편어 트리거 제거",
+          "tags 3~5개 상한",
+          "topic 단일축 신규",
+          "depth(심층/표준/로그) 신규",
+          "duration_min·source(WL/LL)·actionable 신규",
+          "date→published 개명 + archived를 파일명 기준축으로",
+          "파일명 40자 절단 → 단어경계 보존"
+        ],
+        "origin": "대표님 지시 — B안 승인 (2026-08-08)"
+      },
+      "result": {
+        "tags_noise_removed": "영상제작 333→0개",
+        "schema_added": [
+          "topic",
+          "depth",
+          "duration_min",
+          "source",
+          "actionable",
+          "depth_source",
+          "published"
+        ],
+        "filename_word_boundary": true
+      }
+    },
+    {
+      "id": "ISS-395",
+      "title": "[youtube-archiver] 유령 위키링크 차단 — 볼트 실존노트 조회 후에만 [[링크]] 생성",
+      "type": "FIX_BUG",
+      "status": "COMPLETED",
+      "priority": "P0",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-08T19:34:07.656238",
+      "updated_at": "2026-08-08T19:57:07.601471",
+      "payload": {
+        "scope": "~/.claude/skills/youtube-archiver/scripts/write_note.py + SKILL.md L91",
+        "why": "[[링크]] 1267개 중 실존 해소 9개(0.7%). 유튜브노트끼리 링크 0, 볼트 백링크 0",
+        "root_cause": "SKILL.md L91 '## 🔗 관련 [[태그]]' — 사양이 태그를 링크로 감싸라고 지시. 볼트 조회 단계 부재",
+        "changes": [
+          "볼트 stem 인덱스 대조 후 실존 노트만 링크",
+          "미존재 시 평문",
+          "같은 배치 내 유사주제 노트 상호링크"
+        ],
+        "origin": "대표님 지시 — B안 승인 (2026-08-08)"
+      },
+      "result": {
+        "ghost_links_before": 1258,
+        "ghost_links_after": 0,
+        "resolved_real_links": 9,
+        "method": "볼트 stem 인덱스 대조 후 미존재 링크 평문화"
+      }
+    },
+    {
+      "id": "ISS-396",
+      "title": "[youtube-archiver] 주제 MOC 레이어 10~15개 생성 + 00-MOC 편입",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-08T19:34:07.656238",
+      "updated_at": "2026-08-08T19:57:07.601471",
+      "payload": {
+        "scope": "옵시디언 볼트 00-MOC/ + 신규 build_moc.py",
+        "why": "359개 평면 폴더, MOC 편입 0, Home MOC 미갱신 → 회수 불가",
+        "changes": [
+          "topic축 기반 주제허브 자동생성",
+          "기존 00-MOC 체계 편입 → Home에서 도달가능",
+          "신규 노트 생성 시 MOC 자동 갱신"
+        ],
+        "origin": "대표님 지시 — B안 승인 (2026-08-08)"
+      },
+      "result": {
+        "moc_created": 8,
+        "index": "00-MOC/유튜브-INDEX.md",
+        "home_linked": true,
+        "topics": {
+          "AI/ClaudeCode": 142,
+          "AI/에이전트": 108,
+          "AI/LLM일반": 41,
+          "개발/일반": 20,
+          "비즈니스/마케팅": 17,
+          "기타": 17,
+          "개발/인프라": 6,
+          "금융/투자": 3
+        }
+      }
+    },
+    {
+      "id": "ISS-397",
+      "title": "[youtube-archiver] 기존 359개 소급 정리 (유령링크·태그·MOC분류)",
+      "type": "REFACTOR",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-08T19:34:07.656238",
+      "updated_at": "2026-08-08T19:57:07.601471",
+      "payload": {
+        "scope": "옵시디언 볼트 📥아카이브/유튜브/ 359개",
+        "why": "기존 자산 구제 — 재요약 불필요, 분류·연결만",
+        "depends_on": [
+          "ISS-394",
+          "ISS-395",
+          "ISS-396"
+        ],
+        "changes": [
+          "유령링크 1258개 제거",
+          "노이즈 태그 정리",
+          "topic 부여 후 MOC 연결",
+          "폴백 145건 status→미검증로그"
+        ],
+        "safety": "백업 필수. 삭제 없음(수정만). iCloud 동기화 주의",
+        "origin": "대표님 지시 — B안 승인 (2026-08-08)"
+      },
+      "result": {
+        "backfilled": 359,
+        "actionable_detected": 52,
+        "depth": {
+          "심층": "7.5%",
+          "표준": "52.1%",
+          "로그": "40.4%"
+        },
+        "backup": ".backup-유튜브-20260808-195629 (360파일)",
+        "deleted": 0,
+        "deferred": "중복 클러스터 종합노트 — 제목 Jaccard로 의미 클러스터 식별 실패(2회). --clusters 플래그 뒤로 비활성화. 의미 임베딩 방식으로 재설계 필요"
+      }
+    },
+    {
+      "id": "ISS-398",
+      "title": "[youtube-archiver] 중복 클러스터 종합노트 — 의미 임베딩 기반 재설계",
+      "type": "FEATURE_PLAN",
+      "status": "READY",
+      "priority": "P3",
+      "assign_to": "agent-harness",
+      "depth": 1,
+      "created_at": "2026-08-08T19:57:07.601471",
+      "updated_at": "2026-08-08T19:57:07.601471",
+      "payload": {
+        "origin": "ISS-397 이월",
+        "why": "제목 토큰 Jaccard 유사도로는 같은 사건 식별 불가 — how-tutorial 클러스터가 금융대시보드/디자인/AI에이전트를 묶음",
+        "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
+        "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
+      },
+      "last_dispatched_at": "2026-08-13T15:37:59"
+    },
+    {
+      "id": "ISS-399",
+      "title": "[지시] 최근 좋아요 영상 100건 새 기준으로 옵시디언 정리 후 삭제",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-08T20:08:39.132884",
+      "updated_at": "2026-08-08T21:29:44.451449",
+      "payload": {
+        "origin": "대표님 지시 2026-08-08",
+        "scope": "LL(좋아요) 최근 100건",
+        "override": "스킬 기본 배분은 WL70+LL30이나 대표님 명시값 LL100 우선. 하루 100개 상한 준수, WL 오늘 미처리",
+        "new_standard": [
+          "topic 단일축 부여",
+          "depth 3단(심층/표준/로그)",
+          "actionable 판정",
+          "태그 최대 5개",
+          "유령링크 금지 — 실존 노트만 [[링크]]",
+          "인사이트는 접점 있을 때만",
+          "자막없으면 status=미검증로그"
+        ],
+        "steps": [
+          "LL ID 수집(브라우저)",
+          "기존 359개 video_id와 dedup",
+          "yt-dlp 자막추출",
+          "Sonnet 병렬요약→write_note.py",
+          "저장검증",
+          "LL에서 삭제",
+          "build_report.py",
+          "build_moc.py"
+        ],
+        "files_changed": []
+      },
+      "retry_count": 1,
+      "last_dispatched_at": "2026-08-08T20:38:45",
+      "result": {
+        "collected": 100,
+        "dedup_new": 99,
+        "already_known": 1,
+        "notes_created": 99,
+        "failures": 0,
+        "vault_total": "359→458",
+        "transcript": "자막59/폴백40",
+        "new_standard_applied": {
+          "insight_conditional": "34% (이전 51% 억지연결)",
+          "ghost_links": 0,
+          "topic_assigned": "11개 주제",
+          "depth": "심층19/표준40/로그40",
+          "actionable": 13,
+          "source": "LL 99/99"
+        },
+        "moc": "8→10개 (건강·지식관리 신규), INDEX 458개",
+        "report": "📋일자별보고서/2026-08-08_작업보고서.md (링크 99/99 정합)",
+        "INCOMPLETE": null,
+        "deletion": "ISS-400에서 100건 전량 완료 (4880→4780)"
+      }
+    },
+    {
+      "id": "ISS-400",
+      "title": "[youtube-archiver] 좋아요(LL) 목록 삭제 UI 동작 실패 — 삭제 경로 재확립",
+      "type": "FIX_BUG",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 1,
+      "created_at": "2026-08-08T20:52:09.340460",
+      "updated_at": "2026-08-08T21:29:44.451449",
+      "payload": {
+        "origin": "ISS-399 미완",
+        "symptom": "⋮ → '좋아요 표시한 동영상에서 삭제' 클릭이 목록에 반영 안 됨. 메뉴는 정상 노출·클릭됨(토스트 없음, 항목 잔존)",
+        "tried": [
+          "computer left_click 좌표",
+          "javascript DOM .click()",
+          "computer left_click ref"
+        ],
+        "pending_ids": "scratchpad/ll/deletable.txt (100건, 전부 볼트 저장 검증 완료)",
+        "next": "영상 페이지에서 좋아요 버튼 토글 해제 방식 / YouTube Data API / UI 변경 재조사",
+        "approach_confirmed": "대표님 지시 2026-08-08 — 영상 페이지에서 좋아요 버튼 토글 해제 방식"
+      },
+      "last_dispatched_at": "2026-08-08T20:52:43",
+      "result": {
+        "deleted": 100,
+        "list_before": 4880,
+        "list_after": 4780,
+        "delta": 100,
+        "target_remaining": 0,
+        "method": "영상 페이지 좋아요 버튼 aria-pressed true→false 토글 (browser_batch 4건씩)",
+        "root_cause_correction": "당초 '삭제 실패'로 판정했던 ⋮메뉴 방식은 실제로는 성공했었음. 같은 페이지에서 DOM 재조회로 검증해 유튜브 지연로드 때문에 갱신 전 목록을 읽은 것이 원인. 새로고침 후 총계로 검증해야 함",
+        "retry": "m2maDNtho7Y 1건 NOBTN(로딩지연) → 대기시간 6초로 늘려 재시도 성공"
+      }
+    },
+    {
+      "id": "ISS-401",
+      "title": "[아이디어] 좋아요를 삭제하자 했는데 의미가 있나. 좋아요로만 검색하는 것이.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T07:06:10.612620",
+      "updated_at": "2026-08-09T07:06:10.612620",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "좋아요를 삭제하자 했는데 의미가 있나. 좋아요로만 검색하는 것이.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-402",
+      "title": "[아이디어] 자막을 상세 검색하는 방법 해보자.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T07:09:12.223974",
+      "updated_at": "2026-08-09T07:09:12.223974",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "자막을 상세 검색하는 방법 해보자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-403",
+      "title": "[지시] 자막 재추출로 '이메일 수집 SaaS' 언급 영상 상세 검색",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T07:09:29.264241",
+      "updated_at": "2026-08-09T08:40:13.786873",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09",
+        "goal": "영상 중간에 짧게 소개된 이메일 수집 SaaS 솔루션 특정",
+        "why": "요약 4섹션 틀이 부차 언급을 버림 + 자막 원본은 지식화 후 삭제됨. 노트 본문 grep으로는 못 찾음",
+        "method": "볼트 노트의 video_id로 yt-dlp 자막 재추출 → 전문 grep",
+        "scope": "analysis_method=자막 전문인 노트 (약 273건)",
+        "cost": "$0 (yt-dlp)",
+        "files_changed": []
+      },
+      "retry_count": 1,
+      "last_dispatched_at": "2026-08-09T08:39:53",
+      "result": {
+        "executed": "272건 자막 재추출 → 193 성공 / 79 실패(자막 내려감)",
+        "section_detection": "밀집도 기반 섹션급 언급 탐지 → 후보 3건 전부 불일치 판정",
+        "outcome": "이메일수집 SaaS 미발견",
+        "led_to": "ISS-404 mentions 기능 도입의 직접 근거가 됨"
+      }
+    },
+    {
+      "id": "ISS-404",
+      "title": "[지시] 미비한 기능 개선해주고, 나중에볼영상 최근 300건 진행후, 내가 찾고 있는 영상 검색해줘.",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T07:28:35.564422",
+      "updated_at": "2026-08-09T07:52:18.516234",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "미비한 기능 개선해주고, 나중에볼영상 최근 300건 진행후, 내가 찾고 있는 영상 검색해줘."
+      },
+      "result": {
+        "feature": "mentions 필드 — 영상 등장 제품·도구명 자동 기록",
+        "why_needed": "요약 4섹션이 스쳐간 도구명을 버려 검색 불가했던 문제. 검증: 요약엔 '이메일 수집'만 있는데 mentions에 ConvertKit·Beehiiv 정확히 포착",
+        "fields": [
+          "mentions: [...]",
+          "mentions_source: 자막|설명문|노트본문"
+        ],
+        "backfill": "458개 노트 소급 적용",
+        "defect_fixed": "img.youtube.com이 458건 전부에 오염 → STOPLIST 서브도메인 대응 + 프론트매터·썸네일라인 제외로 수정. 잔여 0 확인",
+        "flags": [
+          "--extract-mentions",
+          "--force-mentions"
+        ]
+      }
+    },
+    {
+      "id": "ISS-405",
+      "title": "[지시] 나중에볼영상(WL) 최근 300건 지식화",
+      "type": "GENERATE_CODE",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T07:29:03.366778",
+      "updated_at": "2026-08-09T08:52:49.107306",
+      "payload": {
+        "scope": "WL 최근 300건",
+        "note": "지식화는 300건 전량. 유튜브 삭제는 하루 100개 상한 준수 → 삭제는 별도 판단",
+        "depends_on": "ISS-404 (mentions 적용 후 처리해야 재작업 없음)",
+        "origin": "대표님 지시 2026-08-09",
+        "constraint_note": "WL은 유튜브가 100건까지만 로드. 대표님 승인으로 100건×3회 반복 방식 확정(하루 상한 초과 승인)",
+        "files_changed": []
+      },
+      "retry_count": 1,
+      "last_dispatched_at": "2026-08-09T08:43:42",
+      "result": {
+        "done": "WL 1차 100건 지식화 완료 (자막47/폴백53, 실패0)",
+        "vault": "458→558",
+        "remaining": "200건 — WL은 100건씩만 로드되므로 삭제 선행 필요. 삭제는 비가역이라 대표님 지시 대기"
+      }
+    },
+    {
+      "id": "ISS-406",
+      "title": "[지시] 이메일수집 SaaS 영상 검색 — WL 300건 포함 전수",
+      "type": "GENERATE_CODE",
+      "status": "CLOSED_NOT_FOUND",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T07:29:03.366778",
+      "updated_at": "2026-08-09T08:52:49.107306",
+      "payload": {
+        "target": "브랜드 홍보전략 맥락에서 소제목 분량으로 소개된 이메일 수집 SaaS 홈페이지",
+        "tried_failed": [
+          "볼트 458건 노트 grep",
+          "좋아요 목록(논리적 모순으로 중단)",
+          "자막 재추출 193건 섹션탐지"
+        ],
+        "depends_on": "ISS-405",
+        "origin": "대표님 지시 2026-08-09"
+      },
+      "last_dispatched_at": "2026-08-09T08:52:29",
+      "result": {
+        "searched": "볼트 558건 (기존458+WL신규100)",
+        "methods": [
+          "노트 본문 grep",
+          "mentions 필드 제품사전 매칭",
+          "WL 신규 자막 원본 직접 검색"
+        ],
+        "false_positive": "Loops 4건 — 'agent loops'를 제품 Loops로 오인",
+        "email_saas": "미발견",
+        "TTS_correction": "TTS는 검색한 적 없었음(대표님 미언급) → 검색 결과 7건 발견: Fish Audio 2건, TT스튜디오(로컬TTS), Typecast, ElevenLabs, ElevenLabs CLI, Mistral Voxtral",
+        "final": "볼트 558건(기존458+WL신규100) 5개 축 검색 완료 — 이메일수집 SaaS 미발견",
+        "ms_tts_search": "구독피드 104건 0건 / 유튜브 이번주 필터 4건 전부 미구독. 유력후보: 김에듀 AI강사 '마이크로소프트 클립챔프로 무료 AI 성우 만들기'(7일전, zLbG_ASwQ08)",
+        "remaining_scope": "WL 2,285건 + 좋아요 4,780건 미처리 — 대상 영상이 이 범위에 있을 가능성"
+      }
+    },
+    {
+      "id": "ISS-407",
+      "title": "[지시] MS VibeVoice(딥페이크 우려로 철회→커뮤니티 포크) 영상 찾기",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T08:57:20.994349",
+      "updated_at": "2026-08-09T09:01:08.785072",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "이거 아니야. 내용 기억은 ms가 TTS 기능을 과거에 오픈한적이 있고 딥페이크등을 우려해서 공개취수 했었는데 그당시 git정보를 수집해놨던 사용자들이 오픈소스로 공개해서 사용할수 있나는 내용이었어."
+      },
+      "last_dispatched_at": "2026-08-09T09:00:42",
+      "result": {
+        "found": "마이크로소프트가 막은 역대급 AI 음성 모델, VibeVoice 사용법",
+        "video_id": "YXwhBTsN1EY",
+        "channel": "잇테크 (@eduitech)",
+        "url": "https://www.youtube.com/watch?v=YXwhBTsN1EY",
+        "evidence": "aria-pressed=true — 대표님이 실제 좋아요 누른 영상으로 확인",
+        "published": "10개월 전 (조회 5천, 4분2초)",
+        "fact_check": "MS가 VibeVoice 공개 → 음성복제 악용 발견 후 GitHub 레포 삭제/HF 404 → 커뮤니티 포크(vibevoice-community) 보존 → MS가 AI고지+워터마크 넣어 재공개",
+        "why_not_in_vault": "10개월 전 영상. 처리 범위는 좋아요 최근 100건+WL 100건뿐이라 미포함. 좋아요 4,780건 미처리분에 있었음",
+        "false_positive_noted": "볼트 자막 검색에서 VALL-E 정규식이 'valley'를 오탐(미시령 계곡 영상 18회)",
+        "related": [
+          "31bZOIk53_I Helena Liu 3일전 미구독",
+          "X-_rG6OtgfU Bijan Bowen 11개월전"
+        ]
+      }
+    },
+    {
+      "id": "ISS-408",
+      "title": "[지시] VibeVoice 관련 영상 3건 볼트 정리 + mentions 사전 결함 수정",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T09:19:55.140122",
+      "updated_at": "2026-08-09T09:37:25.454406",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09",
+        "targets": [
+          {
+            "id": "YXwhBTsN1EY",
+            "title": "마이크로소프트가 막은 역대급 AI 음성 모델, VibeVoice 사용법",
+            "ch": "잇테크",
+            "src": "LL(좋아요)"
+          },
+          {
+            "id": "F1AxsaCZqj4",
+            "title": "[바이브 뉴스] 앤스로픽 차세대 AI '미토스' 유출! 1장으로 얼굴 바꾸는 딥라이브캠까지",
+            "ch": "바이브랩스",
+            "src": "HISTORY(시청기록)"
+          }
+        ],
+        "note": "시청기록에서 발견 — 좋아요/WL 범위 밖이라 기존 지식화에서 누락됐던 건",
+        "files_changed": []
+      },
+      "result": {
+        "notes_created": 3,
+        "targets": [
+          {
+            "id": "YXwhBTsN1EY",
+            "t": "마이크로소프트가 막은 역대급 AI 음성 모델, VibeVoice 사용법",
+            "ch": "잇테크",
+            "src": "LL"
+          },
+          {
+            "id": "F1AxsaCZqj4",
+            "t": "[바이브 뉴스] 앤스로픽 미토스 유출 + VibeVoice + 딥라이브캠",
+            "ch": "바이브랩스",
+            "src": "HISTORY"
+          },
+          {
+            "id": "31bZOIk53_I",
+            "t": "FREE Unlimited AI Voices (Microsoft Banned It) — 대표님이 실제 보신 영상",
+            "ch": "Helena Liu",
+            "src": "HISTORY"
+          }
+        ],
+        "vault": "558→561",
+        "defect_found": "mentions가 핵심 제품 VibeVoice를 3건 모두 누락. 사전 미등록 신규제품 + 도메인 노이즈(blog.naver/yes24/productcamps)가 상한 잠식",
+        "fix": [
+          "KNOWN_PRODUCTS 음성·영상·모델·개발·에이전트 60여종 보강",
+          "한글별칭(바이브보이스/일레븐랩스/딥라이브캠) 정규화",
+          "VALL-E 등 짧은명 단어경계 적용(valley 오탐 방지)",
+          "도메인은 사전매칭 3개 미만일 때만 보조, 최대 2개",
+          "CamelCase 3회+ 반복어 신규제품 포착"
+        ],
+        "verified": "VibeVoice 3/3 포함 · valley 오탐 0 · 노이즈도메인 0 · MOC 10→12"
+      }
+    },
+    {
+      "id": "ISS-409",
+      "title": "[아이디어] Edge-TTS 표준으로 VibeVoice 구현하자.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T09:42:20.762508",
+      "updated_at": "2026-08-09T09:42:20.762508",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "Edge-TTS 표준으로 VibeVoice 구현하자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-410",
+      "title": "[지시] 공통 TTS 인터페이스 + Edge-TTS/VibeVoice 두 백엔드 구현",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T09:46:14.319419",
+      "updated_at": "2026-08-09T09:58:06.081542",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09 (AskUserQuestion으로 방향 확정)",
+        "design": "TTS 추상화 계층 1개 + 교체 가능한 백엔드 어댑터 2개",
+        "backends": {
+          "edge-tts": "기본. pip 한 줄, MS 공식, 무료, 클로닝 불가",
+          "vibevoice": "선택. 보이스클로닝·최대4화자. GPU+모델 필요, 커뮤니티 사본이라 라이선스 미검증"
+        },
+        "rationale": "Edge-TTS로 먼저 동작시키고 VibeVoice는 나중에 끼움. 라이선스 리스크 분리",
+        "constraint": "VibeVoice는 어댑터 골격만 — 실제 모델 다운로드/GPU 실행은 대표님 승인 후 별건",
+        "files_changed": []
+      },
+      "result": {
+        "approach": "기존 media-use provider 레지스트리에 어댑터 2개 추가 (신규 추상화 계층 만들지 않음 — 이미 존재)",
+        "files_new": [
+          "scripts/lib/tts-edge-provider.mjs",
+          "scripts/lib/tts-vibevoice-provider.mjs",
+          "+ 테스트 2개"
+        ],
+        "chain": "heygen.tts(P) → kokoro.local(A) → edge.tts(N) → vibevoice.local(A)",
+        "edge_tts": "완전 동작. pip install edge-tts, 키 불필요. 한글 ko-KR-SunHiNeural / 영문 en-US-AriaNeural 자동 분기",
+        "vibevoice": "골격만. VIBEVOICE_HOME 미설정 시 null 폴백. 실제 모델 실행은 라이선스 검증 후 별건",
+        "tests": "25/25 통과 (registry 15 + 신규 6 + kokoro 3 + heygen 1), 회귀 0",
+        "live_verification": "실제 합성 성공 — 한글 10.03초(무음20%, 규약30% 통과) / 어댑터 경유 duration 4.992 실측 / 영문 3.6초. mp3 24kHz 48kbps 정상",
+        "regression_caught": "1차 구현에서 voice 체인 순서를 무료·로컬 우선으로 임의 변경해 기존 테스트 'HeyGen TTS first' 파괴 → 범위 초과 판정하고 원복. 화이트리스트 등록은 정당한 절차로 판단해 별도 처리"
+      }
+    },
+    {
+      "id": "ISS-411",
+      "title": "[아이디어] 좋군 사용하자. 전역 환경에 기존 Qwen tts와 더불어 MS TTS라고 이름지어 저장해줘,",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T10:16:44.440575",
+      "updated_at": "2026-08-09T10:16:44.440575",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "좋군 사용하자. 전역 환경에 기존 Qwen tts와 더불어 MS TTS라고 이름지어 저장해줘,",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-412",
+      "title": "[지시] Edge-TTS를 'MS TTS' 명칭으로 전역 환경 등록",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T10:31:45.323656",
+      "updated_at": "2026-08-09T10:35:33.520689",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09 — 샘플 청취 후 채택 결정",
+        "scope": "edge.tts를 사람이 읽는 명칭 'MS TTS'로 등록. 기존 kokoro.local 유지",
+        "note": "대표님이 '기존 Qwen TTS'라 하셨으나 실제 로컬 TTS는 Kokoro-82M. Qwen은 미설치 — AskUserQuestion으로 확인 후 'MS TTS만 등록'으로 확정",
+        "targets": [
+          "media-use displayName",
+          "전역 CLAUDE.md TTS 정책",
+          "brand-dna tts_voice_id 기본값"
+        ],
+        "files_changed": []
+      },
+      "result": {
+        "registered": "MS TTS (Edge)",
+        "docs": [
+          "audio/references/tts.md 라우트 표 4행 추가 + 전용 설명 블록",
+          "SKILL.md voice 행 갱신"
+        ],
+        "content": "pip install edge-tts, 키 불필요, 한국어 3종, 한글/라틴 자동분기, rate/pitch/volume, --rate=\"-10%\" 등호 함정 명시",
+        "vibevoice_note": "골격만 + 라이선스 경고 문단 병기",
+        "verified": "문서 실물 직접 확인"
+      }
+    },
+    {
+      "id": "ISS-413",
+      "title": "[아이디어] 설치하고 테스트 해보자.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T10:35:15.302842",
+      "updated_at": "2026-08-09T10:35:15.302842",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "설치하고 테스트 해보자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-414",
+      "title": "[지시] VoiceBox 설치 + 한국어 보이스클로닝 품질 테스트",
+      "type": "GENERATE_CODE",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T10:35:33.520689",
+      "updated_at": "2026-08-09T10:42:14.423029",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09",
+        "goal": "자기 목소리 TTS — 대표님 음성 복제",
+        "why_voicebox": "MIT 라이선스(VibeVoice 커뮤니티사본 리스크 없음) + 데스크톱 앱(설치 간편) + 43k stars",
+        "verify": "한국어 클로닝 품질 실측 — 공개 후기 미발견이라 직접 확인 필요",
+        "caution": "동의 잠금 없음(No Consent Lock) — 대표님 본인 목소리만 사용, 타인 음성 금지"
+      },
+      "result": {
+        "installed": "/Applications/Voicebox.app (528MB) — Apple 공증 통과, 서버 포트 17493 기동 확인",
+        "repo_correction": "aurodev/VoiceBox는 포크(0★). 원본은 jamiepine/voicebox (49,818★, MIT)",
+        "engines": "7종 — Qwen3-TTS(대표님이 말한 Qwen이 이것), Chatterbox Multilingual(23개국어·한국어), Chatterbox Turbo, Kokoro, LuxTTS, TADA, Qwen CustomVoice",
+        "pending": "대표님 목소리 녹음 → 한국어 클로닝 품질 실측. 대표님 지시로 보류",
+        "next_trigger": "대표님이 녹음 후 재개 지시"
+      }
+    },
+    {
+      "id": "ISS-415",
+      "title": "[아이디어] 내 목소리 녹음은나중에.. buzz에 집중하자.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T10:41:58.234863",
+      "updated_at": "2026-08-09T10:41:58.234863",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "내 목소리 녹음은나중에.. buzz에 집중하자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-416",
+      "title": "[지시] ~/.claude/skills 자체제작 스킬 GH_Harness 편입 — 버전관리 밖 코드 정리",
+      "type": "REFACTOR",
+      "status": "COMPLETED",
+      "priority": "P0",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T10:49:56.511890",
+      "updated_at": "2026-08-09T11:04:51.861294",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09",
+        "problem": "오늘 만든 build_moc.py(26KB)·TTS어댑터 4개가 git 밖. 다른 세션 충돌 감지 불가, 이력 소실",
+        "scale": "skills 116개 1.1GB 중 자체제작 38개 식별. gstack(1.1GB·자체git)·hyperframes 등 외부 78개 제외",
+        "found_issue": "기존 편입 10개 중 5개가 이미 원본과 불일치. SKILL.md vs skill.md 대소문자 차이 포함",
+        "special": "media-use는 외부 스킬인데 우리가 TTS 어댑터 추가 — 전체복사 아닌 변경분만 관리 필요",
+        "files_changed": []
+      },
+      "result": {
+        "skills_committed": 38,
+        "files": 68,
+        "actual_size": "0.5MB",
+        "newly_added": 27,
+        "resynced": 5,
+        "excluded": "gstack(1.1GB·자체git)·hyperframes·superpowers 등 외부 78개",
+        "skill_patches": "media-use TTS 어댑터 7파일 별도 보관 + 복원절차 README",
+        "found_issues": [
+          "기존 편입 10개 중 5개 원본과 불일치(SKILL.md vs skill.md 대소문자)",
+          "cpo·saas-member-standard는 untracked 상태였음"
+        ],
+        "secret_guard_fix": "편입 중 secret-guard가 os.environ 참조를 오탐해 커밋 차단 → 제외규칙에 Python/JS/Go/Java/PHP 환경변수 패턴 추가(v4). 6케이스 직접검증 통과(환경변수 3 PASS / 실제키 3 BLOCK)"
+      }
+    },
+    {
+      "id": "ISS-417",
+      "title": "[지시] Hermes 도구 자가복구 패턴 이식 — 실패 시 진단·복구 힌트 제공",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T11:23:01.902381",
+      "updated_at": "2026-08-09T11:27:15.704225",
+      "payload": {
+        "origin": "대표님 지시 2026-08-09 — Hermes v0.20.0 리서치 후 1번 항목 승인",
+        "reference": "NousResearch/hermes-agent v0.20.0 'Tools that fix themselves'",
+        "evidence_today": [
+          "edge-tts --rate \"-10%\" 인자파싱 실패 → 수동으로 --rate=\"-10%\" 재시도",
+          "for d in $LIST 변수확장 실패로 27개 복사가 0개 → 원인 찾아 재실행",
+          "secret-guard 검증 시 source 방식 오류로 정반대 결과 → 방식 바꿔 재검증"
+        ],
+        "scope": "자주 겪는 실패 패턴에 진단 힌트를 붙이는 경량 hook. Hermes 도입 아님",
+        "principle": "Karpathy #2 — 50줄로 될 것을 200줄로 만들지 않는다",
+        "files_changed": []
+      },
+      "result": {
+        "file": "hooks/tool-recover.sh (3.2KB)",
+        "registered": "settings.json PostToolUseFailure — 기존 orca hook 보존, 배열에 추가(1→2개)",
+        "patterns": 10,
+        "pattern_list": [
+          "argparse 음수값",
+          "셸 변수 단어분리",
+          "zsh glob 실패",
+          "파일없음",
+          "권한거부",
+          "명령없음",
+          "타임아웃",
+          "git 커밋차단",
+          "Python 모듈없음",
+          "JSON 파싱실패"
+        ],
+        "verified": "5케이스 직접 실행 — 진단 4건 정확 출력, 정상케이스 1건 무출력 확인",
+        "design": "매칭 없으면 무출력·항상 exit 0 — 노이즈 방지, 도구 실패를 악화시키지 않음",
+        "source": "Hermes v0.20.0 'Tools that fix themselves' 패턴 차용. Hermes 도입 아님",
+        "evidence": "오늘 세션 실패 3건(edge-tts --rate 음수·$LIST 확장실패·source 함수미등록)이 설계 근거"
+      }
+    },
+    {
+      "id": "ISS-418",
+      "title": "[지시] hermes import-agent 호환성 확인 — 우리 스킬이 어떻게 변환되나",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P2",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T11:28:48.574455",
+      "updated_at": "2026-08-09T11:30:41.339816",
+      "payload": {
+        "goal": "Hermes 도입이 아니라 호환성 탐색. 우리 스킬 38개가 어떻게 변환되는지 확인",
+        "reversible": "되돌리기 쉬움 — 읽기 위주",
+        "origin": "대표님 지시 2026-08-09 — 2·3번 승인"
+      },
+      "result": {
+        "finding_1": "Hermes가 이미 설치돼 있었음 — v0.18.2, 1.8GB, auth.json 인증완료, config.yaml 백업 2개(실사용 이력)",
+        "finding_2": "import-agent는 v0.20.0 신규라 v0.18.2에 없음. 그러나 불필요 — 스킬 형식이 100% 동일",
+        "format_check": "embedded-captions 양쪽 비교 — 디렉터리 구조·프론트매터 글자단위 동일. 변환 불요",
+        "recognition": "Hermes 인식 91개 중 우리 자체제작 스킬 0개",
+        "root_cause": "디렉터리 분리 — ~/.hermes/skills 36개 vs ~/.claude/skills 116개. 공통19/Hermes만17/Claude만97",
+        "verdict": "스킬 이전은 복사만으로 가능(비용 낮음). 그러나 규약(registry.json 파이프라인·3-Tier 컨펌·모델티어·예산Cap)은 대응물이 없어 이전 불가",
+        "implication": "ISS-417 4번(전면이전) 반대 근거를 뒷받침 — '스킬 이전은 쉽고 규약 이전은 불가능'"
+      }
+    },
+    {
+      "id": "ISS-419",
+      "title": "[지시] 음성 스택 비교 — Hermes 음성 vs 오늘 만든 Edge-TTS",
+      "type": "GENERATE_CODE",
+      "status": "COMPLETED",
+      "priority": "P2",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-09T11:28:48.574455",
+      "updated_at": "2026-08-09T11:45:56.232318",
+      "payload": {
+        "goal": "어느 쪽이 나은지 판정",
+        "ours": "media-use edge.tts — 한국어 3종, 키 불필요, 실측 검증 완료",
+        "theirs": "Hermes 통합 음성 — 스트리밍TTS·barge-in·온디바이스 웨이크워드·STT 통합",
+        "origin": "대표님 지시 2026-08-09 — 2·3번 승인",
+        "method": "B — v0.18.2 현 상태로 비교(업데이트 없음). 대표님 선택"
+      },
+      "last_dispatched_at": "2026-08-09T11:30:15",
+      "result": {
+        "finding": "Hermes에도 edge provider 존재 — 오늘 만든 것과 같은 edge-tts 엔진",
+        "hermes_providers": "10종 — edge(기본)/elevenlabs/gemini/minimax/openai/piper/xai/mistral/kittentts/neutts",
+        "korean": "Hermes 기본값 en-US-AriaNeural, 코드에 한국어 언급 없음. 우리는 ko-KR-SunHiNeural + 한글 자동분기",
+        "cloning": "Hermes는 MiniMax로 가능하나 유료키 필요. 우리는 VoiceBox(MIT·무료·설치완료)로 대체 가능",
+        "verdict": "한국어 나레이션 목적에는 우리 쪽 우위. 오늘 만든 것 유지 권고",
+        "takeaway": "Hermes의 tts.providers.<name>: type: command 방식 — 파이썬 코드 없이 외부 스크립트를 TTS provider로 등록. VoiceBox 연동 시 참고"
+      }
+    },
+    {
+      "id": "ISS-420",
+      "title": "[지시] TARS 그래프 UI 진단 → 0032_AgenticOS 이슈 이관",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-09T11:44:19.423832",
+      "updated_at": "2026-08-09T11:45:56.232318",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "../0032에 수정이슈 넘겨줘. 이동해서 할게."
+      },
+      "result": {
+        "diagnosed": "0032_AgenticOS/web/src/orgGraph.ts 소스 직접 분석",
+        "root_cause": "DEPARTMENT_COLORS 6색이 baseColor에만 저장되고 렌더링용 color에는 IDLE_COLOR(#475569) 대입. 278행 idle 분기가 평상시 항상 적용돼 부서색이 영원히 안 보임",
+        "why_prev_fix_failed": "ISS-116~119 UI재설계는 헤더/위험스트립/오브/styles.css 대상이었고 orgGraph.ts는 범위 밖. DONE인데 이 화면만 그대로였던 이유",
+        "transferred": [
+          "ISS-120 P0 색 복원",
+          "ISS-121 P1 등간격 배치",
+          "ISS-122 P2 크기 균일"
+        ],
+        "target": "0032_AgenticOS/.claude/issue-db/registry.json (130→133건)"
       }
     }
   ],
@@ -3544,9 +4730,37 @@
         "issue_type": "USER_STORY",
         "plan_created": 1,
         "timestamp": "2026-06-15T19:35:20.611099"
+      },
+      {
+        "issue_id": "ISS-379",
+        "issue_type": "FEATURE_PLAN",
+        "plan_created": 2,
+        "timestamp": "2026-07-14T11:21:39.199318"
+      },
+      {
+        "issue_id": "ISS-384",
+        "issue_type": "FIX_BUG",
+        "plan_created": 3,
+        "timestamp": "2026-07-14T18:25:14.359284"
       }
     ],
-    "on_fail": [],
+    "on_fail": [
+      {
+        "issue_id": "ISS-399",
+        "retry_count": 1,
+        "timestamp": "2026-08-08T20:38:45.814136"
+      },
+      {
+        "issue_id": "ISS-403",
+        "retry_count": 1,
+        "timestamp": "2026-08-09T08:20:13.963162"
+      },
+      {
+        "issue_id": "ISS-405",
+        "retry_count": 1,
+        "timestamp": "2026-08-09T08:22:22.017150"
+      }
+    ],
     "on_learn": []
   },
   "knowledge": {
@@ -3590,11 +4804,18 @@
         "evidence_issues": [
           "ISS-302",
           "ISS-323",
-          "ISS-326"
+          "ISS-326",
+          "ISS-370",
+          "ISS-371",
+          "ISS-383",
+          "ISS-384",
+          "ISS-394",
+          "ISS-395",
+          "ISS-416"
         ],
-        "frequency": 7,
+        "frequency": 14,
         "first_seen": "2026-05-12T00:36:42Z",
-        "last_seen": "2026-05-13T06:42:31Z"
+        "last_seen": "2026-08-09T02:47:53Z"
       },
       {
         "pattern": "배치 일괄 주입(injected_count 필드) 패턴 — 반복 수정보다 일괄 처리가 효율적",
@@ -3617,11 +4838,12 @@
       {
         "pattern": "에이전트 'agent-harness' 완료율 높음 (8건 COMPLETED)",
         "evidence_issues": [
-          "ISS-301"
+          "ISS-301",
+          "ISS-370"
         ],
-        "frequency": 2,
+        "frequency": 3,
         "first_seen": "2026-05-12T01:08:55Z",
-        "last_seen": "2026-05-12T01:09:00Z"
+        "last_seen": "2026-07-01T00:00:20Z"
       },
       {
         "pattern": "에이전트 'agent-harness' 완료율 높음 (11건 COMPLETED)",
@@ -3667,6 +4889,43 @@
         "frequency": 1,
         "first_seen": "2026-05-13T06:42:31Z",
         "last_seen": "2026-05-13T06:42:31Z"
+      },
+      {
+        "pattern": "에이전트 'product-manager' 완료율 높음 (2건 COMPLETED)",
+        "evidence_issues": [
+          "ISS-379"
+        ],
+        "frequency": 1,
+        "first_seen": "2026-07-14T09:26:27Z",
+        "last_seen": "2026-07-14T09:26:27Z"
+      },
+      {
+        "pattern": "에이전트 'agent-harness' 완료율 높음 (2건 COMPLETED)",
+        "evidence_issues": [
+          "ISS-383"
+        ],
+        "frequency": 1,
+        "first_seen": "2026-07-14T09:26:27Z",
+        "last_seen": "2026-07-14T09:26:27Z"
+      },
+      {
+        "pattern": "에이전트 'product-manager' 완료율 높음 (3건 COMPLETED)",
+        "evidence_issues": [
+          "ISS-390",
+          "ISS-404"
+        ],
+        "frequency": 2,
+        "first_seen": "2026-07-27T09:51:40Z",
+        "last_seen": "2026-08-09T02:47:53Z"
+      },
+      {
+        "pattern": "에이전트 'agent-harness' 완료율 높음 (14건 COMPLETED)",
+        "evidence_issues": [
+          "ISS-394"
+        ],
+        "frequency": 1,
+        "first_seen": "2026-08-09T02:47:53Z",
+        "last_seen": "2026-08-09T02:47:53Z"
       }
     ],
     "failure_patterns": [],
@@ -9191,35 +10450,3877 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 328,
+        "timestamp": "2026-06-29T12:53:40.725287",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 329,
+        "timestamp": "2026-06-29T12:56:47.362671",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 330,
+        "timestamp": "2026-06-29T13:03:51.550439",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 331,
+        "timestamp": "2026-06-29T13:05:32.226372",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 332,
+        "timestamp": "2026-06-29T13:08:40.325142",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 333,
+        "timestamp": "2026-07-08T09:22:05.394901",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 334,
+        "timestamp": "2026-07-08T09:22:17.465321",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 335,
+        "timestamp": "2026-07-08T09:22:51.195739",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 336,
+        "timestamp": "2026-07-08T09:22:56.143170",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 337,
+        "timestamp": "2026-07-08T09:33:42.682548",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 338,
+        "timestamp": "2026-07-08T11:54:33.482157",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 339,
+        "timestamp": "2026-07-08T11:55:32.492843",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 340,
+        "timestamp": "2026-07-08T13:21:11.714580",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 341,
+        "timestamp": "2026-07-14T10:44:00.204869",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 342,
+        "timestamp": "2026-07-14T10:44:02.168622",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 343,
+        "timestamp": "2026-07-14T10:45:19.616404",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 344,
+        "timestamp": "2026-07-14T10:45:21.584979",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 345,
+        "timestamp": "2026-07-14T10:47:28.377827",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 346,
+        "timestamp": "2026-07-14T10:47:30.312376",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 347,
+        "timestamp": "2026-07-14T10:50:33.577891",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 348,
+        "timestamp": "2026-07-14T10:52:33.929309",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 349,
+        "timestamp": "2026-07-14T10:52:36.109868",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 350,
+        "timestamp": "2026-07-14T10:53:29.036700",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 351,
+        "timestamp": "2026-07-14T10:53:32.064249",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 352,
+        "timestamp": "2026-07-14T10:54:16.501514",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 353,
+        "timestamp": "2026-07-14T10:54:19.013381",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 354,
+        "timestamp": "2026-07-14T10:57:20.506350",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 79,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 355,
+        "timestamp": "2026-07-14T11:21:27.830219",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 80,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 356,
+        "timestamp": "2026-07-14T11:22:05.390370",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 357,
+        "timestamp": "2026-07-14T11:22:07.894311",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 358,
+        "timestamp": "2026-07-14T11:22:27.580449",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, test-harness, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 359,
+        "timestamp": "2026-07-14T11:25:31.626962",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 360,
+        "timestamp": "2026-07-14T11:34:49.565133",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 361,
+        "timestamp": "2026-07-14T11:34:51.902402",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 362,
+        "timestamp": "2026-07-14T11:36:15.660330",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 363,
+        "timestamp": "2026-07-14T11:36:17.201174",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 364,
+        "timestamp": "2026-07-14T11:36:41.742202",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 365,
+        "timestamp": "2026-07-14T11:36:43.762291",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 366,
+        "timestamp": "2026-07-14T11:37:44.394625",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 367,
+        "timestamp": "2026-07-14T11:40:14.759511",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 368,
+        "timestamp": "2026-07-14T11:40:17.591791",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 369,
+        "timestamp": "2026-07-14T11:43:57.687420",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 370,
+        "timestamp": "2026-07-14T11:44:01.670007",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, test-harness, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 82,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 371,
+        "timestamp": "2026-07-14T11:47:21.850148",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 372,
+        "timestamp": "2026-07-14T11:47:25.785963",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 373,
+        "timestamp": "2026-07-14T11:47:54.760177",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, plan-ceo-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 374,
+        "timestamp": "2026-07-14T11:48:02.147461",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 375,
+        "timestamp": "2026-07-14T11:50:59.021251",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 376,
+        "timestamp": "2026-07-14T11:56:56.051332",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, test-harness, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 377,
+        "timestamp": "2026-07-14T11:56:58.255638",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 378,
+        "timestamp": "2026-07-14T12:42:54.099450",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 379,
+        "timestamp": "2026-07-14T12:42:56.285432",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 380,
+        "timestamp": "2026-07-14T12:46:29.371793",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 381,
+        "timestamp": "2026-07-14T12:46:32.718676",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 382,
+        "timestamp": "2026-07-14T12:47:08.901955",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 383,
+        "timestamp": "2026-07-14T12:47:15.467709",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 384,
+        "timestamp": "2026-07-14T12:48:24.126868",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 385,
+        "timestamp": "2026-07-14T12:48:30.086476",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 386,
+        "timestamp": "2026-07-14T12:50:51.556562",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 387,
+        "timestamp": "2026-07-14T12:50:57.058159",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, plan-eng-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 388,
+        "timestamp": "2026-07-14T12:51:28.574201",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 389,
+        "timestamp": "2026-07-14T12:51:30.215686",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 390,
+        "timestamp": "2026-07-14T13:07:52.119452",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 391,
+        "timestamp": "2026-07-14T13:07:54.494710",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 392,
+        "timestamp": "2026-07-14T13:19:40.428645",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 393,
+        "timestamp": "2026-07-14T13:19:43.350748",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 394,
+        "timestamp": "2026-07-14T13:20:31.722576",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 395,
+        "timestamp": "2026-07-14T13:20:33.818835",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, plan-ceo-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 396,
+        "timestamp": "2026-07-14T13:20:47.896610",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, test-harness, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 397,
+        "timestamp": "2026-07-14T13:20:50.190559",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 398,
+        "timestamp": "2026-07-14T13:23:33.879885",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 399,
+        "timestamp": "2026-07-14T13:23:36.814711",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 400,
+        "timestamp": "2026-07-14T13:25:28.289037",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 401,
+        "timestamp": "2026-07-14T13:25:30.928419",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-eng-reviewer, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 83,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 402,
+        "timestamp": "2026-07-14T13:30:06.954019",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 403,
+        "timestamp": "2026-07-14T13:30:10.099387",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 404,
+        "timestamp": "2026-07-14T13:31:46.537714",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 405,
+        "timestamp": "2026-07-14T13:31:49.883628",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 406,
+        "timestamp": "2026-07-14T13:32:12.879937",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, plan-eng-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 407,
+        "timestamp": "2026-07-14T13:33:51.861347",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, agent-harness, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 408,
+        "timestamp": "2026-07-14T13:33:54.015773",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, agent-harness, plan-ceo-reviewer, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 409,
+        "timestamp": "2026-07-14T13:34:52.817459",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 410,
+        "timestamp": "2026-07-14T13:34:54.396761",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, agent-harness, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 411,
+        "timestamp": "2026-07-14T13:36:10.174696",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 412,
+        "timestamp": "2026-07-14T13:36:12.406274",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-ceo-reviewer, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 413,
+        "timestamp": "2026-07-14T13:38:13.187029",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, plan-ceo-reviewer, agent-harness, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 414,
+        "timestamp": "2026-07-14T13:45:31.243757",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (test-harness, plan-eng-reviewer, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 415,
+        "timestamp": "2026-07-14T13:45:33.667273",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, test-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 416,
+        "timestamp": "2026-07-14T13:50:45.974974",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, plan-eng-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, test-harness, plan-eng-reviewer, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 417,
+        "timestamp": "2026-07-14T13:53:53.953606",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-eng-reviewer, plan-ceo-reviewer, test-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 418,
+        "timestamp": "2026-07-14T13:55:15.649638",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, plan-ceo-reviewer, product-manager)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 419,
+        "timestamp": "2026-07-14T13:55:18.882461",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-ceo-reviewer, product-manager, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, plan-eng-reviewer, agent-harness)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 84,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 420,
+        "timestamp": "2026-07-14T18:24:24.047117",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-ceo-reviewer, test-harness, agent-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 85,
+          "done": 26,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 421,
+        "timestamp": "2026-07-14T18:26:26.336322",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (plan-eng-reviewer, product-manager, plan-ceo-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (plan-eng-reviewer, test-harness, agent-harness, plan-ceo-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 88,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 422,
+        "timestamp": "2026-07-15T16:55:38.628640",
+        "findings": [
+          "🟠 핑퐁 감지: ISS-310 → 3회 파생 (product-manager, plan-ceo-reviewer, plan-eng-reviewer)",
+          "🟠 핑퐁 감지: ISS-317 → 6회 파생 (agent-harness, plan-ceo-reviewer, test-harness, plan-eng-reviewer)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 88,
+          "done": 26,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 423,
+        "timestamp": "2026-07-23T09:21:26.447451",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (27/89)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 89,
+          "done": 27,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 424,
+        "timestamp": "2026-07-23T09:27:00.862038",
+        "findings": [
+          "✅ 정상 운영 — 완료율 31% (28/90)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 90,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 425,
+        "timestamp": "2026-07-23T09:30:05.842742",
+        "findings": [
+          "✅ 정상 운영 — 완료율 31% (28/90)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 90,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 426,
+        "timestamp": "2026-07-23T09:46:11.491350",
+        "findings": [
+          "✅ 정상 운영 — 완료율 31% (28/91)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 91,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 427,
+        "timestamp": "2026-07-23T09:49:15.636264",
+        "findings": [
+          "✅ 정상 운영 — 완료율 31% (28/91)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 91,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 428,
+        "timestamp": "2026-07-27T14:38:52.947280",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 429,
+        "timestamp": "2026-07-27T14:39:38.272370",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 430,
+        "timestamp": "2026-07-27T14:40:25.342998",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 431,
+        "timestamp": "2026-07-27T14:40:37.214842",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 432,
+        "timestamp": "2026-07-27T14:41:09.782176",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 433,
+        "timestamp": "2026-07-27T14:44:23.508700",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 434,
+        "timestamp": "2026-07-27T14:44:27.224596",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 435,
+        "timestamp": "2026-07-27T14:44:28.894293",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 436,
+        "timestamp": "2026-07-27T14:44:58.627400",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 437,
+        "timestamp": "2026-07-27T14:45:05.158252",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 438,
+        "timestamp": "2026-07-27T14:45:24.963119",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 439,
+        "timestamp": "2026-07-27T14:47:22.039405",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 440,
+        "timestamp": "2026-07-27T14:50:10.447356",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 441,
+        "timestamp": "2026-07-27T14:50:14.897777",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 442,
+        "timestamp": "2026-07-27T14:50:49.350614",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 443,
+        "timestamp": "2026-07-27T14:51:42.595435",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 444,
+        "timestamp": "2026-07-27T14:52:10.244781",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 445,
+        "timestamp": "2026-07-27T14:52:34.419223",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 446,
+        "timestamp": "2026-07-27T14:52:36.645370",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 447,
+        "timestamp": "2026-07-27T14:52:37.081181",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 448,
+        "timestamp": "2026-07-27T14:52:40.166619",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 449,
+        "timestamp": "2026-07-27T14:52:41.605881",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 450,
+        "timestamp": "2026-07-27T14:52:46.162785",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 451,
+        "timestamp": "2026-07-27T14:52:49.714455",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 452,
+        "timestamp": "2026-07-27T14:55:32.200075",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 453,
+        "timestamp": "2026-07-27T14:57:56.825296",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 454,
+        "timestamp": "2026-07-27T15:01:37.429777",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 455,
+        "timestamp": "2026-07-27T15:01:40.031033",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/92)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 92,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 456,
+        "timestamp": "2026-07-27T15:03:47.142522",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 457,
+        "timestamp": "2026-07-27T15:12:51.285979",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 458,
+        "timestamp": "2026-07-27T15:12:55.557542",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 459,
+        "timestamp": "2026-07-27T15:16:33.572618",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 460,
+        "timestamp": "2026-07-27T15:16:37.299297",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 461,
+        "timestamp": "2026-07-27T15:20:33.767283",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 462,
+        "timestamp": "2026-07-27T15:20:58.717830",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 463,
+        "timestamp": "2026-07-27T15:21:51.528648",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 464,
+        "timestamp": "2026-07-27T15:22:00.863325",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 465,
+        "timestamp": "2026-07-27T15:22:04.581412",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 466,
+        "timestamp": "2026-07-27T15:22:30.402709",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 467,
+        "timestamp": "2026-07-27T15:23:01.804786",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 468,
+        "timestamp": "2026-07-27T15:23:39.807370",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 469,
+        "timestamp": "2026-07-27T15:24:25.823489",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 470,
+        "timestamp": "2026-07-27T15:25:43.350709",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 471,
+        "timestamp": "2026-07-27T15:27:08.332088",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 472,
+        "timestamp": "2026-07-27T15:27:08.704465",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 473,
+        "timestamp": "2026-07-27T15:27:12.779449",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/93)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 93,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 474,
+        "timestamp": "2026-07-27T15:38:10.606024",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 475,
+        "timestamp": "2026-07-27T15:38:13.266052",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 476,
+        "timestamp": "2026-07-27T15:50:43.998029",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 477,
+        "timestamp": "2026-08-08T19:13:01.628465",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 478,
+        "timestamp": "2026-08-08T19:28:52.974924",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 479,
+        "timestamp": "2026-08-08T19:30:07.356810",
+        "findings": [
+          "✅ 정상 운영 — 완료율 30% (28/94)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 94,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 0,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 480,
+        "timestamp": "2026-08-08T20:00:09.425042",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/99)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 99,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 481,
+        "timestamp": "2026-08-08T20:00:24.680648",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/99)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 99,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 482,
+        "timestamp": "2026-08-08T20:03:29.703562",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/99)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 99,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 483,
+        "timestamp": "2026-08-08T20:37:11.949420",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/100)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 100,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 484,
+        "timestamp": "2026-08-08T20:37:43.053092",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/100)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 100,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 485,
+        "timestamp": "2026-08-08T20:38:45.735357",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/100)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 100,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 486,
+        "timestamp": "2026-08-08T20:40:14.090475",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/100)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 100,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 487,
+        "timestamp": "2026-08-08T20:41:02.869443",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/100)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 100,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 488,
+        "timestamp": "2026-08-08T20:52:43.466835",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 489,
+        "timestamp": "2026-08-08T20:52:46.700611",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 490,
+        "timestamp": "2026-08-08T20:53:00.590152",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 491,
+        "timestamp": "2026-08-08T20:53:06.337235",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 492,
+        "timestamp": "2026-08-08T20:53:14.360681",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 493,
+        "timestamp": "2026-08-08T20:53:17.367618",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 494,
+        "timestamp": "2026-08-08T21:31:33.166415",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 495,
+        "timestamp": "2026-08-08T21:31:37.886955",
+        "findings": [
+          "✅ 정상 운영 — 완료율 28% (28/101)"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 496,
+        "timestamp": "2026-08-09T07:04:00.971190",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 497,
+        "timestamp": "2026-08-09T07:05:15.686923",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 498,
+        "timestamp": "2026-08-09T07:05:18.411899",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 101,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 499,
+        "timestamp": "2026-08-09T07:06:29.967820",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 500,
+        "timestamp": "2026-08-09T07:06:32.153950",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 501,
+        "timestamp": "2026-08-09T07:07:51.068697",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 502,
+        "timestamp": "2026-08-09T07:07:54.219655",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 503,
+        "timestamp": "2026-08-09T07:08:46.380060",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 504,
+        "timestamp": "2026-08-09T07:08:49.473978",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 11시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 102,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 505,
+        "timestamp": "2026-08-09T08:20:13.789786",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 12시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 2,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 506,
+        "timestamp": "2026-08-09T08:20:20.362867",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 12시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 507,
+        "timestamp": "2026-08-09T08:20:37.043909",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 12시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 508,
+        "timestamp": "2026-08-09T08:21:07.512555",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 12시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 509,
+        "timestamp": "2026-08-09T08:22:21.945312",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 12시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 510,
+        "timestamp": "2026-08-09T08:25:27.299030",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 12시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 511,
+        "timestamp": "2026-08-09T08:25:45.621391",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 12시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 512,
+        "timestamp": "2026-08-09T08:28:50.938394",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 513,
+        "timestamp": "2026-08-09T08:39:53.637398",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 514,
+        "timestamp": "2026-08-09T08:41:21.765286",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 515,
+        "timestamp": "2026-08-09T08:43:42.292166",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 516,
+        "timestamp": "2026-08-09T08:43:56.258774",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 517,
+        "timestamp": "2026-08-09T08:52:29.830009",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 518,
+        "timestamp": "2026-08-09T08:53:10.944910",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 107,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 519,
+        "timestamp": "2026-08-09T09:00:41.941761",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 520,
+        "timestamp": "2026-08-09T09:01:29.037041",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 521,
+        "timestamp": "2026-08-09T09:04:10.207051",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 522,
+        "timestamp": "2026-08-09T09:04:13.035996",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 523,
+        "timestamp": "2026-08-09T09:07:27.800192",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 524,
+        "timestamp": "2026-08-09T09:10:38.938839",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 13시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 108,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 525,
+        "timestamp": "2026-08-09T09:38:21.838470",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 109,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 526,
+        "timestamp": "2026-08-09T09:41:42.297777",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 109,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 527,
+        "timestamp": "2026-08-09T09:58:28.589386",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 528,
+        "timestamp": "2026-08-09T10:01:39.566251",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 529,
+        "timestamp": "2026-08-09T10:03:37.796006",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 530,
+        "timestamp": "2026-08-09T10:10:40.027884",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 531,
+        "timestamp": "2026-08-09T10:10:43.393753",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 532,
+        "timestamp": "2026-08-09T10:12:27.903011",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 533,
+        "timestamp": "2026-08-09T10:13:39.660497",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 111,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 534,
+        "timestamp": "2026-08-09T10:34:36.682308",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 113,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 535,
+        "timestamp": "2026-08-09T10:41:57.623258",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 115,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 536,
+        "timestamp": "2026-08-09T10:42:02.256928",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 537,
+        "timestamp": "2026-08-09T10:43:52.145759",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 538,
+        "timestamp": "2026-08-09T10:43:57.077871",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 539,
+        "timestamp": "2026-08-09T10:45:03.576271",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 540,
+        "timestamp": "2026-08-09T10:45:07.161278",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 541,
+        "timestamp": "2026-08-09T10:46:12.400015",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 542,
+        "timestamp": "2026-08-09T10:47:06.975836",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 116,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 543,
+        "timestamp": "2026-08-09T11:05:17.111520",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 117,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 544,
+        "timestamp": "2026-08-09T11:08:26.102247",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 117,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 545,
+        "timestamp": "2026-08-09T11:12:22.807855",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 117,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 546,
+        "timestamp": "2026-08-09T11:15:28.925475",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 117,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 547,
+        "timestamp": "2026-08-09T11:27:37.950422",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 118,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 548,
+        "timestamp": "2026-08-09T11:27:42.313353",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 118,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 549,
+        "timestamp": "2026-08-09T11:30:15.174962",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 120,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 550,
+        "timestamp": "2026-08-09T11:30:57.262571",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 120,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 551,
+        "timestamp": "2026-08-09T11:34:13.527227",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 120,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 552,
+        "timestamp": "2026-08-09T11:37:54.235292",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 120,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 553,
+        "timestamp": "2026-08-09T11:41:00.437258",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 120,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 554,
+        "timestamp": "2026-08-09T11:46:14.756020",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 16시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 555,
+        "timestamp": "2026-08-13T13:40:20.844332",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 114시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 556,
+        "timestamp": "2026-08-13T13:43:24.583407",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 114시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 557,
+        "timestamp": "2026-08-13T15:37:59.579876",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 116시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 558,
+        "timestamp": "2026-08-13T15:38:01.788218",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 116시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 559,
+        "timestamp": "2026-08-13T15:39:39.266512",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 116시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 560,
+        "timestamp": "2026-08-13T15:39:41.178369",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 116시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 561,
+        "timestamp": "2026-08-13T15:42:42.627303",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 116시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 366,
-    "completed": 39,
-    "failed": 0,
-    "evolved": 327
+    "total_issues": 388,
+    "completed": 41,
+    "failed": 3,
+    "evolved": 561
   },
   "hermes_state": {
     "invocations_by_issue": {},
     "daily_log": [],
-    "total_invocations": 0
+    "total_invocations": 0,
+    "last_run": "2026-07-10T06:47:42Z",
+    "interval_min": 10,
+    "started_at": "2026-07-10T06:45:12.679691+00:00"
   },
   "opus_budget_state": {
     "daily": {
-      "date": "2026-05-12",
-      "cost_usd": 3.16,
-      "calls": 6
+      "date": "2026-07-15",
+      "cost_usd": 0.23,
+      "calls": 1
     },
     "monthly": {
-      "month": "2026-05",
-      "cost_usd": 3.16,
-      "calls": 6
+      "month": "2026-07",
+      "cost_usd": 0.23,
+      "calls": 1
     },
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "2026-06-15",
+    "date": "2026-08-13",
     "created_today": 0
   },
   "proactive_scan_state": {
@@ -9238,12 +14339,12 @@
       "opus_budget_before": {
         "daily": {
           "date": "",
-          "cost_usd": 0.0,
+          "cost_usd": 0,
           "calls": 0
         },
         "monthly": {
           "month": "",
-          "cost_usd": 0.0,
+          "cost_usd": 0,
           "calls": 0
         },
         "demotion_active": false
@@ -9272,5 +14373,299 @@
   },
   "cicd_bootstrap_state": {
     "last_date": "2026-06-15"
+  },
+  "learned_skills": [],
+  "moa_runs": [
+    {
+      "ts": "2026-07-08T00:22:57.542200+00:00",
+      "prompt": "1+1은?",
+      "refs": "claude",
+      "valid_responses": 1
+    }
+  ],
+  "hermes_runs": [
+    {
+      "ts": "2026-07-08T00:39:01Z",
+      "action": "render",
+      "detail": "READY 이슈 없음, 렌더만",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T00:49:54Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-044 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T01:47:02Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-045 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T01:48:45Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-048 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:06:21Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-049 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:08:26Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-050 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:14:18Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-052 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:21:53Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate/ISS-055 자문 실패: Command '['claude', '-p', \"프로젝트 '0050_ShortsAffiliate'의 하네스 이슈에 대해 충분한 의견을 주세요. 코드는 수정하지 말고(자문만), 다음 4가지를 한국어로 간결히: 1)핵심 접근 2)주의점 3)다음 실행 3단계 4)리스크. 이슈: [ISS-055] [MIRROR-ISSUE-022] ⭐ 어필리에이트 CTA 동선 — S1.5 카드 + 영상 오버레이 + 발행 메타 3곳 명시\"]' timed out after 150 seconds",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:29:01Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-055 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:36:54Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate/ISS-038 자문 실패: Command '['claude', '-p', \"프로젝트 '0050_ShortsAffiliate'의 하네스 이슈에 대해 충분한 의견을 주세요. 코드는 수정하지 말고(자문만), 다음 4가지를 한국어로 간결히: 1)핵심 접근 2)주의점 3)다음 실행 3단계 4)리스크. 이슈: [ISS-038] [MIRROR-ISSUE-004] 실 상품 이미지 → nano-banana 첫 프레임 연결\"]' timed out after 150 seconds",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:43:40Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-038 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:49:46Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-040 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T02:56:24Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-046 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:03:03Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-051 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:08:58Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-053 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:16:05Z",
+      "action": "patrol",
+      "detail": "0050_ShortsAffiliate · ISS-058 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:22:44Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:29:10Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:36:45Z",
+      "action": "patrol",
+      "detail": "0000_master/ISS-021 자문 실패: Command '['claude', '-p', \"프로젝트 '0000_master'의 하네스 이슈에 대해 충분한 의견을 주세요. 코드는 수정하지 말고(자문만), 다음 4가지를 한국어로 간결히: 1)핵심 접근 2)주의점 3)다음 실행 3단계 4)리스크. 이슈: [ISS-021] [Plan:테스트] ISS-018 변경사항 검증\"]' timed out after 150 seconds",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:43:56Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:51:30Z",
+      "action": "patrol",
+      "detail": "0000_master/ISS-021 자문 실패: Command '['claude', '-p', \"프로젝트 '0000_master'의 하네스 이슈에 대해 충분한 의견을 주세요. 코드는 수정하지 말고(자문만), 다음 4가지를 한국어로 간결히: 1)핵심 접근 2)주의점 3)다음 실행 3단계 4)리스크. 이슈: [ISS-021] [Plan:테스트] ISS-018 변경사항 검증\"]' timed out after 150 seconds",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T03:58:12Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:04:36Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:11:05Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:18:10Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:24:42Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:31:16Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:37:52Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:44:10Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 50",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:52:00Z",
+      "action": "patrol",
+      "detail": "0000_master/ISS-021 자문 실패: Command '['claude', '-p', \"프로젝트 '0000_master'의 하네스 이슈에 대해 충분한 의견을 주세요. 코드는 수정하지 말고(자문만), 다음 4가지를 한국어로 간결히: 1)핵심 접근 2)주의점 3)다음 실행 3단계 4)리스크. 이슈: [ISS-021] [Plan:테스트] ISS-018 변경사항 검증\"]' timed out after 150 seconds",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-08T04:59:20Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 52",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-10T06:37:51Z",
+      "action": "patrol",
+      "detail": "0025_CEO · ISS-283 자문 완료",
+      "claude_calls": 1,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-10T06:42:32Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 65",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-10T06:42:38Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 65",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    },
+    {
+      "ts": "2026-07-10T06:47:42Z",
+      "action": "patrol",
+      "detail": "22개 프로젝트 · READY 65",
+      "claude_calls": 0,
+      "render_ok": true,
+      "token_source": "subscription"
+    }
+  ],
+  "rewake_state": {
+    "ISS-398:READY": 17
   }
 }

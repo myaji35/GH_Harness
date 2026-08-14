@@ -173,19 +173,32 @@ sync_harness_core() {
   done
 
   # skills
+  # 스킬 디렉터리 전체를 동기화한다.
+  # (구버전은 skill.md 한 파일만 복사해서 SKILL.md 대문자 스킬과
+  #  references/ templates/ scripts/ 같은 하위 자산이 통째로 유실됐다)
   for skill_dir in "$SCRIPT_DIR/global/skills/"*/; do
     [ -d "$skill_dir" ] || continue
     local sname
     sname="$(basename "$skill_dir")"
     is_appledouble "$sname" && continue
-    mkdir -p "$HARNESS_CORE_DIR/skills/$sname"
-    if [ -f "$skill_dir/skill.md" ]; then
-      local dst="$HARNESS_CORE_DIR/skills/$sname/skill.md"
-      if [ ! -f "$dst" ] || ! cmp -s "$skill_dir/skill.md" "$dst"; then
-        cp "$skill_dir/skill.md" "$dst"
+    local sdst="$HARNESS_CORE_DIR/skills/$sname"
+    mkdir -p "$sdst"
+    # -a: 권한·심링크 보존, --delete 없음: 사용자가 로컬에 추가한 파일은 남긴다
+    if command -v rsync >/dev/null 2>&1; then
+      if ! rsync -a --exclude='._*' --exclude='__pycache__' --exclude='.DS_Store' \
+                 --itemize-changes "$skill_dir" "$sdst/" 2>/dev/null | grep -q .; then
+        : # 변경 없음
+      else
         changed=$((changed+1))
       fi
+    else
+      # rsync 없으면 cp 폴백
+      cp -R "$skill_dir." "$sdst/" 2>/dev/null && changed=$((changed+1))
+      find "$sdst" \( -name '._*' -o -name '.DS_Store' \) -delete 2>/dev/null
+      rm -rf "$sdst/__pycache__" "$sdst/scripts/__pycache__" 2>/dev/null
     fi
+    # 실행 권한 보존 (scripts/)
+    [ -d "$sdst/scripts" ] && chmod +x "$sdst/scripts/"* 2>/dev/null
   done
 
   # policy
@@ -214,6 +227,22 @@ sync_harness_core() {
       dst="$HARNESS_CORE_DIR/graphify/semantic/$name"
       if [ ! -f "$dst" ] || ! cmp -s "$sf" "$dst"; then
         cp "$sf" "$dst"
+        changed=$((changed+1))
+      fi
+    done
+  fi
+
+  # CI/CD 템플릿 (cicd-harness가 CICD_BOOTSTRAP 처리 시 참조)
+  if [ -d "$SCRIPT_DIR/global/templates/ci" ]; then
+    mkdir -p "$HARNESS_CORE_DIR/templates/ci"
+    for tf in "$SCRIPT_DIR/global/templates/ci/"*; do
+      [ -f "$tf" ] || continue
+      is_appledouble "$tf" && continue
+      local name dst
+      name="$(basename "$tf")"
+      dst="$HARNESS_CORE_DIR/templates/ci/$name"
+      if [ ! -f "$dst" ] || ! cmp -s "$tf" "$dst"; then
+        cp "$tf" "$dst"
         changed=$((changed+1))
       fi
     done
@@ -262,7 +291,9 @@ install_project_hooks_symlink() {
   mkdir -p "$proj_hooks"
 
   for core_hook in "$HARNESS_CORE_DIR/hooks/"*; do
-    [ -f "$core_hook" ] || continue
+    # lib/ 같은 디렉터리도 배포한다. 파일만 걸면 registry_lock 모듈이 누락되어
+    # 훅이 락 없이 registry를 덮어써 truncate 사고가 난다(2026-07-20).
+    [ -e "$core_hook" ] || continue
     local name link
     name="$(basename "$core_hook")"
     link="$proj_hooks/$name"

@@ -1,3 +1,9 @@
+---
+name: hermes
+description: harness의 **실시간 중재 계층**. executor 에이전트가 막혔을 때 컨텍스트를 압축·재구성하여
+model: sonnet
+---
+
 # Hermes Agent (에스컬레이션 중개자)
 
 harness의 **실시간 중재 계층**. executor 에이전트가 막혔을 때 컨텍스트를 압축·재구성하여

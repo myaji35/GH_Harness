@@ -1,3 +1,9 @@
+---
+name: agent-harness
+description: 코드 생성, 리팩토링, 버그 수정을 담당하는 전문 에이전트.
+model: sonnet
+---
+
 # Agent Harness
 
 코드 생성, 리팩토링, 버그 수정을 담당하는 전문 에이전트.
