@@ -424,28 +424,45 @@ elif issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT
     # 코드 변경 완료 → [v4.1] Computational Sensor 강제 게이트 선행 + 병렬 체인
     files_changed = target_issue.get('payload', {}).get('files_changed', [])
     files = target_issue.get('payload', {}).get('files', [])
-    all_files = list(set(files_changed + files))
+    result_files = result.get('files_changed', [])
+    if not isinstance(result_files, list):
+        result_files = []
+    all_files = list(set(files_changed + files + result_files))
 
     if not skip_verification_trio:
-        # [v4.1 Gate B] LINT_CHECK P0를 blocking gate로 선행 생성
-        # 실패 시 STYLE_FIX P0 체인만 활성, SCORE/DEPLOY 차단
-        add_issue(
-            f"[Plan:게이트] {issue_id} 계산적 센서 검증 (lint/type-check)",
-            'LINT_CHECK', 'P0', 'code-quality',
-            {
-                'files': all_files,
-                'source_issue': issue_id,
-                'gate': True,
-                'gate_blocks': ['SCORE', 'DEPLOY_READY'],
-                'bypass_env': 'HARNESS_BYPASS_GATE'
-            }
-        )
+        gate_skip_reason = None
+        if not all_files:
+            gate_skip_reason = '변경 파일 없음'
+        elif all(os.path.splitext(str(path))[1].lower() in ('.md', '.json', '.txt', '.yml', '.yaml') for path in all_files):
+            gate_skip_reason = '문서·설정 파일만 변경'
+        elif not any(os.path.exists(path) for path in (
+            'package.json', 'tsconfig.json', '.eslintrc', '.eslintrc.js', '.eslintrc.json',
+            'eslint.config.js', 'pyproject.toml', 'setup.cfg', '.rubocop.yml', 'Gemfile'
+        )):
+            gate_skip_reason = '린트 도구 미설정 저장소'
 
-        add_issue(
-            f"[Plan:테스트] {issue_id} 변경사항 검증",
-            'RUN_TESTS', 'P1', 'test-harness',
-            {'files': all_files, 'source_issue': issue_id, 'scope': 'changed'}
-        )
+        if gate_skip_reason:
+            print(f"  → 게이트 생략: {gate_skip_reason}")
+        else:
+            # [v4.1 Gate B] LINT_CHECK P0를 blocking gate로 선행 생성
+            # 실패 시 STYLE_FIX P0 체인만 활성, SCORE/DEPLOY 차단
+            add_issue(
+                f"[Plan:게이트] {issue_id} 계산적 센서 검증 (lint/type-check)",
+                'LINT_CHECK', 'P0', 'code-quality',
+                {
+                    'files': all_files,
+                    'source_issue': issue_id,
+                    'gate': True,
+                    'gate_blocks': ['SCORE', 'DEPLOY_READY'],
+                    'bypass_env': 'HARNESS_BYPASS_GATE'
+                }
+            )
+
+            add_issue(
+                f"[Plan:테스트] {issue_id} 변경사항 검증",
+                'RUN_TESTS', 'P1', 'test-harness',
+                {'files': all_files, 'source_issue': issue_id, 'scope': 'changed'}
+            )
 
         # 도메인 분석 → 비즈니스 검증 → 시나리오 실행 체인
         result_files_changed = result.get('files_changed', [])

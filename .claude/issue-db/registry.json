@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-15T19:14:26"
+      "last_dispatched_at": "2026-08-18T10:36:20"
     },
     {
       "id": "ISS-399",
@@ -4940,7 +4940,7 @@
       "id": "ISS-436",
       "title": "[Plan:게이트] ISS-435 계산적 센서 검증 (lint/type-check)",
       "type": "LINT_CHECK",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P0",
       "assign_to": "code-quality",
       "depth": 1,
@@ -4960,13 +4960,15 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-18T10:27:07"
+      "last_dispatched_at": "2026-08-18T10:27:07",
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-437",
       "title": "[Plan:테스트] ISS-435 변경사항 검증",
       "type": "RUN_TESTS",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P1",
       "assign_to": "test-harness",
       "depth": 1,
@@ -4981,13 +4983,15 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-18T10:09:43"
+      "last_dispatched_at": "2026-08-18T10:32:39",
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-438",
       "title": "[Plan:게이트] ISS-433 계산적 센서 검증 (lint/type-check)",
       "type": "LINT_CHECK",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P0",
       "assign_to": "code-quality",
       "depth": 2,
@@ -5007,13 +5011,15 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-18T10:27:08"
+      "last_dispatched_at": "2026-08-18T10:27:08",
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-439",
       "title": "[Plan:테스트] ISS-433 변경사항 검증",
       "type": "RUN_TESTS",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P1",
       "assign_to": "test-harness",
       "depth": 2,
@@ -5028,13 +5034,15 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-18T10:09:50"
+      "last_dispatched_at": "2026-08-18T10:09:50",
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-440",
       "title": "[Plan:게이트] ISS-430 계산적 센서 검증 (lint/type-check)",
       "type": "LINT_CHECK",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P0",
       "assign_to": "code-quality",
       "depth": 1,
@@ -5054,13 +5062,15 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-18T10:27:07"
+      "last_dispatched_at": "2026-08-18T10:27:07",
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-441",
       "title": "[Plan:테스트] ISS-430 변경사항 검증",
       "type": "RUN_TESTS",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P1",
       "assign_to": "test-harness",
       "depth": 1,
@@ -5075,7 +5085,9 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-18T10:09:46"
+      "last_dispatched_at": "2026-08-18T10:34:34",
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-442",
@@ -5157,7 +5169,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-18T10:13:41"
+      "last_dispatched_at": "2026-08-18T10:34:44"
     },
     {
       "id": "ISS-444",
@@ -5197,7 +5209,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-18T10:14:08"
+      "last_dispatched_at": "2026-08-18T10:34:44"
     },
     {
       "id": "ISS-445",
@@ -5233,7 +5245,7 @@
       "id": "ISS-446",
       "title": "[Plan:게이트] ISS-445 계산적 센서 검증 (lint/type-check)",
       "type": "LINT_CHECK",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P0",
       "assign_to": "code-quality",
       "depth": 1,
@@ -5253,13 +5265,15 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-18T10:27:08"
+      "last_dispatched_at": "2026-08-18T10:27:08",
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-447",
       "title": "[Plan:테스트] ISS-445 변경사항 검증",
       "type": "RUN_TESTS",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P1",
       "assign_to": "test-harness",
       "depth": 1,
@@ -5273,13 +5287,15 @@
         "scope": "changed"
       },
       "result": null,
-      "spawn_rules": []
+      "spawn_rules": [],
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-448",
       "title": "[Plan:게이트] ISS-431 계산적 센서 검증 (lint/type-check)",
       "type": "LINT_CHECK",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P0",
       "assign_to": "code-quality",
       "depth": 2,
@@ -5298,13 +5314,16 @@
         "bypass_env": "HARNESS_BYPASS_GATE"
       },
       "result": null,
-      "spawn_rules": []
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:28:04",
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-449",
       "title": "[Plan:테스트] ISS-431 변경사항 검증",
       "type": "RUN_TESTS",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P1",
       "assign_to": "test-harness",
       "depth": 2,
@@ -5318,13 +5337,15 @@
         "scope": "changed"
       },
       "result": null,
-      "spawn_rules": []
+      "spawn_rules": [],
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-450",
       "title": "[Plan:게이트] ISS-429 계산적 센서 검증 (lint/type-check)",
       "type": "LINT_CHECK",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P0",
       "assign_to": "code-quality",
       "depth": 2,
@@ -5343,13 +5364,16 @@
         "bypass_env": "HARNESS_BYPASS_GATE"
       },
       "result": null,
-      "spawn_rules": []
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:31:16",
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-451",
       "title": "[Plan:테스트] ISS-429 변경사항 검증",
       "type": "RUN_TESTS",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P1",
       "assign_to": "test-harness",
       "depth": 2,
@@ -5363,13 +5387,15 @@
         "scope": "changed"
       },
       "result": null,
-      "spawn_rules": []
+      "spawn_rules": [],
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
       "id": "ISS-452",
       "title": "[Plan:게이트] ISS-432 계산적 센서 검증 (lint/type-check)",
       "type": "LINT_CHECK",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P0",
       "assign_to": "code-quality",
       "depth": 2,
@@ -5388,13 +5414,16 @@
         "bypass_env": "HARNESS_BYPASS_GATE"
       },
       "result": null,
-      "spawn_rules": []
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:32:31",
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
     },
     {
-      "id": "ISS-453",
+      "id": "ISS-454",
       "title": "[Plan:테스트] ISS-432 변경사항 검증",
       "type": "RUN_TESTS",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P1",
       "assign_to": "test-harness",
       "depth": 2,
@@ -5408,7 +5437,32 @@
         "scope": "changed"
       },
       "result": null,
-      "spawn_rules": []
+      "spawn_rules": [],
+      "closed_at": "2026-08-18T01:36:02Z",
+      "close_reason": "검사 대상 파일 0개 + 린트 도구 미설정 저장소 — ISS-453으로 파생 조건 수정, 재발 없음"
+    },
+    {
+      "id": "ISS-453",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "status": "DONE",
+      "title": "[하네스] on_complete 게이트 남발 — files 비었거나 린트도구 없는 저장소에도 LINT_CHECK/RUN_TESTS 파생",
+      "assign_to": "agent-harness",
+      "created_at": "2026-08-18T01:32:49Z",
+      "payload": {
+        "origin": "intent-gate:user-directive",
+        "problem": "완료 이슈마다 기계적으로 게이트 2개 파생. payload.files=[] 라 검사 대상조차 없음. 이번 세션 완료7건→파생12건",
+        "fix": "files_changed 비었거나 .md/.json뿐이면 게이트 생략. 린트도구 미설정 저장소도 생략",
+        "cleanup": "기존 무의미 게이트 이슈 CLOSED_INVALID 처리"
+      },
+      "result": {
+        "passed": true,
+        "files_changed": [
+          "project/.claude/hooks/on_complete.sh"
+        ],
+        "note": "게이트 3조건 생략 + result.files_changed 병합. 4경로 실행검증(빈파일/문서만/린트미설정 생략, ts+package.json 생성). 기존 무의미 게이트 14건 CLOSED_INVALID, ID중복 1건 해소"
+      },
+      "completed_at": "2026-08-18T10:36:20.650422"
     }
   ],
   "hooks": {
@@ -5654,6 +5708,30 @@
         "issue_type": "REFACTOR",
         "plan_created": 2,
         "timestamp": "2026-08-18T10:27:08.140737"
+      },
+      {
+        "issue_id": "ISS-G01",
+        "issue_type": "FIX_BUG",
+        "plan_created": 0,
+        "timestamp": "2026-08-18T10:34:34.001850"
+      },
+      {
+        "issue_id": "ISS-G02",
+        "issue_type": "FIX_BUG",
+        "plan_created": 0,
+        "timestamp": "2026-08-18T10:34:43.907338"
+      },
+      {
+        "issue_id": "ISS-G03",
+        "issue_type": "FIX_BUG",
+        "plan_created": 0,
+        "timestamp": "2026-08-18T10:34:44.219000"
+      },
+      {
+        "issue_id": "ISS-453",
+        "issue_type": "FIX_BUG",
+        "plan_created": 0,
+        "timestamp": "2026-08-18T10:36:20.650422"
       }
     ],
     "on_fail": [
@@ -16477,14 +16555,168 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 625,
+        "timestamp": "2026-08-18T10:28:04.265032",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 231시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 154,
+          "done": 36,
+          "in_progress": 0,
+          "ready": 17,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 626,
+        "timestamp": "2026-08-18T10:28:09.788788",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 231시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 154,
+          "done": 36,
+          "in_progress": 0,
+          "ready": 17,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 627,
+        "timestamp": "2026-08-18T10:31:16.379280",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 231시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 154,
+          "done": 36,
+          "in_progress": 0,
+          "ready": 17,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 628,
+        "timestamp": "2026-08-18T10:31:19.664220",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 231시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 154,
+          "done": 36,
+          "in_progress": 0,
+          "ready": 17,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 629,
+        "timestamp": "2026-08-18T10:32:31.612353",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 231시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 154,
+          "done": 36,
+          "in_progress": 0,
+          "ready": 17,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 630,
+        "timestamp": "2026-08-18T10:32:36.086424",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 231시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 154,
+          "done": 36,
+          "in_progress": 0,
+          "ready": 17,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 631,
+        "timestamp": "2026-08-18T10:32:39.233539",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 231시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 154,
+          "done": 36,
+          "in_progress": 0,
+          "ready": 17,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
     "total_issues": 151,
-    "completed": 109,
+    "completed": 113,
     "failed": 3,
-    "evolved": 624
+    "evolved": 631
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -16854,9 +17086,8 @@
     }
   ],
   "rewake_state": {
-    "ISS-436:READY": 1,
-    "ISS-440:READY": 1,
-    "ISS-446:READY": 1,
-    "ISS-438:READY": 1
+    "ISS-443:READY": 1,
+    "ISS-444:READY": 1,
+    "ISS-398:READY": 1
   }
 }
