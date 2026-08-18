@@ -153,6 +153,9 @@ sync_harness_core() {
     name="$(basename "$hook")"
     dst="$HARNESS_CORE_DIR/hooks/$name"
     if [ ! -f "$dst" ] || ! cmp -s "$hook" "$dst"; then
+      if [ -f "$dst" ] && [ "$dst" -nt "$hook" ]; then
+        echo "  ⚠️  harness-core가 더 최신: $name — 저장소 버전으로 덮어씁니다. 수정분이 있다면 저장소에 먼저 반영하세요"
+      fi
       cp "$hook" "$dst"
       chmod +x "$dst"
       changed=$((changed+1))

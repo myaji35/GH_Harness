@@ -35,12 +35,13 @@ for ln in reversed(lines):
     recent.append(obj)
     if len(recent)>40: break
 recent.reverse()
-seen_user=False
-for obj in reversed(recent):
+turn_start=0
+for i,obj in reversed(list(enumerate(recent))):
     role=obj.get('message',{}).get('role') or obj.get('role')
     if role=='user':
+        turn_start=i+1
         break
-for obj in recent:
+for obj in recent[turn_start:]:
     msg=obj.get('message',{})
     if (msg.get('role') or obj.get('role'))!='assistant': continue
     content=msg.get('content',[])

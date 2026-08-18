@@ -231,7 +231,9 @@ if effort == "high" and agent not in _EFFORT_KEEP:
         pass
 
 issue_title = issue.get("title", "")
-payload_obj = issue.get("payload", {})
+payload_obj = issue.get("payload") or {}
+if not isinstance(payload_obj, dict):
+    payload_obj = {}
 payload = json.dumps(payload_obj, ensure_ascii=False)
 remaining = len(ready_issues) - 1
 
@@ -387,7 +389,8 @@ if _n > MAX_REWAKE:
           f"    대표님 지시가 있을 때 처리하라. 이 이슈를 자동으로 다시 깨우지 마라.")
     sys.exit(0)
 
-print(f"""
+if payload_obj.get('origin', '').startswith('intent-gate'):
+    print(f"""
 🔄 [Harness Auto-Dispatch] READY {len(ready_issues)}개 — 즉시 실행
 
 [자동 실행 지시] 질문하지 마라. 즉시 실행하라.
@@ -403,6 +406,19 @@ print(f"""
 3. 처리 완료 후 on_complete.sh 호출 (result JSON 포함)
 
 ⚠️ 경고: 사소한 질문(T0)/내부 자문(T1)은 금지. T2 컨펌 대상만 request-user-confirm.sh 사용.
+""".strip())
+else:
+    print(f"""
+🔄 [Harness] READY {len(ready_issues)}개 — 자동 파생 이슈(대표님 지시 대기)
+
+[착수 금지] 이 이슈는 hook이 자동 생성한 것이다. 대표님 지시 없이 착수하지 마라.
+- 이슈: {issue_id} ({issue_type})
+- 제목: {issue_title}
+- 담당(예정): {agent} (model: {model}, effort: {effort})
+- 파생元: {payload_obj.get('source_issue','불명')}
+- 대기 중: {remaining}개
+
+대표님이 착수를 지시하면 그때 실행하라. 지금은 보고만 한다.
 """.strip())
 
 # background_state stale 정리 결과 저장 (ISS-349)

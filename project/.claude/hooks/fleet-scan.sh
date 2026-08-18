@@ -15,41 +15,70 @@ FLEET_ROOT="$(dirname "$CUR")"
 CUR_NAME="$(basename "$CUR")"
 
 # 부모에 registry 보유 프로젝트가 2개 미만이면 fleet 아님 → skip
-count=$(find "$FLEET_ROOT" -maxdepth 4 -name registry.json -path '*/issue-db/*' 2>/dev/null | head -3 | wc -l | tr -d ' ')
+shopt -s nullglob
+registries=("$FLEET_ROOT"/*/.claude/issue-db/registry.json)
+count=${#registries[@]}
 [ "$count" -lt 2 ] && exit 0
 
 python3 - "$FLEET_ROOT" "$CUR_NAME" <<'PY'
-import json, glob, os, sys
+import json, glob, os, sys, tempfile
 root, cur = sys.argv[1], sys.argv[2]
 rows = []
+cache_path = os.path.join(os.environ.get('XDG_CACHE_HOME', os.path.expanduser('~/.cache')), 'claude-fleet-scan.json')
+try:
+    with open(cache_path) as f:
+        cache = json.load(f)
+    if not isinstance(cache, dict):
+        cache = {}
+except Exception:
+    cache = {}
 for reg in glob.glob(os.path.join(root, '*/.claude/issue-db/registry.json')):
     proj = reg.split('/')[-4]
     if proj == cur:        # 자기 프로젝트는 session-resume이 처리 → 제외
         continue
     try:
-        d = json.load(open(reg))
+        mtime = os.path.getmtime(reg)
+        cached = cache.get(reg)
+        if (isinstance(cached, dict) and cached.get('mtime') == mtime
+                and isinstance(cached.get('active'), int) and isinstance(cached.get('urgent'), int)):
+            active_count = cached['active']
+            urgent_count = cached['urgent']
+        else:
+            with open(reg) as f:
+                d = json.load(f)
+            active = [i for i in d.get('issues', []) if i.get('status') in ('READY', 'IN_PROGRESS')]
+            # 우선순위 P0/P1만 추려서 노이즈 억제
+            urgent = [i for i in active if i.get('priority') in ('P0', 'P1')]
+            active_count = len(active)
+            urgent_count = len(urgent)
+            cache[reg] = {'mtime': mtime, 'active': active_count, 'urgent': urgent_count}
     except Exception:
         continue
-    active = [i for i in d.get('issues', []) if i.get('status') in ('READY', 'IN_PROGRESS')]
-    if not active:
+    if not active_count:
         continue
-    # 우선순위 P0/P1만 추려서 노이즈 억제
-    urgent = [i for i in active if i.get('priority') in ('P0', 'P1')]
-    rows.append((proj, len(active), len(urgent)))
+    rows.append((proj, active_count, urgent_count))
+
+try:
+    cache_dir = os.path.dirname(cache_path)
+    os.makedirs(cache_dir, exist_ok=True)
+    fd, tmp_path = tempfile.mkstemp(dir=cache_dir)
+    try:
+        with os.fdopen(fd, 'w') as f:
+            json.dump(cache, f)
+        os.replace(tmp_path, cache_path)
+    except Exception:
+        try:
+            os.unlink(tmp_path)
+        except Exception:
+            pass
+except Exception:
+    pass
 
 if not rows:
     sys.exit(0)
 
 rows.sort(key=lambda x: -x[2])  # 긴급 많은 순
 total = sum(r[1] for r in rows)
-print("\n🛰️  [Fleet 스캔] 다른 프로젝트에 방치된 작업이 있습니다 (자기 프로젝트 제외):")
-for proj, a, u in rows[:8]:
-    tag = f" — P0/P1 {u}개" if u else ""
-    print(f"   • {proj}: 방치 {a}개{tag}")
-if len(rows) > 8:
-    print(f"   • ... 외 {len(rows)-8}개 프로젝트")
-print(f"   합계: {total}개 방치 / {len(rows)}개 프로젝트")
-print("   → 처리하려면 해당 프로젝트 디렉터리에서 새 세션을 열면 session-resume이 자동 착수한다.")
-print("   → 또는 대표님이 특정 프로젝트를 지시하면 그쪽으로 전환해 처리한다. (지금 자동 처리 금지 — 컨텍스트 격리)")
+print(f"⚠️ 타 프로젝트 방치 이슈 {total}건 / {len(rows)}개 — 정리하려면 해당 프로젝트에서 새 세션")
 PY
 exit 0

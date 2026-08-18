@@ -146,6 +146,74 @@ if [ -f "$SCRIPT_DIR/detect-cicd-gap.sh" ]; then
 fi
 export CICD_GAP_VERDICT
 
+python3 << 'PYEOF' 2>/dev/null || true
+import glob, json, os, re, time
+
+current = re.sub(r'[/._]', '-', os.getcwd())
+files = []
+for path in glob.glob(os.path.expanduser('~/.claude/projects/*/*.jsonl')):
+    try:
+        files.append((os.path.getmtime(path), path))
+    except Exception:
+        continue
+
+for mtime, path in sorted(files, reverse=True)[:150]:
+    project = os.path.basename(os.path.dirname(path))
+    if project == current:
+        continue
+    try:
+        with open(path, 'r') as f:
+            lines = f.readlines()
+    except Exception:
+        continue
+    utterances = 0
+    for line in reversed(lines):
+        try:
+            message = json.loads(line).get('message', {})
+            if message.get('role') != 'user':
+                continue
+            utterances += 1
+            if utterances > 40:
+                break
+            content = message.get('content')
+            if isinstance(content, str):
+                text = content
+            elif isinstance(content, list):
+                text = next((item.get('text', '') for item in content
+                             if isinstance(item, dict) and item.get('type') == 'text'), '')
+            else:
+                continue
+            text = text.strip()
+            injected = ('Base directory for this skill',
+                        'The following skills are available',
+                        'New agent types are now available', 'Tool loaded',
+                        'local-command-caveat', 'command-name>',
+                        'task-notification', 'hookSpecificOutput', 'Stop hook',
+                        'UserPromptSubmit hook', '[자동 실행 지시]',
+                        '[Harness Auto-Dispatch]')
+            if len(text) < 2 or any(marker in text for marker in injected):
+                continue
+            text = ' '.join(text.split())
+            if (not text or text.startswith('<') or 'system-reminder' in text
+                    or 'Caveat:' in text or 'SYSTEM NOTIFICATION' in text):
+                continue
+            shown = text[:60] + ('…' if len(text) > 60 else '')
+            elapsed = max(0, int(time.time() - mtime))
+            if elapsed < 60:
+                ago = '방금'
+            elif elapsed < 3600:
+                ago = f'{elapsed // 60}분 전'
+            elif elapsed < 86400:
+                ago = f'{elapsed // 3600}시간 전'
+            else:
+                ago = f'{elapsed // 86400}일 전'
+            shown_project = project.removeprefix('-Volumes-E-SSD-02-GitHub-nosync-')
+            print(f'🧭 직전: {shown_project} "{shown}" ({ago}) — 전체는 --resume 후 Ctrl+A')
+            raise SystemExit
+        except (json.JSONDecodeError, AttributeError, TypeError):
+            continue
+PYEOF
+
 if [ ! -f "$REGISTRY" ]; then
   echo "[Harness] registry.json 없음 — 'harness 시작'으로 초기화하세요."
   exit 0

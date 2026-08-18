@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-13T15:37:59"
+      "last_dispatched_at": "2026-08-15T19:14:26"
     },
     {
       "id": "ISS-399",
@@ -4551,6 +4551,864 @@
         ],
         "target": "0032_AgenticOS/.claude/issue-db/registry.json (130→133건)"
       }
+    },
+    {
+      "id": "ISS-421",
+      "title": "[지시] 3단계 하네스 연동 진행해줘",
+      "type": "FEATURE_PLAN",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-15T13:19:51.527888",
+      "updated_at": "2026-08-15T13:25:28.719913",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "3단계 하네스 연동 진행해줘"
+      },
+      "result": {
+        "files_modified": [
+          "~/.claude/harness-core/hooks/session-resume.sh"
+        ],
+        "feature": "세션 시작 시 최근 세션 제목 3건 표시",
+        "verified": true,
+        "duration_sec": 0.2,
+        "scope": "25+ 프로젝트 공유 hook",
+        "tests": "bash -n 통과 / 3회 실측 0.19~0.20초 / 실패경로 3종 무해 확인 / 타 프로젝트 자기제외 확인"
+      },
+      "completed_at": "2026-08-15T13:25:21.250990"
+    },
+    {
+      "id": "ISS-422",
+      "title": "[Plan:CEO검토] ISS-421 전략 검토",
+      "type": "PLAN_CEO_REVIEW",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "plan-ceo-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-421",
+      "depends_on": [],
+      "created_at": "2026-08-15T13:25:21.250990",
+      "payload": {
+        "source_issue": "ISS-421",
+        "source_plan": {
+          "files_modified": [
+            "~/.claude/harness-core/hooks/session-resume.sh"
+          ],
+          "feature": "세션 시작 시 최근 세션 제목 3건 표시",
+          "verified": true,
+          "duration_sec": 0.2,
+          "scope": "25+ 프로젝트 공유 hook",
+          "tests": "bash -n 통과 / 3회 실측 0.19~0.20초 / 실패경로 3종 무해 확인 / 타 프로젝트 자기제외 확인"
+        },
+        "feature": "ISS-421",
+        "files_changed": []
+      },
+      "result": {
+        "verdict": "조정",
+        "score": "32/60",
+        "reviewer": "plan-ceo-reviewer(opus)",
+        "corrected": "종전 Opus 직접판정 '유지'는 철회. 서브에이전트 산출물이 전달되지 않아 오판했음",
+        "findings": {
+          "aiTitle_coverage": "59개 프로젝트 중 25개(42%)만 보유",
+          "title_staleness": "세션 시작 시점 고정. 16시간 세션에 제목 1개",
+          "mismatch": "제목 '기획자와 소통 문제 해결' vs 마지막발화 '4단계 진행 승인.'"
+        },
+        "proposal": "3건→1건, aiTitle→마지막 사용자 발화, 4줄→1줄"
+      },
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-15T19:06:41",
+      "updated_at": "2026-08-15T19:25:35"
+    },
+    {
+      "id": "ISS-423",
+      "title": "[Plan:Eng검토] ISS-421 실행가능성 검토",
+      "type": "PLAN_ENG_REVIEW",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "plan-eng-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-421",
+      "depends_on": [],
+      "created_at": "2026-08-15T13:25:21.250990",
+      "payload": {
+        "source_issue": "ISS-421",
+        "source_plan": {
+          "files_modified": [
+            "~/.claude/harness-core/hooks/session-resume.sh"
+          ],
+          "feature": "세션 시작 시 최근 세션 제목 3건 표시",
+          "verified": true,
+          "duration_sec": 0.2,
+          "scope": "25+ 프로젝트 공유 hook",
+          "tests": "bash -n 통과 / 3회 실측 0.19~0.20초 / 실패경로 3종 무해 확인 / 타 프로젝트 자기제외 확인"
+        },
+        "feature": "ISS-421"
+      },
+      "result": {
+        "verdict": "수정 필요",
+        "perf": "0.066s 문제없음",
+        "p0": "open() 예외격리 → ISS-427로 수정완료",
+        "p2": "매직넘버 80 근거 부재(권고, 미조치)"
+      },
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-15T19:08:35",
+      "updated_at": "2026-08-15T19:17:48"
+    },
+    {
+      "id": "ISS-424",
+      "type": "REFACTOR",
+      "title": "[하네스] dispatch-ready/Stop hook — 자동파생 이슈와 대표님 지시 이슈 구분 출력",
+      "status": "COMPLETED",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-15T13:29:12.658278",
+      "updated_at": "2026-08-15T13:32:55.205611",
+      "payload": {
+        "origin": "user-directive",
+        "problem": "hook이 이슈 출처를 구분하지 않아 자가 등록 파생 이슈에도 '즉시 실행하라'를 출력 → 매 턴 자가발주 유혹",
+        "solution": "payload.origin 기반으로 자동파생 이슈는 '대표님 지시 대기 중'으로 문구 전환",
+        "scope_files": [
+          "~/.claude/harness-core/hooks/dispatch-ready.sh"
+        ],
+        "blast_radius": "25+ 프로젝트 공유 hook"
+      }
+    },
+    {
+      "id": "ISS-425",
+      "type": "FIX_BUG",
+      "title": "[하네스] dispatch-ready.sh — payload가 dict 아닐 때 272행 AttributeError 크래시",
+      "status": "COMPLETED",
+      "priority": "P2",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-15T13:32:55.205611",
+      "updated_at": "2026-08-15T19:14:33",
+      "payload": {
+        "source_issue": "ISS-424",
+        "detail": "payload_obj.get() 호출부(286/288행 등)가 payload를 dict로 가정. 문자열이면 AttributeError로 hook 사망.",
+        "evidence": "ISS-424 검증 중 발견. 변경 전 백업본에서도 동일 재현 → 기존 결함이며 ISS-424 회귀 아님.",
+        "impact": "현재 registry에 문자열 payload 이슈 없음 → 실무 영향 없음. 방어적 수정 권장."
+      },
+      "last_dispatched_at": "2026-08-15T13:32:55",
+      "result": {
+        "changed_lines": 4,
+        "fix": "payload_obj를 dict로 정규화",
+        "verified": "문자열 payload 크래시 해소, ISS-424 분기 2경로 회귀 없음",
+        "backup": "/tmp/iss425_backup_dispatch-ready.sh"
+      }
+    },
+    {
+      "id": "ISS-426",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "status": "COMPLETED",
+      "title": "[하네스] precompact-chain.sh — PreCompact 스키마 위반으로 기억 저장 지시 전량 무시",
+      "created_at": "2026-08-15T19:10:19",
+      "updated_at": "2026-08-15T19:11:42",
+      "depth": 0,
+      "payload": {
+        "origin": "user-directive-2026-08-15",
+        "target_file": "/Users/gangseungsig/.claude/scripts/precompact-chain.sh",
+        "symptom": "hookSpecificOutput.additionalContext는 PreCompact 스키마에 없어 출력 전체가 폐기됨",
+        "impact": "compact 시마다 기억 저장 지시가 전달되지 않음. 전역 영향",
+        "fix": "JSON 대신 plain stdout으로 출력"
+      },
+      "result": {
+        "changed_lines": 2,
+        "verified": "plain stdout 5224B, 본문 구버전과 100% 일치",
+        "backup": "/tmp/iss426_backup_precompact-chain.sh"
+      }
+    },
+    {
+      "id": "ISS-427",
+      "type": "FIX_BUG",
+      "priority": "P0",
+      "status": "COMPLETED",
+      "title": "[하네스] session-resume.sh 최근세션 블록 — 파일 open 예외가 수집분 전체를 날림",
+      "created_at": "2026-08-15T19:16:22",
+      "updated_at": "2026-08-15T19:17:48",
+      "depth": 1,
+      "payload": {
+        "origin": "user-directive-2026-08-15",
+        "source_review": "ISS-423",
+        "target_file": "~/.claude/harness-core/hooks/session-resume.sh",
+        "defect": "inner loop의 open()/getmtime()이 try 밖 → PermissionError 파일 1개로 fail-all",
+        "impact": "손상/권한오류 파일이 상위 80개에 끼면 최근세션 기능 전체 무출력"
+      },
+      "result": {
+        "changed_lines": 26,
+        "verified": "권한오류 재현: 수정전 전량무출력→수정후 3건 정상. 정상환경 회귀없음. 실환경 0.162s",
+        "backup": "/tmp/iss427_backup_session-resume.sh"
+      }
+    },
+    {
+      "id": "ISS-428",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "status": "CLOSED_INVALID",
+      "title": "[하네스] plan-ceo-reviewer — 3회 연속 빈 응답, result/산출물 미기록",
+      "created_at": "2026-08-15T19:21:35",
+      "updated_at": "2026-08-15T19:25:35",
+      "depth": 1,
+      "payload": {
+        "source_issue": "ISS-422",
+        "symptom": "스폰 시 아무 작업 없이 idle 종료. registry result=null, 산출물 파일 없음. 3회 재현",
+        "impact": "session-resume이 매 세션 12줄로 이 에이전트 스폰을 지시 → 따를수록 빈 응답 반복",
+        "hint": "정의(~/.claude/agents/plan-ceo-reviewer.md)는 on_complete.sh 기록만 하고 응답 본문을 반환하지 않는 구조"
+      },
+      "last_dispatched_at": "2026-08-15T19:22:01",
+      "result": {
+        "finding": "오진단. plan-ceo-reviewer는 정상 작동했음(트랜스크립트 확인)",
+        "evidence": "agent-aceo-422b 로그에 6대질문 채점 완료된 검토 전문 존재",
+        "real_defect": "서브에이전트 최종 응답이 부모 세션에 전달되지 않고 빈 idle 알림만 도착"
+      }
+    },
+    {
+      "id": "ISS-429",
+      "type": "REFACTOR",
+      "priority": "P3",
+      "status": "DONE",
+      "title": "[하네스] session-resume 최근세션 — 스캔창 80→150 상향(starvation 여유)",
+      "created_at": "2026-08-15T19:21:35",
+      "updated_at": "2026-08-15T19:21:35",
+      "depth": 1,
+      "payload": {
+        "source_issue": "ISS-423",
+        "rationale": "상위 80개 중 82.5%가 단일 프로젝트 소속(실측). 근거 없는 매직넘버. 비용 0.004s"
+      },
+      "last_dispatched_at": "2026-08-15T19:23:49",
+      "result": {
+        "passed": true,
+        "note": "스캔창 150개 적용 (원 블록 소실로 신규 구현에 포함)"
+      },
+      "completed_at": "2026-08-18T10:27:07.909706"
+    },
+    {
+      "id": "ISS-430",
+      "type": "FIX_BUG",
+      "priority": "P0",
+      "status": "DONE",
+      "title": "[하네스] 서브에이전트 최종응답 미전달 — 빈 idle 알림만 도착 (4/4 재현)",
+      "created_at": "2026-08-15T19:25:49",
+      "updated_at": "2026-08-15T19:25:49",
+      "depth": 0,
+      "payload": {
+        "origin": "user-directive-2026-08-15",
+        "source_issue": "ISS-428",
+        "symptom": "Agent 스폰 시 서브에이전트는 정상 작업·응답 생성하나, 부모 세션에는 {type:idle_notification} 만 도착. 응답 본문 유실",
+        "reproduced": "ceo-422(opus)/ceo-422b(opus)/ceo-probe-sonnet(sonnet)/probe-eng-min(sonnet) 4건 전부. model·에이전트 종류 무관",
+        "counter_evidence": "eng-423은 정상 전달됨 → 항상 실패하는 것은 아님",
+        "evidence_path": "~/.claude/projects/-Volumes-E-SSD-02-GitHub-nosync-GH-Harness/c35c517f-.../subagents/agent-*.jsonl",
+        "impact": "P0 — 위임 결과를 못 받으면 오케스트레이션 전체가 무력화. 실제로 이번 세션에서 Opus가 CEO검토를 '빈 응답'으로 오판하고 열등한 자기 판정으로 대체함",
+        "workaround": "서브에이전트 트랜스크립트(agent-*.jsonl)를 직접 읽으면 산출물 복구 가능"
+      },
+      "last_dispatched_at": "2026-08-17T05:23:26",
+      "result": {
+        "passed": true,
+        "root_cause": "플랫폼 전달 동작 — 서브에이전트 최종응답 텍스트는 자동 전달되지 않고 SendMessage 호출 시에만 도착",
+        "evidence": "실측 7/7 일치 예외0건. SendMessage 없음5건 전부유실/있음2건 전부도착. 7건 모두 최종텍스트는 정상생성됨",
+        "fix": "코드아님 — ~/.claude/CLAUDE.md 규칙3에 스폰 프롬프트 회신지시 의무화",
+        "verification": "probe430a(지시없음)유실 vs probe430c(지시있음)SendMessage호출 A/B대조",
+        "files_changed": [
+          "~/.claude/CLAUDE.md"
+        ]
+      },
+      "completed_at": "2026-08-17T05:30:32.947391"
+    },
+    {
+      "id": "ISS-431",
+      "type": "REFACTOR",
+      "priority": "P2",
+      "status": "DONE",
+      "title": "[하네스] 최근세션 블록 — 3건 4줄 → 1건 1줄, aiTitle 대신 마지막 사용자 발화",
+      "payload": {
+        "source_issue": "ISS-422",
+        "reviewer": "plan-ceo-reviewer",
+        "rationale": "aiTitle 커버리지 42%(59개 중 25개)이며 세션 시작 시점에 고정됨. 16시간 세션에 제목 1개. 제목 '기획자와 소통 문제 해결' vs 실제 마지막 발화 '4단계 진행 승인.'",
+        "effect": "커버리지 42%→~100%, 중단 지점 복원, 4줄→1줄",
+        "target": "~/.claude/harness-core/hooks/session-resume.sh:149-213",
+        "proposed_output": "🧭 직전: 0041-XimTier-Docker \"4단계 진행 승인.\" (방금) — 전체는 --resume 후 Ctrl+A"
+      },
+      "created_at": "2026-08-15T19:27:47",
+      "updated_at": "2026-08-15T19:27:47",
+      "depth": 1,
+      "last_dispatched_at": "2026-08-18T10:09:56",
+      "result": {
+        "passed": true,
+        "note": "최근세션 1건 1줄 + 마지막 사용자 발화. 시스템주입 12종 필터+40발화 소급탐색, 프로젝트명 접두사 제거"
+      },
+      "completed_at": "2026-08-18T10:27:07.684732"
+    },
+    {
+      "id": "ISS-432",
+      "type": "REFACTOR",
+      "priority": "P2",
+      "status": "DONE",
+      "title": "[하네스] Fleet 스캔 — 8줄+합계 → 1줄 요약",
+      "payload": {
+        "source_issue": "ISS-422",
+        "reviewer": "plan-ceo-reviewer",
+        "rationale": "19개 프로젝트 153건은 이미 무시 임계 초과. 상시 8줄로 띄워도 행동으로 이어지지 않음. 주 1회 정리 세션 안건이 적합",
+        "proposed_output": "⚠️ 타 프로젝트 방치 이슈 153건 / 19개 — 정리하려면 /fleet"
+      },
+      "created_at": "2026-08-15T19:27:47",
+      "updated_at": "2026-08-15T19:27:47",
+      "depth": 1,
+      "last_dispatched_at": "2026-08-18T10:17:22",
+      "result": {
+        "passed": true,
+        "note": "8줄+합계 → 1줄. 실행 0.06초"
+      },
+      "completed_at": "2026-08-18T10:27:08.140737"
+    },
+    {
+      "id": "ISS-433",
+      "type": "REFACTOR",
+      "priority": "P1",
+      "status": "DONE",
+      "title": "[하네스] 오케스트레이션 규약 15줄 — 매 프롬프트 → 세션 1회",
+      "payload": {
+        "source_issue": "ISS-422",
+        "reviewer": "plan-ceo-reviewer",
+        "rationale": "CEO 검토가 '과밀의 압도적 주범'으로 지목. 세션당 1회가 아니라 매 프롬프트마다 15줄 → 100턴이면 1,500줄. 반복 노출로 둔감화가 가장 빨리 일어남",
+        "target": "~/.claude/hooks/orchestration-label.sh (UserPromptSubmit)",
+        "caution": "규약 노출 빈도를 낮추면 규칙 준수율이 떨어질 수 있음 — 트레이드오프 판단 필요(T2 DIRECTION 소지)"
+      },
+      "created_at": "2026-08-15T19:27:47",
+      "updated_at": "2026-08-15T19:27:47",
+      "depth": 1,
+      "last_dispatched_at": "2026-08-17T05:23:45",
+      "result": {
+        "passed": true,
+        "note": "세션1회 축소 + 위반시 재주입. 5경로 직접검증(1회차17줄/2회차1줄/타세션17줄/위반시전문+플래그소진/즉답형0). 추가발견: ~/.claude/hooks와 harness-core가 symlink아닌 실체분기 상태였고 core쪽에 폐기된 규칙4(자가착수 유발) 잔존 → 등록본 기준 동기화"
+      },
+      "completed_at": "2026-08-17T05:27:09.359466"
+    },
+    {
+      "id": "ISS-434",
+      "type": "SECURITY",
+      "priority": "P0",
+      "status": "COMPLETED",
+      "title": "[보안] 프로젝트 전체 LLM API 키 노출 점검",
+      "created_at": "2026-08-16T02:18:07",
+      "updated_at": "2026-08-16T02:22:05",
+      "depth": 0,
+      "payload": {
+        "origin": "intent-gate-user-2026-08-16",
+        "scope": "git 추적 파일 / .gitignore 정합성 / secret-guard 작동 / 원격 히스토리",
+        "rule": "키 값 절대 미출력 — 라인번호·변수명·접두 8자만"
+      },
+      "result": {
+        "verdict": "이상 없음",
+        "scope": "추적파일 250개 + 히스토리 131커밋 + 38개 프로젝트",
+        "findings": {
+          "tracked_real_keys": 0,
+          "env_tracked": 0,
+          "history_hits": "4패턴/5커밋 — 전부 secret-guard 탐지패턴 정의·테스트픽스처(실키 아님)",
+          "secret_guard": "38/38 배치+등록, staged 키 차단 실증(exit 2)"
+        },
+        "note": "키 값 미출력 원칙 준수 — 마스킹/접두/개수만 확인"
+      }
+    },
+    {
+      "id": "ISS-435",
+      "type": "FIX_BUG",
+      "priority": "P1",
+      "status": "DONE",
+      "title": "[하네스] orch-enforce-label.sh 오탐 — 라벨을 출력했는데 위반 경고",
+      "assign_to": "agent-harness",
+      "created_at": "2026-08-16T20:21:28Z",
+      "payload": {
+        "origin": "intent-gate:user-directive",
+        "detail": "2026-08-15 보안점검 턴에서 '[Opus 5 · 이슈 등록]', '[생략] ...' 라벨을 실제 출력했음에도 orch-enforce-label.sh가 라벨 없음 위반으로 판정. 추정 원인: 검사 정규식이 모델명 내 공백+숫자('Opus 5') 또는 가운뎃점 처리와 불일치. 규약 예시는 '[Opus 4.8 · 검수]' 형태.",
+        "acceptance": "현재 사용 중인 라벨 형식들이 전부 통과하고, 라벨이 실제 없을 때만 위반이 뜬다"
+      },
+      "result": {
+        "passed": true,
+        "files_changed": [
+          "~/.claude/harness-core/hooks/orch-enforce-label.sh"
+        ],
+        "note": "턴 경계 탐지 복구 7줄. 양방향 오탐 확인: 구버전은 라벨없는 턴을 과거턴 라벨로 통과시켰고 도구수도 9(합산)로 부풀었음. 픽스처 2종으로 판정 분기 실증."
+      },
+      "completed_at": "2026-08-17T05:23:26.533614"
+    },
+    {
+      "id": "ISS-436",
+      "title": "[Plan:게이트] ISS-435 계산적 센서 검증 (lint/type-check)",
+      "type": "LINT_CHECK",
+      "status": "READY",
+      "priority": "P0",
+      "assign_to": "code-quality",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-435",
+      "depends_on": [],
+      "created_at": "2026-08-17T05:23:26.533614",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-435",
+        "gate": true,
+        "gate_blocks": [
+          "SCORE",
+          "DEPLOY_READY"
+        ],
+        "bypass_env": "HARNESS_BYPASS_GATE"
+      },
+      "result": null,
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:27:07"
+    },
+    {
+      "id": "ISS-437",
+      "title": "[Plan:테스트] ISS-435 변경사항 검증",
+      "type": "RUN_TESTS",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "test-harness",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-435",
+      "depends_on": [],
+      "created_at": "2026-08-17T05:23:26.533614",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-435",
+        "scope": "changed"
+      },
+      "result": null,
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:09:43"
+    },
+    {
+      "id": "ISS-438",
+      "title": "[Plan:게이트] ISS-433 계산적 센서 검증 (lint/type-check)",
+      "type": "LINT_CHECK",
+      "status": "READY",
+      "priority": "P0",
+      "assign_to": "code-quality",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-433",
+      "depends_on": [],
+      "created_at": "2026-08-17T05:27:09.359466",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-433",
+        "gate": true,
+        "gate_blocks": [
+          "SCORE",
+          "DEPLOY_READY"
+        ],
+        "bypass_env": "HARNESS_BYPASS_GATE"
+      },
+      "result": null,
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:27:08"
+    },
+    {
+      "id": "ISS-439",
+      "title": "[Plan:테스트] ISS-433 변경사항 검증",
+      "type": "RUN_TESTS",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "test-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-433",
+      "depends_on": [],
+      "created_at": "2026-08-17T05:27:09.359466",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-433",
+        "scope": "changed"
+      },
+      "result": null,
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:09:50"
+    },
+    {
+      "id": "ISS-440",
+      "title": "[Plan:게이트] ISS-430 계산적 센서 검증 (lint/type-check)",
+      "type": "LINT_CHECK",
+      "status": "READY",
+      "priority": "P0",
+      "assign_to": "code-quality",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-430",
+      "depends_on": [],
+      "created_at": "2026-08-17T05:30:32.947391",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-430",
+        "gate": true,
+        "gate_blocks": [
+          "SCORE",
+          "DEPLOY_READY"
+        ],
+        "bypass_env": "HARNESS_BYPASS_GATE"
+      },
+      "result": null,
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:27:07"
+    },
+    {
+      "id": "ISS-441",
+      "title": "[Plan:테스트] ISS-430 변경사항 검증",
+      "type": "RUN_TESTS",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "test-harness",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-430",
+      "depends_on": [],
+      "created_at": "2026-08-17T05:30:32.947391",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-430",
+        "scope": "changed"
+      },
+      "result": null,
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:09:46"
+    },
+    {
+      "id": "ISS-442",
+      "type": "FEATURE_PLAN",
+      "priority": "P1",
+      "status": "DONE",
+      "title": "[하네스] Impeccable 디자인 스킬 도입 — 우선순위 최하위 편입 + brand-guardian 검증 흡수",
+      "assign_to": "agent-harness",
+      "created_at": "2026-08-18T01:10:20Z",
+      "payload": {
+        "origin": "intent-gate:user-directive",
+        "steps": [
+          "1. ~/.claude/skills/ 설치",
+          "2. 우선순위 편입: brand-dna > harness-ui-trends-2026 > Impeccable > SLDS",
+          "3. 64종 안티패턴 중 기존 brand-dna anti_patterns와 미중복분 추출",
+          "4. 확정스타일 프로젝트 제외(0012 dark-neon, 0014 approved 등)",
+          "5. 부수: 검증용 커맨드를 brand-guardian 체크리스트로 흡수"
+        ],
+        "excluded": "Mobbin MCP — 유료구독 + 병목 불일치로 보류",
+        "files_changed": []
+      },
+      "result": {
+        "passed": true,
+        "installed": "impeccable v4.1.1 (Apache 2.0) + 에이전트 4종",
+        "steps_done": [
+          1,
+          2,
+          4,
+          5
+        ],
+        "step3_skipped": "기존 anti_patterns 102종이 Impeccable 64종보다 많고 프로젝트 고유 맥락 보유 — 병합 불필요, 별도 레이어로 참조",
+        "locked_projects": 8,
+        "draft_projects": 11,
+        "verification": "참조31개 무결성/에이전트4종/context.mjs 실행 exit0 (Node v26)",
+        "files_changed": [
+          "~/.claude/skills/impeccable/",
+          "~/.claude/agents/impeccable-*.md",
+          "~/.claude/CLAUDE.md",
+          "~/.claude/harness-core/agents/brand-guardian.md"
+        ]
+      },
+      "completed_at": "2026-08-18T10:13:41.651133"
+    },
+    {
+      "id": "ISS-443",
+      "title": "[Plan:CEO검토] ISS-442 전략 검토",
+      "type": "PLAN_CEO_REVIEW",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "plan-ceo-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-442",
+      "depends_on": [],
+      "created_at": "2026-08-18T10:13:41.651133",
+      "payload": {
+        "source_issue": "ISS-442",
+        "source_plan": {
+          "passed": true,
+          "installed": "impeccable v4.1.1 (Apache 2.0) + 에이전트 4종",
+          "steps_done": [
+            1,
+            2,
+            4,
+            5
+          ],
+          "step3_skipped": "기존 anti_patterns 102종이 Impeccable 64종보다 많고 프로젝트 고유 맥락 보유 — 병합 불필요, 별도 레이어로 참조",
+          "locked_projects": 8,
+          "draft_projects": 11,
+          "verification": "참조31개 무결성/에이전트4종/context.mjs 실행 exit0 (Node v26)",
+          "files_changed": [
+            "~/.claude/skills/impeccable/",
+            "~/.claude/agents/impeccable-*.md",
+            "~/.claude/CLAUDE.md",
+            "~/.claude/harness-core/agents/brand-guardian.md"
+          ]
+        },
+        "feature": "ISS-442"
+      },
+      "result": null,
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:13:41"
+    },
+    {
+      "id": "ISS-444",
+      "title": "[Plan:Eng검토] ISS-442 실행가능성 검토",
+      "type": "PLAN_ENG_REVIEW",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "plan-eng-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-442",
+      "depends_on": [],
+      "created_at": "2026-08-18T10:13:41.651133",
+      "payload": {
+        "source_issue": "ISS-442",
+        "source_plan": {
+          "passed": true,
+          "installed": "impeccable v4.1.1 (Apache 2.0) + 에이전트 4종",
+          "steps_done": [
+            1,
+            2,
+            4,
+            5
+          ],
+          "step3_skipped": "기존 anti_patterns 102종이 Impeccable 64종보다 많고 프로젝트 고유 맥락 보유 — 병합 불필요, 별도 레이어로 참조",
+          "locked_projects": 8,
+          "draft_projects": 11,
+          "verification": "참조31개 무결성/에이전트4종/context.mjs 실행 exit0 (Node v26)",
+          "files_changed": [
+            "~/.claude/skills/impeccable/",
+            "~/.claude/agents/impeccable-*.md",
+            "~/.claude/CLAUDE.md",
+            "~/.claude/harness-core/agents/brand-guardian.md"
+          ]
+        },
+        "feature": "ISS-442"
+      },
+      "result": null,
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:14:08"
+    },
+    {
+      "id": "ISS-445",
+      "type": "FIX_BUG",
+      "priority": "P0",
+      "status": "DONE",
+      "title": "[하네스] 전역 훅 수정분 소실 — ISS-421/427 반영분이 사라지고 자가발주 차단(ISS-424)도 미작동",
+      "assign_to": "agent-harness",
+      "created_at": "2026-08-18T01:17:55Z",
+      "payload": {
+        "origin": "intent-gate:user-directive",
+        "symptoms": [
+          "session-resume.sh의 aiTitle 최근세션 블록 36줄 소실(사본3개 전부 322줄)",
+          "dispatch-ready.sh ISS-424 origin 분기 미작동 — 자동파생 이슈에 '즉시 실행' 출력, 세션내 18회",
+          "~/.claude/hooks와 harness-core가 symlink 아닌 실체 분기(orch-*.sh 2건 실측)"
+        ],
+        "hypothesis": "install.sh 또는 동기화 스크립트가 harness-core를 덮어써 수정분 유실"
+      },
+      "result": {
+        "passed": true,
+        "root_cause": "install.sh sync_harness_core()가 저장소→harness-core 단방향 덮어쓰기. mtime 비교 없이 cmp 불일치면 무조건 복사 → harness-core 직접수정분이 install 때마다 소실",
+        "recovered": [
+          "ISS-424 origin 분기",
+          "ISS-425 payload 정규화",
+          "orch 2건+fleet-scan 저장소 승격"
+        ],
+        "prevention": "install.sh에 -nt 경고 추가(차단 아님)",
+        "unrecoverable": "ISS-421 aiTitle 블록 — git 이력에도 없어 신규 구현으로 대체"
+      },
+      "completed_at": "2026-08-18T10:27:07.431446"
+    },
+    {
+      "id": "ISS-446",
+      "title": "[Plan:게이트] ISS-445 계산적 센서 검증 (lint/type-check)",
+      "type": "LINT_CHECK",
+      "status": "READY",
+      "priority": "P0",
+      "assign_to": "code-quality",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-445",
+      "depends_on": [],
+      "created_at": "2026-08-18T10:27:07.431446",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-445",
+        "gate": true,
+        "gate_blocks": [
+          "SCORE",
+          "DEPLOY_READY"
+        ],
+        "bypass_env": "HARNESS_BYPASS_GATE"
+      },
+      "result": null,
+      "spawn_rules": [],
+      "last_dispatched_at": "2026-08-18T10:27:08"
+    },
+    {
+      "id": "ISS-447",
+      "title": "[Plan:테스트] ISS-445 변경사항 검증",
+      "type": "RUN_TESTS",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "test-harness",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-445",
+      "depends_on": [],
+      "created_at": "2026-08-18T10:27:07.431446",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-445",
+        "scope": "changed"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-448",
+      "title": "[Plan:게이트] ISS-431 계산적 센서 검증 (lint/type-check)",
+      "type": "LINT_CHECK",
+      "status": "READY",
+      "priority": "P0",
+      "assign_to": "code-quality",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-431",
+      "depends_on": [],
+      "created_at": "2026-08-18T10:27:07.684732",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-431",
+        "gate": true,
+        "gate_blocks": [
+          "SCORE",
+          "DEPLOY_READY"
+        ],
+        "bypass_env": "HARNESS_BYPASS_GATE"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-449",
+      "title": "[Plan:테스트] ISS-431 변경사항 검증",
+      "type": "RUN_TESTS",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "test-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-431",
+      "depends_on": [],
+      "created_at": "2026-08-18T10:27:07.684732",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-431",
+        "scope": "changed"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-450",
+      "title": "[Plan:게이트] ISS-429 계산적 센서 검증 (lint/type-check)",
+      "type": "LINT_CHECK",
+      "status": "READY",
+      "priority": "P0",
+      "assign_to": "code-quality",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-429",
+      "depends_on": [],
+      "created_at": "2026-08-18T10:27:07.909706",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-429",
+        "gate": true,
+        "gate_blocks": [
+          "SCORE",
+          "DEPLOY_READY"
+        ],
+        "bypass_env": "HARNESS_BYPASS_GATE"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-451",
+      "title": "[Plan:테스트] ISS-429 변경사항 검증",
+      "type": "RUN_TESTS",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "test-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-429",
+      "depends_on": [],
+      "created_at": "2026-08-18T10:27:07.909706",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-429",
+        "scope": "changed"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-452",
+      "title": "[Plan:게이트] ISS-432 계산적 센서 검증 (lint/type-check)",
+      "type": "LINT_CHECK",
+      "status": "READY",
+      "priority": "P0",
+      "assign_to": "code-quality",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-432",
+      "depends_on": [],
+      "created_at": "2026-08-18T10:27:08.140737",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-432",
+        "gate": true,
+        "gate_blocks": [
+          "SCORE",
+          "DEPLOY_READY"
+        ],
+        "bypass_env": "HARNESS_BYPASS_GATE"
+      },
+      "result": null,
+      "spawn_rules": []
+    },
+    {
+      "id": "ISS-453",
+      "title": "[Plan:테스트] ISS-432 변경사항 검증",
+      "type": "RUN_TESTS",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "test-harness",
+      "depth": 2,
+      "retry_count": 0,
+      "parent_id": "ISS-432",
+      "depends_on": [],
+      "created_at": "2026-08-18T10:27:08.140737",
+      "payload": {
+        "files": [],
+        "source_issue": "ISS-432",
+        "scope": "changed"
+      },
+      "result": null,
+      "spawn_rules": []
     }
   ],
   "hooks": {
@@ -4742,6 +5600,60 @@
         "issue_type": "FIX_BUG",
         "plan_created": 3,
         "timestamp": "2026-07-14T18:25:14.359284"
+      },
+      {
+        "issue_id": "ISS-421",
+        "issue_type": "FEATURE_PLAN",
+        "plan_created": 2,
+        "timestamp": "2026-08-15T13:25:21.250990"
+      },
+      {
+        "issue_id": "ISS-435",
+        "issue_type": "FIX_BUG",
+        "plan_created": 2,
+        "timestamp": "2026-08-17T05:23:26.533614"
+      },
+      {
+        "issue_id": "ISS-433",
+        "issue_type": "REFACTOR",
+        "plan_created": 2,
+        "timestamp": "2026-08-17T05:27:09.359466"
+      },
+      {
+        "issue_id": "ISS-430",
+        "issue_type": "FIX_BUG",
+        "plan_created": 2,
+        "timestamp": "2026-08-17T05:30:32.947391"
+      },
+      {
+        "issue_id": "ISS-442",
+        "issue_type": "FEATURE_PLAN",
+        "plan_created": 2,
+        "timestamp": "2026-08-18T10:13:41.651133"
+      },
+      {
+        "issue_id": "ISS-445",
+        "issue_type": "FIX_BUG",
+        "plan_created": 2,
+        "timestamp": "2026-08-18T10:27:07.431446"
+      },
+      {
+        "issue_id": "ISS-431",
+        "issue_type": "REFACTOR",
+        "plan_created": 2,
+        "timestamp": "2026-08-18T10:27:07.684732"
+      },
+      {
+        "issue_id": "ISS-429",
+        "issue_type": "REFACTOR",
+        "plan_created": 2,
+        "timestamp": "2026-08-18T10:27:07.909706"
+      },
+      {
+        "issue_id": "ISS-432",
+        "issue_type": "REFACTOR",
+        "plan_created": 2,
+        "timestamp": "2026-08-18T10:27:08.140737"
       }
     ],
     "on_fail": [
@@ -4811,11 +5723,13 @@
           "ISS-384",
           "ISS-394",
           "ISS-395",
-          "ISS-416"
+          "ISS-416",
+          "ISS-427",
+          "ISS-434"
         ],
-        "frequency": 14,
+        "frequency": 20,
         "first_seen": "2026-05-12T00:36:42Z",
-        "last_seen": "2026-08-09T02:47:53Z"
+        "last_seen": "2026-08-16T02:21:05Z"
       },
       {
         "pattern": "배치 일괄 주입(injected_count 필드) 패턴 — 반복 수정보다 일괄 처리가 효율적",
@@ -4914,18 +5828,36 @@
           "ISS-390",
           "ISS-404"
         ],
-        "frequency": 2,
+        "frequency": 3,
         "first_seen": "2026-07-27T09:51:40Z",
-        "last_seen": "2026-08-09T02:47:53Z"
+        "last_seen": "2026-08-14T18:44:34Z"
       },
       {
         "pattern": "에이전트 'agent-harness' 완료율 높음 (14건 COMPLETED)",
         "evidence_issues": [
           "ISS-394"
         ],
-        "frequency": 1,
+        "frequency": 2,
         "first_seen": "2026-08-09T02:47:53Z",
-        "last_seen": "2026-08-09T02:47:53Z"
+        "last_seen": "2026-08-14T18:44:34Z"
+      },
+      {
+        "pattern": "에이전트 'agent-harness' 완료율 높음 (10건 COMPLETED)",
+        "evidence_issues": [
+          "ISS-403"
+        ],
+        "frequency": 1,
+        "first_seen": "2026-08-16T02:21:05Z",
+        "last_seen": "2026-08-16T02:21:05Z"
+      },
+      {
+        "pattern": "에이전트 'product-manager' 완료율 높음 (4건 COMPLETED)",
+        "evidence_issues": [
+          "ISS-404"
+        ],
+        "frequency": 1,
+        "first_seen": "2026-08-16T02:21:05Z",
+        "last_seen": "2026-08-16T02:21:05Z"
       }
     ],
     "failure_patterns": [],
@@ -14289,14 +15221,1270 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 562,
+        "timestamp": "2026-08-15T03:44:18.962391",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 152시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 563,
+        "timestamp": "2026-08-15T13:09:49.318785",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 564,
+        "timestamp": "2026-08-15T13:12:52.399783",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 565,
+        "timestamp": "2026-08-15T13:18:18.760589",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 566,
+        "timestamp": "2026-08-15T13:18:21.299181",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 121,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 567,
+        "timestamp": "2026-08-15T13:25:53.060651",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 124,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 568,
+        "timestamp": "2026-08-15T13:26:16.014070",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 124,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 569,
+        "timestamp": "2026-08-15T13:33:26.673712",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 162시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 126,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 570,
+        "timestamp": "2026-08-15T13:36:30.814931",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 162시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 126,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 571,
+        "timestamp": "2026-08-15T19:06:41.084415",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간",
+          "🟡 장기 대기: ISS-422 (PLAN_CEO_REVIEW) — 6시간",
+          "🟡 장기 대기: ISS-423 (PLAN_ENG_REVIEW) — 6시간",
+          "🟡 장기 대기: ISS-425 (FIX_BUG) — 6시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 126,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 572,
+        "timestamp": "2026-08-15T19:06:54.971387",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간",
+          "🟡 장기 대기: ISS-422 (PLAN_CEO_REVIEW) — 6시간",
+          "🟡 장기 대기: ISS-423 (PLAN_ENG_REVIEW) — 6시간",
+          "🟡 장기 대기: ISS-425 (FIX_BUG) — 6시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 126,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 573,
+        "timestamp": "2026-08-15T19:08:35.858824",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간",
+          "🟡 장기 대기: ISS-422 (PLAN_CEO_REVIEW) — 6시간",
+          "🟡 장기 대기: ISS-423 (PLAN_ENG_REVIEW) — 6시간",
+          "🟡 장기 대기: ISS-425 (FIX_BUG) — 6시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 126,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 574,
+        "timestamp": "2026-08-15T19:08:43.085337",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간",
+          "🟡 장기 대기: ISS-422 (PLAN_CEO_REVIEW) — 6시간",
+          "🟡 장기 대기: ISS-423 (PLAN_ENG_REVIEW) — 6시간",
+          "🟡 장기 대기: ISS-425 (FIX_BUG) — 6시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 126,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 575,
+        "timestamp": "2026-08-15T19:14:26.457870",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 128,
+          "done": 28,
+          "in_progress": 3,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 576,
+        "timestamp": "2026-08-15T19:14:47.646858",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 127,
+          "done": 28,
+          "in_progress": 2,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 577,
+        "timestamp": "2026-08-15T19:15:50.819890",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 127,
+          "done": 28,
+          "in_progress": 2,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 578,
+        "timestamp": "2026-08-15T19:17:04.554282",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 128,
+          "done": 28,
+          "in_progress": 3,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 579,
+        "timestamp": "2026-08-15T19:17:54.438287",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 128,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 580,
+        "timestamp": "2026-08-15T19:18:24.530428",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 128,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 581,
+        "timestamp": "2026-08-15T19:20:13.314517",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 128,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 1,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 582,
+        "timestamp": "2026-08-15T19:22:01.405507",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 130,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 583,
+        "timestamp": "2026-08-15T19:22:09.057035",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 130,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 584,
+        "timestamp": "2026-08-15T19:23:49.413952",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 130,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 585,
+        "timestamp": "2026-08-15T19:24:27.118695",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 130,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 586,
+        "timestamp": "2026-08-15T19:24:27.452543",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 130,
+          "done": 28,
+          "in_progress": 1,
+          "ready": 2,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 587,
+        "timestamp": "2026-08-15T19:26:19.257337",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 131,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 588,
+        "timestamp": "2026-08-15T19:26:59.935975",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 167시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 131,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 589,
+        "timestamp": "2026-08-15T19:28:01.817789",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 168시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 134,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 6,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 590,
+        "timestamp": "2026-08-15T19:28:06.038582",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 168시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 134,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 6,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 591,
+        "timestamp": "2026-08-16T02:22:28.966356",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 174시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 7시간",
+          "🟡 장기 대기: ISS-430 (FIX_BUG) — 7시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 7시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 7시간",
+          "🟡 장기 대기: ISS-433 (REFACTOR) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 135,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 6,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 592,
+        "timestamp": "2026-08-16T02:22:39.610337",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 174시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 7시간",
+          "🟡 장기 대기: ISS-430 (FIX_BUG) — 7시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 7시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 7시간",
+          "🟡 장기 대기: ISS-433 (REFACTOR) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 135,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 6,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 593,
+        "timestamp": "2026-08-16T13:31:19.284525",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 186시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 18시간",
+          "🟡 장기 대기: ISS-430 (FIX_BUG) — 18시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 18시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 18시간",
+          "🟡 장기 대기: ISS-433 (REFACTOR) — 18시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 135,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 6,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 594,
+        "timestamp": "2026-08-16T13:32:18.342298",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 186시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 18시간",
+          "🟡 장기 대기: ISS-430 (FIX_BUG) — 18시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 18시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 18시간",
+          "🟡 장기 대기: ISS-433 (REFACTOR) — 18시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 135,
+          "done": 28,
+          "in_progress": 0,
+          "ready": 6,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 595,
+        "timestamp": "2026-08-17T05:23:37.249155",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 201시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-430 (FIX_BUG) — 34시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-433 (REFACTOR) — 34시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 138,
+          "done": 29,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 596,
+        "timestamp": "2026-08-17T05:23:45.812106",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 201시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-430 (FIX_BUG) — 34시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-433 (REFACTOR) — 34시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 138,
+          "done": 29,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 597,
+        "timestamp": "2026-08-17T05:28:22.402306",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 202시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-430 (FIX_BUG) — 34시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 34시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 140,
+          "done": 30,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 598,
+        "timestamp": "2026-08-17T05:29:59.567425",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 202시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-430 (FIX_BUG) — 34시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 34시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 140,
+          "done": 30,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 599,
+        "timestamp": "2026-08-17T05:30:59.152297",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 202시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 34시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 600,
+        "timestamp": "2026-08-17T05:31:11.471691",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 202시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 34시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 601,
+        "timestamp": "2026-08-17T05:31:24.208206",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 202시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 34시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 602,
+        "timestamp": "2026-08-17T05:31:34.827189",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 202시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 34시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 603,
+        "timestamp": "2026-08-17T05:34:37.910001",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 202시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 34시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 604,
+        "timestamp": "2026-08-17T05:34:42.121595",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 202시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 34시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 34시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 605,
+        "timestamp": "2026-08-17T15:20:41.185470",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 211시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 44시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 44시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 44시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 10시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 10시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 10시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 10시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 10시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 10시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 606,
+        "timestamp": "2026-08-17T15:23:45.588318",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 211시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 44시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 44시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 44시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 10시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 10시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 10시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 10시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 10시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 10시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 607,
+        "timestamp": "2026-08-17T15:23:58.041012",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 211시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 44시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 44시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 44시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 10시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 10시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 10시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 10시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 10시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 10시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 608,
+        "timestamp": "2026-08-18T10:09:29.716069",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 609,
+        "timestamp": "2026-08-18T10:09:32.114452",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 610,
+        "timestamp": "2026-08-18T10:09:38.299627",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 611,
+        "timestamp": "2026-08-18T10:09:40.450628",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 612,
+        "timestamp": "2026-08-18T10:09:41.189443",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 613,
+        "timestamp": "2026-08-18T10:09:43.847657",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 614,
+        "timestamp": "2026-08-18T10:09:46.144551",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 615,
+        "timestamp": "2026-08-18T10:09:46.464123",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 616,
+        "timestamp": "2026-08-18T10:09:48.602954",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 617,
+        "timestamp": "2026-08-18T10:09:50.843812",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 618,
+        "timestamp": "2026-08-18T10:09:53.455579",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 619,
+        "timestamp": "2026-08-18T10:09:56.459586",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 620,
+        "timestamp": "2026-08-18T10:09:59.208895",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 142,
+          "done": 31,
+          "in_progress": 0,
+          "ready": 10,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 621,
+        "timestamp": "2026-08-18T10:14:08.295943",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 145,
+          "done": 32,
+          "in_progress": 0,
+          "ready": 12,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 622,
+        "timestamp": "2026-08-18T10:14:17.701373",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 145,
+          "done": 32,
+          "in_progress": 0,
+          "ready": 12,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 623,
+        "timestamp": "2026-08-18T10:17:22.137910",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 145,
+          "done": 32,
+          "in_progress": 0,
+          "ready": 12,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 624,
+        "timestamp": "2026-08-18T10:17:24.737022",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 230시간",
+          "🟡 장기 대기: ISS-429 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-431 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-432 (REFACTOR) — 63시간",
+          "🟡 장기 대기: ISS-436 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-437 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-438 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-439 (RUN_TESTS) — 29시간",
+          "🟡 장기 대기: ISS-440 (LINT_CHECK) — 29시간",
+          "🟡 장기 대기: ISS-441 (RUN_TESTS) — 29시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 145,
+          "done": 32,
+          "in_progress": 0,
+          "ready": 12,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 388,
-    "completed": 41,
+    "total_issues": 151,
+    "completed": 109,
     "failed": 3,
-    "evolved": 561
+    "evolved": 624
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -14320,8 +16508,8 @@
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "2026-08-13",
-    "created_today": 0
+    "date": "2026-08-18",
+    "created_today": 10
   },
   "proactive_scan_state": {
     "date": "2026-05-10",
@@ -14666,6 +16854,9 @@
     }
   ],
   "rewake_state": {
-    "ISS-398:READY": 17
+    "ISS-436:READY": 1,
+    "ISS-440:READY": 1,
+    "ISS-446:READY": 1,
+    "ISS-438:READY": 1
   }
 }

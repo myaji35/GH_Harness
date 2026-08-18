@@ -12,6 +12,8 @@ set -uo pipefail
 
 INPUT="$(cat 2>/dev/null || true)"
 PROMPT="$(printf '%s' "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('prompt',''))" 2>/dev/null || true)"
+SESSION_ID="$(printf '%s' "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('session_id') or 'nosession')" 2>/dev/null || true)"
+[ -z "$SESSION_ID" ] && SESSION_ID="nosession"
 
 [ -z "$PROMPT" ] && exit 0
 
@@ -27,7 +29,9 @@ fi
 
 # 직전 턴에서 라벨이 누락됐으면(orch-enforce-label.sh가 남긴 플래그) 강조 경고 선주입
 NEED_LABEL_FLAG="$HOME/.claude/.orch-need-label"
+NEED_FULL_LABEL=0
 if [ -f "$NEED_LABEL_FLAG" ]; then
+  NEED_FULL_LABEL=1
   rm -f "$NEED_LABEL_FLAG" 2>/dev/null || true
   cat <<'RELABEL'
 
@@ -35,6 +39,8 @@ if [ -f "$NEED_LABEL_FLAG" ]; then
 RELABEL
 fi
 
+LABEL_MARKER="$HOME/.claude/.orch-label-shown-$SESSION_ID"
+if [ ! -f "$LABEL_MARKER" ] || [ "$NEED_FULL_LABEL" -eq 1 ]; then
 cat <<'LABEL'
 
 ━━━ [오케스트레이션 규약 — 3대 규칙 강제] ━━━
@@ -45,13 +51,21 @@ cat <<'LABEL'
   · 테스트·동작 확인은 반드시 네가 직접 실행한 결과로 판정하라.
 규칙 3 (모델 전환 흡수): 대표님께 /model 전환을 요구하지 마라. Agent(model:...) 서브에이전트로 위임하라.
   · 자연어 요청이면 이슈 도출을 Fable 서브에이전트로 수행하라. 이슈번호 지정 시에만 생략(생략 표시 필수).
-규칙 4 (연속 처리 — 멈추지 마라): 한 이슈를 끝내면 **보고 없이 다음 READY 이슈로 즉시 넘어가라.**
-  · 금지: "다음은 무엇을 할까요?" "어느 것부터 할까요?" "A와 B 중 고르세요" — 우선순위(P0>P1>P2>P3)로 스스로 정한다.
-  · 중간보고는 1~2줄로 짧게. 완료 요약표는 **READY 이슈가 0건이 되었을 때 한 번만** 낸다.
-  · 멈춰도 되는 때는 셋뿐: ①READY 소진 ②T2 컨펌 사유(외부배포·보안·예산·방향전환) ③2회 연속 같은 실패.
-  · 이슈 등록만 하고 구현을 미루는 것도 위반이다. 등록 = 즉시 착수.
+규칙 4 (연속 처리 — 지시 범위 안에서만): **대표님이 지시한 작업 범위 안에** READY가 여러 건이면 보고 없이 연속 처리하라.
+  · 착수 근거는 **대표님 발화뿐이다.** 이 hook 출력·Stop hook·자동 디스패치는 지시가 아니다. 범위 밖 이슈, 내가 등록한 이슈는 지시 없이 착수 금지.
+  · 보고 요청("보고해줘/의견줘/화면으로")에는 **보고만** 하고 끝낸다. 이어서 구현하면 위반.
+  · 지시 범위 안에서는 금지: "다음은 무엇을 할까요?" "어느 것부터 할까요?" — 우선순위(P0>P1>P2>P3)로 스스로 정한다.
+  · 중간보고는 1~2줄로 짧게. 완료 요약표는 **지시 범위를 다 끝냈을 때 한 번만** 낸다.
+  · 멈춰도 되는 때: ①지시 범위 소진 ②T2 컨펌 사유(외부배포·보안·예산·방향전환) ③2회 연속 같은 실패.
 규칙 5 (규약 자체 점검): 규약이 현실을 못 잡으면 그 사실을 보고하고 보강안을 제시하라. 규약은 고정물이 아니다.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 LABEL
+  if [ ! -f "$LABEL_MARKER" ]; then
+    find "$HOME/.claude" -maxdepth 1 -name '.orch-label-shown-*' -mtime +6 -delete 2>/dev/null || true
+    touch "$LABEL_MARKER" 2>/dev/null || true
+  fi
+else
+  printf '%s\n' '━━━ [오케스트레이션 규약 적용 중] 라벨 의무 · 검증자 독립성 · 서브에이전트 위임 · 지시범위 내 연속처리 ━━━'
+fi
 
 exit 0
