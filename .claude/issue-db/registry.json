@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-20T21:21:05"
+      "last_dispatched_at": "2026-08-20T21:42:54"
     },
     {
       "id": "ISS-399",
@@ -5169,7 +5169,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-20T21:12:27"
+      "last_dispatched_at": "2026-08-20T21:38:39"
     },
     {
       "id": "ISS-444",
@@ -5209,7 +5209,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-20T21:15:34"
+      "last_dispatched_at": "2026-08-20T21:42:51"
     },
     {
       "id": "ISS-445",
@@ -5596,6 +5596,31 @@
         "scope": "핵심 화면(랜딩·대시보드 메인) 한정",
         "result": "race-judge.sh design 분기 — distinct40/brand_fit30/render20/diff10. 실행검증 design=94.0 vs 30.0, code모드 회귀없음",
         "verified_by": "Opus 5 직접 실행 (Codex 자기보고 미인용)"
+      }
+    },
+    {
+      "id": "ISS-462",
+      "title": "[design-loop] 전역 스킬 /design-loop 생성 — 부품 5개를 명령 1개로 조립",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-20T21:43:25.389745",
+      "updated_at": "2026-08-20T21:45:28.090610",
+      "payload": {
+        "origin": "user-directive",
+        "user_quote": "전역 스킬로 만들어줘",
+        "note": "ISS-457~461 산출물(brand-guardian 채점규칙/3모드/평탄화/design-capture.js/race-judge design분기)을 ~/.claude/skills/design-loop/SKILL.md 하나로 묶는다. 대표님은 URL 하나만 입력.",
+        "depends_on": [
+          "ISS-457",
+          "ISS-458",
+          "ISS-459",
+          "ISS-460",
+          "ISS-461"
+        ],
+        "acceptance": "실제 프로젝트 화면으로 직접 실행해 채점 결과 제시",
+        "result": "~/.claude/skills/design-loop/{SKILL.md(100줄), design-capture.js(75줄)} 생성. 스킬 목록 등록 확인."
       }
     }
   ],
@@ -17163,6 +17188,60 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 650,
+        "timestamp": "2026-08-20T21:38:39.343805",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 290시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 162,
+          "done": 42,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 651,
+        "timestamp": "2026-08-20T21:42:51.210944",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 290시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 162,
+          "done": 42,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 652,
+        "timestamp": "2026-08-20T21:42:53.915346",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 290시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 162,
+          "done": 42,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -17170,7 +17249,7 @@
     "total_issues": 153,
     "completed": 113,
     "failed": 3,
-    "evolved": 649
+    "evolved": 652
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -17540,8 +17619,8 @@
     }
   ],
   "rewake_state": {
-    "ISS-443:READY": 3,
-    "ISS-444:READY": 3,
-    "ISS-398:READY": 3
+    "ISS-443:READY": 4,
+    "ISS-444:READY": 4,
+    "ISS-398:READY": 4
   }
 }
