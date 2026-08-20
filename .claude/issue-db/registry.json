@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-18T10:36:20"
+      "last_dispatched_at": "2026-08-20T21:21:05"
     },
     {
       "id": "ISS-399",
@@ -5169,7 +5169,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-18T10:34:44"
+      "last_dispatched_at": "2026-08-20T21:12:27"
     },
     {
       "id": "ISS-444",
@@ -5209,7 +5209,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-18T10:34:44"
+      "last_dispatched_at": "2026-08-20T21:15:34"
     },
     {
       "id": "ISS-445",
@@ -5463,6 +5463,140 @@
         "note": "게이트 3조건 생략 + result.files_changed 병합. 4경로 실행검증(빈파일/문서만/린트미설정 생략, ts+package.json 생성). 기존 무의미 게이트 14건 CLOSED_INVALID, ID중복 1건 해소"
       },
       "completed_at": "2026-08-18T10:36:20.650422"
+    },
+    {
+      "id": "ISS-455",
+      "title": "[아이디어] kimi3, qwen등과 함께 개발하고 싶어. 주력으로 claude code 환경을 사용하고 있는데 여기서는 못하는걸로 알고 있어.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-20T20:40:35.209198",
+      "updated_at": "2026-08-20T20:40:35.209198",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "kimi3, qwen등과 함께 개발하고 싶어. 주력으로 claude code 환경을 사용하고 있는데 여기서는 못하는걸로 알고 있어. open code 같은 솔류션을 사용해야하나?",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-456",
+      "title": "[아이디어] 이식&설치를 하고 싶어. 최종안 의견줘.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-20T21:19:16.840044",
+      "updated_at": "2026-08-20T21:19:16.840044",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "이식&설치를 하고 싶어. 최종안 의견줘.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-457",
+      "title": "[design-loop] rubric 이식 + Distinctiveness 6번 축 신설",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "brand-guardian",
+      "depth": 0,
+      "created_at": "2026-08-20T21:23:11.161205",
+      "updated_at": "2026-08-20T21:37:59.864523",
+      "payload": {
+        "origin": "user-directive",
+        "note": "tonymfer/design-loop(MIT) rubric.md의 AI-Generic Detection 표·Rendering Defects 7종·Fix Specificity를 brand-guardian.md에 이식. 추가로 감점형 5기준에 없는 가점형 6번 축 Distinctiveness 신설(종료조건 예외).",
+        "user_quote": "B로, 핵심 화면 한정으로 착수해줘",
+        "source": "tonymfer/design-loop (MIT)",
+        "scope": "핵심 화면(랜딩·대시보드 메인) 한정",
+        "result": "brand-guardian.md에 AI-Generic 판정표·렌더링결함 7종·Distinctiveness 축·fix 구체성 요건 이식 (+43줄, 삭제 1줄)",
+        "verified_by": "Opus 5 직접 실행 (Codex 자기보고 미인용)"
+      }
+    },
+    {
+      "id": "ISS-458",
+      "title": "[design-loop] Creative Unleash 모드 + brand-dna _status 게이팅",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "brand-guardian",
+      "depth": 0,
+      "created_at": "2026-08-20T21:23:11.161205",
+      "updated_at": "2026-08-20T21:37:59.864523",
+      "payload": {
+        "origin": "user-directive",
+        "note": "3모드(precision-polish/theme-respect-elevate/creative-unleash) 이식. _status가 defined/approved/active면 Creative 금지(대표님 명시 지시 시에만), uninitialized/initialized면 허용.",
+        "user_quote": "B로, 핵심 화면 한정으로 착수해줘",
+        "source": "tonymfer/design-loop (MIT)",
+        "depends_on": "ISS-457",
+        "scope": "핵심 화면(랜딩·대시보드 메인) 한정",
+        "result": "brand-guardian.md에 3모드 게이팅 섹션 신설 — _status 확정 프로젝트는 creative-unleash 금지",
+        "verified_by": "Opus 5 직접 실행 (Codex 자기보고 미인용)"
+      }
+    },
+    {
+      "id": "ISS-459",
+      "title": "[design-loop] 평탄화 감지를 on_complete.sh에 추가",
+      "type": "REFACTOR",
+      "status": "DONE",
+      "priority": "P2",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-20T21:23:11.161205",
+      "updated_at": "2026-08-20T21:37:59.864523",
+      "payload": {
+        "origin": "user-directive",
+        "note": "3회 연속 score 미개선 시 파생 중단 + T1 hermes 에스컬레이션. 무한 루프 방지. score/prev_score 이미 수신 중.",
+        "user_quote": "B로, 핵심 화면 한정으로 착수해줘",
+        "source": "tonymfer/design-loop (MIT)",
+        "scope": "핵심 화면(랜딩·대시보드 메인) 한정",
+        "result": "on_complete.sh 평탄화 감지 — 3회 ±3 이내 정체 시 파생 중단+Hermes. 실행검증: [55,56,54] 파생1개 정지 / 고득점 82,83,81 배포파생 정상",
+        "verified_by": "Opus 5 직접 실행 (Codex 자기보고 미인용)"
+      }
+    },
+    {
+      "id": "ISS-460",
+      "title": "[design-loop] Playwright 섹션 캡처(랜드마크+30% 오버랩)",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P2",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-20T21:23:11.161205",
+      "updated_at": "2026-08-20T21:37:59.864523",
+      "payload": {
+        "origin": "user-directive",
+        "note": "agent-browser 설치 없이 기존 playwright로 구현. 시맨틱 랜드마크(header/main/section/footer/article) 개별 캡처, 부재 시 30% 오버랩 스크롤 폴백.",
+        "user_quote": "B로, 핵심 화면 한정으로 착수해줘",
+        "source": "tonymfer/design-loop (MIT)",
+        "scope": "핵심 화면(랜딩·대시보드 메인) 한정",
+        "result": "design-capture.js 신규(75줄) — playwright 랜드마크 개별캡처, 실행검증 strategy=landmark 5샷",
+        "verified_by": "Opus 5 직접 실행 (Codex 자기보고 미인용)"
+      }
+    },
+    {
+      "id": "ISS-461",
+      "title": "[design-loop] RACE_MODE 디자인 확장 — 3방향 발산→선택→수렴",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-20T21:23:11.161205",
+      "updated_at": "2026-08-20T21:37:59.864523",
+      "payload": {
+        "origin": "user-directive",
+        "note": "핵심 화면(랜딩·대시보드 메인) 한정. 1라운드 발산 3안(타이포주도/레이아웃주도/컬러모션주도) → Distinctiveness 채점 → 대표님 선택 → 3라운드 rubric 4/5 수렴. 대표님 지시: B안 핵심화면 한정.",
+        "user_quote": "B로, 핵심 화면 한정으로 착수해줘",
+        "source": "tonymfer/design-loop (MIT)",
+        "depends_on": "ISS-457",
+        "scope": "핵심 화면(랜딩·대시보드 메인) 한정",
+        "result": "race-judge.sh design 분기 — distinct40/brand_fit30/render20/diff10. 실행검증 design=94.0 vs 30.0, code모드 회귀없음",
+        "verified_by": "Opus 5 직접 실행 (Codex 자기보고 미인용)"
+      }
     }
   ],
   "hooks": {
@@ -16709,14 +16843,334 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 632,
+        "timestamp": "2026-08-18T10:36:52.466610",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 231시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 155,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 633,
+        "timestamp": "2026-08-18T10:39:56.248426",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 231시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 155,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 634,
+        "timestamp": "2026-08-20T20:40:59.808531",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 58시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 58시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 635,
+        "timestamp": "2026-08-20T20:41:07.073658",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 58시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 58시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 636,
+        "timestamp": "2026-08-20T20:41:09.455624",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 58시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 58시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 637,
+        "timestamp": "2026-08-20T20:41:13.146883",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 58시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 58시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 638,
+        "timestamp": "2026-08-20T20:41:15.056955",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 58시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 58시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 639,
+        "timestamp": "2026-08-20T20:41:17.707169",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 58시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 58시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 640,
+        "timestamp": "2026-08-20T20:41:19.671996",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 58시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 58시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 641,
+        "timestamp": "2026-08-20T20:44:20.939867",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 642,
+        "timestamp": "2026-08-20T21:12:26.992103",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 643,
+        "timestamp": "2026-08-20T21:12:30.615807",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 644,
+        "timestamp": "2026-08-20T21:15:34.506204",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 645,
+        "timestamp": "2026-08-20T21:15:37.040237",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 156,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 646,
+        "timestamp": "2026-08-20T21:21:05.795221",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 157,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 647,
+        "timestamp": "2026-08-20T21:21:08.709401",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 157,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 648,
+        "timestamp": "2026-08-20T21:22:15.684399",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 157,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 649,
+        "timestamp": "2026-08-20T21:22:17.790414",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 59시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 59시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 157,
+          "done": 37,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 151,
+    "total_issues": 153,
     "completed": 113,
     "failed": 3,
-    "evolved": 631
+    "evolved": 649
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -16740,8 +17194,8 @@
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "2026-08-18",
-    "created_today": 10
+    "date": "2026-08-20",
+    "created_today": 0
   },
   "proactive_scan_state": {
     "date": "2026-05-10",
@@ -17086,8 +17540,8 @@
     }
   ],
   "rewake_state": {
-    "ISS-443:READY": 1,
-    "ISS-444:READY": 1,
-    "ISS-398:READY": 1
+    "ISS-443:READY": 3,
+    "ISS-444:READY": 3,
+    "ISS-398:READY": 3
   }
 }
