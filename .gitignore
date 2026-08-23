@@ -12,6 +12,9 @@ Thumbs.db
 *.backup
 *.bak
 *.bak.*
+*.bak-*
+*.orig
+*~
 .claude/worktrees
 worktrees/
 .harness-worktree-meta

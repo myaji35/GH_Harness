@@ -58,6 +58,12 @@
             "command": "bash .claude/hooks/fleet-scan.sh",
             "timeout": 10,
             "statusMessage": "Scanning fleet for orphaned issues..."
+          },
+          {
+            "type": "command",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/bak-sweep.sh",
+            "timeout": 20,
+            "statusMessage": "Sweeping stale backups..."
           }
         ]
       }

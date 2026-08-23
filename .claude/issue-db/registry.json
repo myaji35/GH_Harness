@@ -5169,7 +5169,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-23T16:01:16"
+      "last_dispatched_at": "2026-08-23T16:21:30"
     },
     {
       "id": "ISS-444",
@@ -5209,7 +5209,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-23T16:04:52"
+      "last_dispatched_at": "2026-08-23T16:24:34"
     },
     {
       "id": "ISS-445",
@@ -5924,6 +5924,126 @@
         "summary": "verify-watch.sh 생성(훅 아닌 CLI). watchexec 2.6.1 설치. --print/--once 실행 확인",
         "verified_by": "opus5_direct_execution"
       }
+    },
+    {
+      "id": "ISS-475",
+      "type": "DOC_UPDATE",
+      "priority": "P1",
+      "title": "Codex 샌드박스 경로 규약 — cwd 밖 수정 시 cd 먼저 (⑥)",
+      "status": "COMPLETED",
+      "created_at": "2026-08-23T16:31:27",
+      "updated_at": "2026-08-23T16:47:55",
+      "depth": 0,
+      "payload": {
+        "description": "codex exec는 cwd 밖을 못 쓴다. harness-core 등 프로젝트 외부 수정 시 cd <대상> && codex exec 로 실행. opus-codes 스킬 + 전역 CLAUDE.md 반영.",
+        "origin": "user_instruction"
+      },
+      "history": [
+        {
+          "at": "2026-08-23T16:31:27",
+          "event": "created",
+          "by": "opus5",
+          "note": "대표님 승인: ⑥⑦⑨ 적용"
+        },
+        {
+          "at": "2026-08-23T16:47:55",
+          "event": "completed",
+          "by": "opus5",
+          "note": "전역 CLAUDE.md 218~223행 + opus-codes SKILL.md 함정 A-1 추가. cd 후 실행 + '현재 디렉터리에' 지시 규약."
+        }
+      ],
+      "result": {
+        "summary": "전역 CLAUDE.md 218~223행 + opus-codes SKILL.md 함정 A-1 추가. cd 후 실행 + '현재 디렉터리에' 지시 규약.",
+        "verified_by": "opus5_direct_execution"
+      }
+    },
+    {
+      "id": "ISS-476",
+      "type": "DOC_UPDATE",
+      "priority": "P1",
+      "title": "Codex 장시간 실행 = 백그라운드 + until 대기 (⑦)",
+      "status": "COMPLETED",
+      "created_at": "2026-08-23T16:31:27",
+      "updated_at": "2026-08-23T16:47:55",
+      "depth": 0,
+      "payload": {
+        "description": "Bash 도구는 2분에 끊긴다. codex exec는 nohup+로그파일, 대기는 until ! pgrep. sleep 체이닝은 harness가 차단.",
+        "origin": "user_instruction"
+      },
+      "history": [
+        {
+          "at": "2026-08-23T16:31:27",
+          "event": "created",
+          "by": "opus5",
+          "note": "대표님 승인: ⑥⑦⑨ 적용"
+        },
+        {
+          "at": "2026-08-23T16:47:55",
+          "event": "completed",
+          "by": "opus5",
+          "note": "전역 CLAUDE.md 224~228행 + opus-codes 함정 A-2/A-3 추가. nohup 백그라운드 + until pgrep 대기, sleep 체이닝 금지."
+        }
+      ],
+      "result": {
+        "summary": "전역 CLAUDE.md 224~228행 + opus-codes 함정 A-2/A-3 추가. nohup 백그라운드 + until pgrep 대기, sleep 체이닝 금지.",
+        "verified_by": "opus5_direct_execution"
+      }
+    },
+    {
+      "id": "ISS-477",
+      "type": "HOOK_ADD",
+      "priority": "P2",
+      "title": ".bak-* 자동 정리 — 7일 경과분 세션 시작 시 삭제 (⑨)",
+      "status": "COMPLETED",
+      "created_at": "2026-08-23T16:31:27",
+      "updated_at": "2026-08-23T16:47:55",
+      "depth": 0,
+      "payload": {
+        "description": "규칙4가 백업을 요구하나 삭제 규약이 없어 무한 누적. gitignore 등록 + session-resume에 정리 로직.",
+        "origin": "user_instruction"
+      },
+      "history": [
+        {
+          "at": "2026-08-23T16:31:27",
+          "event": "created",
+          "by": "opus5",
+          "note": "대표님 승인: ⑥⑦⑨ 적용"
+        },
+        {
+          "at": "2026-08-23T16:47:55",
+          "event": "completed",
+          "by": "opus5",
+          "note": "bak-sweep.sh 생성 + SessionStart 등록. AppleDouble 제외·백업디렉터리 prune·깨진링크 정리·--core 모드. 20개 초과 보류 안전장치 실측 확인(25개→삭제 0건)."
+        }
+      ],
+      "result": {
+        "summary": "bak-sweep.sh 생성 + SessionStart 등록. AppleDouble 제외·백업디렉터리 prune·깨진링크 정리·--core 모드. 20개 초과 보류 안전장치 실측 확인(25개→삭제 0건).",
+        "verified_by": "opus5_direct_execution"
+      }
+    },
+    {
+      "id": "ISS-478",
+      "type": "FIX_BUG",
+      "priority": "P2",
+      "title": "install.sh가 .bak 파일까지 링크 배포 — 21개 프로젝트에 껍데기 확산",
+      "status": "READY",
+      "created_at": "2026-08-23T16:37:13",
+      "updated_at": "2026-08-23T16:37:13",
+      "depth": 1,
+      "payload": {
+        "description": "harness-core/hooks의 .bak 20개가 필터 없이 전 프로젝트에 심볼릭 링크로 배포된다(약 420개 껍데기). install.sh 296행 루프에 백업 패턴 제외 필요.",
+        "origin": "derived_from_ISS-477",
+        "parent": "ISS-477",
+        "scope_dir": "/Volumes/E_SSD/02_GitHub.nosync/GH_Harness"
+      },
+      "history": [
+        {
+          "at": "2026-08-23T16:37:13",
+          "event": "created",
+          "by": "opus5",
+          "note": "ISS-477 작업 중 발견 — Karpathy #3에 따라 별도 이슈로 분리"
+        }
+      ]
     }
   ],
   "hooks": {
@@ -18179,6 +18299,42 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 688,
+        "timestamp": "2026-08-23T16:21:30.438132",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 356시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 126시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 126시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 175,
+          "done": 43,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 689,
+        "timestamp": "2026-08-23T16:24:34.862007",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 356시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 126시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 126시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 175,
+          "done": 43,
+          "in_progress": 0,
+          "ready": 3,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -18186,7 +18342,7 @@
     "total_issues": 156,
     "completed": 113,
     "failed": 4,
-    "evolved": 687
+    "evolved": 689
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -18556,10 +18712,8 @@
     }
   ],
   "rewake_state": {
-    "ISS-443:READY": 15,
-    "ISS-444:READY": 13,
-    "ISS-398:READY": 9,
-    "ISS-471:READY": 1,
-    "ISS-472:READY": 1
+    "ISS-443:READY": 16,
+    "ISS-444:READY": 14,
+    "ISS-398:READY": 9
   }
 }
