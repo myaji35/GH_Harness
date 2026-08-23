@@ -49,14 +49,14 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/session-resume.sh",
-            "timeout": 10,
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/session-resume.sh",
+            "timeout": 30,
             "statusMessage": "Restoring harness state..."
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/fleet-scan.sh",
-            "timeout": 10,
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/fleet-scan.sh",
+            "timeout": 30,
             "statusMessage": "Scanning fleet for orphaned issues..."
           }
         ]
@@ -68,7 +68,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/freeze-guard.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/freeze-guard.sh",
             "timeout": 5,
             "statusMessage": "Checking freeze boundary..."
           }
@@ -79,21 +79,27 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/sandbox-enforce.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/sandbox-enforce.sh",
             "timeout": 5,
             "statusMessage": "Sandbox policy check..."
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/secret-guard.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/secret-guard.sh",
             "timeout": 8,
             "statusMessage": "Scanning for leaked secrets..."
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/rtk-guard.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/rtk-guard.sh",
             "timeout": 5,
             "statusMessage": "RTK token-optimizing..."
+          },
+          {
+            "type": "command",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/health-gate.sh",
+            "timeout": 50,
+            "statusMessage": "Health score check..."
           }
         ]
       }
@@ -104,13 +110,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/post-code-change.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/post-code-change.sh",
             "timeout": 10,
             "statusMessage": "Tracking code change..."
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/secret-guard.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/secret-guard.sh",
             "timeout": 8,
             "statusMessage": "Checking for hardcoded secrets..."
           }
@@ -122,14 +128,14 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/on-agent-complete.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/on-agent-complete.sh",
             "timeout": 15,
             "statusMessage": "Checking next issue...",
             "asyncRewake": true
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/meta-review.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/meta-review.sh",
             "timeout": 30,
             "statusMessage": "Meta Agent reviewing...",
             "asyncRewake": true
@@ -142,14 +148,14 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/on-agent-complete.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/on-agent-complete.sh",
             "timeout": 15,
             "statusMessage": "Dispatching next agent...",
             "asyncRewake": true
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/meta-review.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/meta-review.sh",
             "timeout": 30,
             "statusMessage": "Meta Agent reviewing...",
             "asyncRewake": true
@@ -162,8 +168,14 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/session-end-dream.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/session-end-dream.sh",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/context-save-auto.sh",
+            "timeout": 15,
+            "statusMessage": "Saving context snapshot..."
           }
         ]
       }
@@ -173,14 +185,20 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/hooks/user-input-mark.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/user-input-mark.sh",
             "timeout": 5
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/intent-gate.sh",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/intent-gate.sh",
             "timeout": 8,
             "statusMessage": "Classifying intent..."
+          },
+          {
+            "type": "command",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/error-investigate-gate.sh",
+            "timeout": 5,
+            "statusMessage": "Error signal check..."
           }
         ]
       }

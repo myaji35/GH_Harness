@@ -81,3 +81,8 @@ __pycache__/
 .claude/issue-db/registry.json.lock
 global/agent-os/hermes.daemon.log
 global/agent-os/hermes.log
+
+# 세션 컨텍스트 스냅샷 (로컬 전용)
+.claude/context-snapshots/
+.claude/knowledge-db/health-history.jsonl
+.claude/verify-cmd

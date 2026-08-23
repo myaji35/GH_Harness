@@ -94,6 +94,12 @@
             "command": "bash .claude/hooks/rtk-guard.sh",
             "timeout": 5,
             "statusMessage": "RTK token-optimizing..."
+          },
+          {
+            "type": "command",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/health-gate.sh",
+            "timeout": 50,
+            "statusMessage": "Health score check..."
           }
         ]
       }
@@ -164,6 +170,12 @@
             "type": "command",
             "command": "bash .claude/hooks/session-end-dream.sh",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/context-save-auto.sh",
+            "timeout": 15,
+            "statusMessage": "Saving context snapshot..."
           }
         ]
       }
@@ -181,6 +193,12 @@
             "command": "bash .claude/hooks/intent-gate.sh",
             "timeout": 8,
             "statusMessage": "Classifying intent..."
+          },
+          {
+            "type": "command",
+            "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/error-investigate-gate.sh",
+            "timeout": 5,
+            "statusMessage": "Error signal check..."
           }
         ]
       }
