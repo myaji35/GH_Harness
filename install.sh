@@ -56,6 +56,14 @@ is_appledouble() {
   [[ "$name" == ._* ]]
 }
 
+# 훅 백업 산출물을 배포 대상에서 제외한다.
+# harness-core에 쌓인 훅 백업이 전 프로젝트에 링크로 확산되는 것을 막는다(2026-08-23 실측 559개/39프로젝트).
+is_backup_artifact() {
+  local name
+  name="$(basename "$1")"
+  [[ "$name" == *.bak || "$name" == *.bak.* || "$name" == *.bak-* || "$name" == *.backup || "$name" == *.orig || "$name" == *~ ]]
+}
+
 # 현재 harness 버전 SHA 계산
 compute_harness_sha() {
   {
@@ -297,6 +305,8 @@ install_project_hooks_symlink() {
     # lib/ 같은 디렉터리도 배포한다. 파일만 걸면 registry_lock 모듈이 누락되어
     # 훅이 락 없이 registry를 덮어써 truncate 사고가 난다(2026-07-20).
     [ -e "$core_hook" ] || continue
+    is_appledouble "$core_hook" && continue
+    is_backup_artifact "$core_hook" && continue
     local name link
     name="$(basename "$core_hook")"
     link="$proj_hooks/$name"

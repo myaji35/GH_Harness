@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-21T10:08:16"
+      "last_dispatched_at": "2026-08-23T16:52:01"
     },
     {
       "id": "ISS-399",
@@ -5169,7 +5169,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-23T16:21:30"
+      "last_dispatched_at": "2026-08-23T16:48:46"
     },
     {
       "id": "ISS-444",
@@ -5209,7 +5209,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-23T16:24:34"
+      "last_dispatched_at": "2026-08-23T16:51:51"
     },
     {
       "id": "ISS-445",
@@ -6026,9 +6026,9 @@
       "type": "FIX_BUG",
       "priority": "P2",
       "title": "install.sh가 .bak 파일까지 링크 배포 — 21개 프로젝트에 껍데기 확산",
-      "status": "READY",
+      "status": "COMPLETED",
       "created_at": "2026-08-23T16:37:13",
-      "updated_at": "2026-08-23T16:37:13",
+      "updated_at": "2026-08-23T17:04:45",
       "depth": 1,
       "payload": {
         "description": "harness-core/hooks의 .bak 20개가 필터 없이 전 프로젝트에 심볼릭 링크로 배포된다(약 420개 껍데기). install.sh 296행 루프에 백업 패턴 제외 필요.",
@@ -6042,8 +6042,32 @@
           "event": "created",
           "by": "opus5",
           "note": "ISS-477 작업 중 발견 — Karpathy #3에 따라 별도 이슈로 분리"
+        },
+        {
+          "at": "2026-08-23T16:52:05",
+          "event": "started",
+          "by": "opus5",
+          "note": "대표님 승인 — 착수"
+        },
+        {
+          "at": "2026-08-23T17:04:45",
+          "event": "completed",
+          "by": "opus5",
+          "note": "격리 시험 통과, 핵심 훅 손상 0건"
         }
-      ]
+      ],
+      "last_dispatched_at": "2026-08-23T16:51:54",
+      "result": {
+        "summary": "install.sh에 is_backup_artifact() 필터 추가(12줄). harness-core 원본 11개 삭제(사본 92KB 보존), 깨진 링크 391개 정리. 잔존 168개는 원본 살아있는 7일 미만분.",
+        "verified_by": "opus5_direct_execution",
+        "metrics": {
+          "before_links": 559,
+          "deleted_links": 391,
+          "remaining_links": 168,
+          "core_deleted": 11,
+          "projects": 39
+        }
+      }
     }
   ],
   "hooks": {
@@ -18335,6 +18359,96 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 690,
+        "timestamp": "2026-08-23T16:48:46.448009",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 357시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 127시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 179,
+          "done": 43,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 691,
+        "timestamp": "2026-08-23T16:51:51.568116",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 357시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 127시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 179,
+          "done": 43,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 692,
+        "timestamp": "2026-08-23T16:51:53.971048",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 357시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 127시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 179,
+          "done": 43,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 693,
+        "timestamp": "2026-08-23T16:51:59.676002",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 357시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 127시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 179,
+          "done": 43,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 694,
+        "timestamp": "2026-08-23T16:52:01.605890",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 357시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 127시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 179,
+          "done": 43,
+          "in_progress": 0,
+          "ready": 4,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
@@ -18342,7 +18456,7 @@
     "total_issues": 156,
     "completed": 113,
     "failed": 4,
-    "evolved": 689
+    "evolved": 694
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -18712,8 +18826,9 @@
     }
   ],
   "rewake_state": {
-    "ISS-443:READY": 16,
-    "ISS-444:READY": 14,
-    "ISS-398:READY": 9
+    "ISS-443:READY": 17,
+    "ISS-444:READY": 15,
+    "ISS-398:READY": 10,
+    "ISS-478:READY": 1
   }
 }
