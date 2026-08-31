@@ -83,6 +83,10 @@ except Exception as e:
     print(f"[hermes-escalate] registry 로딩 실패: {e}")
     sys.exit(1)
 
+if not any(issue.get("id") == EXECUTOR_ID for issue in registry.get("issues", [])):
+    print(f"[hermes-escalate] executor 이슈를 찾을 수 없음: {EXECUTOR_ID}")
+    sys.exit(1)
+
 # hermes 상태 초기화 (최초 1회)
 if "hermes_state" not in registry:
     registry["hermes_state"] = {

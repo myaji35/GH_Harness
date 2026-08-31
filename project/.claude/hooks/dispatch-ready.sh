@@ -389,9 +389,9 @@ if _n > MAX_REWAKE:
           f"    대표님 지시가 있을 때 처리하라. 이 이슈를 자동으로 다시 깨우지 마라.")
     sys.exit(0)
 
-if payload_obj.get('origin', '').startswith('intent-gate'):
+if payload_obj.get('origin', '').startswith('intent-gate') or agent in ('hermes', 'advisor'):
     print(f"""
-🔄 [Harness Auto-Dispatch] READY {len(ready_issues)}개 — 즉시 실행
+🔄 [Harness Auto-Dispatch] READY {len(ready_issues)}개 — 즉시 실행{internal_note}
 
 [자동 실행 지시] 질문하지 마라. 즉시 실행하라.
 - 이슈: {issue_id} ({issue_type})
