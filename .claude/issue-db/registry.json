@@ -5169,7 +5169,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-31T13:32:01"
+      "last_dispatched_at": "2026-08-31T15:25:39"
     },
     {
       "id": "ISS-444",
@@ -5209,7 +5209,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-31T13:37:16"
+      "last_dispatched_at": "2026-08-31T15:25:47"
     },
     {
       "id": "ISS-445",
@@ -6133,7 +6133,7 @@
         "origin": "intent-gate",
         "raw_prompt": "모든 비번 ximdnjs!00 으로 수정하고 가비아는 claude in chrome로 로그인 할테니 너가 설정해줘'"
       },
-      "last_dispatched_at": "2026-08-31T15:02:40"
+      "last_dispatched_at": "2026-08-31T15:18:07"
     },
     {
       "id": "ISS-481",
@@ -6181,7 +6181,7 @@
         "origin": "intent-gate",
         "raw_prompt": "Address (주소)\n- Postal code (우편번호)\n- City (도시)\n- Country (국가) 심티어 회사 정보보고 만들어줘."
       },
-      "last_dispatched_at": "2026-08-31T14:37:49"
+      "last_dispatched_at": "2026-08-31T15:21:10"
     },
     {
       "id": "ISS-484",
@@ -6261,7 +6261,7 @@
         "origin": "intent-gate",
         "raw_prompt": "흰색바탕 [Image #22] 이런 드로잉으로 수정해봐."
       },
-      "last_dispatched_at": "2026-08-31T14:01:24"
+      "last_dispatched_at": "2026-08-31T15:24:49"
     },
     {
       "id": "ISS-489",
@@ -6372,7 +6372,8 @@
       "payload": {
         "origin": "intent-gate",
         "raw_prompt": "국가장학금은 충청대에서 주관해주기 바람. 곡성,강화는 부각하지 말것. 27.04 이전에 취업희망자 입학시킬 예정임. 모집대상1순위 괴산점 취업희망자를 넣고 다머지는 순서대로 보고서 수정해줘."
-      }
+      },
+      "last_dispatched_at": "2026-08-31T15:25:37"
     },
     {
       "id": "ISS-496",
@@ -6416,6 +6417,44 @@
           "advisor 모델 정의 불일치(frontmatter opus vs MODEL_MAP fable)"
         ],
         "regression": "없음 — 일반 파생이슈 착수금지 유지 확인"
+      }
+    },
+    {
+      "id": "ISS-497",
+      "title": "[안정화] hermes-agent — ._ 파일 0xb0 크래시 항구대책 + 54GB 비대 원인 규명",
+      "type": "FIX_BUG",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-08-31T15:26:04.965524",
+      "updated_at": "2026-08-31T15:53:24.733340",
+      "payload": {
+        "origin": "user_instruction",
+        "scope": [
+          "._ AppleDouble 재생성 항구 차단",
+          "54GB 비대 원인 규명 및 축소",
+          "실행 안정성 실측 검증"
+        ]
+      },
+      "result": {
+        "verified": true,
+        "root_causes": [
+          "exFAT 할당블록 1MB — 파일당 최소 1MB 점유로 190MB 소스가 11.5GB로 부풀어 보임",
+          "macOS AppleDouble ._ 파일 3,309개(3.2GB) 재생성 — DSDontWriteUSBStores 설정은 .DS_Store만 막고 ._는 못 막음",
+          "tools/registry.py의 except OSError가 UnicodeDecodeError를 포착 못함 — 상류 버그"
+        ],
+        "fixes": [
+          "런처(~/.local/bin/hermes)에 조건부 dot_clean 방어 — 10분 쿨다운·stderr 분리·SKIP 우회",
+          "tools/registry.py 2차 방어 — UnicodeDecodeError 포착 + ._ 파일 스킵"
+        ],
+        "measured": {
+          "dot_clean_before": 3309,
+          "after": 0,
+          "source_real_size_mb": 190,
+          "exfat_apparent_gb": 51
+        },
+        "note": "내장 이전은 대표님이 E_SSD 유지 선택 — 54GB 비대는 exFAT 블록 특성이며 실데이터는 190MB"
       }
     }
   ],
@@ -24091,14 +24130,168 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 950,
+        "timestamp": "2026-08-31T15:18:07.222019",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 547시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 126시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 197,
+          "done": 44,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 951,
+        "timestamp": "2026-08-31T15:21:10.528710",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 547시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 126시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 197,
+          "done": 44,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 952,
+        "timestamp": "2026-08-31T15:24:49.816550",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 547시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 126시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 197,
+          "done": 44,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 953,
+        "timestamp": "2026-08-31T15:25:37.089547",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 547시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 126시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 197,
+          "done": 44,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 954,
+        "timestamp": "2026-08-31T15:25:39.034050",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 547시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 126시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 197,
+          "done": 44,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 955,
+        "timestamp": "2026-08-31T15:25:45.592684",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 547시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 126시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 197,
+          "done": 44,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 956,
+        "timestamp": "2026-08-31T15:25:47.453140",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 547시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 317시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 126시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 197,
+          "done": 44,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 174,
+    "total_issues": 175,
     "completed": 113,
     "failed": 5,
-    "evolved": 949
+    "evolved": 956
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -24468,12 +24661,13 @@
     }
   ],
   "rewake_state": {
-    "ISS-443:READY": 64,
-    "ISS-444:READY": 52,
+    "ISS-443:READY": 65,
+    "ISS-444:READY": 53,
     "ISS-398:READY": 37,
-    "ISS-480:READY": 59,
-    "ISS-483:READY": 50,
+    "ISS-480:READY": 60,
+    "ISS-483:READY": 51,
     "ISS-479:READY": 22,
-    "ISS-488:READY": 25
+    "ISS-488:READY": 26,
+    "ISS-495:READY": 1
   }
 }
