@@ -3900,7 +3900,7 @@
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
         "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
       },
-      "last_dispatched_at": "2026-08-31T13:07:36"
+      "last_dispatched_at": "2026-09-07T08:14:59"
     },
     {
       "id": "ISS-399",
@@ -5169,7 +5169,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-31T15:25:39"
+      "last_dispatched_at": "2026-09-07T16:28:37"
     },
     {
       "id": "ISS-444",
@@ -5209,7 +5209,7 @@
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-08-31T15:25:47"
+      "last_dispatched_at": "2026-09-07T08:10:10"
     },
     {
       "id": "ISS-445",
@@ -6117,7 +6117,7 @@
         }
       ],
       "retry_count": 1,
-      "last_dispatched_at": "2026-08-31T13:40:20"
+      "last_dispatched_at": "2026-09-07T08:14:57"
     },
     {
       "id": "ISS-480",
@@ -6133,7 +6133,7 @@
         "origin": "intent-gate",
         "raw_prompt": "모든 비번 ximdnjs!00 으로 수정하고 가비아는 claude in chrome로 로그인 할테니 너가 설정해줘'"
       },
-      "last_dispatched_at": "2026-08-31T15:18:07"
+      "last_dispatched_at": "2026-09-10T14:17:12"
     },
     {
       "id": "ISS-481",
@@ -6181,7 +6181,7 @@
         "origin": "intent-gate",
         "raw_prompt": "Address (주소)\n- Postal code (우편번호)\n- City (도시)\n- Country (국가) 심티어 회사 정보보고 만들어줘."
       },
-      "last_dispatched_at": "2026-08-31T15:21:10"
+      "last_dispatched_at": "2026-09-10T14:17:26"
     },
     {
       "id": "ISS-484",
@@ -6261,7 +6261,7 @@
         "origin": "intent-gate",
         "raw_prompt": "흰색바탕 [Image #22] 이런 드로잉으로 수정해봐."
       },
-      "last_dispatched_at": "2026-08-31T15:24:49"
+      "last_dispatched_at": "2026-09-07T16:43:03"
     },
     {
       "id": "ISS-489",
@@ -6373,7 +6373,7 @@
         "origin": "intent-gate",
         "raw_prompt": "국가장학금은 충청대에서 주관해주기 바람. 곡성,강화는 부각하지 말것. 27.04 이전에 취업희망자 입학시킬 예정임. 모집대상1순위 괴산점 취업희망자를 넣고 다머지는 순서대로 보고서 수정해줘."
       },
-      "last_dispatched_at": "2026-08-31T15:25:37"
+      "last_dispatched_at": "2026-09-07T16:22:35"
     },
     {
       "id": "ISS-496",
@@ -6455,6 +6455,591 @@
           "exfat_apparent_gb": 51
         },
         "note": "내장 이전은 대표님이 E_SSD 유지 선택 — 54GB 비대는 exFAT 블록 특성이며 실데이터는 190MB"
+      }
+    },
+    {
+      "id": "ISS-498",
+      "title": "[아이디어] 슬랙을 대처하고 있다는 buzz를 말하는 거야. 이번 이야기로 확정되면 기억좀 하자. 매번 설명해야되.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-31T15:53:27.196382",
+      "updated_at": "2026-08-31T15:53:27.196382",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "슬랙을 대처하고 있다는 buzz를 말하는 거야. 이번 이야기로 확정되면 기억좀 하자. 매번 설명해야되.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-499",
+      "title": "[설치] Pi5에 buzz CLI 빌드·설치 + hermes buzz 플러그인 연동",
+      "type": "DEPLOY_READY",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "cicd-harness",
+      "depth": 0,
+      "created_at": "2026-08-31T15:56:02.906308",
+      "updated_at": "2026-08-31T18:38:01.239971",
+      "payload": {
+        "origin": "user_instruction",
+        "scope": [
+          "Pi5 rustup 설치",
+          "block/buzz 클론 + cargo build -p buzz-cli",
+          "~/bin/buzz 배치",
+          "Nostr 신원 발급",
+          "hermes buzz 플러그인 env 설정"
+        ],
+        "decision": "Slack 봇 대신 buzz로 확정 (2026-08-31 대표님)"
+      },
+      "retry_count": 1,
+      "last_dispatched_at": "2026-08-31T17:01:37"
+    },
+    {
+      "id": "ISS-500",
+      "title": "[아이디어] 불필요하게 메모리도 없는데 이중으로 설치 안했으면 해서.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-31T16:20:41.367567",
+      "updated_at": "2026-08-31T16:20:41.367567",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "불필요하게 메모리도 없는데 이중으로 설치 안했으면 해서.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-501",
+      "title": "[일원화] hermes를 Pi5로 통합 (브라우저 도구 제외) + E_SSD 설치본 정리",
+      "type": "DEPLOY_READY",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "cicd-harness",
+      "depth": 0,
+      "created_at": "2026-08-31T16:42:52.717356",
+      "updated_at": "2026-08-31T18:38:01.239980",
+      "payload": {
+        "origin": "user_instruction",
+        "scope": [
+          "Pi5 hermes 설치 완료 (--skip-browser 계열)",
+          "buzz 플러그인 연동",
+          "systemd 상주화",
+          "E_SSD 설치본 정리"
+        ],
+        "decision": "2026-08-31 대표님: Pi5로 몰자, browser 기능 빼자",
+        "measured": {
+          "pi5_ram_used_mb": 1300,
+          "pi5_ram_total_mb": 8062,
+          "loadavg": "0.06/0.11/0.33",
+          "buzz_relay_mb": 35,
+          "minio_mb": 136
+        }
+      },
+      "result": {
+        "verified": true,
+        "done": [
+          "Pi5 hermes v0.20.6 설치(--skip-browser)",
+          "buzz 릴레이 자체호스팅 4컨테이너",
+          "대화 왕복 2회 성공(한국어 응답)",
+          "systemd 상주+linger 재부팅 자동기동",
+          "E_SSD 51GB 삭제",
+          "맥 런처를 Pi5 위임 래퍼로 교체"
+        ],
+        "root_cause_found": "어댑터 adapter.py:1141 _is_mentioned 는 본문 텍스트로 멘션 판정 — --mention 플래그가 아니라 본문에 @hermes 필요",
+        "measured": {
+          "hermes_rss_mb": 200,
+          "pi5_used_mb": 1497,
+          "pi5_total_mb": 8062
+        }
+      }
+    },
+    {
+      "id": "ISS-502",
+      "title": "[아이디어] 힉스필드가 결제 되었어. 기업홍보 영상을 만들자. https://youtu.be/Deunw8az6l4?si=11gA8wWnHXee6",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-31T18:37:31.660322",
+      "updated_at": "2026-08-31T18:37:31.660322",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "힉스필드가 결제 되었어. 기업홍보 영상을 만들자. https://youtu.be/Deunw8az6l4?si=11gA8wWnHXee6fl_ 우선 영상 분석부터 해줘.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-503",
+      "title": "[기획] 0001 누리팜 기업홍보 영상 기획안 (Fable 주도)",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "plan-harness",
+      "depth": 0,
+      "created_at": "2026-08-31T19:31:56.564422",
+      "updated_at": "2026-08-31T19:53:21.602292",
+      "payload": {
+        "origin": "user_instruction",
+        "reference": "Salesforce×Anthropic Claudeforce 50초 영상 구조 분석 완료",
+        "requirement": "Fable 서브에이전트 관여 명시",
+        "files_changed": []
+      },
+      "result": {
+        "deliverable": "/Volumes/E_SSD/02_GitHub.nosync/0001_NURI/docs/홍보영상_기획안_260831.md (30KB, v2)",
+        "v1_backup": "홍보영상_기획안_260831_v1.md",
+        "concept": "2막 구조 — 1막 사람의 하루(밝은 일러스트) → 2막 설비의 증명(다크 관제화면) → 밝은 귀환",
+        "key_message": "말이 아니라, 화면으로 보여드립니다 (홈페이지 확정 카피 승격)",
+        "opus_verified": [
+          "v2 파일 실재 30,303 bytes",
+          "확정수치 2,880셀 CLAUDE.md 대조 일치",
+          "홈페이지 verbatim 카피 4문장 실재 확인",
+          "DT 3,040 표기 불일치 실측 확인"
+        ],
+        "blocker": "DT 관제화면 3,040 → 2,880 정합 후 재녹화 필요 (제작 전 선결)",
+        "pending_confirm": 4
+      }
+    },
+    {
+      "id": "ISS-504",
+      "title": "[아이디어] 우선 표준사업장+고도화된스마트팜을 강조하자. 출자수익등은 기업의 긍정을 충분히 홍보한 후에해도 가능해.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-31T19:36:10.726105",
+      "updated_at": "2026-08-31T19:36:10.726105",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "우선 표준사업장+고도화된스마트팜을 강조하자. 출자수익등은 기업의 긍정을 충분히 홍보한 후에해도 가능해.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-505",
+      "title": "[아이디어] 표준사업장이 이렇게도 발전되 사업장일수 있구나! 그런점을 강조 하고 싶어. 장애인이 일하는 사업장이라는 인식을 개선해주고 싶어.",
+      "type": "IDEA",
+      "status": "DONE",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-31T19:44:06.314709",
+      "updated_at": "2026-08-31T20:13:03.048058",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "표준사업장이 이렇게도 발전되 사업장일수 있구나! 그런점을 강조 하고 싶어. 장애인이 일하는 사업장이라는 인식을 개선해주고 싶어.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "result": {
+        "merged_into": "ISS-503 v3 개정판",
+        "deliverable": "홍보영상_기획안_260831_v3.md (17.7KB)"
+      }
+    },
+    {
+      "id": "ISS-506",
+      "title": "[아이디어] 부모 기업을 동시에 만족하는 영상은 어려울거야. 필요하면 시리즈에 넣어서 둘로 나놔야 할거야. 총론 영상이니까 모든 요소를 가볍게 ",
+      "type": "IDEA",
+      "status": "DONE",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-31T20:03:34.165049",
+      "updated_at": "2026-08-31T20:13:03.048068",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "부모 기업을 동시에 만족하는 영상은 어려울거야. 필요하면 시리즈에 넣어서 둘로 나놔야 할거야. 총론 영상이니까 모든 요소를 가볍게 하자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "result": {
+        "merged_into": "ISS-503 v3 개정판",
+        "deliverable": "홍보영상_기획안_260831_v3.md (17.7KB)"
+      }
+    },
+    {
+      "id": "ISS-507",
+      "title": "[제작] 누리팜 홍보영상 10초 품질검증본 (오프닝 S1~S2)",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-08-31T20:08:10.195771",
+      "updated_at": "2026-08-31T20:12:23.733551",
+      "payload": {
+        "origin": "user_instruction",
+        "purpose": "영상 품질 검증용",
+        "scope": "10초, 후반부 씬 생략 허용",
+        "files_changed": []
+      },
+      "result": {
+        "deliverable": "0001_NURI/docs/영상/누리팜_10초_품질검증본_260831.mp4",
+        "spec": "9.5초 · 1920x1080 · 30fps · H.264 · 7.4MB · 무음",
+        "cuts": [
+          "0-5s 조감(규모)+카피2단",
+          "5-9.5s 조정실 클로즈업(첨단성)"
+        ],
+        "defects_found_and_fixed": [
+          "자막 오버레이 미표시 — 단일이미지 입력에 fade 무효, loop 입력으로 수정",
+          "갠트리 크롭 오조준 — 로봇 대신 빈 통로, 조정실 뷰로 교체",
+          "자막 가독성 부족 — 스크림+3중 그림자+시안 밑줄 추가"
+        ],
+        "verified_by": "프레임 추출 육안 확인 (ffprobe 단독 판정 아님)"
+      }
+    },
+    {
+      "id": "ISS-508",
+      "title": "[제작] 누리팜 홍보영상 본편 60초 (총론편 v3)",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "retry_count": 0,
+      "parent_id": "ISS-503",
+      "depends_on": [],
+      "created_at": "2026-09-01T09:14:07.908474",
+      "payload": {
+        "origin": "user_instruction",
+        "plan": "홍보영상_기획안_260831_v3.md",
+        "length": "60s",
+        "defaults": {
+          "당사자노출": "A 암시(Fable 추천)",
+          "일러스트톤": "기존 hero-farm 계승"
+        }
+      },
+      "result": {
+        "deliverable": "0001_NURI/docs/영상/누리팜_총론편_60초_v1_260901.mp4",
+        "spec": "60.000초 · 1920x1080 · 30fps · H.264 · 17MB · 무음",
+        "scenes": 13,
+        "structure": "S1입사6s→S2명제5s→BR4s→S3전경5s→S4①스마트팜6s→②자동화6s→③기숙사6s→④카페6s→S5수렴9s→S6클로징7s",
+        "defects_fixed": [
+          "갠트리 크롭 오조준 2회 → 아이소메트릭 전체뷰로 교체",
+          "S4② 다크배경 자막 판독불가 → 스크림 강화"
+        ],
+        "verified": "13씬 컨택시트 육안 확인",
+        "gaps": [
+          "사운드 없음",
+          "기숙사·프로그램 전용 소재 부재(조감 크롭 대체)",
+          "조감 원본 720x668 업스케일 화질 손실",
+          "DT 실시간 녹화 미성사(aedes 미설치)"
+        ]
+      },
+      "spawn_rules": [],
+      "updated_at": "2026-09-01T09:19:41.987167"
+    },
+    {
+      "id": "ISS-509",
+      "title": "[제작] 힉스필드 i2v로 저화질 컷 재생성 (조감·기숙사·카페)",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-09-01T09:29:47.932005",
+      "updated_at": "2026-09-01T09:42:47.665210",
+      "payload": {
+        "origin": "user_instruction",
+        "targets": [
+          "조감 720x668 업스케일",
+          "기숙사 크롭",
+          "카페 크롭"
+        ]
+      },
+      "result": {
+        "deliverable": "누리팜_총론편_60초_v2_260901.mp4",
+        "higgsfield": {
+          "model": "seedance_2_5 (omni_reference)",
+          "generated": [
+            "조감 1080p 5s",
+            "카페 1080p 5s"
+          ],
+          "credits_used": 90,
+          "credits_left": "account status 참조"
+        },
+        "improvements": [
+          "조감 720x668→진짜 1920x1080 16:9 (석양 시네마틱 무빙 추가)",
+          "카페 유리벽 내부 선명",
+          "자막 폰트 AppleGothic→AppleSDGothicNeo SemiBold/Bold",
+          "2배 슈퍼샘플링 렌더",
+          "커서를 글자에서 분리한 세로 막대로",
+          "밑줄 좌우 여백 추가",
+          "가우시안 블러 그림자",
+          "S4② 불투명 밴드로 가독성 확보"
+        ]
+      }
+    },
+    {
+      "id": "ISS-510",
+      "title": "[재제작] 전 컷 힉스필드 t2v 신규 생성 (기존 소재 재사용 금지)",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-09-01T10:09:08.388967",
+      "updated_at": "2026-09-01T10:22:25.157264",
+      "payload": {
+        "origin": "user_instruction",
+        "rule": "컨셉만 유지, 이미지·영상 재사용 금지, 전부 신규 생성"
+      },
+      "result": {
+        "deliverable": "누리팜_총론편_60초_v3_전면신규_260901.mp4 (60.000s/1080p/24MB)",
+        "method": "seedance_2_5 mode=t2v — 기존 소재 재사용 0",
+        "new_cuts": 6,
+        "credits_used": 315,
+        "cuts": [
+          "전경 논밭+온실단지",
+          "수직농장 통로",
+          "2층 갠트리+1층 작업장",
+          "2인1실 기숙사",
+          "카페 유리벽",
+          "장갑 손 모종 클로즈업"
+        ],
+        "issue": "b_farm 1회 NSFW 오탐 → 프롬프트 수정 후 성공",
+        "verified": "12프레임 컨택시트 육안 확인"
+      }
+    },
+    {
+      "id": "ISS-511",
+      "title": "[제작] 누리팜 총론편 v4 — 흰바탕 자막카드 제거 + 배경음악",
+      "type": "FEATURE_PLAN",
+      "status": "DONE",
+      "priority": "P1",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-09-01T12:01:12.547906",
+      "updated_at": "2026-09-01T12:55:34.091107",
+      "payload": {
+        "origin": "user_instruction",
+        "changes": [
+          "페이퍼 카드 5장 제거 → 전 구간 영상 위 자막",
+          "배경음악 추가"
+        ],
+        "files_changed": []
+      },
+      "retry_count": 1,
+      "last_dispatched_at": "2026-09-01T12:55:13",
+      "result": {
+        "deliverable": "누리팜_총론편_60초_v4_260901.mp4",
+        "note": "v5 개선안으로 이어짐(ISS-513/514)"
+      }
+    },
+    {
+      "id": "ISS-512",
+      "title": "[아이디어] 누리셀은 기본 구조가 원통형이야. 평판형 재배가 아니야. 기존 dt 이미지 확인해서 다시 만들자.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-01T12:03:20.040734",
+      "updated_at": "2026-09-01T12:03:20.040734",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "누리셀은 기본 구조가 원통형이야. 평판형 재배가 아니야. 기존 dt 이미지 확인해서 다시 만들자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-513",
+      "title": "[아이디어] [Image #7] 내가 만들어떤 버드샷 영상이 땅모양을 닮고 있어. 지적모양을 살리고 주변은 얕은 숲으로 하자. 밭모양이 부담스러",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-01T12:36:25.699167",
+      "updated_at": "2026-09-01T12:36:25.699167",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "[Image #7] 내가 만들어떤 버드샷 영상이 땅모양을 닮고 있어. 지적모양을 살리고 주변은 얕은 숲으로 하자. 밭모양이 부담스러워.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-514",
+      "title": "[아이디어] 스마트함 모양이 첫화면에서는 지붕모양이 5개야. 5동 하우스는 맞고, 동별 지붕모양이 2개씩 들어야. 마지막 장면 하우스 모양도 일",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-01T12:37:35.095375",
+      "updated_at": "2026-09-01T12:37:35.095375",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "스마트함 모양이 첫화면에서는 지붕모양이 5개야. 5동 하우스는 맞고, 동별 지붕모양이 2개씩 들어야. 마지막 장면 하우스 모양도 일치 했으면 좋겠어 .",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-515",
+      "title": "[아이디어] 사람 캐리어 없이 하자.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-01T13:14:50.593061",
+      "updated_at": "2026-09-01T13:14:50.593061",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "사람 캐리어 없이 하자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-516",
+      "title": "[아이디어] 구글 드라이브에 있는 파일명 규직을 운영하고 싶어. 파일명 폴더명 규직을 제안해줘.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-03T08:25:08.596159",
+      "updated_at": "2026-09-03T08:25:08.596159",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "구글 드라이브에 있는 파일명 규직을 운영하고 싶어. 파일명 폴더명 규직을 제안해줘.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-517",
+      "title": "[아이디어] 파일명규칙 동의 승인. 그리고  00:05 시간에 전일 구글드라이브에 추가된 파일명을 파일명규칙으로 만들어졌는지 검사하고 필요하면 ",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-03T08:33:37.592021",
+      "updated_at": "2026-09-03T08:33:37.592021",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "파일명규칙 동의 승인. 그리고  00:05 시간에 전일 구글드라이브에 추가된 파일명을 파일명규칙으로 만들어졌는지 검사하고 필요하면 리네임하자. 루틴으로 운영해줘. 어제 등록된 파일 점검해줘.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-518",
+      "title": "[아이디어] 진행자가 만드는 것보다 알리는것이 더 중요화다고 한말이 생각이 나서 공유하고 싶은거야.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-03T16:17:11.681893",
+      "updated_at": "2026-09-03T16:17:11.681893",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "진행자가 만드는 것보다 알리는것이 더 중요화다고 한말이 생각이 나서 공유하고 싶은거야.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-519",
+      "title": "[아이디어] ../.env에 국세청 id/pw 저장하자. 어떤키로 저장할지 너가 이름 지어줘.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-06T14:36:42.301928",
+      "updated_at": "2026-09-06T14:36:42.301928",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "../.env에 국세청 id/pw 저장하자. 어떤키로 저장할지 너가 이름 지어줘.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-520",
+      "title": "[아이디어] ../0042 바로 자동발송 기능 구현하고 오늘중으로 조금씩 시차를 두어서 메일 리스트에 있는 메일 중복 발속없이 발송하자. 바로 ",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-07T08:15:58.730657",
+      "updated_at": "2026-09-07T08:15:58.730657",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "../0042 바로 자동발송 기능 구현하고 오늘중으로 조금씩 시차를 두어서 메일 리스트에 있는 메일 중복 발속없이 발송하자. 바로 시작하자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-521",
+      "title": "[아이디어] 시작하자. 기자용 vc용 본문 승인.",
+      "type": "IDEA",
+      "status": "BACKLOG",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-07T08:41:44.039944",
+      "updated_at": "2026-09-07T08:41:44.039944",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "시작하자. 기자용 vc용 본문 승인.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      }
+    },
+    {
+      "id": "ISS-522",
+      "title": "[지시] 페이스북 광고 결과를 보고서 형식으로 만들어줘.",
+      "type": "FEATURE_PLAN",
+      "status": "READY",
+      "priority": "P1",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-07T09:14:20.756078",
+      "updated_at": "2026-09-07T09:14:20.756078",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "페이스북 광고 결과를 보고서 형식으로 만들어줘."
+      },
+      "last_dispatched_at": "2026-09-07T16:24:59"
+    },
+    {
+      "id": "ISS-523",
+      "type": "FEATURE_PLAN",
+      "title": "[INTENT] registry payload에 intent 3필드 도입 + open_questions 착수 게이트",
+      "priority": "P1",
+      "status": "COMPLETED",
+      "created_at": "2026-09-10T05:14:01Z",
+      "agent": "agent-harness",
+      "depth": 0,
+      "payload": {
+        "origin": "user_instruction",
+        "raw_prompt": "claude code에서 공식 발표한 intent.md 파일에 대해 리서치 하고 의견줘. / 착수 승인.",
+        "problem": "registry 223건 실측 — payload에 '무엇을·어떻게'(files/scope/acceptance_criteria/rubric)는 풍부하나 '왜'가 없다. why 6건(2%)·problem 4건(1%)·constraints 1건(0%)·open_questions 0건. raw_prompt 58건은 대표님 발화 복사일 뿐 문제·제약이 아니다. 그 결과 BACKLOG36+READY9=45건 방치 시 되살릴지 버릴지 판단 불가, CLOSED_INVALID 20건은 착수 후에야 '아니었다'를 발견한 흔적.",
+        "constraints": "①새 파일(.md) 만들지 않는다 — CLAUDE.md 500줄 비대 전철 금지. registry payload 확장으로만 한다. ②기존 223건 소급 적용 금지. ③Anthropic 5섹션 중 3개만 채택(Affected는 자명, Proposed outcome은 acceptance_criteria가 이미 담당). ④코딩은 Codex 위임(전역 강제).",
+        "open_questions": [],
+        "acceptance_criteria": [
+          "intent-gate.sh가 신규 이슈 생성 시 problem/constraints/open_questions 3칸을 빈 값으로 삽입",
+          "dispatch-ready.sh가 open_questions 비어있지 않으면 착수 차단",
+          "기존 이슈 223건 무손상",
+          "두 스크립트 bash -n 통과 + 실제 실행 검증"
+        ],
+        "source": "Anthropic AI-Native SDLC Playbook (2026-08-21) intent.md"
+      },
+      "completed_at": "2026-09-10T05:17:38Z",
+      "result": {
+        "files": [
+          "~/.claude/harness-core/hooks/intent-gate.sh",
+          "~/.claude/harness-core/hooks/dispatch-ready.sh"
+        ],
+        "intent_gate_changed_lines": 9,
+        "dispatch_ready_changed_lines": 18,
+        "verified": "intent-gate 실행→3칸 빈값 삽입 확인 / dispatch-ready 게이트 양방향 검증(미결있음=차단, 비움=통과)",
+        "backup": "*.bak-iss523",
+        "delegated_to": "codex"
       }
     }
   ],
@@ -6752,6 +7337,16 @@
         "issue_id": "ISS-479",
         "retry_count": 1,
         "timestamp": "2026-08-25T11:18:59.999155"
+      },
+      {
+        "issue_id": "ISS-499",
+        "retry_count": 1,
+        "timestamp": "2026-08-31T16:38:58.046274"
+      },
+      {
+        "issue_id": "ISS-511",
+        "retry_count": 1,
+        "timestamp": "2026-09-01T12:31:45.604088"
       }
     ],
     "on_learn": []
@@ -24284,14 +24879,4501 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 957,
+        "timestamp": "2026-08-31T15:53:58.362003",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 548시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 150시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 199,
+          "done": 45,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 958,
+        "timestamp": "2026-08-31T15:54:01.257638",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 548시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 150시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 199,
+          "done": 45,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 959,
+        "timestamp": "2026-08-31T15:55:24.533525",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 548시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 150시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 199,
+          "done": 45,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 960,
+        "timestamp": "2026-08-31T15:55:26.932410",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 548시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 150시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 199,
+          "done": 45,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 961,
+        "timestamp": "2026-08-31T15:55:41.489410",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 548시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 150시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 199,
+          "done": 45,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 962,
+        "timestamp": "2026-08-31T15:55:44.124972",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 548시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 150시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 150시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 199,
+          "done": 45,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 963,
+        "timestamp": "2026-08-31T16:23:04.751429",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 548시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 151시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 150시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 201,
+          "done": 45,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 964,
+        "timestamp": "2026-08-31T16:26:08.410480",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 548시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 318시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 151시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 150시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 127시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 201,
+          "done": 45,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 965,
+        "timestamp": "2026-08-31T17:01:36.931073",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 549시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 319시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 319시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 151시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 151시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 150시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 128시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 202,
+          "done": 45,
+          "in_progress": 1,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 966,
+        "timestamp": "2026-08-31T18:40:06.326478",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 551시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 320시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 320시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 153시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 151시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 130시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 4시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 203,
+          "done": 47,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 967,
+        "timestamp": "2026-08-31T18:43:09.818357",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 551시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 320시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 320시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 153시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 151시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 130시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 4시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 203,
+          "done": 47,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 968,
+        "timestamp": "2026-08-31T19:34:17.623476",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 130시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 4시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 204,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 969,
+        "timestamp": "2026-08-31T19:37:45.388794",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 205,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 970,
+        "timestamp": "2026-08-31T19:37:48.104578",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 205,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 971,
+        "timestamp": "2026-08-31T19:40:51.949003",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 205,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 972,
+        "timestamp": "2026-08-31T19:41:27.969177",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 205,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 973,
+        "timestamp": "2026-08-31T19:42:33.424670",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 321시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 205,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 974,
+        "timestamp": "2026-08-31T19:47:07.611227",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 975,
+        "timestamp": "2026-08-31T19:47:09.871776",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 976,
+        "timestamp": "2026-08-31T19:50:44.731224",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 977,
+        "timestamp": "2026-08-31T19:50:47.118645",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 978,
+        "timestamp": "2026-08-31T19:51:36.657067",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 979,
+        "timestamp": "2026-08-31T19:51:39.420532",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 980,
+        "timestamp": "2026-08-31T19:53:03.318992",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 47,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 981,
+        "timestamp": "2026-08-31T19:54:41.836326",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 48,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 982,
+        "timestamp": "2026-08-31T19:55:10.474550",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 48,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 983,
+        "timestamp": "2026-08-31T19:55:13.393942",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 48,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 984,
+        "timestamp": "2026-08-31T20:00:51.972816",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 48,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 985,
+        "timestamp": "2026-08-31T20:00:54.034872",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 48,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 986,
+        "timestamp": "2026-08-31T20:00:54.746732",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 48,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 987,
+        "timestamp": "2026-08-31T20:02:19.849113",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 48,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 988,
+        "timestamp": "2026-08-31T20:02:22.900713",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 206,
+          "done": 48,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 989,
+        "timestamp": "2026-08-31T20:04:45.803287",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 207,
+          "done": 48,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 990,
+        "timestamp": "2026-08-31T20:04:48.649094",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 207,
+          "done": 48,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 991,
+        "timestamp": "2026-08-31T20:05:54.588699",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 154시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 207,
+          "done": 48,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 992,
+        "timestamp": "2026-08-31T20:12:07.787744",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 155시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 208,
+          "done": 48,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 993,
+        "timestamp": "2026-08-31T20:12:43.766987",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 155시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 208,
+          "done": 49,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 994,
+        "timestamp": "2026-08-31T20:13:34.494010",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 155시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 208,
+          "done": 51,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 995,
+        "timestamp": "2026-08-31T20:16:39.289474",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 552시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 322시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 155시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 154시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 153시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 131시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 5시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 208,
+          "done": 51,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 996,
+        "timestamp": "2026-09-01T09:20:06.400145",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 565시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 335시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 335시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 168시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 167시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 166시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 144시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 18시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 209,
+          "done": 52,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 997,
+        "timestamp": "2026-09-01T09:23:11.421395",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 565시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 335시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 335시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 168시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 167시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 166시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 144시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 18시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 209,
+          "done": 52,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 998,
+        "timestamp": "2026-09-01T09:43:08.354166",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 566시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 335시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 335시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 168시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 168시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 166시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 145시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 19시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 210,
+          "done": 53,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 999,
+        "timestamp": "2026-09-01T09:46:13.580606",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 566시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 336시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 336시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 168시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 168시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 166시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 145시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 19시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 210,
+          "done": 53,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1000,
+        "timestamp": "2026-09-01T10:22:46.153052",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 566시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 336시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 336시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 169시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 168시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 167시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 145시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 19시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 211,
+          "done": 54,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1001,
+        "timestamp": "2026-09-01T10:25:52.281490",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 566시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 336시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 336시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 169시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 168시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 167시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 145시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 19시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 211,
+          "done": 54,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1002,
+        "timestamp": "2026-09-01T11:58:27.797536",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 568시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 170시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 211,
+          "done": 54,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1003,
+        "timestamp": "2026-09-01T12:08:14.629138",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 568시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 170시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1004,
+        "timestamp": "2026-09-01T12:08:18.974704",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 568시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 170시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1005,
+        "timestamp": "2026-09-01T12:17:43.051233",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 568시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1006,
+        "timestamp": "2026-09-01T12:18:27.786076",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 568시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1007,
+        "timestamp": "2026-09-01T12:20:32.849730",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 568시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1008,
+        "timestamp": "2026-09-01T12:20:37.108390",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 568시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1009,
+        "timestamp": "2026-09-01T12:26:15.256333",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 568시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1010,
+        "timestamp": "2026-09-01T12:27:27.371451",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1011,
+        "timestamp": "2026-09-01T12:28:14.678153",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1012,
+        "timestamp": "2026-09-01T12:28:18.312016",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1013,
+        "timestamp": "2026-09-01T12:31:45.507631",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 1,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1014,
+        "timestamp": "2026-09-01T12:33:25.723477",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1015,
+        "timestamp": "2026-09-01T12:36:10.192122",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 147시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 21시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 213,
+          "done": 54,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1016,
+        "timestamp": "2026-09-01T12:41:25.885567",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 338시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 54,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1017,
+        "timestamp": "2026-09-01T12:44:32.397337",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 54,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1018,
+        "timestamp": "2026-09-01T12:44:54.719253",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 54,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1019,
+        "timestamp": "2026-09-01T12:55:13.774132",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 54,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1020,
+        "timestamp": "2026-09-01T12:56:19.436179",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1021,
+        "timestamp": "2026-09-01T12:57:36.157008",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1022,
+        "timestamp": "2026-09-01T12:59:22.264775",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1023,
+        "timestamp": "2026-09-01T12:59:39.610540",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1024,
+        "timestamp": "2026-09-01T13:04:50.994828",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1025,
+        "timestamp": "2026-09-01T13:04:55.895675",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1026,
+        "timestamp": "2026-09-01T13:05:51.820264",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1027,
+        "timestamp": "2026-09-01T13:06:00.304546",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1028,
+        "timestamp": "2026-09-01T13:06:53.237102",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1029,
+        "timestamp": "2026-09-01T13:09:00.833268",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 171시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1030,
+        "timestamp": "2026-09-01T13:13:10.327543",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 172시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1031,
+        "timestamp": "2026-09-01T13:14:08.888835",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 172시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1032,
+        "timestamp": "2026-09-01T13:14:16.212617",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 172시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 215,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1033,
+        "timestamp": "2026-09-01T13:16:52.640999",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 172시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1034,
+        "timestamp": "2026-09-01T13:17:22.996752",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 172시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1035,
+        "timestamp": "2026-09-01T13:20:11.010291",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 172시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1036,
+        "timestamp": "2026-09-01T13:21:48.727107",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 569시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 172시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1037,
+        "timestamp": "2026-09-01T13:31:09.371346",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 570시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 172시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1038,
+        "timestamp": "2026-09-01T13:34:19.030229",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 570시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 339시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 172시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 148시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 22시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1039,
+        "timestamp": "2026-09-01T14:08:20.392158",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 570시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 340시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 340시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 172시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 23시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1040,
+        "timestamp": "2026-09-01T14:12:06.784055",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 570시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 340시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 340시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 173시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 23시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1041,
+        "timestamp": "2026-09-01T14:12:11.899348",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 570시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 340시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 340시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 173시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 23시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1042,
+        "timestamp": "2026-09-01T14:13:37.580254",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 570시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 340시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 340시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 173시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 23시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1043,
+        "timestamp": "2026-09-01T14:16:44.294926",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 570시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 340시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 340시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 173시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 149시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 23시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1044,
+        "timestamp": "2026-09-01T17:17:35.099547",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 573시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 343시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 343시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 176시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 175시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 174시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 26시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1045,
+        "timestamp": "2026-09-01T17:20:06.120761",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 573시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 343시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 343시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 176시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 175시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 174시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 26시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1046,
+        "timestamp": "2026-09-01T17:23:09.827047",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 573시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 343시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 343시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 176시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 175시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 174시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 26시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1047,
+        "timestamp": "2026-09-02T12:10:00.202013",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 592시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 362시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 362시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 194시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 193시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 45시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1048,
+        "timestamp": "2026-09-02T12:13:03.501717",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 592시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 362시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 362시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 195시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 193시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 171시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 45시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1049,
+        "timestamp": "2026-09-02T12:53:52.086937",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 593시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 195시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 46시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1050,
+        "timestamp": "2026-09-02T12:54:56.795910",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 593시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 195시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 46시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1051,
+        "timestamp": "2026-09-02T12:54:58.777884",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 593시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 195시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 46시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1052,
+        "timestamp": "2026-09-02T12:58:00.762243",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 593시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 195시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 46시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1053,
+        "timestamp": "2026-09-02T13:16:35.656656",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 593시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 196시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 46시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1054,
+        "timestamp": "2026-09-02T13:19:40.125364",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 593시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 196시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 46시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1055,
+        "timestamp": "2026-09-02T13:21:31.328299",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 593시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 196시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 46시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1056,
+        "timestamp": "2026-09-02T13:21:33.976307",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 593시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 196시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 46시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1057,
+        "timestamp": "2026-09-02T13:27:01.958021",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 593시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 196시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 172시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 46시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1058,
+        "timestamp": "2026-09-02T13:41:33.459971",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 594시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 363시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 196시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 194시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 173시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 47시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1059,
+        "timestamp": "2026-09-02T13:48:10.681019",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 594시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 196시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 173시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 47시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1060,
+        "timestamp": "2026-09-02T13:50:13.237570",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 594시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 196시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 173시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 47시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1061,
+        "timestamp": "2026-09-02T13:50:15.207089",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 594시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 196시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 173시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 47시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1062,
+        "timestamp": "2026-09-02T13:55:37.381550",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 594시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 196시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 173시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 47시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1063,
+        "timestamp": "2026-09-02T14:11:22.738498",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 594시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 197시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 173시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 47시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1064,
+        "timestamp": "2026-09-02T14:13:06.166772",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 594시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 197시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 173시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 47시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1065,
+        "timestamp": "2026-09-02T14:13:08.233809",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 594시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 197시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 173시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 47시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1066,
+        "timestamp": "2026-09-02T14:16:10.121085",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 594시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 364시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 197시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 195시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 173시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 47시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 216,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1067,
+        "timestamp": "2026-09-03T08:27:54.452001",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 213시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 191시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 65시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 217,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1068,
+        "timestamp": "2026-09-03T08:28:29.246028",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 213시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 191시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 65시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 217,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1069,
+        "timestamp": "2026-09-03T08:29:01.442313",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 213시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 191시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 65시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 217,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1070,
+        "timestamp": "2026-09-03T08:30:03.537635",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 213시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 191시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 65시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 217,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1071,
+        "timestamp": "2026-09-03T08:30:35.579371",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 213시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 191시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 65시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 217,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1072,
+        "timestamp": "2026-09-03T08:31:27.863181",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 213시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 191시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 65시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 217,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1073,
+        "timestamp": "2026-09-03T08:32:11.042180",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 213시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 191시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 65시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 217,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1074,
+        "timestamp": "2026-09-03T08:35:35.936823",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 213시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 191시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 65시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1075,
+        "timestamp": "2026-09-03T08:38:29.286440",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 213시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 192시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 66시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1076,
+        "timestamp": "2026-09-03T08:41:33.013262",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 382시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 213시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 192시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 66시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1077,
+        "timestamp": "2026-09-03T08:47:00.949100",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 383시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 383시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 213시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 192시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 66시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1078,
+        "timestamp": "2026-09-03T08:50:52.824887",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 383시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 383시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 214시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 192시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 66시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1079,
+        "timestamp": "2026-09-03T08:53:56.758007",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 383시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 383시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 215시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 214시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 192시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 66시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1080,
+        "timestamp": "2026-09-03T09:23:05.440489",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 613시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 383시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 383시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 216시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 215시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 214시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 192시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 66시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1081,
+        "timestamp": "2026-09-03T12:43:08.927449",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 617시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 386시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 386시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 219시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 219시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 217시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 70시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1082,
+        "timestamp": "2026-09-03T12:46:13.978915",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 617시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 387시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 387시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 219시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 219시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 217시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 196시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 70시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1083,
+        "timestamp": "2026-09-03T15:55:48.331000",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1084,
+        "timestamp": "2026-09-03T15:57:30.591110",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1085,
+        "timestamp": "2026-09-03T15:57:32.700418",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1086,
+        "timestamp": "2026-09-03T15:57:50.149469",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1087,
+        "timestamp": "2026-09-03T15:58:21.725049",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1088,
+        "timestamp": "2026-09-03T15:58:53.226532",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1089,
+        "timestamp": "2026-09-03T15:59:18.640950",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1090,
+        "timestamp": "2026-09-03T15:59:20.693513",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1091,
+        "timestamp": "2026-09-03T15:59:24.955061",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1092,
+        "timestamp": "2026-09-03T15:59:56.571980",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1093,
+        "timestamp": "2026-09-03T16:00:27.879958",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1094,
+        "timestamp": "2026-09-03T16:00:39.858760",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1095,
+        "timestamp": "2026-09-03T16:01:03.947117",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1096,
+        "timestamp": "2026-09-03T16:01:06.043451",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1097,
+        "timestamp": "2026-09-03T16:02:52.735320",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1098,
+        "timestamp": "2026-09-03T16:02:54.830883",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1099,
+        "timestamp": "2026-09-03T16:05:06.613640",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1100,
+        "timestamp": "2026-09-03T16:05:08.936243",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1101,
+        "timestamp": "2026-09-03T16:07:08.467012",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 222시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1102,
+        "timestamp": "2026-09-03T16:10:12.904948",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 223시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1103,
+        "timestamp": "2026-09-03T16:13:46.026455",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 223시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 218,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1104,
+        "timestamp": "2026-09-03T16:17:43.815782",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 223시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 219,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1105,
+        "timestamp": "2026-09-03T16:17:46.047692",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 223시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 219,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1106,
+        "timestamp": "2026-09-03T16:19:10.307488",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 223시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 219,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1107,
+        "timestamp": "2026-09-03T16:22:17.290306",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 620시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 390시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 223시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 222시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 221시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 199시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 73시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 219,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1108,
+        "timestamp": "2026-09-06T14:12:18.463991",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 690시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 292시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 269시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 143시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 219,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1109,
+        "timestamp": "2026-09-06T14:12:20.105847",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 690시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 292시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 269시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 143시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 219,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1110,
+        "timestamp": "2026-09-06T14:15:32.906222",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 690시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 292시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 269시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 143시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 219,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1111,
+        "timestamp": "2026-09-06T14:17:02.252478",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 690시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 292시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 269시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 143시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 219,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1112,
+        "timestamp": "2026-09-06T14:20:05.550073",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 690시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 292시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 269시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 143시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 219,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1113,
+        "timestamp": "2026-09-06T14:37:26.680230",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1114,
+        "timestamp": "2026-09-06T14:38:58.015624",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 460시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1115,
+        "timestamp": "2026-09-06T14:44:51.382293",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1116,
+        "timestamp": "2026-09-06T14:44:52.925186",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1117,
+        "timestamp": "2026-09-06T14:45:37.072175",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1118,
+        "timestamp": "2026-09-06T14:45:38.451576",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1119,
+        "timestamp": "2026-09-06T14:46:21.236057",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1120,
+        "timestamp": "2026-09-06T14:46:22.804355",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 291시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1121,
+        "timestamp": "2026-09-06T14:47:40.090720",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 292시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1122,
+        "timestamp": "2026-09-06T14:47:41.902142",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 292시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1123,
+        "timestamp": "2026-09-06T14:51:00.328207",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 292시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1124,
+        "timestamp": "2026-09-06T14:54:04.437414",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 691시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 461시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 293시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 293시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 292시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 270시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 144시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1125,
+        "timestamp": "2026-09-07T08:03:35.572401",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 708시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 310시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 287시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1126,
+        "timestamp": "2026-09-07T08:06:38.708542",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 708시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 310시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 287시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1127,
+        "timestamp": "2026-09-07T08:07:30.769659",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 708시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 310시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 287시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1128,
+        "timestamp": "2026-09-07T08:07:32.451403",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 708시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 310시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 287시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1129,
+        "timestamp": "2026-09-07T08:08:51.240392",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 708시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 310시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 287시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1130,
+        "timestamp": "2026-09-07T08:10:10.637240",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 708시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 310시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 287시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1131,
+        "timestamp": "2026-09-07T08:14:57.153948",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 708시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 311시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 287시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1132,
+        "timestamp": "2026-09-07T08:14:59.220647",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 708시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 311시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 287시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 220,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1133,
+        "timestamp": "2026-09-07T08:16:25.323704",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 708시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 311시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 287시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 221,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1134,
+        "timestamp": "2026-09-07T08:29:23.520420",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 709시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 311시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 311시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 287시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 221,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1135,
+        "timestamp": "2026-09-07T08:32:30.267585",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 709시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 478시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 311시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 311시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 287시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 161시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 221,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1136,
+        "timestamp": "2026-09-07T08:45:07.104536",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 709시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 479시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 479시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 311시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 311시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 309시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 288시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 162시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 222,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1137,
+        "timestamp": "2026-09-07T08:48:13.234152",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 709시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 479시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 479시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 311시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 311시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 288시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 162시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 222,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 8,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1138,
+        "timestamp": "2026-09-07T09:27:09.696774",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 710시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 479시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 479시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 312시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 312시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 288시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 162시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1139,
+        "timestamp": "2026-09-07T09:46:25.034372",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 710시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 480시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 480시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 312시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 312시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 310시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 163시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1140,
+        "timestamp": "2026-09-07T09:49:32.848797",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 710시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 480시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 480시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 312시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 312시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 311시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 289시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 163시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1141,
+        "timestamp": "2026-09-07T16:13:54.070425",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 716시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 319시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 318시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 317시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 295시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1142,
+        "timestamp": "2026-09-07T16:15:02.789874",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 716시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 319시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 318시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 317시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 295시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1143,
+        "timestamp": "2026-09-07T16:18:05.892515",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 716시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 319시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 318시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 317시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 295시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1144,
+        "timestamp": "2026-09-07T16:22:34.978533",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 716시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 319시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 318시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 317시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 295시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1145,
+        "timestamp": "2026-09-07T16:24:59.639973",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 716시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 319시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 318시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 317시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 295시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1146,
+        "timestamp": "2026-09-07T16:25:10.712428",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 716시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 319시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 318시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 317시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 295시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1147,
+        "timestamp": "2026-09-07T16:28:37.448232",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 717시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 319시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 319시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 317시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 295시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1148,
+        "timestamp": "2026-09-07T16:29:55.161295",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 717시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 319시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 319시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 317시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 295시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1149,
+        "timestamp": "2026-09-07T16:32:59.517695",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 717시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 319시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 319시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 317시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 295시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 169시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1150,
+        "timestamp": "2026-09-07T16:43:03.712321",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 717시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 486시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 319시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 319시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 317시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 296시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 170시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 7시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1151,
+        "timestamp": "2026-09-10T12:39:01.253628",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 785시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 554시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 554시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 387시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 387시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 385시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 364시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 238시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 75시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 223,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 175,
+    "total_issues": 223,
     "completed": 113,
-    "failed": 5,
-    "evolved": 956
+    "failed": 7,
+    "evolved": 1151
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -24315,7 +29397,7 @@
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "2026-08-31",
+    "date": "2026-09-10",
     "created_today": 0
   },
   "proactive_scan_state": {
@@ -24661,13 +29743,15 @@
     }
   ],
   "rewake_state": {
-    "ISS-443:READY": 65,
-    "ISS-444:READY": 53,
-    "ISS-398:READY": 37,
-    "ISS-480:READY": 60,
-    "ISS-483:READY": 51,
-    "ISS-479:READY": 22,
-    "ISS-488:READY": 26,
-    "ISS-495:READY": 1
+    "ISS-443:READY": 84,
+    "ISS-444:READY": 65,
+    "ISS-398:READY": 45,
+    "ISS-480:READY": 103,
+    "ISS-483:READY": 89,
+    "ISS-479:READY": 30,
+    "ISS-488:READY": 51,
+    "ISS-495:READY": 21,
+    "ISS-522:READY": 1,
+    "ISS-999:READY": 1
   }
 }
