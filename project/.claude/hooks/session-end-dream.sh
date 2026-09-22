@@ -8,18 +8,30 @@
 #   - 마지막 실행 날짜를 .claude/knowledge-db/.dream.last_run에 기록
 #   - 같은 날(KST 기준) 재호출 시 skip
 #   - 다른 날이면 daily-dream.sh 백그라운드 실행
+#   - daily-dream.sh가 없으면 skip 로그를 남기고 종료, 있으면 실행 직전 triggered 로그 기록
 #   - 어떤 에러도 부모(Claude Code)에 전파하지 않음 (fire-and-forget)
 # ============================================================
 
 set +e  # 절대 에러 전파 금지
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)" || exit 0
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." 2>/dev/null && pwd)" || exit 0
+if [[ -n "$CLAUDE_PROJECT_DIR" && -d "$CLAUDE_PROJECT_DIR/.claude" ]]; then
+  PROJECT_ROOT="$CLAUDE_PROJECT_DIR"
+elif [[ -d "$PWD/.claude" ]]; then
+  PROJECT_ROOT="$PWD"
+else
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." 2>/dev/null && pwd)" || exit 0
+fi
 STAMP_FILE="$PROJECT_ROOT/.claude/knowledge-db/.dream.last_run"
 DREAM_SH="$SCRIPT_DIR/daily-dream.sh"
 LOG_FILE="$PROJECT_ROOT/.claude/knowledge-db/.dream.session.log"
 
 mkdir -p "$(dirname "$STAMP_FILE")" 2>/dev/null
+
+if [[ ! -f "$PROJECT_ROOT/.claude/issue-db/registry.json" ]]; then
+  echo "[$(date -u +%FT%TZ)] dream SKIPPED — no registry at $PROJECT_ROOT/.claude/issue-db/registry.json" >> "$LOG_FILE" 2>/dev/null
+  exit 0
+fi
 
 # KST 기준 오늘 날짜 (YYYY-MM-DD)
 today_kst=$(TZ="Asia/Seoul" date +%Y-%m-%d 2>/dev/null) || exit 0
@@ -37,9 +49,9 @@ if [[ "$last_run" == "$today_kst" ]]; then
 fi
 
 # 실행 — 백그라운드, stdout/stderr 모두 로그로
-echo "[$(date -u +%FT%TZ)] dream triggered — last_run=$last_run today=$today_kst" >> "$LOG_FILE" 2>/dev/null
 
 if [[ -x "$DREAM_SH" ]] || [[ -f "$DREAM_SH" ]]; then
+  echo "[$(date -u +%FT%TZ)] dream triggered — last_run=$last_run today=$today_kst" >> "$LOG_FILE" 2>/dev/null
   (
     cd "$PROJECT_ROOT" 2>/dev/null || exit 0
     bash "$DREAM_SH" >> "$LOG_FILE" 2>&1
@@ -52,6 +64,9 @@ if [[ -x "$DREAM_SH" ]] || [[ -f "$DREAM_SH" ]]; then
     fi
   ) &
   disown 2>/dev/null
+else
+  echo "[$(date -u +%FT%TZ)] dream SKIPPED — daily-dream.sh not found at $DREAM_SH" >> "$LOG_FILE" 2>/dev/null
+  exit 0
 fi
 
 exit 0
