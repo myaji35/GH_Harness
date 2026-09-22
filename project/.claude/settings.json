@@ -179,6 +179,11 @@
           },
           {
             "type": "command",
+            "command": "bash .claude/hooks/session-end-report.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
             "command": "bash /Users/gangseungsig/.claude/harness-core/hooks/context-save-auto.sh",
             "timeout": 15,
             "statusMessage": "Saving context snapshot..."
