@@ -3699,7 +3699,7 @@
       "id": "ISS-392",
       "title": "[아이디어] 카카오뱅크 <계좌번호 .env 참조> 강승식 전역변수에 넣어서 시작하자.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -3709,6 +3709,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "카카오뱅크 <계좌번호 .env 참조> 강승식 전역변수에 넣어서 시작하자.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "payout-account 스킬 + .env 규칙 확립(reference_env_credential_prefix)"
       }
     },
     {
@@ -3898,7 +3903,10 @@
         "origin": "ISS-397 이월",
         "why": "제목 토큰 Jaccard 유사도로는 같은 사건 식별 불가 — how-tutorial 클러스터가 금융대시보드/디자인/AI에이전트를 묶음",
         "approach": "로컬 Ollama 임베딩(graphify 자산 재사용) 기반 의미 유사도",
-        "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨"
+        "current_state": "build_moc.py --clusters 플래그로 코드는 보존됨",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       },
       "last_dispatched_at": "2026-09-07T08:14:59"
     },
@@ -4008,7 +4016,10 @@
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "좋아요를 삭제하자 했는데 의미가 있나. 좋아요로만 검색하는 것이.",
-        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       }
     },
     {
@@ -4024,7 +4035,10 @@
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "자막을 상세 검색하는 방법 해보자.",
-        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       }
     },
     {
@@ -4244,7 +4258,7 @@
       "id": "ISS-409",
       "title": "[아이디어] Edge-TTS 표준으로 VibeVoice 구현하자.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -4254,6 +4268,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "Edge-TTS 표준으로 VibeVoice 구현하자.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:33Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "Edge-TTS 표준 채택 완료 — 영상 나레이션 파이프라인에 적용"
       }
     },
     {
@@ -4296,7 +4315,7 @@
       "id": "ISS-411",
       "title": "[아이디어] 좋군 사용하자. 전역 환경에 기존 Qwen tts와 더불어 MS TTS라고 이름지어 저장해줘,",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -4306,6 +4325,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "좋군 사용하자. 전역 환경에 기존 Qwen tts와 더불어 MS TTS라고 이름지어 저장해줘,",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:33Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "MS TTS(Edge-TTS) 전역 등록 완료 — ximtier-hyperframes 스킬이 Edge-TTS 사용 중"
       }
     },
     {
@@ -4353,7 +4377,10 @@
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "설치하고 테스트 해보자.",
-        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       }
     },
     {
@@ -4385,7 +4412,7 @@
       "id": "ISS-415",
       "title": "[아이디어] 내 목소리 녹음은나중에.. buzz에 집중하자.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED_INVALID",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -4395,6 +4422,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "내 목소리 녹음은나중에.. buzz에 집중하자.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "reason": "\"buzz에 집중하자\" — 보류 선언이 이슈화됨"
       }
     },
     {
@@ -5135,7 +5167,7 @@
       "id": "ISS-443",
       "title": "[Plan:CEO검토] ISS-442 전략 검토",
       "type": "PLAN_CEO_REVIEW",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P1",
       "assign_to": "plan-ceo-reviewer",
       "depth": 1,
@@ -5167,15 +5199,19 @@
         },
         "feature": "ISS-442"
       },
-      "result": null,
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "원본 ISS-442가 이미 DONE(2026-08-18) — 검토 이슈가 고아로 남음. 파생 시점에 원본이 완료되어 검토 대상 소멸"
+      },
       "spawn_rules": [],
-      "last_dispatched_at": "2026-09-07T16:28:37"
+      "last_dispatched_at": "2026-09-07T16:28:37",
+      "completed_at": "2026-09-22T08:19:33Z"
     },
     {
       "id": "ISS-444",
       "title": "[Plan:Eng검토] ISS-442 실행가능성 검토",
       "type": "PLAN_ENG_REVIEW",
-      "status": "READY",
+      "status": "CLOSED_INVALID",
       "priority": "P1",
       "assign_to": "plan-eng-reviewer",
       "depth": 1,
@@ -5207,9 +5243,13 @@
         },
         "feature": "ISS-442"
       },
-      "result": null,
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "원본 ISS-442가 이미 DONE(2026-08-18) — 동일"
+      },
       "spawn_rules": [],
-      "last_dispatched_at": "2026-09-07T08:10:10"
+      "last_dispatched_at": "2026-09-07T08:10:10",
+      "completed_at": "2026-09-22T08:19:33Z"
     },
     {
       "id": "ISS-445",
@@ -5477,7 +5517,10 @@
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "kimi3, qwen등과 함께 개발하고 싶어. 주력으로 claude code 환경을 사용하고 있는데 여기서는 못하는걸로 알고 있어. open code 같은 솔류션을 사용해야하나?",
-        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       }
     },
     {
@@ -5493,7 +5536,10 @@
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "이식&설치를 하고 싶어. 최종안 의견줘.",
-        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       }
     },
     {
@@ -5636,7 +5682,10 @@
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "다양한 산업분야를 적절한 이미지로 보여주고 방문자로 하여금 상상할수 있게 디자인된점이 마음에 들고, 회사의 지향점이 같다는것도 경쟁자이자 후발주자로써 벤치미킹하고 싶었어.",
-        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       }
     },
     {
@@ -6073,7 +6122,7 @@
       "id": "ISS-479",
       "title": "Pi5 멀티도메인 메일서버 (Mailu) — ximtier.com부터",
       "type": "IDEA",
-      "status": "READY",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6117,7 +6166,12 @@
         }
       ],
       "retry_count": 1,
-      "last_dispatched_at": "2026-09-07T08:14:57"
+      "last_dispatched_at": "2026-09-07T08:14:57",
+      "completed_at": "2026-09-22T08:19:33Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "Pi5 Mailu 메일서버 구축 완료 — 송수신 양방향 실증(project_ximtier_mail)"
+      }
     },
     {
       "id": "ISS-480",
@@ -6131,7 +6185,10 @@
       "updated_at": "2026-08-25T09:56:32.322618",
       "payload": {
         "origin": "intent-gate",
-        "raw_prompt": "모든 비번 ximdnjs!00 으로 수정하고 가비아는 claude in chrome로 로그인 할테니 너가 설정해줘'"
+        "raw_prompt": "모든 비번 ximdnjs!00 으로 수정하고 가비아는 claude in chrome로 로그인 할테니 너가 설정해줘'",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       },
       "last_dispatched_at": "2026-09-10T14:17:12"
     },
@@ -6139,7 +6196,7 @@
       "id": "ISS-481",
       "title": "[아이디어] 옵션 A로 가자. 가비아 로그인했어",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6149,13 +6206,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "옵션 A로 가자. 가비아 로그인했어",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "가비아 로그인 완료 — 메일시스템 구축분"
       }
     },
     {
       "id": "ISS-482",
       "title": "[아이디어] 오늘은 brevo로 진행을 하자. vul;tr에서 언제 답변을 받을수 있는지 몰라.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6165,6 +6227,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "오늘은 brevo로 진행을 하자. vul;tr에서 언제 답변을 받을수 있는지 몰라.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "Brevo 릴레이 가동(project_ximtier_mail_brevo)"
       }
     },
     {
@@ -6179,7 +6246,10 @@
       "updated_at": "2026-08-25T11:17:27.563411",
       "payload": {
         "origin": "intent-gate",
-        "raw_prompt": "Address (주소)\n- Postal code (우편번호)\n- City (도시)\n- Country (국가) 심티어 회사 정보보고 만들어줘."
+        "raw_prompt": "Address (주소)\n- Postal code (우편번호)\n- City (도시)\n- Country (국가) 심티어 회사 정보보고 만들어줘.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       },
       "last_dispatched_at": "2026-09-10T14:17:26"
     },
@@ -6187,7 +6257,7 @@
       "id": "ISS-484",
       "title": "[아이디어] claude in chrome로 접속해서 마무리하자.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6197,13 +6267,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "claude in chrome로 접속해서 마무리하자.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "메일 설정 마무리 완료"
       }
     },
     {
       "id": "ISS-485",
       "title": "[아이디어] 도메인 인증 진행하자.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6213,13 +6288,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "도메인 인증 진행하자.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "도메인 인증 완료 — 메일 송수신 실증"
       }
     },
     {
       "id": "ISS-486",
       "title": "[아이디어] ②로 도메인 이전해서 mail.ximtier.com 고정하자",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6229,6 +6309,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "②로 도메인 이전해서 mail.ximtier.com 고정하자",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "mail.ximtier.com 고정 완료"
       }
     },
     {
@@ -6244,7 +6329,10 @@
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "nurifarm.net에 적용하고 싶어. 스마트팜 옆에 카페겸 오피스 건물이 있고 정문에는 'NURIFarm' 이라거 써있어 젊은 남성이 케리어를 클로 상기된 얼굴로 들어가는 모습을 그림수 있을까?",
-        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       }
     },
     {
@@ -6259,9 +6347,12 @@
       "updated_at": "2026-08-26T09:07:24.496722",
       "payload": {
         "origin": "intent-gate",
-        "raw_prompt": "흰색바탕 [Image #22] 이런 드로잉으로 수정해봐."
+        "raw_prompt": "흰색바탕 [Image #22] 이런 드로잉으로 수정해봐.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       },
-      "last_dispatched_at": "2026-09-07T16:43:03"
+      "last_dispatched_at": "2026-09-10T14:18:27"
     },
     {
       "id": "ISS-489",
@@ -6276,7 +6367,10 @@
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "/design [Image #25] 이런 스타일은 어때?",
-        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       }
     },
     {
@@ -6292,14 +6386,17 @@
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "/design [Image #28] 이 스타일 어때?",
-        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       }
     },
     {
       "id": "ISS-491",
       "title": "[아이디어] 내 슬랙 계정에 붙여서 사용하고 싶어.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6309,13 +6406,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "내 슬랙 계정에 붙여서 사용하고 싶어.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "Slack Groq 봇 Pi5 배포(project_slack_groq_bot)"
       }
     },
     {
       "id": "ISS-492",
       "title": "[아이디어] 그러면 별도의 api 토큰 비용이 들겠네. 작업 취소하자.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED_INVALID",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6325,13 +6427,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "그러면 별도의 api 토큰 비용이 들겠네. 작업 취소하자.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "reason": "대표님이 \"작업 취소하자\"고 하신 발화 자체가 이슈화됨"
       }
     },
     {
       "id": "ISS-493",
       "title": "[아이디어] 1년 이내 계획이야, 지금은 포트원으로 시작하자. ../0019 ximtier에 포트원으로 구축하자.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6341,13 +6448,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "1년 이내 계획이야, 지금은 포트원으로 시작하자. ../0019 ximtier에 포트원으로 구축하자.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "포트원 결정 확정(project_ximtier_portone)"
       }
     },
     {
       "id": "ISS-494",
       "title": "[아이디어] ../hermes_agent라는 폴더가 있어. 여기에 hermes_agent 오리지널 프리 최신버젼을 설치 하고 싶어.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6357,6 +6469,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "../hermes_agent라는 폴더가 있어. 여기에 hermes_agent 오리지널 프리 최신버젼을 설치 하고 싶어.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "hermes_agent 설치 완료(project_hermes_agent)"
       }
     },
     {
@@ -6371,9 +6488,12 @@
       "updated_at": "2026-08-31T15:06:39.103902",
       "payload": {
         "origin": "intent-gate",
-        "raw_prompt": "국가장학금은 충청대에서 주관해주기 바람. 곡성,강화는 부각하지 말것. 27.04 이전에 취업희망자 입학시킬 예정임. 모집대상1순위 괴산점 취업희망자를 넣고 다머지는 순서대로 보고서 수정해줘."
+        "raw_prompt": "국가장학금은 충청대에서 주관해주기 바람. 곡성,강화는 부각하지 말것. 27.04 이전에 취업희망자 입학시킬 예정임. 모집대상1순위 괴산점 취업희망자를 넣고 다머지는 순서대로 보고서 수정해줘.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       },
-      "last_dispatched_at": "2026-09-07T16:22:35"
+      "last_dispatched_at": "2026-09-10T14:21:31"
     },
     {
       "id": "ISS-496",
@@ -6461,7 +6581,7 @@
       "id": "ISS-498",
       "title": "[아이디어] 슬랙을 대처하고 있다는 buzz를 말하는 거야. 이번 이야기로 확정되면 기억좀 하자. 매번 설명해야되.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6471,6 +6591,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "슬랙을 대처하고 있다는 buzz를 말하는 거야. 이번 이야기로 확정되면 기억좀 하자. 매번 설명해야되.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "buzz 정체 확정 기록(project_buzz_slack_replacement)"
       }
     },
     {
@@ -6501,7 +6626,7 @@
       "id": "ISS-500",
       "title": "[아이디어] 불필요하게 메모리도 없는데 이중으로 설치 안했으면 해서.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6511,6 +6636,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "불필요하게 메모리도 없는데 이중으로 설치 안했으면 해서.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "hermes 중복설치 회피 — 설치 완료분"
       }
     },
     {
@@ -6562,7 +6692,7 @@
       "id": "ISS-502",
       "title": "[아이디어] 힉스필드가 결제 되었어. 기업홍보 영상을 만들자. https://youtu.be/Deunw8az6l4?si=11gA8wWnHXee6",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6572,6 +6702,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "힉스필드가 결제 되었어. 기업홍보 영상을 만들자. https://youtu.be/Deunw8az6l4?si=11gA8wWnHXee6fl_ 우선 영상 분석부터 해줘.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "힉스필드 결제·영상제작 진행(project_ai_video_platforms)"
       }
     },
     {
@@ -6609,7 +6744,7 @@
       "id": "ISS-504",
       "title": "[아이디어] 우선 표준사업장+고도화된스마트팜을 강조하자. 출자수익등은 기업의 긍정을 충분히 홍보한 후에해도 가능해.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6619,6 +6754,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "우선 표준사업장+고도화된스마트팜을 강조하자. 출자수익등은 기업의 긍정을 충분히 홍보한 후에해도 가능해.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "누리팜 총론편 영상 제작 완료"
       }
     },
     {
@@ -6834,7 +6974,7 @@
       "id": "ISS-512",
       "title": "[아이디어] 누리셀은 기본 구조가 원통형이야. 평판형 재배가 아니야. 기존 dt 이미지 확인해서 다시 만들자.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6844,13 +6984,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "누리셀은 기본 구조가 원통형이야. 평판형 재배가 아니야. 기존 dt 이미지 확인해서 다시 만들자.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "누리셀 원통형 반영(project_nurifarm_video_specs)"
       }
     },
     {
       "id": "ISS-513",
       "title": "[아이디어] [Image #7] 내가 만들어떤 버드샷 영상이 땅모양을 닮고 있어. 지적모양을 살리고 주변은 얕은 숲으로 하자. 밭모양이 부담스러",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6860,13 +7005,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "[Image #7] 내가 만들어떤 버드샷 영상이 땅모양을 닮고 있어. 지적모양을 살리고 주변은 얕은 숲으로 하자. 밭모양이 부담스러워.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "버드샷 지적모양 반영(동)"
       }
     },
     {
       "id": "ISS-514",
       "title": "[아이디어] 스마트함 모양이 첫화면에서는 지붕모양이 5개야. 5동 하우스는 맞고, 동별 지붕모양이 2개씩 들어야. 마지막 장면 하우스 모양도 일",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6876,13 +7026,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "스마트함 모양이 첫화면에서는 지붕모양이 5개야. 5동 하우스는 맞고, 동별 지붕모양이 2개씩 들어야. 마지막 장면 하우스 모양도 일치 했으면 좋겠어 .",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "지붕 능선 Venlo 유형 해결(동)"
       }
     },
     {
       "id": "ISS-515",
       "title": "[아이디어] 사람 캐리어 없이 하자.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6892,13 +7047,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "사람 캐리어 없이 하자.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "사람 캐리어 제거 반영(동)"
       }
     },
     {
       "id": "ISS-516",
       "title": "[아이디어] 구글 드라이브에 있는 파일명 규직을 운영하고 싶어. 파일명 폴더명 규직을 제안해줘.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6908,13 +7068,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "구글 드라이브에 있는 파일명 규직을 운영하고 싶어. 파일명 폴더명 규직을 제안해줘.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "파일명 규칙 확정 — daily.sh 구현"
       }
     },
     {
       "id": "ISS-517",
       "title": "[아이디어] 파일명규칙 동의 승인. 그리고  00:05 시간에 전일 구글드라이브에 추가된 파일명을 파일명규칙으로 만들어졌는지 검사하고 필요하면 ",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6924,13 +7089,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "파일명규칙 동의 승인. 그리고  00:05 시간에 전일 구글드라이브에 추가된 파일명을 파일명규칙으로 만들어졌는지 검사하고 필요하면 리네임하자. 루틴으로 운영해줘. 어제 등록된 파일 점검해줘.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "00:05 launchd 루틴 등록 완료(com.gagahoho.drive-naming)"
       }
     },
     {
       "id": "ISS-518",
       "title": "[아이디어] 진행자가 만드는 것보다 알리는것이 더 중요화다고 한말이 생각이 나서 공유하고 싶은거야.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6940,13 +7110,18 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "진행자가 만드는 것보다 알리는것이 더 중요화다고 한말이 생각이 나서 공유하고 싶은거야.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "인사이트 저장 완료(project_build_vs_tell)"
       }
     },
     {
       "id": "ISS-519",
       "title": "[아이디어] ../.env에 국세청 id/pw 저장하자. 어떤키로 저장할지 너가 이름 지어줘.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6956,6 +7131,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "../.env에 국세청 id/pw 저장하자. 어떤키로 저장할지 너가 이름 지어줘.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": ".env 접두사 규칙 확정(reference_env_credential_prefix)"
       }
     },
     {
@@ -6971,14 +7151,17 @@
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "../0042 바로 자동발송 기능 구현하고 오늘중으로 조금씩 시차를 두어서 메일 리스트에 있는 메일 중복 발속없이 발송하자. 바로 시작하자.",
-        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       }
     },
     {
       "id": "ISS-521",
       "title": "[아이디어] 시작하자. 기자용 vc용 본문 승인.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
@@ -6988,6 +7171,11 @@
         "origin": "intent-gate:idea",
         "raw_prompt": "시작하자. 기자용 vc용 본문 승인.",
         "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:33Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "evidence": "기자용·VC용 본문 승인 후 0042 발송 작업 진행분"
       }
     },
     {
@@ -7002,7 +7190,10 @@
       "updated_at": "2026-09-07T09:14:20.756078",
       "payload": {
         "origin": "intent-gate",
-        "raw_prompt": "페이스북 광고 결과를 보고서 형식으로 만들어줘."
+        "raw_prompt": "페이스북 광고 결과를 보고서 형식으로 만들어줘.",
+        "problem": "",
+        "constraints": "",
+        "open_questions": []
       },
       "last_dispatched_at": "2026-09-07T16:24:59"
     },
@@ -7040,6 +7231,65 @@
         "verified": "intent-gate 실행→3칸 빈값 삽입 확인 / dispatch-ready 게이트 양방향 검증(미결있음=차단, 비움=통과)",
         "backup": "*.bak-iss523",
         "delegated_to": "codex"
+      }
+    },
+    {
+      "id": "ISS-524",
+      "title": "옵시디언 inbox 알림 오탐 — '후보 없음' 빈 파일을 pending으로 세고, 새벽 크론이 매일 빈 파일을 만든다",
+      "type": "FIX_BUG",
+      "status": "COMPLETED",
+      "priority": "P2",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-09-13T12:39:55.016564",
+      "updated_at": "2026-09-22T08:15:05Z",
+      "scope_files": [
+        ".claude/hooks/session-resume.sh",
+        "~/.claude/harness-core/hooks/ (PreCompact/SessionEnd inbox 쌓기 훅)"
+      ],
+      "payload": {
+        "origin": "Fable 5.1 발견 2026-09-13 (대표님 '옵시디언 inbox 편입해' 처리 중) — 등록만, 착수는 지시 대기",
+        "실측": "_inbox pending 11개 중 실내용 1개(pending-2026-09-03.md 1,294B). 나머지 10개(09-04~09-13)는 매일 04:07~04:11에 생성된 324B '## 후보 없음' 플레이스홀더. SessionStart는 '11개·10일 경과'로 알렸다",
+        "expected": "SessionStart 알림이 '## 후보 없음'만 있는 파일을 세지 않고 실내용 파일 수·최고령만 보여준다. 쌓기 훅은 후보가 0이면 파일을 만들지 않는다(또는 만들되 카운터에서 제외)",
+        "왜": "카운터가 거짓 긴급도를 만든다 — 대표님이 '10일 적체'로 읽고 편입을 지시하셨는데 실제 적체는 1건. 알림의 신뢰가 깎이면 진짜 적체도 무시된다(실패경로 4문항 ③ 사용자 인지)",
+        "판정필요": "빈 파일을 아예 안 만들지(제안) vs 만들되 세지 않을지",
+        "problem": "2026-09-03 도입한 pending 골격 자동생성이 후보 유무와 무관하게 매일 324B 빈 파일을 만든다. 9/13~9/22 10일 연속 전부 \"후보 없음\". SessionStart 훅이 이를 pending으로 세어 매 세션 \"편입 지시할 시점\" 오탐 알림.",
+        "constraints": "①쌓기=자동/비우기=수동 원칙 유지 — 골격 생성 자체를 없애지 마라(9/3 교훈: 빈 골격이 있어야 LLM이 채운다). ②기존 .done 17개 무손상. ③코딩은 Codex 위임.",
+        "open_questions": []
+      },
+      "completed_at": "2026-09-22T08:18:50Z",
+      "result": {
+        "files": [
+          "~/.claude/scripts/inbox-check.sh",
+          "~/.claude/scripts/session-end-memory-save.sh"
+        ],
+        "fix_1": "inbox-check.sh — pending 파일 중 ^### 후보가 있는 것만 카운트(9줄 삽입). 빈 골격만 있으면 무출력",
+        "fix_2": "session-end-memory-save.sh — 골격 생성 블록을 marker 30분 가드·case reason 가드 뒤로 이동",
+        "not_fixed": "precompact-memory-save.sh — 조기종료 가드가 애초에 없어 이동 대상 없음. 컴팩션은 빈번하지 않아 일일누적 주범 아님",
+        "verified_by": "Opus 직접 실행 — 빈골격만 있을 때 무출력 / 후보 넣으면 알림 정상(양방향)",
+        "backup": "*.bak-iss524",
+        "delegated_to": "codex"
+      }
+    },
+    {
+      "id": "ISS-525",
+      "title": "[아이디어] 방치 이슈 45건 구현+검증하자.",
+      "type": "IDEA",
+      "status": "CLOSED_INVALID",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-09-22T17:13:58.115664",
+      "updated_at": "2026-09-22T17:13:58.115664",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "방치 이슈 45건 구현+검증하자.",
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+      },
+      "completed_at": "2026-09-22T08:19:09Z",
+      "result": {
+        "closed_by": "ISS-525 방치정리",
+        "reason": "\"방치 이슈 45건 정리\" 지시 자체가 이슈화됨 — 이 작업이 그 처리"
       }
     }
   ],
@@ -29366,14 +29616,38 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 1152,
+        "timestamp": "2026-09-10T14:18:26.796214",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 786시간",
+          "🟡 장기 대기: ISS-443 (PLAN_CEO_REVIEW) — 556시간",
+          "🟡 장기 대기: ISS-444 (PLAN_ENG_REVIEW) — 556시간",
+          "🟡 장기 대기: ISS-479 (IDEA) — 389시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 388시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 387시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 365시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 239시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 77시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 224,
+          "done": 55,
+          "in_progress": 0,
+          "ready": 9,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 223,
+    "total_issues": 225,
     "completed": 113,
     "failed": 7,
-    "evolved": 1151
+    "evolved": 1152
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -29749,9 +30023,8 @@
     "ISS-480:READY": 103,
     "ISS-483:READY": 89,
     "ISS-479:READY": 30,
-    "ISS-488:READY": 51,
-    "ISS-495:READY": 21,
-    "ISS-522:READY": 1,
-    "ISS-999:READY": 1
+    "ISS-488:READY": 52,
+    "ISS-495:READY": 22,
+    "ISS-522:READY": 1
   }
 }
