@@ -14,8 +14,9 @@ import urllib.request
 
 D = os.environ.get('JEV_SHADOW_DIR') or os.path.expanduser('~/.claude/jev-shadow')
 API_KEY = ''
-API_BASE = ''
+API_URL = ''
 API_MODEL = ''
+API_VIA = ''
 CRITERIA = {
     'work': '지금 코드·설정·파일·문서를 만들거나 고치라는 실행 지시 (승인·착수 지시 포함)',
     'query': '질문, 조회, 설명·의견·리서치·보고 요청 — 산출물 변경을 지시하지 않음',
@@ -67,31 +68,40 @@ def log_error(key, kind, message):
 
 def load_access():
     providers = (
-        ('KSS_TYPESAFE_API_KEY', 'https://api.typesafe.ai', 'jev-latest'),
-        ('KSS_AI_GATEWAY_API_KEY', 'https://ai-gateway.vercel.sh/typesafe', 'typesafe-ai/jev'),
+        ('KSS_TYPESAFE_API_KEY', 'https://api.typesafe.ai/v1/systemone', 'jev-latest'),
+        ('KSS_AI_GATEWAY_API_KEY', 'https://ai-gateway.vercel.sh/typesafe/v1/systemone', 'typesafe-ai/jev'),
+        ('KSS_OPENROUTER_API_KEY', 'https://openrouter.ai/api/alpha/decisions', 'typesafe/jev-1.13'),
     )
 
-    def access(key, base, model):
-        return (key, os.environ.get('TYPESAFE_API_BASE') or base,
-                os.environ.get('JEV_MODEL') or model)
+    def access(name, key, url, model):
+        if os.environ.get('JEV_API_URL'):
+            url = os.environ['JEV_API_URL']
+        elif os.environ.get('TYPESAFE_API_BASE'):
+            url = os.environ['TYPESAFE_API_BASE'].rstrip('/') + '/v1/systemone'
+        via = {
+            'KSS_TYPESAFE_API_KEY': 'typesafe',
+            'KSS_AI_GATEWAY_API_KEY': 'gateway',
+            'KSS_OPENROUTER_API_KEY': 'openrouter',
+        }[name]
+        return (key, url, os.environ.get('JEV_MODEL') or model, via)
 
-    for name, base, model in providers:
+    for name, url, model in providers:
         key = os.environ.get(name, '').strip()
         if key:
-            return access(key, base, model)
+            return access(name, key, url, model)
     try:
         with open('/Volumes/E_SSD/02_GitHub.nosync/.env', encoding='utf-8') as f:
             lines = f.readlines()
-        for name, base, model in providers:
+        for name, url, model in providers:
             for line in lines:
                 line = line.strip()
                 if line.startswith(name + '='):
                     key = line.split('=', 1)[1].strip().strip('\"\'')
                     if key:
-                        return access(key, base, model)
+                        return access(name, key, url, model)
     except FileNotFoundError:
         pass
-    return ('', '', '')
+    return ('', '', '', '')
 
 
 def rate(correct, total):
@@ -173,7 +183,7 @@ def evaluate(rec):
         },
     }
     request = urllib.request.Request(
-        API_BASE.rstrip('/') + '/v1/systemone',
+        API_URL,
         data=json.dumps(body, ensure_ascii=False).encode('utf-8'),
         headers={'Authorization': 'Bearer ' + API_KEY, 'Content-Type': 'application/json'},
         method='POST',
@@ -210,12 +220,12 @@ def evaluate(rec):
         'jev_intent': choice, 'jev_probs': probs, 'jev_conf': confidence,
         'jev_is_work': is_work, 'latency_ms': round((time.monotonic() - started) * 1000, 2),
         'input_tokens': tokens, 'checked_at': now(),
-        'via': 'gateway' if 'ai-gateway.vercel.sh' in API_BASE else 'typesafe',
+        'via': API_VIA,
     }
 
 
 def main():
-    global API_KEY, API_BASE, API_MODEL
+    global API_KEY, API_URL, API_MODEL, API_VIA
     if sys.argv[1:] not in ([], ['report']):
         print('Usage: jev-shadow.sh [report]', file=sys.stderr)
         return 2
@@ -233,12 +243,12 @@ def main():
             report(queue, results)
             return 0
 
-        API_KEY, API_BASE, API_MODEL = load_access()
+        API_KEY, API_URL, API_MODEL, API_VIA = load_access()
         if not API_KEY:
             today = datetime.date.today().isoformat()
             if not any(line.startswith(today + 'T') and line.split()[2:3] == ['no_key']
                        for line in error_lines()):
-                log_error('-', 'no_key', 'KSS_TYPESAFE_API_KEY / KSS_AI_GATEWAY_API_KEY not configured')
+                log_error('-', 'no_key', 'KSS_TYPESAFE_API_KEY / KSS_AI_GATEWAY_API_KEY / KSS_OPENROUTER_API_KEY not configured')
             return 0
 
         attempted = 0
