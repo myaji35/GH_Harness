@@ -25,6 +25,7 @@ REGISTRY=".claude/issue-db/registry.json"
 INPUT="$(cat)"
 PROMPT="$(printf '%s' "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('prompt',''))" 2>/dev/null || true)"
 [ -n "$PROMPT" ] || exit 0
+SESSION_ID="$(printf '%s' "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('session_id') or '')" 2>/dev/null || true)"
 
 # ── 시스템 알림 차단 (무한 루프 방지) ⭐ 2026-07-15 ──
 # UserPromptSubmit에는 사람이 친 것뿐 아니라 하네스/하네스가 뱉은 알림도 들어온다.
@@ -42,7 +43,7 @@ esac
 # ── 분류 ──
 # 즉답/조회형(이슈화 제외): 짧은 조회·상태·값변경·하네스 메타 명령
 # 실작업형(이슈화 강제): 코드 산출물을 만들거나 바꾸는 동사
-python3 - "$SCRIPT_DIR" "$PROMPT" <<'PY'
+python3 - "$SCRIPT_DIR" "$PROMPT" "$SESSION_ID" <<'PY'
 import sys, re, json, datetime, os
 
 __file__ = os.path.join(sys.argv[1], "intent-gate.sh")
@@ -50,6 +51,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
 from issue_id import next_id
 
 prompt = sys.argv[2]
+session_id = sys.argv[3]
 low = prompt.lower()
 
 # 0-a) PII/시크릿 마스킹 — registry.json 은 git 추적 파일이고 원격이 공개 저장소다.
@@ -157,6 +159,7 @@ if is_idea():
                 'status': 'BACKLOG', 'priority': 'P3', 'assign_to': 'product-manager',
                 'depth': 0, 'created_at': now_i, 'updated_at': now_i,
                 'payload': {'origin': 'intent-gate:idea', 'raw_prompt': raw,
+                            'session_id': session_id,
                             'note': '대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — '
                                     '검토 후 READY로 올려야 실행된다.'},
             })
@@ -230,7 +233,8 @@ reg['issues'].append({
     'id': iid, 'title': title, 'type': itype, 'status': 'READY',
     'priority': prio, 'assign_to': assign, 'depth': 0,
     'created_at': now, 'updated_at': now,
-    'payload': {'origin': 'intent-gate', 'raw_prompt': mask_pii(prompt.strip())},
+    'payload': {'origin': 'intent-gate', 'raw_prompt': mask_pii(prompt.strip()),
+                'session_id': session_id},
 })
 reg.setdefault('stats', {})['total_issues'] = reg['stats'].get('total_issues',0)+1
 json.dump(reg, open(REG,'w'), ensure_ascii=False, indent=2)

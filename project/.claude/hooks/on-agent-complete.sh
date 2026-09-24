@@ -98,4 +98,6 @@ for iss_id in $STALLED; do
 done
 
 # 2. READY 이슈 디스패치 확인
+HARNESS_SESSION_ID="$(printf '%s' "$HOOK_INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('session_id') or '')" 2>/dev/null || true)"
+export HARNESS_SESSION_ID
 bash "$SCRIPT_DIR/dispatch-ready.sh" "$REGISTRY"

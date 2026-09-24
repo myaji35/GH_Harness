@@ -389,11 +389,15 @@ if _n > MAX_REWAKE:
           f"    대표님 지시가 있을 때 처리하라. 이 이슈를 자동으로 다시 깨우지 마라.")
     sys.exit(0)
 
-if payload_obj.get('origin', '').startswith('intent-gate') or agent in ('hermes', 'advisor'):
+is_instruction = payload_obj.get('origin', '').startswith('intent-gate') or agent in ('hermes', 'advisor')
+exit_code = 0
+if (is_instruction and payload_obj.get('session_id')
+        and payload_obj.get('session_id') == os.environ.get('HARNESS_SESSION_ID')):
+    exit_code = 2
     print(f"""
-🔄 [Harness Auto-Dispatch] READY {len(ready_issues)}개 — 즉시 실행{internal_note}
+🔄 [Harness Auto-Dispatch] READY {len(ready_issues)}개 — 이번 세션 지시{internal_note}
 
-[자동 실행 지시] 질문하지 마라. 즉시 실행하라.
+[지시 이슈 대기] 이번 세션에서 대표님이 지시한 작업이다. 지시 범위 안에서 이어서 처리하라.
 - 이슈: {issue_id} ({issue_type})
 - 제목: {issue_title}
 - 담당: {agent} (model: {model}, effort: {effort}){internal_note}{agentic_note}
@@ -407,6 +411,8 @@ if payload_obj.get('origin', '').startswith('intent-gate') or agent in ('hermes'
 
 ⚠️ 경고: 사소한 질문(T0)/내부 자문(T1)은 금지. T2 컨펌 대상만 request-user-confirm.sh 사용.
 """.strip())
+elif is_instruction:
+    print(f"ℹ️ [Harness] 이전 세션 지시 이슈 대기: {issue_id} {issue_title} — 대표님이 다시 지시하면 착수")
 else:
     print(f"""
 🔄 [Harness] READY {len(ready_issues)}개 — 자동 파생 이슈(대표님 지시 대기)
@@ -440,6 +446,6 @@ try:
 except Exception:
     pass
 
-# exit 2 = rewake signal
-sys.exit(2)
+# 이번 세션 지시만 exit 2로 재개; 그 외는 기록 후 조용히 종료
+sys.exit(exit_code)
 PYEOF
