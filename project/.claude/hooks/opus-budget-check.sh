@@ -47,26 +47,27 @@ HARD_CAP_DAILY = 20.0
 MONTHLY_CAP = 250.0
 
 # ── 에이전트별 호출당 예상 비용 (USD) ────────────────
-# 2026-06 가격: Opus 4.8 = $5/$25 per 1M, Fable 5 = $10/$50 per 1M
-# (구버전 표는 Opus 4.6 $15/$75 기준 → 3배 과대 추정이라 교정)
+# 2026-09 가격: Opus 5.5 = $4/$20 per 1M (캐시읽기 $0.20), Fable 5.1 = $10/$50 (캐시읽기 $0.25)
+# 공식 발표: Opus 5.5 는 Opus 5 대비 일반 워크로드 40% 저렴, Fable 5.1 은 Fable 5 대비 약 25% 저렴
 AGENT_COST = {
-    "product-manager":    0.23,  # opus
-    "plan-ceo-reviewer":  0.30,  # fable (opus 환산 0.15 × 2)
-    "domain-analyst":     0.33,  # opus
-    "design-critic":      0.25,  # opus
-    "brand-guardian":     0.15,  # opus
-    "advisor":            0.18,  # fable (opus 환산 0.09 × 2)
+    "product-manager":    0.14,  # opus
+    "plan-ceo-reviewer":  0.23,  # fable (Fable 5.1)
+    "domain-analyst":     0.20,  # opus
+    "design-critic":      0.15,  # opus
+    "brand-guardian":     0.09,  # opus
+    "advisor":            0.05,  # opus (2026-09 Opus 5.5 도입으로 fable→opus)
     # sonnet 에이전트는 예산 대상 아님
 }
 
 # ── 에이전트별 기본 모델 티어 (미지정 시 opus) ─────────
 AGENT_MODEL = {
     "plan-ceo-reviewer": "fable",
-    "advisor":           "fable",
 }
+# fable→opus 강등 시 비용 비율 (Opus 5.5 / Fable 5.1 실측가 기준 ≈ 0.4)
+FABLE_TO_OPUS_COST_RATIO = 0.4
 
 # ── 강등 가능 여부 ─────────────────────────────────
-# fable 에이전트는 Hard Cap 시 1차로 opus 강등(비용 절반).
+# fable 에이전트는 Hard Cap 시 1차로 opus 강등(비용 약 40%).
 # plan-ceo-reviewer는 opus 밑(sonnet)으로는 강등 불가.
 DEMOTABLE = {"design-critic", "domain-analyst", "brand-guardian", "advisor"}
 
@@ -103,14 +104,14 @@ projected_monthly = budget["monthly"]["cost_usd"] + expected_cost
 
 # ── Hard Cap 검사 ────────────────────────────────
 if projected_daily >= HARD_CAP_DAILY or projected_monthly >= MONTHLY_CAP:
-    # 1차 강등: fable → opus (비용 절반)
+    # 1차 강등: fable → opus (비용 약 40%)
     if base_model == "fable":
-        half_cost = expected_cost / 2
-        if budget["daily"]["cost_usd"] + half_cost < HARD_CAP_DAILY and \
-           budget["monthly"]["cost_usd"] + half_cost < MONTHLY_CAP:
-            budget["daily"]["cost_usd"] = round(budget["daily"]["cost_usd"] + half_cost, 4)
+        opus_cost = expected_cost * FABLE_TO_OPUS_COST_RATIO
+        if budget["daily"]["cost_usd"] + opus_cost < HARD_CAP_DAILY and \
+           budget["monthly"]["cost_usd"] + opus_cost < MONTHLY_CAP:
+            budget["daily"]["cost_usd"] = round(budget["daily"]["cost_usd"] + opus_cost, 4)
             budget["daily"]["calls"] += 1
-            budget["monthly"]["cost_usd"] = round(budget["monthly"]["cost_usd"] + half_cost, 4)
+            budget["monthly"]["cost_usd"] = round(budget["monthly"]["cost_usd"] + opus_cost, 4)
             budget["monthly"]["calls"] += 1
             with open(REGISTRY_PATH, 'w') as f:
                 json.dump(registry, f, indent=2, ensure_ascii=False)

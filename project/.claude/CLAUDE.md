@@ -151,7 +151,7 @@ bash .claude/hooks/request-user-confirm.sh <이슈ID> <카테고리> "<구체 �
 - **월간 한도**: $250
 - **가격**: 모델 가격은 자주 바뀌므로 이 문서에 적지 않는다. `opus-budget-check.sh`의 `AGENT_COST`가 단일 진실 소스.
 - **자동 강등 체인**: Hard Cap 근접 시 **fable → opus → sonnet** 순.
-  - fable 에이전트(plan-ceo-reviewer, advisor)는 1차로 opus 강등(비용 절반).
+  - fable 에이전트(plan-ceo-reviewer)는 1차로 opus 강등(비용 약 40%).
   - plan-ceo-reviewer는 opus까지만 강등 가능(sonnet 불가 — 전략 검토 품질 보장).
   - opus 에이전트(design-critic/domain-analyst/brand-guardian)는 sonnet 강등.
 - 예산 상태는 `registry.json`의 `opus_budget_state` 필드에 기록.
@@ -163,20 +163,21 @@ bash .claude/hooks/request-user-confirm.sh <이슈ID> <카테고리> "<구체 �
 ### 모델 4단 티어
 | 티어 | 배치 | 용도 |
 |---|---|---|
-| **fable** | 메인 루프(오케스트레이션) + plan-ceo-reviewer + advisor | 최고 판단 — 전략 검토, 막힘 해소 심층 자문 |
-| opus | product-manager, domain-analyst, design-critic 등 | 기획/도메인/디자인 판단 |
+| **fable** | 메인 루프(오케스트레이션) + plan-ceo-reviewer | 최고 판단 — 전략 검토 |
+| opus | advisor, product-manager, domain-analyst, design-critic 등 | 막힘 해소 자문 / 기획/도메인/디자인 판단 |
 | sonnet | 코드 생성·검증·테스트 등 실행 작업 다수 | 실행 |
 | haiku | hook-router | 라우팅 |
 
-- 서브에이전트 `model: fable` 지정은 **plan-ceo-reviewer / advisor 한정** (dispatch-ready.sh `MODEL_MAP` = 단일 진실 소스). 즉흥적 fable 승급 금지.
-- Fable 계열은 일부 위험 도메인 감지 시 하위 모델로 **자동 폴백**되는 공식 동작이 있다 — 오류로 취급하지 말 것.
+- 서브에이전트 `model: fable` 지정은 **plan-ceo-reviewer 한정** (dispatch-ready.sh `MODEL_MAP` = 단일 진실 소스). 즉흥적 fable 승급 금지.
+- advisor 는 2026-09-24 opus 로 전환(ISS-534). Opus 5.5 가 Fable 5.1 급 성능에 코딩 벤치마크는 앞서고 더 싸다.
+- Fable 5.1·Opus 5.5 는 일부 위험 도메인(사이버보안·생물) 감지 시 하위 모델(예: 사이버 → Opus 4.8)로 **자동 폴백**되는 공식 동작이 있다 — `cso`·`security-review` 실행 중 모델이 바뀌어도 오류로 취급하거나 FIX_BUG 를 만들지 말 것.
 - `effort: xhigh`는 지원 모델(fable/opus)에서만 쓴다. 모드 테이블에서 ceo-review만 xhigh. CHECK 축은 high 상한.
 
 ### 행동 보정 3종 (모든 에이전트 공통)
-최상위 모델의 행동 특성을 harness 운영에 맞게 보정한다:
-1. **진행 보고는 짧게, 침묵은 금지** — 루틴 행동 내레이션("이제 ~를 확인하겠습니다")은 생략한다. 단 1분 넘게 걸리는 작업·대기 중에는 무엇을 하는지 한 줄로 알린다. Fable 5.1은 도구 호출 사이 진행 텍스트가 원래 적으므로 "침묵 기본"을 강제하면 대표님이 상태를 모르게 된다(공식 Prompting Claude Fable 5.1 가이드, 2026-09-24 갱신). 완료 보고는 1~2문장 + 핵심 수치.
-2. **도구·서브에이전트 명시 트리거** — Fable은 서브에이전트/메모리/배경작업에 보수적. 본 문서의 매핑(이슈 타입 → 에이전트, background 발동 조건, T1 에스컬레이션 조건)이 곧 트리거다. **매핑 조건이 충족되면 확신을 따지지 말고 즉시 스폰/호출**한다.
-3. **소소한 결정 즉시 실행** — Fable은 신중해서 되묻는 빈도가 증가하는 성향. 네이밍/기본값/동급 선택지는 T0(침묵 자동)으로 즉시 선택 후 한 줄 기록. 스코프 변경·파괴적 행동만 T2.
+메인 모델(Opus 5.5 / Fable 5.1 등)과 무관하게 적용한다. 모델별 성향 설명은 근거일 뿐 적용 조건이 아니다:
+1. **진행 보고는 짧게, 침묵은 금지** — 루틴 행동 내레이션("이제 ~를 확인하겠습니다")은 생략한다. 단 1분 넘게 걸리는 작업·대기 중에는 무엇을 하는지 한 줄로 알린다. 상위 모델은 도구 호출 사이 진행 텍스트가 적은 편이라(Fable 5.1 에서 특히) "침묵 기본"을 강제하면 대표님이 상태를 모르게 된다(공식 Prompting Claude Fable 5.1 가이드, 2026-09-24 갱신). 완료 보고는 1~2문장 + 핵심 수치.
+2. **도구·서브에이전트 명시 트리거** — 상위 모델은 서브에이전트/메모리/배경작업에 보수적인 편. 본 문서의 매핑(이슈 타입 → 에이전트, background 발동 조건, T1 에스컬레이션 조건)이 곧 트리거다. **매핑 조건이 충족되면 확신을 따지지 말고 즉시 스폰/호출**한다.
+3. **소소한 결정 즉시 실행** — 상위 모델은 신중해서 되묻는 빈도가 늘어나는 성향. 네이밍/기본값/동급 선택지는 T0(침묵 자동)으로 즉시 선택 후 한 줄 기록. 스코프 변경·파괴적 행동만 T2.
 
 ## Agentic 기능 정책 (v5, 2026-06-09~)
 
@@ -412,7 +413,7 @@ DESIGN_REVIEW   → check-harness:design
 | qa-reviewer | sonnet | 교차 검증 | SendMessage로 호출됨 |
 | hook-router | haiku | 이슈 라우팅 | READY 이슈 디스패치 |
 | **hermes** ⭐ | sonnet | 에스컬레이션 중개자 (막힘 감지 → advisor 자문) | HERMES_CONSULT |
-| **advisor** ⭐ | **fable** | 최상위 모델 심층 자문 (Hermes 경유 전용) | ADVISOR_CONSULT |
+| **advisor** ⭐ | opus | 상위 모델 심층 자문 (Hermes 경유 전용) | ADVISOR_CONSULT |
 | **audience-researcher** ⭐ | sonnet | 타겟 오디언스 언어/페인포인트/드림아웃컴 조사 | AUDIENCE_RESEARCH, AUDIENCE_REFRESH |
 | **journey-validator** ⭐ | sonnet | 사용자 여정 검증 (역할별/인팩트/온보딩/안내 품질) | JOURNEY_VALIDATE, ROLE_AUDIT, ONBOARDING_CHECK, IMPACT_REVIEW |
 

@@ -324,7 +324,7 @@ if in_progress:
         # v3+ 에이전트 (ISS-375) — dispatch-ready.sh MODEL_MAP과 일치
         "plan-ceo-reviewer": "fable", "plan-eng-reviewer": "opus",
         "opportunity-scout": "opus", "brand-guardian": "opus",
-        "hermes": "sonnet", "advisor": "fable",
+        "hermes": "sonnet", "advisor": "opus",
         "audience-researcher": "sonnet", "journey-validator": "sonnet",
     }
     assignee = iss.get("assign_to") or TYPE_DEFAULT_AGENT.get(iss.get("type", ""), "agent-harness")
@@ -360,7 +360,7 @@ if ready and not in_progress:
         # v3+ 에이전트 (ISS-375) — dispatch-ready.sh MODEL_MAP과 일치
         "plan-ceo-reviewer": "fable", "plan-eng-reviewer": "opus",
         "opportunity-scout": "opus", "brand-guardian": "opus",
-        "hermes": "sonnet", "advisor": "fable",
+        "hermes": "sonnet", "advisor": "opus",
         "audience-researcher": "sonnet", "journey-validator": "sonnet",
     }
     next_assignee = next_iss.get("assign_to") or TYPE_DEFAULT_AGENT.get(next_iss.get("type", ""), "agent-harness")

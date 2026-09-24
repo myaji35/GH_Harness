@@ -47,7 +47,7 @@ MODEL_MAP = {
     "code-quality":   "sonnet",
     "hook-router":    "haiku",
     "hermes":         "sonnet",
-    "advisor":        "fable",
+    "advisor":        "opus",
     "audience-researcher": "sonnet",
     "journey-validator": "sonnet",
 }
