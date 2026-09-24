@@ -14,6 +14,8 @@ import urllib.request
 
 D = os.environ.get('JEV_SHADOW_DIR') or os.path.expanduser('~/.claude/jev-shadow')
 API_KEY = ''
+API_BASE = ''
+API_MODEL = ''
 CRITERIA = {
     'work': '지금 코드·설정·파일·문서를 만들거나 고치라는 실행 지시 (승인·착수 지시 포함)',
     'query': '질문, 조회, 설명·의견·리서치·보고 요청 — 산출물 변경을 지시하지 않음',
@@ -63,19 +65,33 @@ def log_error(key, kind, message):
         f.write(f'{now()} {key} {kind} {message}\n')
 
 
-def load_key():
-    key = os.environ.get('KSS_TYPESAFE_API_KEY', '').strip()
-    if key:
-        return key
+def load_access():
+    providers = (
+        ('KSS_TYPESAFE_API_KEY', 'https://api.typesafe.ai', 'jev-latest'),
+        ('KSS_AI_GATEWAY_API_KEY', 'https://ai-gateway.vercel.sh/typesafe', 'typesafe-ai/jev'),
+    )
+
+    def access(key, base, model):
+        return (key, os.environ.get('TYPESAFE_API_BASE') or base,
+                os.environ.get('JEV_MODEL') or model)
+
+    for name, base, model in providers:
+        key = os.environ.get(name, '').strip()
+        if key:
+            return access(key, base, model)
     try:
         with open('/Volumes/E_SSD/02_GitHub.nosync/.env', encoding='utf-8') as f:
-            for line in f:
+            lines = f.readlines()
+        for name, base, model in providers:
+            for line in lines:
                 line = line.strip()
-                if line.startswith('KSS_TYPESAFE_API_KEY='):
-                    return line.split('=', 1)[1].strip().strip('\"\'')
+                if line.startswith(name + '='):
+                    key = line.split('=', 1)[1].strip().strip('\"\'')
+                    if key:
+                        return access(key, base, model)
     except FileNotFoundError:
         pass
-    return ''
+    return ('', '', '')
 
 
 def rate(correct, total):
@@ -142,7 +158,7 @@ def probability(value):
 
 def evaluate(rec):
     body = {
-        'model': 'jev-latest',
+        'model': API_MODEL,
         'state': {'발화': rec['prompt']},
         'questions': {
             'intent': {
@@ -156,9 +172,8 @@ def evaluate(rec):
             },
         },
     }
-    base = os.environ.get('TYPESAFE_API_BASE') or 'https://api.typesafe.ai'
     request = urllib.request.Request(
-        base.rstrip('/') + '/v1/systemone',
+        API_BASE.rstrip('/') + '/v1/systemone',
         data=json.dumps(body, ensure_ascii=False).encode('utf-8'),
         headers={'Authorization': 'Bearer ' + API_KEY, 'Content-Type': 'application/json'},
         method='POST',
@@ -195,11 +210,12 @@ def evaluate(rec):
         'jev_intent': choice, 'jev_probs': probs, 'jev_conf': confidence,
         'jev_is_work': is_work, 'latency_ms': round((time.monotonic() - started) * 1000, 2),
         'input_tokens': tokens, 'checked_at': now(),
+        'via': 'gateway' if 'ai-gateway.vercel.sh' in API_BASE else 'typesafe',
     }
 
 
 def main():
-    global API_KEY
+    global API_KEY, API_BASE, API_MODEL
     if sys.argv[1:] not in ([], ['report']):
         print('Usage: jev-shadow.sh [report]', file=sys.stderr)
         return 2
@@ -217,12 +233,12 @@ def main():
             report(queue, results)
             return 0
 
-        API_KEY = load_key()
+        API_KEY, API_BASE, API_MODEL = load_access()
         if not API_KEY:
             today = datetime.date.today().isoformat()
             if not any(line.startswith(today + 'T') and line.split()[2:3] == ['no_key']
                        for line in error_lines()):
-                log_error('-', 'no_key', 'KSS_TYPESAFE_API_KEY is not configured')
+                log_error('-', 'no_key', 'KSS_TYPESAFE_API_KEY / KSS_AI_GATEWAY_API_KEY not configured')
             return 0
 
         attempted = 0

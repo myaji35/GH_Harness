@@ -7,8 +7,16 @@ intent-gate(키워드 규칙)와 나란히 TypeSafe Jev의 판정을 기록해 �
 - `jev-shadow.sh` — 대기열을 Jev API로 판정해 `results.jsonl`에 기록한다. 1회 최대 50건. 실패는 `errors.log`에만 남고 결과를 꾸미지 않는다.
 - 저장 위치는 저장소 밖(`~/.claude/`)이다. 발화 원문이 공개 저장소에 커밋되지 않게 하려는 것이다.
 
-## 키
-`KSS_TYPESAFE_API_KEY` — 환경변수 또는 `/Volumes/E_SSD/02_GitHub.nosync/.env`. 키가 없으면 API를 호출하지 않고 대기열만 쌓는다(`errors.log`에 하루 1회 `no_key`).
+## 키 (둘 중 하나)
+| 키 | 경로 | model |
+|---|---|---|
+| `KSS_TYPESAFE_API_KEY` | `https://api.typesafe.ai` (직접) | `jev-latest` |
+| `KSS_AI_GATEWAY_API_KEY` | `https://ai-gateway.vercel.sh/typesafe` (Vercel AI Gateway, TypeSafe 호환 API) | `typesafe-ai/jev` |
+
+- 환경변수 또는 `/Volumes/E_SSD/02_GitHub.nosync/.env`에서 읽는다. 둘 다 있으면 직접 경로를 쓴다.
+- 키가 없으면 API를 호출하지 않고 대기열만 쌓는다(`errors.log`에 하루 1회 `no_key`).
+- TypeSafe 직접 가입은 2026-09-24 기준 마감이라 Gateway 경로를 추가했다(ISS-538). Gateway에서 `jev-latest`를 쓰면 Model not found가 나므로 `typesafe-ai/jev`를 쓴다.
+- `jevmodel.org`는 공식 도메인이 아니다. 키를 입력하지 않는다.
 
 ## 명령
 ```bash
