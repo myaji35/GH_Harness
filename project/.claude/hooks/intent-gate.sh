@@ -72,11 +72,41 @@ _MASK_RULES = [
     (re.compile(r'(?<!\d)\d{3,6}-\d{2,6}-\d{4,8}(?!\d)'), '<계좌번호>'),      # 은행 계좌(광의)
 ]
 
+_IDEA_FLAG = False
+
 def mask_pii(text):
     """registry 등 git 추적 파일에 저장하기 전 반드시 통과시킨다."""
     for rx, repl in _MASK_RULES:
         text = rx.sub(repl, text)
     return text
+
+# ── Jev 섀도 모드 (ISS-536) ── 판정에 영향 없음. 실패해도 조용히 통과.
+def shadow(verdict):
+    if os.environ.get('JEV_SHADOW', '1') == '0':
+        return
+    try:
+        d = os.environ.get('JEV_SHADOW_DIR') or os.path.expanduser('~/.claude/jev-shadow')
+        os.makedirs(d, exist_ok=True)
+        rec = {'ts': datetime.datetime.now().isoformat(timespec='seconds'),
+               'project': os.path.basename(os.getcwd()),
+               'session_id': session_id,
+               'prompt': mask_pii(prompt.strip())[:4000],
+               'rule': verdict, 'idea': bool(_IDEA_FLAG)}
+        with open(os.path.join(d, 'queue.jsonl'), 'a') as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + '\n')
+        if os.environ.get('JEV_SHADOW_NO_SPAWN') != '1':
+            import subprocess
+            w = os.path.join(sys.argv[1], 'jev-shadow.sh')
+            if os.path.exists(w):
+                subprocess.Popen(['bash', w], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.DEVNULL, start_new_session=True,
+                                 env=dict(os.environ, JEV_SHADOW_DIR=d))
+    except Exception:
+        pass
+
+def done(verdict):
+    shadow(verdict)
+    sys.exit(0)
 
 # 0) 제외: 너무 짧거나(즉답), 하네스 메타 트리거(이미 자체 파이프라인 보유), 조회/설명형
 # 주의: 'harness'/'하네스'는 여기 두지 않는다. 대표님이 "harness, 00 구현해줘"처럼
@@ -144,6 +174,7 @@ def is_idea():
     return True
 
 if is_idea():
+    _IDEA_FLAG = True
     try:
         REG_I = ".claude/issue-db/registry.json"
         reg_i = json.load(open(REG_I))
@@ -172,7 +203,7 @@ if is_idea():
     # 아이디어는 적재만 하고 통과 — 실작업 이슈화는 아래 WORK 로직이 별도 판정.
 
 if asks():
-    sys.exit(0)
+    done('question')
 # 실작업형 동사(이것이 있으면 이슈화)
 WORK = ['추가', '구현', '만들어', '만들어줘', '생성해', '개발',
         '수정', '고쳐', '버그', 'fix', '리팩터', '리팩토링', 'refactor',
@@ -184,16 +215,16 @@ def has(words):
 
 # 우선순위: harness 메타 '명령'(시작/업데이트 등)이면 통과 — 자체 파이프라인이 처리
 if has(HARNESS_META_CMD):
-    sys.exit(0)
+    done('harness_meta')
 # 메타/조회형이면 통과(이슈화 X)
 if has(EXCLUDE_META):
-    sys.exit(0)
+    done('meta_exclude')
 # 너무 짧으면(즉답형) 통과
 if len(prompt.strip()) < 12:
-    sys.exit(0)
+    done('short')
 # 실작업 동사 없으면 통과(모호/대화형 — Claude 판단에 맡김)
 if not has(WORK):
-    sys.exit(0)
+    done('no_work_verb')
 
 # ── 여기부터 실작업형: 이슈 자동 생성 ──
 REG = ".claude/issue-db/registry.json"
@@ -221,9 +252,9 @@ for iss in reg['issues']:
     if not _iss_prompt or _iss_prompt != _norm_prompt:
         continue
     if iss.get('status') in ('READY', 'IN_PROGRESS'):
-        sys.exit(0)
+        done('dup')
     if (iss.get('created_at') or '') >= _recent_cutoff:
-        sys.exit(0)
+        done('dup')
 
 # 공용 발급기: 정규 ID와 stats.total_issues를 함께 기준으로 사용한다.
 iid = next_id(reg)
@@ -250,5 +281,6 @@ print(f"3. 구현 후 bash .claude/hooks/on_complete.sh {iid} {itype} '{{...resu
 print(f"   → LINT/TEST/캐릭터저니 검증 자동 파생. 검증 통과 전 '완료' 보고 금지.")
 print(f"4. 완료 시 {iid} status=COMPLETED.")
 print(f"※ '이슈화했습니다' 또는 '다음 세션에서 처리' 류로 미루는 것은 규칙 위반이다. 지금 실행하라.")
+shadow('work')
 PY
 exit 0
