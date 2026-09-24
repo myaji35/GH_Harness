@@ -116,7 +116,7 @@ if projected_daily >= HARD_CAP_DAILY or projected_monthly >= MONTHLY_CAP:
             with open(REGISTRY_PATH, 'w') as f:
                 json.dump(registry, f, indent=2, ensure_ascii=False)
             print("opus", flush=True)
-            print(f"[opus-budget] {AGENT} fable→opus 자동 강등 (예상 일일 \${projected_daily:.2f} ≥ \${HARD_CAP_DAILY})", file=sys.stderr)
+            print(f"[opus-budget] {AGENT} fable→opus 자동 강등 (예상 일일 ${projected_daily:.2f} ≥ ${HARD_CAP_DAILY})", file=sys.stderr)
             sys.exit(0)
     # 2차 강등: 가능 에이전트면 sonnet으로
     if AGENT in DEMOTABLE:
@@ -124,7 +124,7 @@ if projected_daily >= HARD_CAP_DAILY or projected_monthly >= MONTHLY_CAP:
         with open(REGISTRY_PATH, 'w') as f:
             json.dump(registry, f, indent=2, ensure_ascii=False)
         print("sonnet", flush=True)
-        print(f"[opus-budget] {AGENT} 자동 강등 (예상 일일 \${projected_daily:.2f} ≥ \${HARD_CAP_DAILY})", file=sys.stderr)
+        print(f"[opus-budget] {AGENT} 자동 강등 (예상 일일 ${projected_daily:.2f} ≥ ${HARD_CAP_DAILY})", file=sys.stderr)
         sys.exit(0)
     else:
         # 강등 불가 (plan-ceo-reviewer 등) → BLOCKED + BUDGET T2
@@ -134,7 +134,7 @@ if projected_daily >= HARD_CAP_DAILY or projected_monthly >= MONTHLY_CAP:
 
 # ── Soft Cap 경고 ────────────────────────────────
 if projected_daily >= SOFT_CAP_DAILY:
-    print(f"[opus-budget] ⚠️ Soft Cap 근접/초과 — 예상 일일 \${projected_daily:.2f} ≥ \${SOFT_CAP_DAILY}", file=sys.stderr)
+    print(f"[opus-budget] ⚠️ Soft Cap 근접/초과 — 예상 일일 ${projected_daily:.2f} ≥ ${SOFT_CAP_DAILY}", file=sys.stderr)
 
 # ── 정상: 기본 티어(fable/opus) 사용 승인 + 비용 가산 ─────────────
 budget["daily"]["cost_usd"] = round(projected_daily, 4)
