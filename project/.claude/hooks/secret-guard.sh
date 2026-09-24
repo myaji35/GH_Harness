@@ -20,7 +20,7 @@
 #    또한 오늘 실제 발견된 2개 형태를 추가로 커버한다:
 #      (a) sshpass -p 'xxx'  — 배포 스크립트 하드코딩
 #      (b) 로그인: `id` / `pw` — 문서(CLAUDE.md)에 적힌 계정정보
-SECRET_REGEX='AIza[0-9A-Za-z_-]{35}|sk-ant-[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}|(api[_-]?key|secret|token|password|passwd|pwd|ssh_pass[a-z_]*)["'\'' ]*[=:]["'\'' ]*[^[:space:]"'\'']{8,}|sshpass[[:space:]]+-p[[:space:]]*["'\''][^"'\'']{6,}["'\'']|(로그인|계정|비밀번호|접속)[^\n]{0,12}[`"'\''][^`"'\'' ]{3,}[`"'\''][[:space:]]*/[[:space:]]*[`"'\''][^`"'\'' ]{6,}[`"'\'']'
+SECRET_REGEX='AIza[0-9A-Za-z_-]{35}|sk-ant-[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}|EAA[A-Za-z0-9]{50,}|(api[_-]?key|secret|token|password|passwd|pwd|ssh_pass[a-z_]*)["'\'' ]*[=:][[:space:]]*["'\''][^[:space:]"'\'']{8,}|sshpass[[:space:]]+-p[[:space:]]*["'\''][^"'\'']{6,}["'\'']|(로그인|계정|비밀번호|접속)[^\n]{0,12}[`"'\''][^`"'\'' ]{3,}[`"'\''][[:space:]]*/[[:space:]]*[`"'\''][^`"'\'' ]{6,}[`"'\'']'
 
 # ── 시크릿 "파일명" 차단 (v2, 2026-07-15) ─────────────────────────────
 # 값 패턴과 무관하게 파일명 자체로 차단한다. 정규식이 못 잡는 형태를 막는 2차 방어선.
@@ -42,7 +42,7 @@ scan_text() {
   #    실제 코드는 SSH_PASSWORD= / API_KEY= 처럼 대문자가 대부분이다.
   #    -i 누락으로 대문자 변수명이 전부 통과했다 (Vultr root 비번 5개월 노출의 직접 원인).
   grep -niEo "$SECRET_REGEX" 2>/dev/null \
-    | grep -viE 'YOUR_|<.*>|\$\{|\$\(|\$[A-Za-z_]|xxxx|example|placeholder|changeme|REDACTED|your_|_here' \
+    | awk 'tolower($0) ~ /eaa[a-z0-9]{50,}/ || tolower($0) !~ /your_|<.*>|\$\{|\$\(|\$[a-z_]|xxxx|example|placeholder|changeme|redacted|your_|_here/' \
     || true
 }
 
