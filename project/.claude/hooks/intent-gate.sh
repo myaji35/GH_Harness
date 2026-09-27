@@ -248,6 +248,8 @@ title = ('[지시] ' + mask_pii(prompt.strip().replace('\n',' ')))[:80]
 _norm_prompt = ' '.join(prompt.strip().split())
 _recent_cutoff = (datetime.datetime.now() - datetime.timedelta(hours=6)).isoformat()
 for iss in reg['issues']:
+    if iss.get('payload', {}).get('origin') == 'intent-gate:idea' or iss.get('type') == 'IDEA':
+        continue
     _iss_prompt = ' '.join((iss.get('payload', {}).get('raw_prompt') or '').split())
     if not _iss_prompt or _iss_prompt != _norm_prompt:
         continue

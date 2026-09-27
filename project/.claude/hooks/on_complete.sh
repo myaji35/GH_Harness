@@ -1060,6 +1060,7 @@ except Exception as _e:
 
 print(f"[on_complete] 처리 완료")
 PYEOF
+_archify_complete_status=$?
 
 # Plan 생성 후 자동 디스패치 — 질문 없이 즉시 실행
 # 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
@@ -1076,3 +1077,15 @@ bash "$SCRIPT_DIR/dispatch-ready.sh" "$REGISTRY"
 echo ""
 echo "[자동 진행 지시] 질문하지 마라. dispatch-ready 결과에 따라 다음 에이전트를 즉시 스폰하라."
 echo "  '다음 단계로 진행하시겠습니까?' 같은 질문은 금지. 바로 실행하라."
+
+# 처리결과 누락 감지용 완료 기록 — 기록 실패는 기존 훅 동작에 영향을 주지 않는다.
+if [ "$_archify_complete_status" -eq 0 ]; then
+  (
+    results_dir="${ARCHIFY_RESULTS_DIR:-$HOME/.claude/archify-results}/$(basename "$PWD")"
+    mkdir -p "$results_dir" || exit 0
+    python3 -c 'import datetime, json, sys; print(json.dumps({"ts": datetime.datetime.now().astimezone().isoformat(timespec="seconds"), "issue": sys.argv[1], "type": sys.argv[2]}, ensure_ascii=False))' \
+      "$ISSUE_ID" "$ISSUE_TYPE" >> "$results_dir/.pending.jsonl"
+  ) 2>/dev/null || true
+fi
+
+exit 0
