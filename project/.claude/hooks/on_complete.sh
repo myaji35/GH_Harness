@@ -6,6 +6,7 @@
 #   단순 1:1 매핑이 아니라, result 데이터를 분석하여 "다음에 뭘 해야 하는지" 판단
 #   테스트 실패 → FIX_BUG Plan / 커버리지 부족 → IMPROVE_COVERAGE Plan
 #   점수 낮음 → QUALITY_IMPROVEMENT Plan / 점수 높음 → DEPLOY_READY Plan
+#   v6 경량화: 기본 검증 체인을 줄이고 대형 기능 또는 명시적 요청에만 전체 검증
 
 REGISTRY=".claude/issue-db/registry.json"
 ISSUE_ID="$1"
@@ -174,6 +175,9 @@ if registry_issue_type != issue_type:
     print(f"  → 호출 타입 불일치: {issue_type} → {registry_issue_type} (registry 기준으로 파생 판단)")
     issue_type = registry_issue_type
 
+# [v6 경량화 ISS-558] 기본은 경량 검증. 대형 기능(payload.size=large/full_verify) 또는 HARNESS_FULL_VERIFY=1 일 때만 전체 검증 체인.
+full_verify = os.environ.get('HARNESS_FULL_VERIFY') == '1' or bool(target_issue.get('payload', {}).get('full_verify')) or target_issue.get('payload', {}).get('size') == 'large'
+
 # ── Hermes가 확장한 freeze 범위 해제 (v2+) ──────────
 # 이 이슈 한정으로 FREEZE_DIR이 확장되었다면 복원 또는 해제
 import os as _os
@@ -303,18 +307,22 @@ elif issue_type == 'SCREEN_GAP':
     print(f"  → {len(missing)}개 USER_STORY 생성")
 
 elif issue_type == 'FEATURE_PLAN':
-    # 기획 완료 → CEO + Eng 2중 검토 병렬 진행 (USER_STORY 직행 X)
+    # 기획 완료 → 전체 검증은 CEO + Eng, 경량 검증은 Eng 단독
     feature_name = result.get('feature_name', issue_id)
-    add_issue(
-        f"[Plan:CEO검토] {feature_name} 전략 검토",
-        'PLAN_CEO_REVIEW', 'P1', 'plan-ceo-reviewer',
-        {'source_issue': issue_id, 'source_plan': result, 'feature': feature_name}
-    )
+    if full_verify:
+        add_issue(
+            f"[Plan:CEO검토] {feature_name} 전략 검토",
+            'PLAN_CEO_REVIEW', 'P1', 'plan-ceo-reviewer',
+            {'source_issue': issue_id, 'source_plan': result, 'feature': feature_name}
+        )
     add_issue(
         f"[Plan:Eng검토] {feature_name} 실행가능성 검토",
         'PLAN_ENG_REVIEW', 'P1', 'plan-eng-reviewer',
-        {'source_issue': issue_id, 'source_plan': result, 'feature': feature_name}
+        {'source_issue': issue_id, 'source_plan': result, 'feature': feature_name,
+         **({'single_review': True} if not full_verify else {})}
     )
+    if not full_verify:
+        print('  → 경량 모드: Eng 검토 1건(전체 2중 검토는 HARNESS_FULL_VERIFY=1)')
 
 elif issue_type in ('PLAN_CEO_REVIEW', 'PLAN_ENG_REVIEW'):
     # 검토 결과 분석 → REJECT면 재기획, AUGMENT/SCOPE_EXPANSION이면 보강 후 USER_STORY, APPROVE/HOLD면 USER_STORY 직행
@@ -333,14 +341,15 @@ elif issue_type in ('PLAN_CEO_REVIEW', 'PLAN_ENG_REVIEW'):
     else:
         # 통과 → 양쪽 검토가 모두 끝났는지 확인
         parent_plan_id = target_issue.get('payload', {}).get('source_issue')
-        sibling_done = False
-        other_type = 'PLAN_ENG_REVIEW' if issue_type == 'PLAN_CEO_REVIEW' else 'PLAN_CEO_REVIEW'
-        for iss in registry['issues']:
-            if (iss.get('payload', {}).get('source_issue') == parent_plan_id
-                and iss.get('type') == other_type
-                and iss.get('status') == 'DONE'):
-                sibling_done = True
-                break
+        sibling_done = target_issue.get('payload', {}).get('single_review') is True
+        if not sibling_done:
+            other_type = 'PLAN_ENG_REVIEW' if issue_type == 'PLAN_CEO_REVIEW' else 'PLAN_CEO_REVIEW'
+            for iss in registry['issues']:
+                if (iss.get('payload', {}).get('source_issue') == parent_plan_id
+                    and iss.get('type') == other_type
+                    and iss.get('status') == 'DONE'):
+                    sibling_done = True
+                    break
 
         if sibling_done:
             # 양쪽 검토 통과 → 보강 항목 + 원본 스토리로 USER_STORY 생성
@@ -471,35 +480,41 @@ elif issue_type in ('GENERATE_CODE', 'REFACTOR', 'FIX_BUG', 'QUALITY_IMPROVEMENT
             and any(re.search(r'app/(models|services|controllers|jobs|lib)/', str(path))
                     for path in result_files_changed)
         )
-        if has_business_logic_change:
+        if has_business_logic_change and full_verify:
             add_issue(
                 f"[Plan:도메인분석] {issue_id} 비즈니스 규칙/시나리오 도출",
                 'DOMAIN_ANALYZE', 'P1', 'domain-analyst',
                 {'files': all_files, 'source_issue': issue_id}
             )
         else:
-            print("  → 비즈니스 로직 변경 없음: DOMAIN_ANALYZE 생략")
+            if has_business_logic_change:
+                print("  → DOMAIN_ANALYZE 생략 (경량 모드)")
+            else:
+                print("  → 비즈니스 로직 변경 없음: DOMAIN_ANALYZE 생략")
 
     # UI 관련 파일이면 UX 리뷰 + Brand Guard + Browser QA 추가
     ui_files = [f for f in all_files if any(ext in f for ext in ['.tsx', '.jsx', '.vue', '.html', '.css', '.svelte'])]
     if ui_files:
-        add_issue(
-            f"[Plan:UX리뷰] {issue_id} UI 변경 검증",
-            'UI_REVIEW', 'P1', 'ux-harness',
-            {'files': ui_files, 'source_issue': issue_id}
-        )
-        # Brand Guard — 프로젝트 아젠다 표현 + Action Clarity 검증
-        add_issue(
-            f"[Plan:브랜드검증] {issue_id} 아젠다 표현 + Action Clarity",
-            'BRAND_GUARD', 'P1', 'brand-guardian',
-            {'files': ui_files, 'source_issue': issue_id}
-        )
+        if full_verify:
+            add_issue(
+                f"[Plan:UX리뷰] {issue_id} UI 변경 검증",
+                'UI_REVIEW', 'P1', 'ux-harness',
+                {'files': ui_files, 'source_issue': issue_id}
+            )
+            # Brand Guard — 프로젝트 아젠다 표현 + Action Clarity 검증
+            add_issue(
+                f"[Plan:브랜드검증] {issue_id} 아젠다 표현 + Action Clarity",
+                'BRAND_GUARD', 'P1', 'brand-guardian',
+                {'files': ui_files, 'source_issue': issue_id}
+            )
         # Browser QA — gstack browse로 실제 콘솔 에러 캡처
         add_issue(
             f"[Plan:브라우저QA] {issue_id} 콘솔 에러 + 스크린샷 검증",
             'BROWSER_QA', 'P1', 'agent-harness',
             {'files': ui_files, 'source_issue': issue_id, 'action': 'run_browse_qa'}
         )
+        if not full_verify:
+            print('  → 경량 모드: UI 검증은 BROWSER_QA 1건')
 
 elif issue_type == 'LINT_CHECK':
     # [v4.1 Gate] 계산적 센서 결과 분석

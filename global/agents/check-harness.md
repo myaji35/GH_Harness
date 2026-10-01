@@ -21,22 +21,21 @@ CHECK 축(보는 쪽)의 모든 검증/평가 작업을 단일 에이전트 인�
 | `code` | `code-quality.md` | sonnet | medium | Read,Grep,Glob,Bash | LINT_CHECK, TYPE_CHECK, CODE_SMELL, DEAD_CODE, COMPLEXITY_REVIEW |
 | `test` | `test-harness.md` | sonnet | low | Read,Grep,Glob,Bash | RUN_TESTS, RETEST, COVERAGE_CHECK |
 | `eval` | `eval-harness.md` | sonnet | medium | Read,Grep,Glob,Bash | SCORE, REGRESSION_CHECK |
-| `biz` | `biz-validator.md` | sonnet | high | Read,Grep,Glob | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
+| `biz` | `biz-validator.md` | sonnet | medium | Read,Grep,Glob | BIZ_VALIDATE, SCENARIO_GAP, EDGE_CASE_REVIEW |
 | `journey` | `journey-validator.md` | sonnet | medium | Read,Grep,Glob | JOURNEY_VALIDATE, ROLE_AUDIT, ONBOARDING_CHECK, IMPACT_REVIEW |
 | `scenario` | `scenario-player.md` | sonnet | low | Read,Grep,Glob,Bash | SCENARIO_PLAY, E2E_VERIFY, FLOW_REPLAY |
 | `design` | `design-critic.md` | sonnet | medium | Read,Grep,Glob | DESIGN_REVIEW, VISUAL_AUDIT |
-| `brand` | `brand-guardian.md` | opus | high | (잠금 없음 — T2) | BRAND_GUARD, BRAND_DEFINE |
+| `brand` | `brand-guardian.md` | opus | medium | (잠금 없음 — T2) | BRAND_GUARD, BRAND_DEFINE |
 | `ux-review` | `ux-harness.md` (UI_REVIEW 섹션) | sonnet | medium | Read,Grep,Glob | UI_REVIEW |
 | `qa` | `qa-reviewer.md` | sonnet | medium | Read,Grep,Glob | (SendMessage 교차검증) |
-| `meta` | `meta-agent.md` | sonnet | high | Read,Grep,Glob | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
+| `meta` | `meta-agent.md` | sonnet | medium | Read,Grep,Glob | SYSTEMIC_ISSUE, PATTERN_ANALYSIS |
 
 **effort 적용 규칙** (Fable 5 / Opus 4.7+ `effort` 파라미터):
 - 모드 처리 시 `payload.effort`가 있으면 우선, 없으면 위 테이블 기본값 사용.
 - CHECK 축은 `xhigh` 미사용 — 검증은 sonnet 중심이라 high가 상한 (sonnet 4.6은 xhigh 미지원).
 - `low` = 기계적 작업(테스트 실행, 시나리오 재생) — 추론 최소화로 토큰 절감.
 - `medium` = 정적 검증/리뷰(코드 품질, 디자인, UX) — 균형.
-- `high` = 깊은 판단(비즈 로직 갭, 브랜드 정체성, 시스템 패턴 분석) — 추론 우선.
-- Opus 예산 Hard Cap 근접 시 `high`→`medium` 자동 강등 (brand/meta 제외).
+- `high` = 기본값 아님 — 특정 검증에서 품질 차이가 측정된 경우에만 `payload.effort` 로 지정 (v6 경량화 ISS-558, Opus 5.5 공식 권고).
 
 **헤드리스 도구잠금 규칙** (Opus 4.8 `dontAsk` + `allowedTools`, ISS-350):
 - **발동 조건**: 환경변수 `HARNESS_HEADLESS=1`(비대화 자율 체인)일 때**만**. 대화형 세션에는 절대 미적용 — 대표님 개입 여지 보존.
