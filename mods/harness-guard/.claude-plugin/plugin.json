@@ -1,0 +1,17 @@
+{
+  "name": "harness-guard",
+  "version": "0.1.0",
+  "description": "Shadow or enforce the existing Harness PreToolUse guards as function hooks",
+  "userConfig": {
+    "mode": {
+      "type": "string",
+      "description": "Record decisions without blocking, or enforce denies",
+      "options": [
+        "shadow",
+        "enforce"
+      ],
+      "default": "shadow",
+      "title": "Guard mode"
+    }
+  }
+}

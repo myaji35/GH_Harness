@@ -1,0 +1,6 @@
+{
+  "name": "harness-status",
+  "version": "0.1.0",
+  "description": "Read-only harness issue, budget, context, and nightly status",
+  "types": "./types/index.d.ts"
+}

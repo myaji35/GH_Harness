@@ -30,6 +30,7 @@ FORCE_MODE=false
 WITH_WIKI=false
 FORCE_WIKI=false
 AUTO_SERVE=false
+WITH_MODS=true
 
 for arg in "$@"; do
   case "$arg" in
@@ -43,6 +44,7 @@ for arg in "$@"; do
     --with-wiki) WITH_WIKI=true ;;
     --force-wiki) FORCE_WIKI=true ;;
     --auto-serve) AUTO_SERVE=true ;;
+    --no-mods) WITH_MODS=false ;;
   esac
 done
 
@@ -125,6 +127,103 @@ ensure_rtk() {
   else
     echo -e "  ${YELLOW}brew 없음 — RTK 설치 건너뜀(rtk-guard.sh no-op). 수동: brew install rtk${NC}"
   fi
+}
+
+# 사용자 범위 Claude Code mods는 배치의 프로젝트 반복문 밖에서 한 번만 처리한다.
+mods_entry_exists() {
+  local listing="$1" format="$2" field="$3" target="$4"
+  if [ "$format" = json ]; then
+    printf '%s\n' "$listing" | python3 -c '
+import json, sys
+try:
+    entries = json.load(sys.stdin)
+    if not isinstance(entries, list):
+        raise ValueError("expected a list")
+except (ValueError, TypeError):
+    sys.exit(2)
+sys.exit(0 if any(isinstance(item, dict) and item.get(sys.argv[1]) == sys.argv[2]
+                  for item in entries) else 1)
+' "$field" "$target"
+  else
+    printf '%s\n' "$listing" | grep -Fx "  ❯ $target" >/dev/null
+  fi
+}
+
+install_mods() {
+  [ "$WITH_MODS" = true ] || return 0
+
+  local claude_version major minor patch
+  if ! command -v claude >/dev/null 2>&1; then
+    echo -e "  ${YELLOW}⚠ mods 건너뜀: claude CLI가 없습니다.${NC}"
+    return 0
+  fi
+  claude_version="$(claude --version 2>/dev/null)" || claude_version=""
+  if [[ ! "$claude_version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+    echo -e "  ${YELLOW}⚠ mods 건너뜀: Claude Code 버전을 확인할 수 없습니다.${NC}"
+    return 0
+  fi
+  major=$((10#${BASH_REMATCH[1]}))
+  minor=$((10#${BASH_REMATCH[2]}))
+  patch=$((10#${BASH_REMATCH[3]}))
+  if (( major < 2 || (major == 2 && minor < 1) || (major == 2 && minor == 1 && patch < 287) )); then
+    echo -e "  ${YELLOW}⚠ mods 건너뜀: Claude Code 2.1.287 이상이 필요합니다 (현재 $claude_version).${NC}"
+    return 0
+  fi
+
+  local marketplace_listing marketplace_format plugin_listing plugin_format found_status plugin
+  if marketplace_listing="$(claude plugin marketplace list --json 2>/dev/null)"; then
+    marketplace_format=json
+  elif marketplace_listing="$(claude plugin marketplace list 2>/dev/null)"; then
+    marketplace_format=text
+  else
+    echo -e "  ${YELLOW}⚠ mods 마켓 목록 조회 실패 — 설치 건너뜀.${NC}"
+    return 0
+  fi
+
+  if mods_entry_exists "$marketplace_listing" "$marketplace_format" name gh-harness-mods; then
+    if ! claude plugin marketplace update gh-harness-mods; then
+      echo -e "  ${YELLOW}⚠ gh-harness-mods 마켓 업데이트 실패.${NC}"
+    fi
+  else
+    found_status=$?
+    if [ "$found_status" -ne 1 ]; then
+      echo -e "  ${YELLOW}⚠ mods 마켓 목록 해석 실패 — 설치 건너뜀.${NC}"
+      return 0
+    fi
+    if ! claude plugin marketplace add "$SCRIPT_DIR/mods"; then
+      echo -e "  ${YELLOW}⚠ gh-harness-mods 마켓 추가 실패 — 플러그인 설치 건너뜀.${NC}"
+      return 0
+    fi
+  fi
+
+  if plugin_listing="$(claude plugin list --json 2>/dev/null)"; then
+    plugin_format=json
+  elif plugin_listing="$(claude plugin list 2>/dev/null)"; then
+    plugin_format=text
+  else
+    echo -e "  ${YELLOW}⚠ mods 플러그인 목록 조회 실패 — 설치 건너뜀.${NC}"
+    return 0
+  fi
+
+  for plugin in harness-guard harness-status; do
+    if mods_entry_exists "$plugin_listing" "$plugin_format" id "$plugin@gh-harness-mods"; then
+      continue  # 기존 설정(mode=enforce 포함)을 보존한다.
+    else
+      found_status=$?
+      if [ "$found_status" -ne 1 ]; then
+        echo -e "  ${YELLOW}⚠ mods 플러그인 목록 해석 실패 — 설치 건너뜀.${NC}"
+        return 0
+      fi
+    fi
+    if [ "$plugin" = harness-guard ]; then
+      if ! claude plugin install harness-guard@gh-harness-mods --scope user --config mode=shadow -y; then
+        echo -e "  ${YELLOW}⚠ harness-guard 설치 실패.${NC}"
+      fi
+    elif ! claude plugin install harness-status@gh-harness-mods --scope user -y; then
+      echo -e "  ${YELLOW}⚠ harness-status 설치 실패.${NC}"
+    fi
+  done
+  return 0
 }
 
 # 프로젝트 .gitignore에 worktree 관련 패턴 추가
@@ -580,6 +679,7 @@ if [ "$BATCH_MODE" = true ]; then
   ensure_global_symlinks
   ensure_w_cli_symlink
   ensure_datago_cli_symlink
+  install_mods
 
   CURRENT_SHA="$(compute_harness_sha)"
   echo -e "  ${BLUE}버전 SHA: ${CURRENT_SHA:0:12}${NC}"
@@ -706,6 +806,7 @@ ensure_global_symlinks
 ensure_w_cli_symlink
 ensure_datago_cli_symlink
 ensure_rtk
+install_mods
 
 CURRENT_SHA="$(compute_harness_sha)"
 PREV_SHA="$(read_version_sha "$PROJECT_DIR")"

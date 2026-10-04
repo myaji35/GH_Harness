@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "gh-harness-mods",
+  "description": "Optional GH_Harness Claude Code plugins",
+  "owner": {
+    "name": "GH_Harness"
+  },
+  "plugins": [
+    {
+      "name": "harness-guard",
+      "source": "./harness-guard",
+      "description": "Shadow or enforce the existing Harness PreToolUse guards as function hooks",
+      "version": "0.1.0"
+    },
+    {
+      "name": "harness-status",
+      "source": "./harness-status",
+      "description": "Read-only harness issue, budget, context, and nightly status",
+      "version": "0.1.0"
+    }
+  ]
+}
