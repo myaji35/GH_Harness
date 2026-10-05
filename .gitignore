@@ -89,3 +89,4 @@ global/agent-os/hermes.log
 .claude/context-snapshots/
 .claude/knowledge-db/health-history.jsonl
 .claude/verify-cmd
+tools/linear_sync/last_run.json

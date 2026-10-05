@@ -1,0 +1,19 @@
+{
+  "team_key": "HAR",
+  "project_name": "GH_Harness",
+  "done_window_days": 14,
+  "max_open_issues": 220,
+  "state_map": {
+    "BACKLOG": "backlog",
+    "READY": "unstarted",
+    "IN_PROGRESS": "started",
+    "AWAITING_USER": "In Review",
+    "HANDED_OFF": "In Review",
+    "PARTIAL": "In Review",
+    "COMPLETED": "completed",
+    "DONE": "completed",
+    "CLOSED": "canceled"
+  },
+  "priority_map": {"P0": 1, "P1": 2, "P2": 3, "P3": 4},
+  "use_labels": true
+}
