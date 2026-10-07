@@ -15,12 +15,12 @@ if [[ -f "$stamp" ]]; then
   fi
 fi
 
-pgrep -f 'linear_sync[.]py' >/dev/null 2>&1 && exit 0
+pgrep -f '(linear_sync|portfolio_sync)[.]py' >/dev/null 2>&1 && exit 0
 
 log="$HOME/Library/Logs/gh-harness-linear-sync.log"
 mkdir -p "$(dirname "$stamp")" "$(dirname "$log")" >/dev/null 2>&1 || exit 0
 touch "$stamp" >/dev/null 2>&1 || exit 0
 
 cd "$repo_root" || exit 0
-nohup python3 tools/linear_sync/linear_sync.py --apply </dev/null >>"$log" 2>&1 &
+nohup python3 tools/linear_sync/portfolio_sync.py --apply </dev/null >>"$log" 2>&1 &
 exit 0

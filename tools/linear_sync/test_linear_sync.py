@@ -56,6 +56,19 @@ class FakeClient:
 
 
 class SyncTests(unittest.TestCase):
+    def test_timestamp_accepts_epoch_seconds_and_milliseconds(self):
+        epoch = dt.datetime(1970, 1, 1, tzinfo=dt.timezone.utc)
+        self.assertEqual(sync.timestamp(0), epoch)
+        self.assertEqual(sync.timestamp(1_700_000_000), dt.datetime(2023, 11, 14, 22, 13, 20, tzinfo=dt.timezone.utc))
+        self.assertEqual(sync.timestamp(1.5), epoch + dt.timedelta(seconds=1.5))
+        self.assertEqual(sync.timestamp(1_700_000_000_000), sync.timestamp(1_700_000_000))
+        self.assertEqual(sync.timestamp(1_000_000_000_000), dt.datetime(2001, 9, 9, 1, 46, 40, tzinfo=dt.timezone.utc))
+
+    def test_timestamp_returns_none_for_invalid_values(self):
+        for value in (None, True, [], {}, object(), "not a timestamp", float("nan"), float("inf"), 10**1000):
+            with self.subTest(value=value):
+                self.assertIsNone(sync.timestamp(value))
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.path = Path(self.tmp.name) / "registry.json"
@@ -149,6 +162,18 @@ class SyncTests(unittest.TestCase):
         self.assertIn("ref: safe", text)
         self.assertNotIn("raw_prompt", text)
         self.assertNotIn("SECRET", text)
+
+    def test_label_lookup_reuses_casefold_match_for_input_and_snapshot(self):
+        fake = FakeClient()
+        ctx = {"team": {"id": "team"}, "states": STATES, "project": None,
+               "labels": [{"id": "feature", "name": "Feature"}], "use_labels": True}
+        feature = issue(1)
+        feature["type"] = "FEATURE"
+        self.assertEqual(sync.label_id(fake, ctx, "FEATURE"), "feature")
+        self.assertEqual(sync.issue_input(feature, CONFIG, ctx, fake, True)["labelIds"], ["feature"])
+        self.assertEqual(sync.desired_snapshot(feature, STATES[1], 3, ctx)["synced_labels"], ["feature"])
+        self.assertEqual(fake.mutations, [])
+        self.assertEqual(sync.find_label([{"id": "unicode", "name": "Straße"}], "STRASSE")["id"], "unicode")
 
     def test_pull_applies_remote_change_and_history(self):
         self.save([self.linked(issue(1))])

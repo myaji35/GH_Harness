@@ -22,7 +22,15 @@ REVERSE_PRIORITY = {1: "P0", 2: "P1", 3: "P2", 4: "P3"}
 
 
 def timestamp(value):
-    if not value:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        try:
+            seconds = value / 1000 if value >= 1e12 else value
+            return dt.datetime.fromtimestamp(seconds, tz=dt.timezone.utc)
+        except (OverflowError, OSError, ValueError):
+            return None
+    if not isinstance(value, str) or not value:
         return None
     try:
         result = dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -115,19 +123,19 @@ def state_category(status, config):
 def find_state(status, states, config):
     desired = state_category(status, config)
     if desired == "In Review":
-        review = next((s for s in states if s["type"].lower() == "started" and s["name"].lower() == "in review"), None)
+        review = next((s for s in states if s["type"].lower() == "started" and s["name"].lower() in ("in review", "검토 중")), None)
         if review:
             return review
         desired = "started"
     # Match category before names so team-customized workflow names work.
     typed = [s for s in states if s["type"].lower() == desired.lower()]
-    names = {"unstarted": ("todo", "to do"), "started": ("in progress",), "backlog": ("backlog",)}
+    names = {"unstarted": ("todo", "to do", "할 일"), "started": ("in progress", "진행 중"), "backlog": ("backlog", "백로그")}
     return next((s for s in typed if s["name"].lower() in names.get(desired, ())), typed[0] if typed else None)
 
 
 def reverse_state(linear_state, old_status):
     kind = linear_state["type"].lower()
-    if kind == "started" and linear_state["name"].lower() == "in review" and old_status in {"AWAITING_USER", "HANDED_OFF", "PARTIAL"}:
+    if kind == "started" and linear_state["name"].lower() in ("in review", "검토 중") and old_status in {"AWAITING_USER", "HANDED_OFF", "PARTIAL"}:
         return old_status
     return {"completed": "COMPLETED", "canceled": "CLOSED", "started": "IN_PROGRESS", "unstarted": "READY", "backlog": "BACKLOG"}.get(kind, old_status)
 
@@ -219,7 +227,7 @@ def create_project(client, ctx, config):
 
 
 def label_id(client, ctx, name):
-    label = next((l for l in ctx["labels"] if l["name"] == name), None)
+    label = find_label(ctx["labels"], name)
     if label:
         return label["id"]
     data = client.call("mutation($input:IssueLabelCreateInput!){issueLabelCreate(input:$input){success issueLabel{id name}}}", {"input": {"name": name, "teamId": ctx["team"]["id"]}})["issueLabelCreate"]
@@ -229,17 +237,22 @@ def label_id(client, ctx, name):
     return data["issueLabel"]["id"]
 
 
-def issue_input(issue, config, ctx, client, apply):
+def find_label(labels, name):
+    return next((label for label in labels if label["name"].casefold() == name.casefold()), None)
+
+
+def issue_input(issue, config, ctx, client, apply, description_text=None):
     state = find_state(issue.get("status", ""), ctx["states"], config)
     if not state:
         raise LinearError("workflow state unavailable")
-    item = {"title": f"[{issue['id']}] {issue.get('title', '')}", "description": description(issue), "stateId": state["id"], "priority": priority(issue, config), "labelIds": []}
+    item = {"title": f"[{issue['id']}] {issue.get('title', '')}", "description": description(issue) if description_text is None else description_text, "stateId": state["id"], "priority": priority(issue, config), "labelIds": []}
     if ctx["project"]:
         item["projectId"] = ctx["project"]["id"]
     if config.get("use_labels") and issue.get("type"):
-        existing = next((l for l in ctx["labels"] if l["name"] == issue["type"]), None)
+        name = ctx.get("label_names_ko", {}).get(issue["type"], issue["type"])
+        existing = find_label(ctx["labels"], name)
         if existing or apply:
-            item["labelIds"] = [existing["id"] if existing else label_id(client, ctx, issue["type"])]
+            item["labelIds"] = [existing["id"] if existing else label_id(client, ctx, name)]
     return item
 
 
@@ -261,8 +274,9 @@ SYNC_FIELDS = ("synced_state", "synced_state_type", "synced_priority", "synced_t
 def desired_snapshot(issue, state, level, ctx):
     labels = []
     if ctx and ctx.get("labels") is not None and issue.get("type") and ctx.get("use_labels"):
-        label = next((label for label in ctx["labels"] if label["name"] == issue["type"]), None)
-        labels = [label["id"] if label else "name:" + issue["type"]]
+        name = ctx.get("label_names_ko", {}).get(issue["type"], issue["type"])
+        label = find_label(ctx["labels"], name)
+        labels = [label["id"] if label else "name:" + name]
     return {"synced_state": state["id"], "synced_state_type": state["type"],
             "synced_priority": level, "synced_title": f"[{issue['id']}] {issue.get('title', '')}",
             "synced_labels": sorted(labels), "synced_project": (ctx.get("project") or {}).get("id") if ctx else None}
