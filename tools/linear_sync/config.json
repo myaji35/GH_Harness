@@ -5,7 +5,7 @@
   "max_open_issues": 220,
   "state_map": {
     "BACKLOG": "backlog",
-    "READY": "unstarted",
+    "READY": "backlog",
     "IN_PROGRESS": "started",
     "AWAITING_USER": "In Review",
     "HANDED_OFF": "In Review",

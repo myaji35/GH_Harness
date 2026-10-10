@@ -6,6 +6,7 @@ import datetime as dt
 import json
 import os
 from pathlib import Path
+import re
 import sys
 import time
 import urllib.error
@@ -19,6 +20,10 @@ OPEN = {"BACKLOG", "READY", "IN_PROGRESS", "AWAITING_USER", "HANDED_OFF", "PARTI
 DONE = {"COMPLETED", "DONE"}
 PRIORITY_DEFAULT = {"P0": 1, "P1": 2, "P2": 3, "P3": 4}
 REVERSE_PRIORITY = {1: "P0", 2: "P1", 3: "P2", 4: "P3"}
+USER_LABEL = "대표님 차례"
+LEADING_TAGS = re.compile(r"^\s*(?:\[[^\]\n]+\]\s*)+")
+SECRET_KEY = re.compile(r"sk-[A-Za-z0-9_-]{16,}|AIza[0-9A-Za-z_-]{20,}|ghp_[A-Za-z0-9]{20,}|xox[abpr]-[A-Za-z0-9-]{10,}|AKIA[0-9A-Z]{16}")
+PASSWORD_TOKEN = re.compile(r"(비밀번호|비번|password|passwd|pw)\b(\s*[:=]?\s*)(\S+)", re.IGNORECASE)
 
 
 def timestamp(value):
@@ -140,9 +145,26 @@ def reverse_state(linear_state, old_status):
     return {"completed": "COMPLETED", "canceled": "CLOSED", "started": "IN_PROGRESS", "unstarted": "READY", "backlog": "BACKLOG"}.get(kind, old_status)
 
 
+def redact(text):
+    text = SECRET_KEY.sub("[가림]", text)
+    return PASSWORD_TOKEN.sub(lambda match: match.group(1) + match.group(2) + "[가림]", text)
+
+
+def display_title(issue):
+    title = LEADING_TAGS.sub("", issue.get("title") or "")
+    title = " ".join(title.split())
+    if issue.get("status") == "AWAITING_USER":
+        title = "확인할 것 — " + title
+    return redact(title)
+
+
+def original_title(issue):
+    return f"원제목: [{issue['id']}] {issue.get('title', '')}"
+
+
 def description(issue):
     payload = issue.get("payload") or {}
-    fields = (("type", issue.get("type")), ("priority", issue.get("priority")), ("ref", payload.get("ref")), ("origin", payload.get("origin")), ("created_at", issue.get("created_at")), ("registry", ".claude/issue-db/registry.json"))
+    fields = (("원제목", f"[{issue['id']}] {issue.get('title', '')}"), ("type", issue.get("type")), ("priority", issue.get("priority")), ("ref", payload.get("ref")), ("origin", payload.get("origin")), ("created_at", issue.get("created_at")), ("registry", ".claude/issue-db/registry.json"))
     return "\n".join(f"{name}: {value}" for name, value in fields if isinstance(value, (str, int, float, bool)))
 
 
@@ -241,18 +263,28 @@ def find_label(labels, name):
     return next((label for label in labels if label["name"].casefold() == name.casefold()), None)
 
 
+def desired_label_names(issue, ctx):
+    names = []
+    if issue.get("type"):
+        names.append(ctx.get("label_names_ko", {}).get(issue["type"], issue["type"]))
+    if issue.get("status") == "AWAITING_USER":
+        names.append(USER_LABEL)
+    return names
+
+
 def issue_input(issue, config, ctx, client, apply, description_text=None):
     state = find_state(issue.get("status", ""), ctx["states"], config)
     if not state:
         raise LinearError("workflow state unavailable")
-    item = {"title": f"[{issue['id']}] {issue.get('title', '')}", "description": description(issue) if description_text is None else description_text, "stateId": state["id"], "priority": priority(issue, config), "labelIds": []}
+    details = description(issue) if description_text is None else description_text + "\n" + original_title(issue)
+    item = {"title": display_title(issue), "description": redact(details), "stateId": state["id"], "priority": priority(issue, config), "labelIds": []}
     if ctx["project"]:
         item["projectId"] = ctx["project"]["id"]
-    if config.get("use_labels") and issue.get("type"):
-        name = ctx.get("label_names_ko", {}).get(issue["type"], issue["type"])
-        existing = find_label(ctx["labels"], name)
-        if existing or apply:
-            item["labelIds"] = [existing["id"] if existing else label_id(client, ctx, name)]
+    if config.get("use_labels"):
+        for name in desired_label_names(issue, ctx):
+            existing = find_label(ctx["labels"], name)
+            if existing or apply:
+                item["labelIds"].append(existing["id"] if existing else label_id(client, ctx, name))
     return item
 
 
@@ -273,12 +305,12 @@ SYNC_FIELDS = ("synced_state", "synced_state_type", "synced_priority", "synced_t
 
 def desired_snapshot(issue, state, level, ctx):
     labels = []
-    if ctx and ctx.get("labels") is not None and issue.get("type") and ctx.get("use_labels"):
-        name = ctx.get("label_names_ko", {}).get(issue["type"], issue["type"])
-        label = find_label(ctx["labels"], name)
-        labels = [label["id"] if label else "name:" + name]
+    if ctx and ctx.get("labels") is not None and ctx.get("use_labels"):
+        for name in desired_label_names(issue, ctx):
+            label = find_label(ctx["labels"], name)
+            labels.append(label["id"] if label else "name:" + name)
     return {"synced_state": state["id"], "synced_state_type": state["type"],
-            "synced_priority": level, "synced_title": f"[{issue['id']}] {issue.get('title', '')}",
+            "synced_priority": level, "synced_title": display_title(issue),
             "synced_labels": sorted(labels), "synced_project": (ctx.get("project") or {}).get("id") if ctx else None}
 
 
@@ -313,6 +345,8 @@ def record_push(path, issue, remote, values, when):
 def record_pull(path, issue, remote, when):
     synced = timestamp((issue.get("payload") or {}).get("linear", {}).get("synced_at"))
     new_status = reverse_state(remote["state"], issue.get("status"))
+    if issue.get("status") == "READY" and remote["state"]["type"].lower() == "backlog":
+        new_status = "READY"
     new_priority = REVERSE_PRIORITY.get(remote["priority"], None if remote["priority"] == 0 else issue.get("priority"))
     def change(current):
         if ((timestamp(current.get("updated_at")) and synced and timestamp(current["updated_at"]) > synced)
@@ -338,12 +372,16 @@ def plan_issue(issue, remote, ctx, config):
     if not linear.get("id"):
         return "create", state, level
     synced = timestamp(linear.get("synced_at"))
-    remote_changed = remote and synced and timestamp(remote.get("updatedAt")) and timestamp(remote["updatedAt"]) > synced and (remote["state"]["id"] != linear.get("synced_state") or remote["priority"] != linear.get("synced_priority"))
+    ready_backlog = remote and issue.get("status") == "READY" and remote["state"]["type"].lower() == "backlog"
+    remote_changed = remote and synced and timestamp(remote.get("updatedAt")) and timestamp(remote["updatedAt"]) > synced and ((remote["state"]["id"] != linear.get("synced_state") and not ready_backlog) or remote["priority"] != linear.get("synced_priority"))
     if remote_changed:
         local_changed = timestamp(issue.get("updated_at")) and timestamp(issue["updated_at"]) > synced
         return ("conflict" if local_changed else "pull"), state, level
     desired = desired_snapshot(issue, state, level, ctx)
     baseline = remote_snapshot(remote) if any(key not in linear for key in SYNC_FIELDS) else {key: linear[key] for key in SYNC_FIELDS}
+    if ready_backlog and remote["state"]["id"] == state["id"] and baseline["synced_state_type"].lower() in ("unstarted", "backlog"):
+        baseline["synced_state"] = state["id"]
+        baseline["synced_state_type"] = state["type"]
     return ("unchanged" if desired == baseline else "update"), state, level
 
 

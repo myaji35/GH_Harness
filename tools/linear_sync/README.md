@@ -27,7 +27,7 @@ Linear **Settings → Security & access → Personal API keys**에서 개인 API
 XIM_LINEAR_API_KEY=your-key-here
 ```
 
-`config.json`의 `team_key`는 `HAR`로 지정되어 있습니다. 지정한 팀이 없으면 오류로 중단합니다. `team_key`가 `null`이면 워크스페이스에 팀이 하나일 때만 그 팀을 사용하며, 여러 팀이면 설정을 요구하고 쓰기 전에 중단합니다. `project_name`은 기본 `GH_Harness`이며 해당 팀에 프로젝트가 없으면 `--apply`에서 생성합니다. `use_labels`가 참이면 레지스트리 `type`과 같은 라벨을 사용하거나 생성합니다. `.env`는 개인 비밀 파일로 관리하고 버전에 추가하지 마세요.
+`config.json`의 `team_key`는 `HAR`로 지정되어 있습니다. 지정한 팀이 없으면 오류로 중단합니다. `team_key`가 `null`이면 워크스페이스에 팀이 하나일 때만 그 팀을 사용하며, 여러 팀이면 설정을 요구하고 쓰기 전에 중단합니다. `project_name`은 기본 `GH_Harness`이며 해당 팀에 프로젝트가 없으면 `--apply`에서 생성합니다. `use_labels`가 참이면 레지스트리 `type` 라벨을 사용하거나 생성하고, `AWAITING_USER`에는 `대표님 차례` 라벨을 붙입니다. 다른 상태가 되면 이 라벨을 뗍니다. `.env`는 개인 비밀 파일로 관리하고 버전에 추가하지 마세요.
 
 ## 실행
 
@@ -49,7 +49,7 @@ python3 -m unittest tools/linear_sync/test_linear_sync.py
 | 레지스트리 상태 | Linear workflow 타입/이름 |
 | --- | --- |
 | BACKLOG | backlog |
-| READY | unstarted, Todo 우선 |
+| READY | backlog (AI 대기열) |
 | IN_PROGRESS | started, In Progress 우선 |
 | AWAITING_USER, HANDED_OFF, PARTIAL | started 중 In Review, 없으면 started |
 | COMPLETED, DONE | completed |
@@ -63,11 +63,11 @@ python3 -m unittest tools/linear_sync/test_linear_sync.py
 | P3 | 4 Low |
 | 없음 | 0 |
 
-Linear에서 바뀐 항목은 `updatedAt > payload.linear.synced_at`이고 상태 ID나 우선순위가 마지막 동기화 값과 다를 때 가져옵니다. 이때 레지스트리도 변경됐다면 레지스트리가 우선이며 충돌 목록에 남깁니다. Linear의 `completed`, `canceled`, `started`, `unstarted`, `backlog`는 각각 `COMPLETED`, `CLOSED`, `IN_PROGRESS`, `READY`, `BACKLOG`로 돌아옵니다. 기존 상태가 검토 상태이고 Linear가 In Review이면 기존 상태를 유지합니다.
+Linear에서 바뀐 항목은 `updatedAt > payload.linear.synced_at`이고 상태 ID나 우선순위가 마지막 동기화 값과 다를 때 가져옵니다. 이때 레지스트리도 변경됐다면 레지스트리가 우선이며 충돌 목록에 남깁니다. Linear의 `completed`, `canceled`, `started`, `unstarted`, `backlog`는 각각 `COMPLETED`, `CLOSED`, `IN_PROGRESS`, `READY`, `BACKLOG`로 돌아옵니다. 단, 레지스트리의 `READY`와 Linear의 `backlog`는 동등하게 취급하여 READY를 BACKLOG로 바꾸거나 상태 충돌을 만들지 않습니다. 기존 상태가 검토 상태이고 Linear가 In Review이면 기존 상태를 유지합니다.
 
 push는 마지막 동기화 상태 ID/타입, 우선순위, 제목, 라벨, 프로젝트와 원하는 값을 비교합니다. 모두 같으면 `unchanged`로 세고 Linear에 쓰지 않으며 `synced_at`도 유지합니다. 새 비교 필드가 없는 기존 연결 레코드는 Linear를 조회해 값이 같으면 기준 필드만 채웁니다.
 
-설명에는 `type`, `priority`, `payload.ref`, `payload.origin`, `created_at`, 레지스트리 경로만 들어갑니다. 다른 payload 필드는 보내지 않습니다.
+Linear 제목은 레지스트리 제목 앞의 대괄호 태그를 제거하고 공백을 정리합니다. `AWAITING_USER`는 `확인할 것 — `을 붙입니다. 설명에는 ISS ID를 포함한 `원제목`, `type`, `priority`, `payload.ref`, `payload.origin`, `created_at`, 레지스트리 경로가 들어갑니다. 다른 payload 필드는 보내지 않습니다. 제목과 설명의 비밀번호 토큰 및 API 키 패턴은 `[가림]`으로 대체하며 레지스트리 원본은 그대로 둡니다.
 
 ## 무료 요금제 한도
 

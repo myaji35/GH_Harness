@@ -21,7 +21,7 @@ STATES = [
     {"id": "d", "name": "Done", "type": "completed"},
     {"id": "c", "name": "Canceled", "type": "canceled"},
 ]
-CONFIG = {"team_key": None, "project_name": "GH_Harness", "done_window_days": 14, "max_open_issues": 220, "state_map": {"BACKLOG": "backlog", "READY": "unstarted", "IN_PROGRESS": "started", "AWAITING_USER": "In Review", "HANDED_OFF": "In Review", "PARTIAL": "In Review", "COMPLETED": "completed", "DONE": "completed", "CLOSED": "canceled"}, "priority_map": sync.PRIORITY_DEFAULT, "use_labels": True}
+CONFIG = {"team_key": None, "project_name": "GH_Harness", "done_window_days": 14, "max_open_issues": 220, "state_map": {"BACKLOG": "backlog", "READY": "backlog", "IN_PROGRESS": "started", "AWAITING_USER": "In Review", "HANDED_OFF": "In Review", "PARTIAL": "In Review", "COMPLETED": "completed", "DONE": "completed", "CLOSED": "canceled"}, "priority_map": sync.PRIORITY_DEFAULT, "use_labels": True}
 
 
 def issue(number, status="READY", priority="P2", updated="2026-10-01T00:00:00Z"):
@@ -44,6 +44,9 @@ class FakeClient:
             return {"projects": {"nodes": [{"id": "project", "name": "GH_Harness", "teams": {"nodes": [{"id": "team"}]}}], "pageInfo": {"hasNextPage": False, "endCursor": None}}}
         if "issueLabels(" in query:
             return {"issueLabels": {"nodes": [{"id": "label", "name": "BUG", "team": {"id": "team"}}], "pageInfo": {"hasNextPage": False, "endCursor": None}}}
+        if "issueLabelCreate(" in query:
+            self.mutations.append(copy.deepcopy(variables))
+            return {"issueLabelCreate": {"success": True, "issueLabel": {"id": "user-label", "name": variables["input"]["name"]}}}
         if "issue(id:" in query:
             return {"issue": self.remote.get(variables["id"])}
         if "issueUpdate(" in query:
@@ -83,17 +86,17 @@ class SyncTests(unittest.TestCase):
         return sync.read_registry(self.path)["issues"]
 
     def linked(self, local, updated="2026-09-30T00:00:00Z"):
-        local["payload"]["linear"] = {"id": "linear-1", "identifier": "GH-1", "url": "https://linear.app/issue/GH-1", "synced_at": "2026-10-01T00:00:00Z", "synced_state": "u", "synced_priority": 3}
+        local["payload"]["linear"] = {"id": "linear-1", "identifier": "GH-1", "url": "https://linear.app/issue/GH-1", "synced_at": "2026-10-01T00:00:00Z", "synced_state": "b", "synced_priority": 3}
         local["updated_at"] = updated
         return local
 
     def remote(self):
-        return {"linear-1": {"id": "linear-1", "identifier": "GH-1", "url": "https://linear.app/issue/GH-1", "updatedAt": "2026-10-02T00:00:00Z", "title": "[ISS-1] Example", "priority": 2, "state": STATES[2], "project": {"id": "project"}, "labels": {"nodes": [{"id": "label"}]}}}
+        return {"linear-1": {"id": "linear-1", "identifier": "GH-1", "url": "https://linear.app/issue/GH-1", "updatedAt": "2026-10-02T00:00:00Z", "title": "Example", "priority": 2, "state": STATES[2], "project": {"id": "project"}, "labels": {"nodes": [{"id": "label"}]}}}
 
     def matching_remote(self, number):
         return {"id": f"linear-{number}", "identifier": f"GH-{number}", "url": f"https://linear.app/issue/GH-{number}",
-                "updatedAt": "2026-10-01T00:00:00Z", "title": f"[ISS-{number}] Example", "priority": 3,
-                "state": STATES[1], "project": {"id": "project"}, "labels": {"nodes": [{"id": "label"}]}}
+                "updatedAt": "2026-10-01T00:00:00Z", "title": "Example", "priority": 3,
+                "state": STATES[0], "project": {"id": "project"}, "labels": {"nodes": [{"id": "label"}]}}
 
     def test_repeated_push_skips_unchanged_and_updates_only_changed_state(self):
         locals_ = [self.linked(issue(number)) for number in (1, 2, 3)]
@@ -126,7 +129,7 @@ class SyncTests(unittest.TestCase):
                              ("synced_state_type", "started")):
             with self.subTest(field=field):
                 local = self.linked(issue(1))
-                local["payload"]["linear"].update({"synced_title": "[ISS-1] Example", "synced_state_type": "unstarted",
+                local["payload"]["linear"].update({"synced_title": "Example", "synced_state_type": "backlog",
                                                      "synced_labels": ["label"], "synced_project": "project"})
                 local["payload"]["linear"][field] = value
                 self.save([local])
@@ -152,7 +155,7 @@ class SyncTests(unittest.TestCase):
 
     def test_mapping_and_description_allowlist(self):
         self.assertEqual(sync.find_state("AWAITING_USER", STATES, CONFIG)["id"], "r")
-        self.assertEqual(sync.find_state("READY", STATES, CONFIG)["id"], "u")
+        self.assertEqual(sync.find_state("READY", STATES, CONFIG)["id"], "b")
         self.assertEqual(sync.find_state("CLOSED_INVALID", STATES, CONFIG)["id"], "c")
         self.assertEqual(sync.reverse_state(STATES[3], "PARTIAL"), "PARTIAL")
         self.assertEqual(sync.reverse_state(STATES[2], "PARTIAL"), "IN_PROGRESS")
@@ -160,8 +163,93 @@ class SyncTests(unittest.TestCase):
         self.assertEqual(sync.priority(issue(2, priority="P3"), CONFIG), 4)
         text = sync.description(issue(1))
         self.assertIn("ref: safe", text)
+        self.assertIn("원제목: [ISS-1] Example", text)
         self.assertNotIn("raw_prompt", text)
         self.assertNotIn("SECRET", text)
+
+    def test_display_title_strips_leading_tags_and_marks_user_turn(self):
+        local = issue(21)
+        for title in ("[ISS-021] [Plan:Eng검토]  설계   검토", "[지시] 설계 검토",
+                      "[US-D] 설계 검토", "[SEO엔진 2/4] 설계 검토"):
+            with self.subTest(title=title):
+                local["title"] = title
+                self.assertEqual(sync.display_title(local), "설계 검토")
+        local["status"] = "AWAITING_USER"
+        self.assertEqual(sync.display_title(local), "확인할 것 — 설계 검토")
+
+    def test_redact_password_tokens_and_key_patterns(self):
+        secrets = ("비번: hunter2", "비밀번호=secret", "password secret", "passwd:secret", "pw=secret",
+                   "sk-abcdefghijklmnop", "sk-ant-abcdefghijklmnop", "AIzaABCDEFGHIJKLMNOPQRST",
+                   "ghp_ABCDEFGHIJKLMNOPQRST", "xoxb-ABCDEFGHIJ", "AKIAABCDEFGHIJKLMNOP")
+        for secret in secrets:
+            with self.subTest(secret=secret.split(":")[0].split("=")[0][:5]):
+                self.assertNotIn(secret, sync.redact(secret))
+                self.assertIn("[가림]", sync.redact(secret))
+        local = issue(1)
+        local["title"] = "[ISS-1] password hunter2"
+        local["payload"]["ref"] = "ghp_ABCDEFGHIJKLMNOPQRST"
+        ctx = {"states": STATES, "project": None, "team": {"id": "team"}, "labels": []}
+        sent = sync.issue_input(local, CONFIG, ctx, FakeClient(), False)
+        self.assertEqual(sent["title"], "password [가림]")
+        self.assertNotIn("hunter2", sent["description"])
+        self.assertNotIn("ghp_ABCDEFGHIJKLMNOPQRST", sent["description"])
+        self.assertEqual(local["title"], "[ISS-1] password hunter2")
+
+    def test_ready_backlog_remote_does_not_pull_or_conflict(self):
+        local = self.linked(issue(1), "2026-10-02T00:00:00Z")
+        local["payload"]["linear"]["synced_state"] = "u"
+        self.save([local])
+        remote = self.matching_remote(1)
+        remote["updatedAt"] = "2026-10-03T00:00:00Z"
+        fake = FakeClient({"linear-1": remote})
+        result = sync.run(CONFIG, self.path, fake, apply=True, now=NOW)
+        self.assertEqual(result["counts"]["unchanged"], 1)
+        self.assertEqual(result["counts"]["conflict"], 0)
+        self.assertEqual(self.read()[0]["status"], "READY")
+        self.assertEqual(fake.mutations, [])
+        current = self.read()[0]
+        current["updated_at"] = "2026-09-30T00:00:00Z"
+        self.save([current])
+        remote["priority"] = 2
+        remote["updatedAt"] = "2026-10-06T00:00:00Z"
+        result = sync.run(CONFIG, self.path, fake, apply=True, now=NOW + dt.timedelta(days=2))
+        self.assertEqual(result["counts"]["pull"], 1)
+        self.assertEqual((self.read()[0]["status"], self.read()[0]["priority"]), ("READY", "P1"))
+
+    def test_user_turn_label_is_created_and_removed(self):
+        local = self.linked(issue(1, "AWAITING_USER"))
+        self.save([local])
+        remote = self.matching_remote(1)
+        remote["state"] = STATES[3]
+        fake = FakeClient({"linear-1": remote})
+        result = sync.run(CONFIG, self.path, fake, apply=True, now=NOW)
+        self.assertEqual(result["counts"]["update"], 1)
+        self.assertEqual(fake.mutations[0]["input"]["name"], "대표님 차례")
+        self.assertEqual(fake.mutations[1]["input"]["labelIds"], ["label", "user-label"])
+        current = self.read()[0]
+        current["status"] = "READY"
+        current["updated_at"] = "2026-10-05T01:00:00Z"
+        self.save([current])
+        remote["title"] = "확인할 것 — Example"
+        remote["labels"]["nodes"].append({"id": "user-label"})
+        result = sync.run(CONFIG, self.path, fake, apply=True, now=NOW + dt.timedelta(hours=2))
+        self.assertEqual(result["counts"]["update"], 1)
+        self.assertEqual(fake.mutations[-1]["input"]["labelIds"], ["label"])
+
+    def test_display_title_change_detection_is_idempotent(self):
+        local = self.linked(issue(1))
+        local["title"] = "[ISS-1] [지시] 새  제목"
+        self.save([local])
+        remote = self.matching_remote(1)
+        fake = FakeClient({"linear-1": remote})
+        first = sync.run(CONFIG, self.path, fake, apply=True, now=NOW)
+        self.assertEqual(first["counts"]["update"], 1)
+        self.assertEqual(fake.mutations[-1]["input"]["title"], "새 제목")
+        self.assertEqual(self.read()[0]["payload"]["linear"]["synced_title"], "새 제목")
+        remote["title"] = "새 제목"
+        second = sync.run(CONFIG, self.path, fake, apply=True, now=NOW + dt.timedelta(hours=1))
+        self.assertEqual(second["counts"]["unchanged"], 1)
+        self.assertEqual(len(fake.mutations), 1)
 
     def test_label_lookup_reuses_casefold_match_for_input_and_snapshot(self):
         fake = FakeClient()
@@ -194,7 +282,7 @@ class SyncTests(unittest.TestCase):
         self.assertEqual(result["counts"]["conflict"], 1)
         self.assertEqual(result["conflicts"], ["ISS-1"])
         self.assertEqual((actual["status"], actual["priority"]), ("READY", "P2"))
-        self.assertEqual(fake.mutations[0]["input"]["stateId"], "u")
+        self.assertEqual(fake.mutations[0]["input"]["stateId"], "b")
         self.assertEqual(fake.mutations[0]["input"]["priority"], 3)
 
     def test_dry_run_does_not_write_registry_or_mutate_linear(self):

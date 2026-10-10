@@ -204,7 +204,7 @@ class PortfolioTests(unittest.TestCase):
                   {"id": "s", "name": "진행 중", "type": "started"},
                   {"id": "r", "name": "검토 중", "type": "started"}]
         config = sync.load_config()
-        self.assertEqual(sync.find_state("READY", states, config)["id"], "u")
+        self.assertEqual(sync.find_state("READY", states, config)["id"], "b")
         self.assertEqual(sync.find_state("IN_PROGRESS", states, config)["id"], "s")
         self.assertEqual(sync.find_state("AWAITING_USER", states, config)["id"], "r")
         self.assertEqual(sync.reverse_state(states[3], "AWAITING_USER"), "AWAITING_USER")
