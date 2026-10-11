@@ -3910,16 +3910,16 @@
         "linear": {
           "id": "ff965b32-ff6e-4cd3-8d82-44f8f853206c",
           "identifier": "HAR-59",
-          "url": "https://linear.app/cpoflow/issue/HAR-59/iss-398-youtube-archiver-중복-클러스터-종합노트-의미-임베딩-기반-재설계",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-59/중복-클러스터-종합노트-의미-임베딩-기반-재설계",
+          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
+          "synced_state_type": "backlog",
           "synced_priority": 4,
-          "synced_title": "[ISS-398] [youtube-archiver] 중복 클러스터 종합노트 — 의미 임베딩 기반 재설계",
+          "synced_title": "중복 클러스터 종합노트 — 의미 임베딩 기반 재설계",
           "synced_labels": [
             "2e97343a-4375-4c90-9021-2ef4a3c13dc9"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "b7002b85f245744ee7b43cb8ec865caa3eba39174c0922efca81ea4e0af8e292"
         }
       },
@@ -4038,16 +4038,16 @@
         "linear": {
           "id": "335c1da9-724c-48d8-baa2-ce3ad9938fd6",
           "identifier": "HAR-58",
-          "url": "https://linear.app/cpoflow/issue/HAR-58/iss-401-아이디어-좋아요를-삭제하자-했는데-의미가-있나-좋아요로만-검색하는-것이",
+          "url": "https://linear.app/cpoflow/issue/HAR-58/좋아요를-삭제하자-했는데-의미가-있나-좋아요로만-검색하는-것이",
           "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
           "synced_state_type": "backlog",
           "synced_priority": 4,
-          "synced_title": "[ISS-401] [아이디어] 좋아요를 삭제하자 했는데 의미가 있나. 좋아요로만 검색하는 것이.",
+          "synced_title": "좋아요를 삭제하자 했는데 의미가 있나. 좋아요로만 검색하는 것이.",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "d3bb4823d4a941747f8e70725eb9049f5f47f02b7623b4b5be5dd9983531f7d8"
         }
       }
@@ -4072,16 +4072,16 @@
         "linear": {
           "id": "e9bd78a8-e1c0-4807-8314-010607425c29",
           "identifier": "HAR-57",
-          "url": "https://linear.app/cpoflow/issue/HAR-57/iss-402-아이디어-자막을-상세-검색하는-방법-해보자",
+          "url": "https://linear.app/cpoflow/issue/HAR-57/자막을-상세-검색하는-방법-해보자",
           "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
           "synced_state_type": "backlog",
           "synced_priority": 4,
-          "synced_title": "[ISS-402] [아이디어] 자막을 상세 검색하는 방법 해보자.",
+          "synced_title": "자막을 상세 검색하는 방법 해보자.",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "4ed1f5242c88951c1d86bcc1d5b1e3680e6200dc430df4afdb08c13f75dfb7c8"
         }
       }
@@ -4163,16 +4163,16 @@
         "linear": {
           "id": "b3826b48-2a40-4737-881b-bd2c85b4adb0",
           "identifier": "HAR-32",
-          "url": "https://linear.app/cpoflow/issue/HAR-32/iss-405-지시-나중에볼영상wl-최근-300건-지식화",
+          "url": "https://linear.app/cpoflow/issue/HAR-32/나중에볼영상wl-최근-300건-지식화",
           "synced_state": "d1e56a17-2446-4e6b-8edf-0e1bc49f9f2e",
           "synced_state_type": "started",
           "synced_priority": 2,
-          "synced_title": "[ISS-405] [지시] 나중에볼영상(WL) 최근 300건 지식화",
+          "synced_title": "나중에볼영상(WL) 최근 300건 지식화",
           "synced_labels": [
             "0d908e68-c29f-4dfb-b933-5d10d80802f1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "de2aa10e4f461463ffa9a4086310e838095c789a5dfe244c528e532981485b94"
         }
       },
@@ -4428,12 +4428,12 @@
       "id": "ISS-413",
       "title": "[아이디어] 설치하고 테스트 해보자.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED_DUPLICATE",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
       "created_at": "2026-08-09T10:35:15.302842",
-      "updated_at": "2026-08-09T10:35:15.302842",
+      "updated_at": "2026-10-11T09:07:32+09:00",
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "설치하고 테스트 해보자.",
@@ -4444,18 +4444,19 @@
         "linear": {
           "id": "b790bb03-ebf6-4f05-b685-999313ca2117",
           "identifier": "HAR-56",
-          "url": "https://linear.app/cpoflow/issue/HAR-56/iss-413-아이디어-설치하고-테스트-해보자",
-          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
-          "synced_state_type": "backlog",
+          "url": "https://linear.app/cpoflow/issue/HAR-56/설치하고-테스트-해보자",
+          "synced_state": "671751cd-bb50-415a-b5c8-fec8fc26fd86",
+          "synced_state_type": "canceled",
           "synced_priority": 4,
-          "synced_title": "[ISS-413] [아이디어] 설치하고 테스트 해보자.",
+          "synced_title": "설치하고 테스트 해보자.",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "457b0b2b35ca61f6dc49bb9b24d4e70f02dc3f7a996b24fff31d01346552d365"
-        }
+        },
+        "close_reason": "정리 1회(ISS-632): ISS-414 중복"
       }
     },
     {
@@ -4477,16 +4478,16 @@
         "linear": {
           "id": "b8ce7fd3-4b8f-4feb-b99f-cf9059a55a38",
           "identifier": "HAR-31",
-          "url": "https://linear.app/cpoflow/issue/HAR-31/iss-414-지시-voicebox-설치-한국어-보이스클로닝-품질-테스트",
+          "url": "https://linear.app/cpoflow/issue/HAR-31/voicebox-설치-한국어-보이스클로닝-품질-테스트",
           "synced_state": "d1e56a17-2446-4e6b-8edf-0e1bc49f9f2e",
           "synced_state_type": "started",
           "synced_priority": 2,
-          "synced_title": "[ISS-414] [지시] VoiceBox 설치 + 한국어 보이스클로닝 품질 테스트",
+          "synced_title": "VoiceBox 설치 + 한국어 보이스클로닝 품질 테스트",
           "synced_labels": [
             "0d908e68-c29f-4dfb-b933-5d10d80802f1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "00e1ac6c6c3fa7f128a00dff4f00fa2ea319c6de2a0e4e80fba49d4cbd83e556"
         }
       },
@@ -5614,16 +5615,16 @@
         "linear": {
           "id": "b5dfbd5f-3519-4dcf-a2c5-568f44934658",
           "identifier": "HAR-55",
-          "url": "https://linear.app/cpoflow/issue/HAR-55/iss-455-아이디어-kimi3-qwen등과-함께-개발하고-싶어-주력으로-claude-code-환경을-사용하고-있는데",
+          "url": "https://linear.app/cpoflow/issue/HAR-55/kimi3-qwen등과-함께-개발하고-싶어-주력으로-claude-code-환경을-사용하고-있는데-여기서는-못하는걸로-알고-있어",
           "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
           "synced_state_type": "backlog",
           "synced_priority": 4,
-          "synced_title": "[ISS-455] [아이디어] kimi3, qwen등과 함께 개발하고 싶어. 주력으로 claude code 환경을 사용하고 있는데 여기서는 못하는걸로 알고 있어.",
+          "synced_title": "kimi3, qwen등과 함께 개발하고 싶어. 주력으로 claude code 환경을 사용하고 있는데 여기서는 못하는걸로 알고 있어.",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "92028c33a34965d9a032c9437350e0432483ce83fcc43766185e3cf48d866784"
         }
       }
@@ -5648,16 +5649,16 @@
         "linear": {
           "id": "981cd5cc-32ba-449e-a090-15571fe0f6b0",
           "identifier": "HAR-54",
-          "url": "https://linear.app/cpoflow/issue/HAR-54/iss-456-아이디어-이식and설치를-하고-싶어-최종안-의견줘",
+          "url": "https://linear.app/cpoflow/issue/HAR-54/이식and설치를-하고-싶어-최종안-의견줘",
           "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
           "synced_state_type": "backlog",
           "synced_priority": 4,
-          "synced_title": "[ISS-456] [아이디어] 이식&설치를 하고 싶어. 최종안 의견줘.",
+          "synced_title": "이식&설치를 하고 싶어. 최종안 의견줘.",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "725b9bc51a85ef28b3b8bb1bdb09eaa7627f81f4cc86baa0816aacae43cb3c62"
         }
       }
@@ -5809,16 +5810,16 @@
         "linear": {
           "id": "41101d83-67ec-4ced-b5f5-e04e7c8e57e0",
           "identifier": "HAR-53",
-          "url": "https://linear.app/cpoflow/issue/HAR-53/iss-463-아이디어-다양한-산업분야를-적절한-이미지로-보여주고-방문자로-하여금-상상할수-있게-디자인된점이-마음에-들고",
+          "url": "https://linear.app/cpoflow/issue/HAR-53/다양한-산업분야를-적절한-이미지로-보여주고-방문자로-하여금-상상할수-있게-디자인된점이-마음에-들고-회사의-지향점이-같다는것도",
           "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
           "synced_state_type": "backlog",
           "synced_priority": 4,
-          "synced_title": "[ISS-463] [아이디어] 다양한 산업분야를 적절한 이미지로 보여주고 방문자로 하여금 상상할수 있게 디자인된점이 마음에 들고, 회사의 지향점이 같다는것도 경쟁",
+          "synced_title": "다양한 산업분야를 적절한 이미지로 보여주고 방문자로 하여금 상상할수 있게 디자인된점이 마음에 들고, 회사의 지향점이 같다는것도 경쟁",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "1d8f624556c2360c9e4edb4c747cd148ff05ad34274d67de4721820c915d33a7"
         }
       }
@@ -5940,16 +5941,17 @@
         "linear": {
           "id": "ce02ae2e-04c7-4519-9166-446f957a9fa6",
           "identifier": "HAR-44",
-          "url": "https://linear.app/cpoflow/issue/HAR-44/iss-469-anysign4pc32비트ppc-잔존-제거-rosetta-지원종료-대비",
+          "url": "https://linear.app/cpoflow/issue/HAR-44/확인할-것-anysign4pc32비트ppc-잔존-제거-rosetta-지원종료-대비",
           "synced_state": "d1e56a17-2446-4e6b-8edf-0e1bc49f9f2e",
           "synced_state_type": "started",
           "synced_priority": 3,
-          "synced_title": "[ISS-469] AnySign4PC(32비트/PPC 잔존) 제거 — Rosetta 지원종료 대비",
+          "synced_title": "확인할 것 — AnySign4PC(32비트/PPC 잔존) 제거 — Rosetta 지원종료 대비",
           "synced_labels": [
+            "4d70faa7-3283-46b9-9672-3ea4ad4be768",
             "9ed90483-add2-43f3-8f9c-63a8930bbe29"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "8d69f64e2a6a218ec2d69c571eed9069f357c20b834262ba1efe1e9c32615ffb"
         }
       },
@@ -6342,16 +6344,16 @@
         "linear": {
           "id": "f52c48eb-fd20-4349-9c0b-fdd44174dbf3",
           "identifier": "HAR-30",
-          "url": "https://linear.app/cpoflow/issue/HAR-30/iss-480-지시-모든-비번-ximdnjs00-으로-수정하고-가비아는-claude-in-chrome로-로그인-할테니-너가",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-30/모든-비번-가림-가림-으로-수정하고-가비아는-claude-in-chrome로-로그인-할테니-너가-설정해줘",
+          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
+          "synced_state_type": "backlog",
           "synced_priority": 2,
-          "synced_title": "[ISS-480] [지시] 모든 비번 [비밀번호 가림] 으로 수정하고 가비아는 claude in chrome로 로그인 할테니 너가 설정해줘'",
+          "synced_title": "모든 비번 [가림] 가림] 으로 수정하고 가비아는 claude in chrome로 로그인 할테니 너가 설정해줘'",
           "synced_labels": [
             "2e97343a-4375-4c90-9021-2ef4a3c13dc9"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "e23915fa45e00cda2115a1909deb214f6edc6558e8bb061113c340a6f86766a9"
         }
       },
@@ -6418,16 +6420,16 @@
         "linear": {
           "id": "d9915319-164f-4a53-9083-a929c39f89e6",
           "identifier": "HAR-29",
-          "url": "https://linear.app/cpoflow/issue/HAR-29/iss-483-지시-address-주소-postal-code-우편번호-city-도시-country-국가-심티어-회사-정보보고",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-29/address-주소-postal-code-우편번호-city-도시-country-국가-심티어-회사-정보보고-만들",
+          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
+          "synced_state_type": "backlog",
           "synced_priority": 2,
-          "synced_title": "[ISS-483] [지시] Address (주소) - Postal code (우편번호) - City (도시) - Country (국가) 심티어 회사 정보보고 만들",
+          "synced_title": "Address (주소) - Postal code (우편번호) - City (도시) - Country (국가) 심티어 회사 정보보고 만들",
           "synced_labels": [
             "2e97343a-4375-4c90-9021-2ef4a3c13dc9"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "97e901d3737c75183f9f19494c30993d8773ba1f463f526e2f68a64ef89707fc"
         }
       },
@@ -6516,16 +6518,16 @@
         "linear": {
           "id": "565fbbc8-7d6f-44bf-8d53-60e374cee174",
           "identifier": "HAR-52",
-          "url": "https://linear.app/cpoflow/issue/HAR-52/iss-487-아이디어-nurifarmnet에-적용하고-싶어-스마트팜-옆에-카페겸-오피스-건물이-있고-정문에는-nurifarm",
+          "url": "https://linear.app/cpoflow/issue/HAR-52/nurifarmnet에-적용하고-싶어-스마트팜-옆에-카페겸-오피스-건물이-있고-정문에는-nurifarm-이라거-써있어-젊은",
           "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
           "synced_state_type": "backlog",
           "synced_priority": 4,
-          "synced_title": "[ISS-487] [아이디어] nurifarm.net에 적용하고 싶어. 스마트팜 옆에 카페겸 오피스 건물이 있고 정문에는 'NURIFarm' 이라거 써있어 젊은 ",
+          "synced_title": "nurifarm.net에 적용하고 싶어. 스마트팜 옆에 카페겸 오피스 건물이 있고 정문에는 'NURIFarm' 이라거 써있어 젊은",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "d1ff0c1d81223fa2dd3f381088228724fbc0537121ad266b132591dd9dd47952"
         }
       }
@@ -6549,16 +6551,16 @@
         "linear": {
           "id": "20be4ea6-73ee-4e94-a3d8-b67e0f8e6a78",
           "identifier": "HAR-28",
-          "url": "https://linear.app/cpoflow/issue/HAR-28/iss-488-지시-흰색바탕-image-22-이런-드로잉으로-수정해봐",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-28/흰색바탕-image-22-이런-드로잉으로-수정해봐",
+          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
+          "synced_state_type": "backlog",
           "synced_priority": 2,
-          "synced_title": "[ISS-488] [지시] 흰색바탕 [Image #22] 이런 드로잉으로 수정해봐.",
+          "synced_title": "흰색바탕 [Image #22] 이런 드로잉으로 수정해봐.",
           "synced_labels": [
             "2e97343a-4375-4c90-9021-2ef4a3c13dc9"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "00b632df7f8b8c453989d0c718a1eb1f904d48c18d00cfac2a30ce96ab8ec530"
         }
       },
@@ -6584,16 +6586,16 @@
         "linear": {
           "id": "67d8543a-4f5a-4162-aef3-3460011bf54a",
           "identifier": "HAR-51",
-          "url": "https://linear.app/cpoflow/issue/HAR-51/iss-489-아이디어-design-image-25-이런-스타일은-어때",
+          "url": "https://linear.app/cpoflow/issue/HAR-51/design-image-25-이런-스타일은-어때",
           "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
           "synced_state_type": "backlog",
           "synced_priority": 4,
-          "synced_title": "[ISS-489] [아이디어] /design [Image #25] 이런 스타일은 어때?",
+          "synced_title": "/design [Image #25] 이런 스타일은 어때?",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "96f129e03af5cc78781505102813478c4a3b9c250a70ee503db0229460227f3c"
         }
       }
@@ -6618,16 +6620,16 @@
         "linear": {
           "id": "2d4d430a-7419-4b43-8a96-4da02df40df7",
           "identifier": "HAR-50",
-          "url": "https://linear.app/cpoflow/issue/HAR-50/iss-490-아이디어-design-image-28-이-스타일-어때",
+          "url": "https://linear.app/cpoflow/issue/HAR-50/design-image-28-이-스타일-어때",
           "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
           "synced_state_type": "backlog",
           "synced_priority": 4,
-          "synced_title": "[ISS-490] [아이디어] /design [Image #28] 이 스타일 어때?",
+          "synced_title": "/design [Image #28] 이 스타일 어때?",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "b4bc4bed742c7f18ddea4ee6c59d86b5047a5cef47f47631882b36d55c2fb57e"
         }
       }
@@ -6735,16 +6737,16 @@
         "linear": {
           "id": "530d2e6d-6646-488f-9989-2dc3fd44db39",
           "identifier": "HAR-27",
-          "url": "https://linear.app/cpoflow/issue/HAR-27/iss-495-지시-국가장학금은-충청대에서-주관해주기-바람-곡성강화는-부각하지-말것-2704-이전에-취업희망자-입학시킬-예정임",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-27/국가장학금은-충청대에서-주관해주기-바람-곡성강화는-부각하지-말것-2704-이전에-취업희망자-입학시킬-예정임-모집대상1순위-괴산",
+          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
+          "synced_state_type": "backlog",
           "synced_priority": 2,
-          "synced_title": "[ISS-495] [지시] 국가장학금은 충청대에서 주관해주기 바람. 곡성,강화는 부각하지 말것. 27.04 이전에 취업희망자 입학시킬 예정임. 모집대상1순위 괴산",
+          "synced_title": "국가장학금은 충청대에서 주관해주기 바람. 곡성,강화는 부각하지 말것. 27.04 이전에 취업희망자 입학시킬 예정임. 모집대상1순위 괴산",
           "synced_labels": [
             "2e97343a-4375-4c90-9021-2ef4a3c13dc9"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "34fb0e1652e15225753c5385168acd1426622cf47bec9610dc4bc0da361eb768"
         }
       },
@@ -7413,16 +7415,16 @@
         "linear": {
           "id": "394c9bf0-614b-4bf9-abf8-9cff99d570f3",
           "identifier": "HAR-49",
-          "url": "https://linear.app/cpoflow/issue/HAR-49/iss-520-아이디어-0042-바로-자동발송-기능-구현하고-오늘중으로-조금씩-시차를-두어서-메일-리스트에-있는-메일-중복",
+          "url": "https://linear.app/cpoflow/issue/HAR-49/0042-바로-자동발송-기능-구현하고-오늘중으로-조금씩-시차를-두어서-메일-리스트에-있는-메일-중복-발속없이-발송하자-바로",
           "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
           "synced_state_type": "backlog",
           "synced_priority": 4,
-          "synced_title": "[ISS-520] [아이디어] ../0042 바로 자동발송 기능 구현하고 오늘중으로 조금씩 시차를 두어서 메일 리스트에 있는 메일 중복 발속없이 발송하자. 바로 ",
+          "synced_title": "../0042 바로 자동발송 기능 구현하고 오늘중으로 조금씩 시차를 두어서 메일 리스트에 있는 메일 중복 발속없이 발송하자. 바로",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "8c0e04ee479ebecc8fcf4c30729bfa9a22297dbea30bc1046b6ff28bbb91be89"
         }
       }
@@ -7467,16 +7469,16 @@
         "linear": {
           "id": "d14f6dc4-0c84-4d62-af25-20d5307c950f",
           "identifier": "HAR-26",
-          "url": "https://linear.app/cpoflow/issue/HAR-26/iss-522-지시-페이스북-광고-결과를-보고서-형식으로-만들어줘",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-26/페이스북-광고-결과를-보고서-형식으로-만들어줘",
+          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
+          "synced_state_type": "backlog",
           "synced_priority": 2,
-          "synced_title": "[ISS-522] [지시] 페이스북 광고 결과를 보고서 형식으로 만들어줘.",
+          "synced_title": "페이스북 광고 결과를 보고서 형식으로 만들어줘.",
           "synced_labels": [
             "2e97343a-4375-4c90-9021-2ef4a3c13dc9"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "28a9f67735797673678bb51dfb9cd13801ec92d97852d3a274f4021beb7aa577"
         }
       },
@@ -7544,16 +7546,16 @@
         "linear": {
           "id": "a39a0e87-4f06-429c-bf2d-e986699e68d9",
           "identifier": "HAR-43",
-          "url": "https://linear.app/cpoflow/issue/HAR-43/iss-524-옵시디언-inbox-알림-오탐-후보-없음-빈-파일을-pending으로-세고-새벽-크론이-매일-빈-파일을-만든다",
+          "url": "https://linear.app/cpoflow/issue/HAR-43/옵시디언-inbox-알림-오탐-후보-없음-빈-파일을-pending으로-세고-새벽-크론이-매일-빈-파일을-만든다",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 3,
-          "synced_title": "[ISS-524] 옵시디언 inbox 알림 오탐 — '후보 없음' 빈 파일을 pending으로 세고, 새벽 크론이 매일 빈 파일을 만든다",
+          "synced_title": "옵시디언 inbox 알림 오탐 — '후보 없음' 빈 파일을 pending으로 세고, 새벽 크론이 매일 빈 파일을 만든다",
           "synced_labels": [
             "20a695b1-f79b-4b4a-a1e5-91b159af3629"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "b58fe7661a8e14be2749559ba82f5f7e81db6b8801bbd51458d7b761b1a9d3d2"
         }
       },
@@ -7596,12 +7598,12 @@
       "id": "ISS-526",
       "title": "[아이디어] 기록하자 '/exit'하고 다시 올게.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
       "created_at": "2026-09-24T08:27:16.279365",
-      "updated_at": "2026-09-24T08:27:16.279365",
+      "updated_at": "2026-10-11T09:07:32+09:00",
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "기록하자 '/exit'하고 다시 올게.",
@@ -7609,18 +7611,19 @@
         "linear": {
           "id": "dc07e57f-674e-4c98-a7c2-6b12b9be8cca",
           "identifier": "HAR-48",
-          "url": "https://linear.app/cpoflow/issue/HAR-48/iss-526-아이디어-기록하자-exit하고-다시-올게",
-          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
-          "synced_state_type": "backlog",
+          "url": "https://linear.app/cpoflow/issue/HAR-48/기록하자-exit하고-다시-올게",
+          "synced_state": "671751cd-bb50-415a-b5c8-fec8fc26fd86",
+          "synced_state_type": "canceled",
           "synced_priority": 4,
-          "synced_title": "[ISS-526] [아이디어] 기록하자 '/exit'하고 다시 올게.",
+          "synced_title": "기록하자 '/exit'하고 다시 올게.",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "b938c54130bd60cae0f06d6b52aca92d068dab86359d8cc90d3c4efa57f4dc9e"
-        }
+        },
+        "close_reason": "정리 1회(ISS-632): 작업 없음"
       }
     },
     {
@@ -7640,16 +7643,16 @@
         "linear": {
           "id": "a2656476-a6b6-4750-a23c-3086f88610d2",
           "identifier": "HAR-23",
-          "url": "https://linear.app/cpoflow/issue/HAR-23/iss-527-nas-마운트-e-ssd맥-오프로드-대상-nas-이동으로-저장공간-확보",
+          "url": "https://linear.app/cpoflow/issue/HAR-23/nas-마운트-e-ssd맥-오프로드-대상-nas-이동으로-저장공간-확보",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-527] NAS 마운트 + E_SSD/맥 오프로드 대상 NAS 이동으로 저장공간 확보",
+          "synced_title": "NAS 마운트 + E_SSD/맥 오프로드 대상 NAS 이동으로 저장공간 확보",
           "synced_labels": [
             "2d09247d-19b9-451c-b3b4-fa2a22eeee2f"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "837ea5cbe2980e4c8c46f5469d7aa3c3297efafd17e9e74ce8a5f2c1163478d7"
         }
       },
@@ -7677,16 +7680,16 @@
         "linear": {
           "id": "c0df34b2-3ce9-499c-aef8-dacf0b043843",
           "identifier": "HAR-47",
-          "url": "https://linear.app/cpoflow/issue/HAR-47/iss-528-아이디어-다운로드-폴더에-설치파일-중복-다운로드-이런-파일-정리하자",
+          "url": "https://linear.app/cpoflow/issue/HAR-47/다운로드-폴더에-설치파일-중복-다운로드-이런-파일-정리하자",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 4,
-          "synced_title": "[ISS-528] [아이디어] 다운로드 폴더에 설치파일, 중복 다운로드 이런 파일 정리하자.",
+          "synced_title": "다운로드 폴더에 설치파일, 중복 다운로드 이런 파일 정리하자.",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "e40f2a3a715b0d20794469ae8e6615806b12fc5cea6be587d244d74d0d0118d1"
         }
       },
@@ -7711,16 +7714,16 @@
         "linear": {
           "id": "fb5492e2-3d0c-4756-8fac-0995905b8efa",
           "identifier": "HAR-42",
-          "url": "https://linear.app/cpoflow/issue/HAR-42/iss-529-anthropic-공식-블로그-리서치-claudemd설정-적용-이슈-보고",
+          "url": "https://linear.app/cpoflow/issue/HAR-42/anthropic-공식-블로그-리서치-claudemd설정-적용-이슈-보고",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 3,
-          "synced_title": "[ISS-529] Anthropic 공식 블로그 리서치 → CLAUDE.md·설정 적용 이슈 보고",
+          "synced_title": "Anthropic 공식 블로그 리서치 → CLAUDE.md·설정 적용 이슈 보고",
           "synced_labels": [
             "5e5d7ad9-44d7-460c-88a6-486933d0811e"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "885c1cc522eb1f41ef10f0828eb441f2983575d35a370f6a66cb2d710dc64461"
         }
       }
@@ -7743,16 +7746,16 @@
         "linear": {
           "id": "216eafb2-4162-4270-9454-0c3aa2b89af5",
           "identifier": "HAR-24",
-          "url": "https://linear.app/cpoflow/issue/HAR-24/iss-530-claudemdhook-모순-제거-ready-즉시처리-vs-지시범위-원칙-정합-stop-hook-차단-출력-제거",
+          "url": "https://linear.app/cpoflow/issue/HAR-24/claudemdhook-모순-제거-ready-즉시처리-vs-지시범위-원칙-정합-stop-hook-차단-출력-제거",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-530] CLAUDE.md·hook 모순 제거 — READY 즉시처리 vs 지시범위 원칙 정합, Stop hook 차단 출력 제거",
+          "synced_title": "CLAUDE.md·hook 모순 제거 — READY 즉시처리 vs 지시범위 원칙 정합, Stop hook 차단 출력 제거",
           "synced_labels": [
             "d9ed453a-7f0c-4211-abdd-b3d158d4e46f"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "68f2fe2f0ac8d6103354912e444b3accc050833c036bf2c3ce39cf10acb54401"
         }
       },
@@ -7778,16 +7781,16 @@
         "linear": {
           "id": "2c233f0b-650f-49ed-aa9f-576b97ed3cd2",
           "identifier": "HAR-25",
-          "url": "https://linear.app/cpoflow/issue/HAR-25/iss-531-전역-claudemd-다이어트-200줄-안팎-사례도메인-절차는-스킬rules로-강조-축소",
+          "url": "https://linear.app/cpoflow/issue/HAR-25/전역-claudemd-다이어트-200줄-안팎-사례도메인-절차는-스킬rules로-강조-축소",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-531] 전역 CLAUDE.md 다이어트 — 200줄 안팎, 사례·도메인 절차는 스킬/rules로, 강조 축소",
+          "synced_title": "전역 CLAUDE.md 다이어트 — 200줄 안팎, 사례·도메인 절차는 스킬/rules로, 강조 축소",
           "synced_labels": [
             "d9ed453a-7f0c-4211-abdd-b3d158d4e46f"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "68f2fe2f0ac8d6103354912e444b3accc050833c036bf2c3ce39cf10acb54401"
         }
       },
@@ -7821,16 +7824,16 @@
         "linear": {
           "id": "2b733901-2631-4937-822c-e680b699a20c",
           "identifier": "HAR-40",
-          "url": "https://linear.app/cpoflow/issue/HAR-40/iss-532-프로젝트-claudemd-낡은-모델가격-정보-정리-내레이션-절제-규칙-조정",
+          "url": "https://linear.app/cpoflow/issue/HAR-40/프로젝트-claudemd-낡은-모델가격-정보-정리-내레이션-절제-규칙-조정",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 3,
-          "synced_title": "[ISS-532] 프로젝트 CLAUDE.md 낡은 모델·가격 정보 정리 + 내레이션 절제 규칙 조정",
+          "synced_title": "프로젝트 CLAUDE.md 낡은 모델·가격 정보 정리 + 내레이션 절제 규칙 조정",
           "synced_labels": [
             "d9ed453a-7f0c-4211-abdd-b3d158d4e46f"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "5cc7e9e04468b75cc7291f92da02e7c62f96118cc6256906c9c73f0ae1ff62bb"
         }
       },
@@ -7855,16 +7858,16 @@
         "linear": {
           "id": "6a401f64-d290-4261-8328-9fb675e138f8",
           "identifier": "HAR-41",
-          "url": "https://linear.app/cpoflow/issue/HAR-41/iss-533-settingsjson-permissions-deny-안전망-추가",
+          "url": "https://linear.app/cpoflow/issue/HAR-41/settingsjson-permissions-deny-안전망-추가",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 3,
-          "synced_title": "[ISS-533] settings.json permissions deny 안전망 추가",
+          "synced_title": "settings.json permissions deny 안전망 추가",
           "synced_labels": [
             "d9ed453a-7f0c-4211-abdd-b3d158d4e46f"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "5cc7e9e04468b75cc7291f92da02e7c62f96118cc6256906c9c73f0ae1ff62bb"
         }
       },
@@ -7895,16 +7898,16 @@
         "linear": {
           "id": "520c5ff1-c23c-4694-b23a-7d80285858d7",
           "identifier": "HAR-22",
-          "url": "https://linear.app/cpoflow/issue/HAR-22/iss-534-opus-55-반영-advisor-opus-강등agent-cost-재산정행동보정-문구보안-폴백-안내-ad",
+          "url": "https://linear.app/cpoflow/issue/HAR-22/opus-55-반영-advisor-opus-강등agent-cost-재산정행동보정-문구보안-폴백-안내-ad",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-534] Opus 5.5 반영: advisor opus 강등·AGENT_COST 재산정·행동보정 문구·보안 폴백 안내 (A~D)",
+          "synced_title": "Opus 5.5 반영: advisor opus 강등·AGENT_COST 재산정·행동보정 문구·보안 폴백 안내 (A~D)",
           "synced_labels": [
             "d9ed453a-7f0c-4211-abdd-b3d158d4e46f"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "e18b2a066f38cf4e5ee18c85ba173747c4d1aa9f634618f17889efa50ed8b66e"
         }
       },
@@ -7939,16 +7942,16 @@
         "linear": {
           "id": "4ef3755e-3565-40f4-a8e6-3b6cfeca87a1",
           "identifier": "HAR-39",
-          "url": "https://linear.app/cpoflow/issue/HAR-39/iss-535-plan-ceo-reviewer-모델-불일치-해소-opus-budget-check-syntaxwarning-제거",
+          "url": "https://linear.app/cpoflow/issue/HAR-39/plan-ceo-reviewer-모델-불일치-해소-opus-budget-check-syntaxwarning-제거",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 3,
-          "synced_title": "[ISS-535] plan-ceo-reviewer 모델 불일치 해소 + opus-budget-check SyntaxWarning 제거",
+          "synced_title": "plan-ceo-reviewer 모델 불일치 해소 + opus-budget-check SyntaxWarning 제거",
           "synced_labels": [
             "20a695b1-f79b-4b4a-a1e5-91b159af3629"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "a1a8ae249a9e3c25a33c31b69a34312385e24e9e7322db63c9708d3cf50366e5"
         }
       },
@@ -7980,16 +7983,16 @@
         "linear": {
           "id": "76d929b2-b6be-45c2-8c51-0c8853a2bb8f",
           "identifier": "HAR-38",
-          "url": "https://linear.app/cpoflow/issue/HAR-38/iss-536-jev-섀도-모드-평가-intent-gate-병행-판정-로그-한국어-오프라인-측정",
+          "url": "https://linear.app/cpoflow/issue/HAR-38/jev-섀도-모드-평가-intent-gate-병행-판정-로그-한국어-오프라인-측정",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 3,
-          "synced_title": "[ISS-536] Jev 섀도 모드 평가 — intent-gate 병행 판정 로그 + 한국어 오프라인 측정",
+          "synced_title": "Jev 섀도 모드 평가 — intent-gate 병행 판정 로그 + 한국어 오프라인 측정",
           "synced_labels": [
             "0d908e68-c29f-4dfb-b933-5d10d80802f1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "2dd4c8909f7589e115d797eea1105685e2d587ee66a5c740eb0a8737b201bdd5"
         }
       },
@@ -8028,16 +8031,16 @@
         "linear": {
           "id": "2b45960b-796b-405b-80f7-1aac5caf3189",
           "identifier": "HAR-20",
-          "url": "https://linear.app/cpoflow/issue/HAR-20/iss-537-intent-gate-하자-실작업-지시가-아이디어-backlog에-막혀-dup-처리되는-버그",
+          "url": "https://linear.app/cpoflow/issue/HAR-20/intent-gate-하자-실작업-지시가-아이디어-backlog에-막혀-dup-처리되는-버그",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-537] intent-gate: '~하자' 실작업 지시가 아이디어 BACKLOG에 막혀 dup 처리되는 버그",
+          "synced_title": "intent-gate: '~하자' 실작업 지시가 아이디어 BACKLOG에 막혀 dup 처리되는 버그",
           "synced_labels": [
             "20a695b1-f79b-4b4a-a1e5-91b159af3629"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "7eee580e04f5e4dacfbac89ce729072eaa154352f6d3f690e375a6aa47bd1d01"
         }
       },
@@ -8067,16 +8070,16 @@
         "linear": {
           "id": "7747da0a-de2b-468a-9b6a-07599a94c78c",
           "identifier": "HAR-37",
-          "url": "https://linear.app/cpoflow/issue/HAR-37/iss-538-jev-섀도-워커에-vercel-ai-gateway-경로-추가-typesafe-직접가입-마감",
+          "url": "https://linear.app/cpoflow/issue/HAR-37/jev-섀도-워커에-vercel-ai-gateway-경로-추가-typesafe-직접가입-마감",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 3,
-          "synced_title": "[ISS-538] Jev 섀도 워커에 Vercel AI Gateway 경로 추가 (TypeSafe 직접가입 마감)",
+          "synced_title": "Jev 섀도 워커에 Vercel AI Gateway 경로 추가 (TypeSafe 직접가입 마감)",
           "synced_labels": [
             "0d908e68-c29f-4dfb-b933-5d10d80802f1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "30d327d44c50f3db378514376c341f636a35c8e83260324c114dd6ade8a2b579"
         }
       },
@@ -8106,16 +8109,16 @@
         "linear": {
           "id": "071ca400-d479-41a5-914b-a01b83a8525e",
           "identifier": "HAR-36",
-          "url": "https://linear.app/cpoflow/issue/HAR-36/iss-539-jev-섀도-워커에-openrouter-decisions-경로-추가-vercel-비회원",
+          "url": "https://linear.app/cpoflow/issue/HAR-36/jev-섀도-워커에-openrouter-decisions-경로-추가-vercel-비회원",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 3,
-          "synced_title": "[ISS-539] Jev 섀도 워커에 OpenRouter Decisions 경로 추가 (Vercel 비회원)",
+          "synced_title": "Jev 섀도 워커에 OpenRouter Decisions 경로 추가 (Vercel 비회원)",
           "synced_labels": [
             "0d908e68-c29f-4dfb-b933-5d10d80802f1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "c540dbc64733033b0557b2ba9481581114ea01fd81c6c1cdca70c98c38e50596"
         }
       },
@@ -8147,16 +8150,16 @@
         "linear": {
           "id": "4d3e2fc9-94e2-44de-908b-b8ea3ee2df96",
           "identifier": "HAR-21",
-          "url": "https://linear.app/cpoflow/issue/HAR-21/iss-540-archify-전역-설치-작업-처리결과-보고를-archify-로-result-archify-스킬",
+          "url": "https://linear.app/cpoflow/issue/HAR-21/archify-전역-설치-작업-처리결과-보고를-archify-로-result-archify-스킬",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-540] archify 전역 설치 + 작업 처리결과 보고를 archify 로 (result-archify 스킬)",
+          "synced_title": "archify 전역 설치 + 작업 처리결과 보고를 archify 로 (result-archify 스킬)",
           "synced_labels": [
             "0d908e68-c29f-4dfb-b933-5d10d80802f1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "23180654667f69227f6e2eb344206294e09e1aad55c6e8e852cab0e7c034208e"
         }
       },
@@ -8214,16 +8217,16 @@
         "linear": {
           "id": "ae177320-e201-4afa-a0ba-8196ff8e92b5",
           "identifier": "HAR-19",
-          "url": "https://linear.app/cpoflow/issue/HAR-19/iss-542-처리결과-archify-자동-생성-강제-훅-stop-시-미생성-감지",
+          "url": "https://linear.app/cpoflow/issue/HAR-19/처리결과-archify-자동-생성-강제-훅-stop-시-미생성-감지",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-542] 처리결과 archify 자동 생성 강제 훅 (Stop 시 미생성 감지)",
+          "synced_title": "처리결과 archify 자동 생성 강제 훅 (Stop 시 미생성 감지)",
           "synced_labels": [
             "0d908e68-c29f-4dfb-b933-5d10d80802f1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "f814b1339a49ca65c5a5ab563b5362cbd6ce4b0486102b834cae2591e2f2afbc"
         }
       },
@@ -8254,16 +8257,16 @@
         "linear": {
           "id": "3c33f76a-a0d7-4f10-9a9a-bce24ab30874",
           "identifier": "HAR-18",
-          "url": "https://linear.app/cpoflow/issue/HAR-18/iss-543-archify-결과물-첫-화면-초과-ego-browser-응답-멈춤-원인-조사",
+          "url": "https://linear.app/cpoflow/issue/HAR-18/archify-결과물-첫-화면-초과-ego-browser-응답-멈춤-원인-조사",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-543] archify 결과물 첫 화면 초과 + ego-browser 응답 멈춤 원인 조사",
+          "synced_title": "archify 결과물 첫 화면 초과 + ego-browser 응답 멈춤 원인 조사",
           "synced_labels": [
             "20a695b1-f79b-4b4a-a1e5-91b159af3629"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "eb9f15e3f0fabc73c8e8c72b40d7b3ff5b3385b0b2b5c0333212e232a1fb5797"
         }
       },
@@ -8295,16 +8298,16 @@
         "linear": {
           "id": "278c50d2-329c-42f0-8b6f-64ebeb1f756c",
           "identifier": "HAR-17",
-          "url": "https://linear.app/cpoflow/issue/HAR-17/iss-544-hermes-볼트-경로를-icloud-본-볼트로-교정-잘못-쌓인-drive-색인-이관-접근권한-실측",
+          "url": "https://linear.app/cpoflow/issue/HAR-17/hermes-볼트-경로를-icloud-본-볼트로-교정-잘못-쌓인-drive-색인-이관-접근권한-실측",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-544] Hermes 볼트 경로를 iCloud 본 볼트로 교정 + 잘못 쌓인 Drive 색인 이관 + 접근권한 실측",
+          "synced_title": "Hermes 볼트 경로를 iCloud 본 볼트로 교정 + 잘못 쌓인 Drive 색인 이관 + 접근권한 실측",
           "synced_labels": [
             "20a695b1-f79b-4b4a-a1e5-91b159af3629"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "d531b4b78ca9ce3dd64c4d19f7f0d9d78474a0297d744f9ac0d830be7a611da0"
         }
       },
@@ -8332,16 +8335,16 @@
         "linear": {
           "id": "ad66fd7d-18d6-40d5-aa4b-fb0db9b2f8fa",
           "identifier": "HAR-16",
-          "url": "https://linear.app/cpoflow/issue/HAR-16/iss-545-hermes-옵시디언-기억-공급자-플러그인-prefetch-읽기-sync-turn-inbox-적재-효과-로그",
+          "url": "https://linear.app/cpoflow/issue/HAR-16/hermes-옵시디언-기억-공급자-플러그인-prefetch-읽기-sync-turn-inbox-적재-효과-로그",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-545] Hermes 옵시디언 기억 공급자 플러그인 (prefetch 읽기 / sync_turn _inbox 적재 / 효과 로그)",
+          "synced_title": "Hermes 옵시디언 기억 공급자 플러그인 (prefetch 읽기 / sync_turn _inbox 적재 / 효과 로그)",
           "synced_labels": [
             "0d908e68-c29f-4dfb-b933-5d10d80802f1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "cac55c5ffe562aa5823b31260fd599d9c0ffc034ed20d11c7f846ce9d75847b2"
         }
       },
@@ -8390,16 +8393,16 @@
         "linear": {
           "id": "02f105e0-8761-4c93-8e4a-8d740d6a1bd7",
           "identifier": "HAR-13",
-          "url": "https://linear.app/cpoflow/issue/HAR-13/iss-547-ai-공통-지식-허브-cli-기억규칙을-옵시디언에-동기화해-hermes모델-교체와-무관하게-공유",
+          "url": "https://linear.app/cpoflow/issue/HAR-13/ai-공통-지식-허브-cli-기억규칙을-옵시디언에-동기화해-hermes모델-교체와-무관하게-공유",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-547] AI 공통 지식 허브: CLI 기억·규칙을 옵시디언에 동기화해 Hermes/모델 교체와 무관하게 공유",
+          "synced_title": "AI 공통 지식 허브: CLI 기억·규칙을 옵시디언에 동기화해 Hermes/모델 교체와 무관하게 공유",
           "synced_labels": [
             "2e97343a-4375-4c90-9021-2ef4a3c13dc9"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "8967d85445df9dd2569e21184ba00ccb33da1e4fe58de9073c95af823033052d"
         }
       },
@@ -8426,7 +8429,7 @@
       "id": "ISS-548",
       "title": "[Plan:CEO검토] ISS-547 전략 검토",
       "type": "PLAN_CEO_REVIEW",
-      "status": "READY",
+      "status": "CLOSED",
       "priority": "P1",
       "assign_to": "plan-ceo-reviewer",
       "depth": 1,
@@ -8447,28 +8450,30 @@
         "linear": {
           "id": "7aa8234b-93a7-4a26-b8f0-67cd731e07fb",
           "identifier": "HAR-14",
-          "url": "https://linear.app/cpoflow/issue/HAR-14/iss-548-planceo검토-iss-547-전략-검토",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-14/iss-547-전략-검토",
+          "synced_state": "671751cd-bb50-415a-b5c8-fec8fc26fd86",
+          "synced_state_type": "canceled",
           "synced_priority": 2,
-          "synced_title": "[ISS-548] [Plan:CEO검토] ISS-547 전략 검토",
+          "synced_title": "ISS-547 전략 검토",
           "synced_labels": [
             "d8d656d9-d3d6-413a-8304-a161d90b86c4"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "b1881f83c91eb9e9603634437e45e7b93bbc592383c358a0b00372d1575c0ec4"
-        }
+        },
+        "close_reason": "정리 1회(ISS-632): 원 작업 완료된 자동 파생 검토"
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-10-10T17:02:36"
+      "last_dispatched_at": "2026-10-10T17:02:36",
+      "updated_at": "2026-10-11T09:07:32+09:00"
     },
     {
       "id": "ISS-549",
       "title": "[Plan:Eng검토] ISS-547 실행가능성 검토",
       "type": "PLAN_ENG_REVIEW",
-      "status": "READY",
+      "status": "CLOSED",
       "priority": "P1",
       "assign_to": "plan-eng-reviewer",
       "depth": 1,
@@ -8489,22 +8494,24 @@
         "linear": {
           "id": "53847707-bcd1-4b4b-80ad-47f375ba8e26",
           "identifier": "HAR-15",
-          "url": "https://linear.app/cpoflow/issue/HAR-15/iss-549-planeng검토-iss-547-실행가능성-검토",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-15/iss-547-실행가능성-검토",
+          "synced_state": "671751cd-bb50-415a-b5c8-fec8fc26fd86",
+          "synced_state_type": "canceled",
           "synced_priority": 2,
-          "synced_title": "[ISS-549] [Plan:Eng검토] ISS-547 실행가능성 검토",
+          "synced_title": "ISS-547 실행가능성 검토",
           "synced_labels": [
             "4ea972f5-0f7d-4826-ae99-e1dccaa6dc99"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "34baedb722ee79c9d9897ffb36592ec25a4ca03d639d69b74fdec1650a10cbd6"
-        }
+        },
+        "close_reason": "정리 1회(ISS-632): 원 작업 완료된 자동 파생 검토"
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-10-08T15:13:01"
+      "last_dispatched_at": "2026-10-08T15:13:01",
+      "updated_at": "2026-10-11T09:07:32+09:00"
     },
     {
       "id": "ISS-550",
@@ -8524,16 +8531,16 @@
         "linear": {
           "id": "186596cc-d901-40d3-b429-88168d3b775c",
           "identifier": "HAR-4",
-          "url": "https://linear.app/cpoflow/issue/HAR-4/iss-550-security-vultr-최근-15일-gemini-api-키-유출-의심-정황-조사읽기-전용",
+          "url": "https://linear.app/cpoflow/issue/HAR-4/vultr-최근-15일-gemini-api-키-유출-의심-정황-조사읽기-전용",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 1,
-          "synced_title": "[ISS-550] [SECURITY] Vultr 최근 15일 Gemini API 키 유출 의심 — 정황 조사(읽기 전용)",
+          "synced_title": "Vultr 최근 15일 Gemini API 키 유출 의심 — 정황 조사(읽기 전용)",
           "synced_labels": [
             "e8b64b9e-8b0b-4146-a83d-e4e9b2cb3df1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "c530e07adc6c8ffbbac4e5d5461abef45098a9bc65623a451da9a78a3ff26f71"
         }
       },
@@ -8568,16 +8575,16 @@
         "linear": {
           "id": "07aa0f91-92fa-419d-ad9a-0c440bcf3c9b",
           "identifier": "HAR-3",
-          "url": "https://linear.app/cpoflow/issue/HAR-3/iss-551-insuregraph-임베딩-watchdog-일시-중지-새-키-투입-시-254만건-과금-폭주-방지",
+          "url": "https://linear.app/cpoflow/issue/HAR-3/insuregraph-임베딩-watchdog-일시-중지-새-키-투입-시-254만건-과금-폭주-방지",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 1,
-          "synced_title": "[ISS-551] insuregraph 임베딩 watchdog 일시 중지 — 새 키 투입 시 254만건 과금 폭주 방지",
+          "synced_title": "insuregraph 임베딩 watchdog 일시 중지 — 새 키 투입 시 254만건 과금 폭주 방지",
           "synced_labels": [
             "e8b64b9e-8b0b-4146-a83d-e4e9b2cb3df1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "6a5da7cb91070acefa3256cff7fc0e6dce638ad461dcc1dd47798d26b6c79620"
         }
       },
@@ -8605,16 +8612,16 @@
         "linear": {
           "id": "273e6c19-557c-46ed-8c01-fb5e3093d048",
           "identifier": "HAR-2",
-          "url": "https://linear.app/cpoflow/issue/HAR-2/iss-552-choncance-저장소-git-이력에서-gemini-키aizasydm7wa0-제거-강제-push",
+          "url": "https://linear.app/cpoflow/issue/HAR-2/choncance-저장소-git-이력에서-gemini-키aizasydm7wa0-제거-강제-push",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 1,
-          "synced_title": "[ISS-552] choncance 저장소 git 이력에서 Gemini 키(AIzaSyDM…7wa0) 제거 + 강제 push",
+          "synced_title": "choncance 저장소 git 이력에서 Gemini 키(AIzaSyDM…7wa0) 제거 + 강제 push",
           "synced_labels": [
             "e8b64b9e-8b0b-4146-a83d-e4e9b2cb3df1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "6a5da7cb91070acefa3256cff7fc0e6dce638ad461dcc1dd47798d26b6c79620"
         }
       },
@@ -8646,16 +8653,16 @@
         "linear": {
           "id": "a6b6ecc9-d99a-4dcb-aa28-ee9fd58f989f",
           "identifier": "HAR-12",
-          "url": "https://linear.app/cpoflow/issue/HAR-12/iss-553-gcp-보안과금-방어-조치-예산-알림미사용-gemini-api-차단호출-한도-파괴적-조치는-보고만",
+          "url": "https://linear.app/cpoflow/issue/HAR-12/gcp-보안과금-방어-조치-예산-알림미사용-gemini-api-차단호출-한도-파괴적-조치는-보고만",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-553] GCP 보안·과금 방어 조치 (예산 알림·미사용 Gemini API 차단·호출 한도, 파괴적 조치는 보고만)",
+          "synced_title": "GCP 보안·과금 방어 조치 (예산 알림·미사용 Gemini API 차단·호출 한도, 파괴적 조치는 보고만)",
           "synced_labels": [
             "e8b64b9e-8b0b-4146-a83d-e4e9b2cb3df1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "7a94a8e159cf759ca0d98c9300d079e49bbbf6b74aad6b4e309c02e2aa8e1186"
         }
       },
@@ -8693,16 +8700,16 @@
         "linear": {
           "id": "d5dc0065-1e94-4a8f-8d96-a3b05802eda9",
           "identifier": "HAR-11",
-          "url": "https://linear.app/cpoflow/issue/HAR-11/iss-554-certigraph-sa-서비스계정-키-비활성화-postgresql-479201-45일-미사용",
+          "url": "https://linear.app/cpoflow/issue/HAR-11/certigraph-sa-서비스계정-키-비활성화-postgresql-479201-45일-미사용",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-554] certigraph-sa 서비스계정 키 비활성화 (postgresql-479201, 45일 미사용)",
+          "synced_title": "certigraph-sa 서비스계정 키 비활성화 (postgresql-479201, 45일 미사용)",
           "synced_labels": [
             "e8b64b9e-8b0b-4146-a83d-e4e9b2cb3df1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "eca120d64a0aed16c31ae903e3f6afe9321b698ba945882d46504ce2aba2b7c1"
         }
       },
@@ -8729,16 +8736,16 @@
         "linear": {
           "id": "371d009f-ceb1-47c1-9c1c-c24be53a9b6a",
           "identifier": "HAR-10",
-          "url": "https://linear.app/cpoflow/issue/HAR-10/iss-555-vultr-서버-환경-튜닝-월10만원-서버-성능-불만족",
+          "url": "https://linear.app/cpoflow/issue/HAR-10/vultr-서버-환경-튜닝-월10만원-서버-성능-불만족",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-555] Vultr 서버 환경 튜닝 (월10만원 서버 성능 불만족)",
+          "synced_title": "Vultr 서버 환경 튜닝 (월10만원 서버 성능 불만족)",
           "synced_labels": [
             "2232918a-dcd1-4592-b54c-4a2f9669b49c"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "ffda129248ef53a7ba292885d2726264f018b22227df14a892e35159a1e74376"
         }
       },
@@ -8794,16 +8801,16 @@
         "linear": {
           "id": "a037929b-77e4-42b5-b037-f14c727d1014",
           "identifier": "HAR-46",
-          "url": "https://linear.app/cpoflow/issue/HAR-46/iss-556-insuregraph-약관수집-야간-전용-ocr임베딩-로컬-맥-처리-후-서버-저장halfvec",
+          "url": "https://linear.app/cpoflow/issue/HAR-46/insuregraph-약관수집-야간-전용-ocr임베딩-로컬-맥-처리-후-서버-저장halfvec",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 4,
-          "synced_title": "[ISS-556] insuregraph: 약관수집 야간 전용 + OCR·임베딩 로컬 맥 처리 후 서버 저장(halfvec)",
+          "synced_title": "insuregraph: 약관수집 야간 전용 + OCR·임베딩 로컬 맥 처리 후 서버 저장(halfvec)",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "9da800f3bff724d0ff1fa3b909c89ce3aa5af71565a3c05126a8b82c1900e805"
         }
       },
@@ -8844,16 +8851,16 @@
         "linear": {
           "id": "249b0543-21c0-4766-9c72-65b7ccdd4647",
           "identifier": "HAR-9",
-          "url": "https://linear.app/cpoflow/issue/HAR-9/iss-557-hermes-저장공간-부족으로-작동-불안정-조치",
+          "url": "https://linear.app/cpoflow/issue/HAR-9/hermes-저장공간-부족으로-작동-불안정-조치",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-557] Hermes 저장공간 부족으로 작동 불안정 — 조치",
+          "synced_title": "Hermes 저장공간 부족으로 작동 불안정 — 조치",
           "synced_labels": [
             "20a695b1-f79b-4b4a-a1e5-91b159af3629"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "33427e6408a11a718b04295d5e5864179336e4e522f497ad951d0ed6c31a49b2"
         }
       },
@@ -8893,16 +8900,16 @@
         "linear": {
           "id": "7564afc6-9aed-4e2b-8a0f-e5eb15eb7a4a",
           "identifier": "HAR-8",
-          "url": "https://linear.app/cpoflow/issue/HAR-8/iss-558-하네스-경량화-opus-555-공식-권고-반영검증체인-축소위임-상한claudemd-축소effort",
+          "url": "https://linear.app/cpoflow/issue/HAR-8/하네스-경량화-opus-555-공식-권고-반영검증체인-축소위임-상한claudemd-축소effort-medium주입-중복-정리",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-558] 하네스 경량화 — Opus 5/5.5 공식 권고 반영(검증체인 축소·위임 상한·CLAUDE.md 축소·effort medium·주입 중복 정리)",
+          "synced_title": "하네스 경량화 — Opus 5/5.5 공식 권고 반영(검증체인 축소·위임 상한·CLAUDE.md 축소·effort medium·주입 중복 정리)",
           "synced_labels": [
             "d9ed453a-7f0c-4211-abdd-b3d158d4e46f"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "1eb478542a8db730133bb1ffffe29e5e68882d931e9e1adedd01f83de5b99a12"
         }
       },
@@ -8945,16 +8952,17 @@
         "linear": {
           "id": "b65f929c-3116-40a3-97a6-3fc71802c9fc",
           "identifier": "HAR-35",
-          "url": "https://linear.app/cpoflow/issue/HAR-35/iss-559-결정필요-insuregraph-맥-ocr-처리량-부족-페이지당-약-2분-대기-약-4만쪽260일",
+          "url": "https://linear.app/cpoflow/issue/HAR-35/insuregraph-맥-ocr-처리량-부족-페이지당-약-2분-대기-약-4만쪽260일",
           "synced_state": "d1e56a17-2446-4e6b-8edf-0e1bc49f9f2e",
           "synced_state_type": "started",
           "synced_priority": 3,
-          "synced_title": "[ISS-559] [결정필요] insuregraph 맥 OCR 처리량 부족 — 페이지당 약 2분, 대기 약 4만쪽(≈260일)",
+          "synced_title": "insuregraph 맥 OCR 처리량 부족 — 페이지당 약 2분, 대기 약 4만쪽(≈260일)",
           "synced_labels": [
-            "25bfae86-1441-44eb-b500-c5f280e90ffd"
+            "25bfae86-1441-44eb-b500-c5f280e90ffd",
+            "4d70faa7-3283-46b9-9672-3ea4ad4be768"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "c7ce5add03c8e36ad60d305ee9d6bf06d74248af8d16a390020239913a033452"
         }
       }
@@ -8975,16 +8983,16 @@
         "linear": {
           "id": "f48dc93e-cc35-416f-8195-893abd09f5af",
           "identifier": "HAR-45",
-          "url": "https://linear.app/cpoflow/issue/HAR-45/iss-560-사무실-10g-스위치-비교표-html-unifi-6포트급-arc-표시",
+          "url": "https://linear.app/cpoflow/issue/HAR-45/사무실-10g-스위치-비교표-html-unifi-6포트급-arc-표시",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 4,
-          "synced_title": "[ISS-560] 사무실 10G 스위치 비교표 HTML (UniFi 6포트급) — Arc 표시",
+          "synced_title": "사무실 10G 스위치 비교표 HTML (UniFi 6포트급) — Arc 표시",
           "synced_labels": [
             "63e9b500-3d30-4bda-8455-57d019215f97"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T01:06:39.341352Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "c4a741a9e7d18cac379f0c4a298581c17316e0b9f48e8c629e04f54b0d1dc581"
         }
       },
@@ -9011,16 +9019,16 @@
         "linear": {
           "id": "c03c297e-ec04-4c1d-8838-e8bed6c01338",
           "identifier": "HAR-34",
-          "url": "https://linear.app/cpoflow/issue/HAR-34/iss-561-로컬-hermes-instinct-ai아이메시지-에이전트-소통-연결",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-34/로컬-hermes-instinct-ai아이메시지-에이전트-소통-연결",
+          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
+          "synced_state_type": "backlog",
           "synced_priority": 3,
-          "synced_title": "[ISS-561] 로컬 Hermes ↔ Instinct AI(아이메시지 에이전트) 소통 연결",
+          "synced_title": "로컬 Hermes ↔ Instinct AI(아이메시지 에이전트) 소통 연결",
           "synced_labels": [
             "2e97343a-4375-4c90-9021-2ef4a3c13dc9"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "9935bb28e82534160894d8a6a53e2d06d6aaf709a65acf6cc54301b3f3faa857"
         }
       },
@@ -9050,16 +9058,16 @@
         "linear": {
           "id": "4ccffc84-4a7c-495a-a1bf-fc66b31b9605",
           "identifier": "HAR-6",
-          "url": "https://linear.app/cpoflow/issue/HAR-6/iss-562-claude-code-mods-도입-pretooluse-가드-통합-mod-상태-band상태줄-로컬-마켓",
+          "url": "https://linear.app/cpoflow/issue/HAR-6/claude-code-mods-도입-pretooluse-가드-통합-mod-상태-band상태줄-로컬-마켓-배포installsh",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-562] Claude Code mods 도입 — PreToolUse 가드 통합 mod + 상태 band/상태줄 + 로컬 마켓 배포(install.sh), 셸 훅 병행",
+          "synced_title": "Claude Code mods 도입 — PreToolUse 가드 통합 mod + 상태 band/상태줄 + 로컬 마켓 배포(install.sh), 셸 훅 병행",
           "synced_labels": [
             "2e97343a-4375-4c90-9021-2ef4a3c13dc9"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "82fcc6929e7e5d847a07e2b584afe3aa83e54668f7fa013041d625c383f17f67"
         }
       },
@@ -9099,20 +9107,20 @@
         "linear": {
           "id": "546564d9-8cb3-4f98-bf2c-c1ea5725c0d1",
           "identifier": "HAR-1",
-          "url": "https://linear.app/cpoflow/issue/HAR-1/iss-563-보안-sandbox-enforcesh-blockwarn-이-exit-1-pretooluse-는-exit-2-만",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-1/sandbox-enforcesh-blockwarn-이-exit-1-pretooluse-는-exit-2-만-차단하므로-위험",
+          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
+          "synced_state_type": "backlog",
           "synced_priority": 1,
-          "synced_title": "[ISS-563] [보안] sandbox-enforce.sh BLOCK/WARN 이 exit 1 — PreToolUse 는 exit 2 만 차단하므로 위험 명령이 실제로 막히지 않음(27개 프로젝트 공용)",
+          "synced_title": "sandbox-enforce.sh BLOCK/WARN 이 exit 1 — PreToolUse 는 exit 2 만 차단하므로 위험 명령이 실제로 막히지 않음(27개 프로젝트 공용)",
           "synced_labels": [
             "e8b64b9e-8b0b-4146-a83d-e4e9b2cb3df1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "4fd8e4e592341cbf4f5ffa0b4ee88614319e3310dcf216584abf63abcfa48151"
         }
       },
-      "last_dispatched_at": "2026-10-10T18:00:21"
+      "last_dispatched_at": "2026-10-11T09:04:22"
     },
     {
       "id": "ISS-564",
@@ -9131,16 +9139,16 @@
         "linear": {
           "id": "c5462702-9c97-4751-850e-47189bf58414",
           "identifier": "HAR-33",
-          "url": "https://linear.app/cpoflow/issue/HAR-33/iss-564-opus-budget-state-가-2026-07-15-이후-갱신-안-됨-예산-softhard-cap-감시-정지",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-33/opus-budget-state-가-2026-07-15-이후-갱신-안-됨-예산-softhard-cap-감시-정지-의심",
+          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
+          "synced_state_type": "backlog",
           "synced_priority": 3,
-          "synced_title": "[ISS-564] opus_budget_state 가 2026-07-15 이후 갱신 안 됨 — 예산 Soft/Hard Cap 감시 정지 의심",
+          "synced_title": "opus_budget_state 가 2026-07-15 이후 갱신 안 됨 — 예산 Soft/Hard Cap 감시 정지 의심",
           "synced_labels": [
             "20a695b1-f79b-4b4a-a1e5-91b159af3629"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "f45d93c17039fdc23ef577c4f7ecc955f84ab5b1849b2bb590c5d2e48fec2889"
         }
       },
@@ -9150,7 +9158,7 @@
       "id": "ISS-565",
       "title": "[Plan:Eng검토] ISS-562 실행가능성 검토",
       "type": "PLAN_ENG_REVIEW",
-      "status": "READY",
+      "status": "CLOSED",
       "priority": "P1",
       "assign_to": "plan-eng-reviewer",
       "depth": 1,
@@ -9181,22 +9189,24 @@
         "linear": {
           "id": "deb71bbc-393c-4c99-970b-95818f35f62c",
           "identifier": "HAR-7",
-          "url": "https://linear.app/cpoflow/issue/HAR-7/iss-565-planeng검토-iss-562-실행가능성-검토",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-7/iss-562-실행가능성-검토",
+          "synced_state": "671751cd-bb50-415a-b5c8-fec8fc26fd86",
+          "synced_state_type": "canceled",
           "synced_priority": 2,
-          "synced_title": "[ISS-565] [Plan:Eng검토] ISS-562 실행가능성 검토",
+          "synced_title": "ISS-562 실행가능성 검토",
           "synced_labels": [
             "4ea972f5-0f7d-4826-ae99-e1dccaa6dc99"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "88d41d55dd3da779ecb8362cec08084ac638c3286a3e4806a7afd26ebf90b524"
-        }
+        },
+        "close_reason": "정리 1회(ISS-632): 원 작업 완료된 자동 파생 검토"
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-10-08T15:14:11"
+      "last_dispatched_at": "2026-10-08T15:14:11",
+      "updated_at": "2026-10-11T09:07:32+09:00"
     },
     {
       "id": "ISS-566",
@@ -9215,16 +9225,16 @@
         "linear": {
           "id": "3a05cacb-1c6d-453e-b7aa-756c1d2cc67a",
           "identifier": "HAR-5",
-          "url": "https://linear.app/cpoflow/issue/HAR-5/iss-566-지시-linear-연동해서-registry랑-동기화해줘",
+          "url": "https://linear.app/cpoflow/issue/HAR-5/linear-연동해서-registry랑-동기화해줘",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-566] [지시] linear 연동해서 registry랑 동기화해줘",
+          "synced_title": "linear 연동해서 registry랑 동기화해줘",
           "synced_labels": [
             "2e97343a-4375-4c90-9021-2ef4a3c13dc9"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "46b69c4aadc27451e07e63e86545818371296d8d1f1a66875c876bb47a0bf9da"
         }
       },
@@ -9237,30 +9247,31 @@
       "id": "ISS-567",
       "title": "[Plan:Eng검토] ISS-566 실행가능성 검토",
       "type": "UNKNOWN",
-      "status": "READY",
+      "status": "CLOSED",
       "priority": "P1",
       "assign_to": "main",
       "depth": 0,
       "created_at": "2026-10-05T05:27:07.923Z",
-      "updated_at": "2026-10-05T15:11:06.653135",
+      "updated_at": "2026-10-11T09:07:32+09:00",
       "payload": {
         "origin": "restored-from-linear",
         "linear": {
           "id": "1633632c-73e7-4128-8c20-b7f081603e94",
           "identifier": "HAR-60",
-          "url": "https://linear.app/cpoflow/issue/HAR-60/iss-567-planeng검토-iss-566-실행가능성-검토",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-60/iss-566-실행가능성-검토",
+          "synced_state": "671751cd-bb50-415a-b5c8-fec8fc26fd86",
+          "synced_state_type": "canceled",
           "synced_priority": 2,
-          "synced_title": "[ISS-567] [Plan:Eng검토] ISS-566 실행가능성 검토",
+          "synced_title": "ISS-566 실행가능성 검토",
           "synced_labels": [
             "7f3a8ea7-c573-4844-abbc-a9bf8a7cd5ee"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "512bd1281c0976b2b4dc8d264714a284edd0a5c8e5799f677720919d68a0efec"
         },
-        "restore_note": "2026-10-05 E_SSD 용량 0 → registry 0바이트 사고 후 Linear 기준 복원 (ISS-569)"
+        "restore_note": "2026-10-05 E_SSD 용량 0 → registry 0바이트 사고 후 Linear 기준 복원 (ISS-569)",
+        "close_reason": "정리 1회(ISS-632): 원 작업 완료된 자동 파생 검토"
       },
       "last_dispatched_at": "2026-10-10T16:59:32"
     },
@@ -9279,16 +9290,16 @@
         "linear": {
           "id": "49df78b1-fd9d-4841-8279-63b26d6d579e",
           "identifier": "HAR-61",
-          "url": "https://linear.app/cpoflow/issue/HAR-61/iss-568-02-githubnosync-50여개-프로젝트-한눈에-보기-대표님용-시각화",
+          "url": "https://linear.app/cpoflow/issue/HAR-61/02-githubnosync-50여개-프로젝트-한눈에-보기-대표님용-시각화",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 3,
-          "synced_title": "[ISS-568] 02_GitHub.nosync 50여개 프로젝트 한눈에 보기 (대표님용 시각화)",
+          "synced_title": "02_GitHub.nosync 50여개 프로젝트 한눈에 보기 (대표님용 시각화)",
           "synced_labels": [
             "63e9b500-3d30-4bda-8455-57d019215f97"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T01:06:39.341352Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "2e0db196f62c52032991b22ed25dbf93bf65e79259a913d3da19352fd0fb051c"
         },
         "restore_note": "2026-10-05 E_SSD 용량 0 → registry 0바이트 사고 후 Linear 기준 복원 (ISS-569)"
@@ -9313,16 +9324,16 @@
         "linear": {
           "id": "ea757bee-c8ec-4119-a079-acf00db2ada8",
           "identifier": "HAR-62",
-          "url": "https://linear.app/cpoflow/issue/HAR-62/iss-569-opendots-hermes-agent-연결-ag-ui",
+          "url": "https://linear.app/cpoflow/issue/HAR-62/opendots-hermes-agent-연결-ag-ui",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 3,
-          "synced_title": "[ISS-569] OpenDots ↔ Hermes Agent 연결 (AG-UI)",
+          "synced_title": "OpenDots ↔ Hermes Agent 연결 (AG-UI)",
           "synced_labels": [
             "7f3a8ea7-c573-4844-abbc-a9bf8a7cd5ee"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "b08213bd85ba47e45754b337175598a7b2a40d9b558a2b9c2d8b357aa11948ca"
         },
         "restore_note": "2026-10-05 E_SSD 용량 0 → registry 0바이트 사고 후 Linear 기준 복원 (ISS-569)"
@@ -9343,12 +9354,12 @@
       "id": "ISS-570",
       "title": "[아이디어] 근본적인 해결안 마련하자. 필요하면 주간 단위로 nas에 백업해서 최적의 e_ssd 환경을 유지하자.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED_DUPLICATE",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
       "created_at": "2026-10-05T15:11:21.483863",
-      "updated_at": "2026-10-05T15:11:21.483863",
+      "updated_at": "2026-10-11T09:07:32+09:00",
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "근본적인 해결안 마련하자. 필요하면 주간 단위로 nas에 백업해서 최적의 e_ssd 환경을 유지하자.",
@@ -9357,18 +9368,19 @@
         "linear": {
           "id": "e6e236f7-3ef5-4577-8256-d7951a024ae0",
           "identifier": "HAR-64",
-          "url": "https://linear.app/cpoflow/issue/HAR-64/iss-570-아이디어-근본적인-해결안-마련하자-필요하면-주간-단위로-nas에-백업해서-최적의-e-ssd-환경을-유지하자",
-          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
-          "synced_state_type": "backlog",
+          "url": "https://linear.app/cpoflow/issue/HAR-64/근본적인-해결안-마련하자-필요하면-주간-단위로-nas에-백업해서-최적의-e-ssd-환경을-유지하자",
+          "synced_state": "671751cd-bb50-415a-b5c8-fec8fc26fd86",
+          "synced_state_type": "canceled",
           "synced_priority": 4,
-          "synced_title": "[ISS-570] [아이디어] 근본적인 해결안 마련하자. 필요하면 주간 단위로 nas에 백업해서 최적의 e_ssd 환경을 유지하자.",
+          "synced_title": "근본적인 해결안 마련하자. 필요하면 주간 단위로 nas에 백업해서 최적의 e_ssd 환경을 유지하자.",
           "synced_labels": [
             "658c26cf-d366-413c-b9d1-f6a6acb22b87"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "7bc124616c0e14b0d31e74a5307a04060fa2e8fa69db6f2cbb06aaf05abc6e42"
-        }
+        },
+        "close_reason": "정리 1회(ISS-632): ISS-571 중복"
       }
     },
     {
@@ -9388,21 +9400,21 @@
         "linear": {
           "id": "97342963-e103-40e2-8a66-d5fc130d6cbc",
           "identifier": "HAR-63",
-          "url": "https://linear.app/cpoflow/issue/HAR-63/iss-571-e-ssd-용량-0-사고-대응-근본-해결exfat-1mb-할당-단위-주간-nas-백업-체계",
-          "synced_state": "071b8dcd-53b0-485e-881b-db297c7e61c7",
-          "synced_state_type": "unstarted",
+          "url": "https://linear.app/cpoflow/issue/HAR-63/e-ssd-용량-0-사고-대응-근본-해결exfat-1mb-할당-단위-주간-nas-백업-체계",
+          "synced_state": "13838920-4e08-4661-9fd3-0380019ceb3a",
+          "synced_state_type": "backlog",
           "synced_priority": 1,
-          "synced_title": "[ISS-571] E_SSD 용량 0 사고 대응 + 근본 해결(exFAT 1MB 할당 단위) + 주간 NAS 백업 체계",
+          "synced_title": "E_SSD 용량 0 사고 대응 + 근본 해결(exFAT 1MB 할당 단위) + 주간 NAS 백업 체계",
           "synced_labels": [
             "2232918a-dcd1-4592-b54c-4a2f9669b49c"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "e5ff273b4198d5d3686a6461c14037bf9b3d700ad4aa3ab2bfb78456482a151a"
         }
       },
       "retry_count": 1,
-      "last_dispatched_at": "2026-10-10T17:59:52"
+      "last_dispatched_at": "2026-10-11T09:04:20"
     },
     {
       "id": "ISS-572",
@@ -9422,16 +9434,16 @@
         "linear": {
           "id": "fa9b8504-e567-4812-aa14-aa6c05cc2825",
           "identifier": "HAR-65",
-          "url": "https://linear.app/cpoflow/issue/HAR-65/iss-572-hermes-대시보드-메뉴에-opendots-연결",
+          "url": "https://linear.app/cpoflow/issue/HAR-65/hermes-대시보드-메뉴에-opendots-연결",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 3,
-          "synced_title": "[ISS-572] Hermes 대시보드 메뉴에 OpenDots 연결",
+          "synced_title": "Hermes 대시보드 메뉴에 OpenDots 연결",
           "synced_labels": [
             "0d908e68-c29f-4dfb-b933-5d10d80802f1"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "94d66715ecea09ab0491eeb82382c769e5de8325ddd9c6975cf71b39b908eb7a"
         }
       },
@@ -9480,16 +9492,16 @@
         "linear": {
           "id": "a5609068-52eb-423e-a098-52286bcdf279",
           "identifier": "HAR-66",
-          "url": "https://linear.app/cpoflow/issue/HAR-66/iss-574-gagahohoio-접속-불가-원인-진단조치",
+          "url": "https://linear.app/cpoflow/issue/HAR-66/gagahohoio-접속-불가-원인-진단조치",
           "synced_state": "40eea749-444f-4c20-b398-2338b87fdf16",
           "synced_state_type": "completed",
           "synced_priority": 2,
-          "synced_title": "[ISS-574] gagahoho.io 접속 불가 원인 진단·조치",
+          "synced_title": "gagahoho.io 접속 불가 원인 진단·조치",
           "synced_labels": [
             "20a695b1-f79b-4b4a-a1e5-91b159af3629"
           ],
           "synced_project": "ef1ae746-cae8-4c58-a23f-1f9eeab2ebda",
-          "synced_at": "2026-10-07T00:59:51.901647Z",
+          "synced_at": "2026-10-11T00:07:32.417888Z",
           "synced_description_hash": "1f81fb77f853396f32efd1f35fee88264dca1efdc4cf98394ccfc6b8221578f0"
         }
       },
@@ -9504,17 +9516,18 @@
       "id": "ISS-575",
       "title": "[아이디어] linear에 한글로 현재 개발하는 프로젝트 전체를 등록하고 운영하고 싶어.",
       "type": "IDEA",
-      "status": "BACKLOG",
+      "status": "CLOSED_DUPLICATE",
       "priority": "P3",
       "assign_to": "product-manager",
       "depth": 0,
       "created_at": "2026-10-07T09:51:25.836392",
-      "updated_at": "2026-10-07T09:51:25.836392",
+      "updated_at": "2026-10-11T09:07:32+09:00",
       "payload": {
         "origin": "intent-gate:idea",
         "raw_prompt": "linear에 한글로 현재 개발하는 프로젝트 전체를 등록하고 운영하고 싶어.",
         "session_id": "2814143f-00e1-475c-9f71-b4c60b478aaa",
-        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다."
+        "note": "대표님 제안형 발화 자동 포착. BACKLOG라 자동 착수 안 함 — 검토 후 READY로 올려야 실행된다.",
+        "close_reason": "정리 1회(ISS-632): ISS-576에서 완료"
       }
     },
     {
@@ -9564,7 +9577,7 @@
       "id": "ISS-578",
       "title": "[Plan:Eng검토] ISS-576 실행가능성 검토",
       "type": "PLAN_ENG_REVIEW",
-      "status": "READY",
+      "status": "CLOSED",
       "priority": "P1",
       "assign_to": "plan-eng-reviewer",
       "depth": 1,
@@ -9579,17 +9592,19 @@
           "verified": "unittest 27 OK, apply 실패 0, Linear 프로젝트 화면 확인"
         },
         "feature": "ISS-576",
-        "single_review": true
+        "single_review": true,
+        "close_reason": "정리 1회(ISS-632): 원 작업 완료된 자동 파생 검토"
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-10-08T15:16:34"
+      "last_dispatched_at": "2026-10-08T15:16:34",
+      "updated_at": "2026-10-11T09:07:32+09:00"
     },
     {
       "id": "ISS-579",
       "title": "[Plan:Eng검토] ISS-577 실행가능성 검토",
       "type": "PLAN_ENG_REVIEW",
-      "status": "READY",
+      "status": "CLOSED",
       "priority": "P1",
       "assign_to": "plan-eng-reviewer",
       "depth": 1,
@@ -9604,11 +9619,13 @@
           "verified": "Dot 응답 소켓 확인, 주간 보고 실행 completed(3사이트 표), cron next 2026-10-12 09:00"
         },
         "feature": "ISS-577",
-        "single_review": true
+        "single_review": true,
+        "close_reason": "정리 1회(ISS-632): 원 작업 완료된 자동 파생 검토"
       },
       "result": null,
       "spawn_rules": [],
-      "last_dispatched_at": "2026-10-08T15:17:18"
+      "last_dispatched_at": "2026-10-08T15:17:18",
+      "updated_at": "2026-10-11T09:07:32+09:00"
     },
     {
       "id": "ISS-580",
@@ -9639,7 +9656,7 @@
         "awaiting": "ISS-583 (t_adda4935)"
       },
       "retry_count": 1,
-      "last_dispatched_at": "2026-10-10T18:05:23"
+      "last_dispatched_at": "2026-10-11T09:08:36"
     },
     {
       "id": "ISS-581",
@@ -10414,7 +10431,7 @@
       "id": "ISS-619",
       "title": "[Plan:Eng검토] ISS-618 실행가능성 검토",
       "type": "PLAN_ENG_REVIEW",
-      "status": "READY",
+      "status": "CLOSED",
       "priority": "P1",
       "assign_to": "plan-eng-reviewer",
       "depth": 1,
@@ -10436,10 +10453,12 @@
           "pending_user": ".env PREFIX=작업 지시,제안 + TASK_MARKER 추가, Instinct에 프롬프트 붙여넣기"
         },
         "feature": "ISS-618",
-        "single_review": true
+        "single_review": true,
+        "close_reason": "정리 1회(ISS-632): 원 작업 완료된 자동 파생 검토"
       },
       "result": null,
-      "spawn_rules": []
+      "spawn_rules": [],
+      "updated_at": "2026-10-11T09:07:32+09:00"
     },
     {
       "id": "ISS-620",
@@ -10532,7 +10551,7 @@
       "id": "ISS-624",
       "title": "[Plan:Eng검토] ISS-623 실행가능성 검토",
       "type": "PLAN_ENG_REVIEW",
-      "status": "READY",
+      "status": "CLOSED",
       "priority": "P1",
       "assign_to": "plan-eng-reviewer",
       "depth": 1,
@@ -10554,10 +10573,12 @@
           "pending": "Instinct Linear Connect + 추가 프롬프트, 첫 승인으로 실측"
         },
         "feature": "ISS-623",
-        "single_review": true
+        "single_review": true,
+        "close_reason": "정리 1회(ISS-632): 원 작업 완료된 자동 파생 검토"
       },
       "result": null,
-      "spawn_rules": []
+      "spawn_rules": [],
+      "updated_at": "2026-10-11T09:07:32+09:00"
     },
     {
       "id": "ISS-625",
@@ -10583,7 +10604,7 @@
       "id": "ISS-626",
       "title": "[Plan:Eng검토] ISS-625 실행가능성 검토",
       "type": "PLAN_ENG_REVIEW",
-      "status": "READY",
+      "status": "CLOSED",
       "priority": "P1",
       "assign_to": "plan-eng-reviewer",
       "depth": 1,
@@ -10600,10 +10621,12 @@
           "bridge": "launchd 정상(exit 0)"
         },
         "feature": "ISS-625",
-        "single_review": true
+        "single_review": true,
+        "close_reason": "정리 1회(ISS-632): 원 작업 완료된 자동 파생 검토"
       },
       "result": null,
-      "spawn_rules": []
+      "spawn_rules": [],
+      "updated_at": "2026-10-11T09:07:32+09:00"
     },
     {
       "id": "ISS-627",
@@ -10631,7 +10654,7 @@
       "id": "ISS-628",
       "title": "[Plan:Eng검토] ISS-627 실행가능성 검토",
       "type": "PLAN_ENG_REVIEW",
-      "status": "READY",
+      "status": "CLOSED",
       "priority": "P1",
       "assign_to": "plan-eng-reviewer",
       "depth": 1,
@@ -10646,15 +10669,17 @@
           "watch": "Instinct 첫 Linear 이슈 actor/botActor 감시 20분"
         },
         "feature": "ISS-627",
-        "single_review": true
+        "single_review": true,
+        "close_reason": "정리 1회(ISS-632): 원 작업 완료된 자동 파생 검토"
       },
       "result": null,
-      "spawn_rules": []
+      "spawn_rules": [],
+      "updated_at": "2026-10-11T09:07:32+09:00"
     },
     {
       "id": "ISS-629",
       "type": "FEATURE_PLAN",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "priority": "P0",
       "title": "Linear 대표님 차례 정비 — 비밀번호 노출 제거·READY→백로그·제목 정리·대표님 차례 라벨/보기",
       "created_at": "2026-10-10T18:14:04+09:00",
@@ -10662,7 +10687,91 @@
       "payload": {
         "origin": "user",
         "raw_prompt": "착수 승인."
+      },
+      "result": {
+        "security": "비밀번호 가림: Linear HAR-30·registry 3곳·0000_master·메모리·백업 → 작업트리 잔존 0, HEAD ad10a0c 푸시. 공개 GitHub 과거 커밋 3c0a095 잔존(이력 재작성은 T2)",
+        "linear": "할 일 61→0, 대표님 차례 라벨 36건(확인할 것— 제목), 보기 대표님 차례 생성",
+        "code": "02f05d4 READY→백로그·제목 태그 제거·redact·라벨, 테스트 32/32",
+        "sync": "portfolio --apply GH_Harness 갱신66 실패0"
+      },
+      "completed_at": "2026-10-10T18:30:33.258561"
+    },
+    {
+      "id": "ISS-630",
+      "title": "[Plan:Eng검토] ISS-629 실행가능성 검토",
+      "type": "PLAN_ENG_REVIEW",
+      "status": "CLOSED",
+      "priority": "P1",
+      "assign_to": "plan-eng-reviewer",
+      "depth": 1,
+      "retry_count": 0,
+      "parent_id": "ISS-629",
+      "depends_on": [],
+      "created_at": "2026-10-10T18:30:33.258561",
+      "payload": {
+        "source_issue": "ISS-629",
+        "source_plan": {
+          "security": "비밀번호 가림: Linear HAR-30·registry 3곳·0000_master·메모리·백업 → 작업트리 잔존 0, HEAD ad10a0c 푸시. 공개 GitHub 과거 커밋 3c0a095 잔존(이력 재작성은 T2)",
+          "linear": "할 일 61→0, 대표님 차례 라벨 36건(확인할 것— 제목), 보기 대표님 차례 생성",
+          "code": "02f05d4 READY→백로그·제목 태그 제거·redact·라벨, 테스트 32/32",
+          "sync": "portfolio --apply GH_Harness 갱신66 실패0"
+        },
+        "feature": "ISS-629",
+        "single_review": true,
+        "close_reason": "정리 1회(ISS-632): 원 작업 완료된 자동 파생 검토"
+      },
+      "result": null,
+      "spawn_rules": [],
+      "updated_at": "2026-10-11T09:07:32+09:00"
+    },
+    {
+      "id": "ISS-631",
+      "title": "[아이디어] 나는 여기서 짧은 아이디어 논의나 지시를 하곤해. 이 폴더를 브래인이라 생각하거든. 그런데 그런이슈들중 몇몇은 시킨지도 모르고 혹은",
+      "type": "IDEA",
+      "status": "CLOSED_DUPLICATE",
+      "priority": "P3",
+      "assign_to": "product-manager",
+      "depth": 0,
+      "created_at": "2026-10-11T08:47:12.216665",
+      "updated_at": "2026-10-11T08:47:12.216665",
+      "payload": {
+        "origin": "intent-gate:idea",
+        "raw_prompt": "나는 여기서 짧은 아이디어 논의나 지시를 하곤해. 이 폴더를 브래인이라 생각하거든. 그런데 그런이슈들중 몇몇은 시킨지도 모르고 혹은 어디까지 진행되었는지도 모르고 지나가. linear등을 이용하려는것은 그것을 놓이지 않고 진행하고 싶어서야.",
+        "session_id": "db44f27a-825d-461c-b705-7bbc6bc55a36",
+        "note": "ISS-632로 승인·착수"
       }
+    },
+    {
+      "id": "ISS-632",
+      "title": "[놓침 방지] 방치 정리 1회 → 대표님 결정 목록(A) → Linear 자동동기화(C) → 중단지점 기록(B)",
+      "type": "REFACTOR",
+      "status": "DONE",
+      "priority": "P2",
+      "assign_to": "agent-harness",
+      "depth": 0,
+      "created_at": "2026-10-11T08:49:45.063244",
+      "updated_at": "2026-10-11T09:03:51+09:00",
+      "payload": {
+        "origin": "intent-gate",
+        "raw_prompt": "많은 프로젝트 들이 특히 전문 소프트웨어 개발자들이 linear를 쓰고 있다고 들었어. 그 많한 이유가 있다고 생각해. 정리 1회 → A → C → B 승인.",
+        "session_id": "db44f27a-825d-461c-b705-7bbc6bc55a36",
+        "progress": {
+          "at": "2026-10-11T09:03:51+09:00",
+          "done": "A·B 구현·배포·커밋 ec8d30b, C는 Stop훅으로 이미 가동 확인",
+          "next": "대표님 살림/버림 답변 받아 방치 이슈 일괄 정리 → on_complete"
+        }
+      },
+      "result": {
+        "files_created": [
+          "project/.claude/hooks/owner-digest.py",
+          "project/.claude/hooks/progress-note.sh",
+          "project/.claude/hooks/progress-guard.sh"
+        ],
+        "tests": 40,
+        "closed_stale": 15,
+        "commit": "ec8d30b"
+      },
+      "completed_at": "2026-10-11T09:08:35.796077"
     }
   ],
   "hooks": {
@@ -11196,6 +11305,18 @@
         "issue_type": "FEATURE_PLAN",
         "plan_created": 1,
         "timestamp": "2026-10-10T18:07:58.642072"
+      },
+      {
+        "issue_id": "ISS-629",
+        "issue_type": "FEATURE_PLAN",
+        "plan_created": 1,
+        "timestamp": "2026-10-10T18:30:33.258561"
+      },
+      {
+        "issue_id": "ISS-632",
+        "issue_type": "REFACTOR",
+        "plan_created": 0,
+        "timestamp": "2026-10-11T09:08:35.796077"
       }
     ],
     "on_fail": [
@@ -42553,14 +42674,251 @@
           "failed": 0,
           "escalated": 0
         }
+      },
+      {
+        "cycle": 1519,
+        "timestamp": "2026-10-10T18:30:51.053968",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 1511시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 1113시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 1111시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 1089시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 963시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 801시간",
+          "🟡 장기 대기: ISS-548 (PLAN_CEO_REVIEW) — 289시간",
+          "🟡 장기 대기: ISS-549 (PLAN_ENG_REVIEW) — 289시간",
+          "🟡 장기 대기: ISS-561 (FEATURE_PLAN) — 151시간",
+          "🟡 장기 대기: ISS-563 (SECURITY) — 143시간",
+          "🟡 장기 대기: ISS-564 (FIX_BUG) — 143시간",
+          "🟡 장기 대기: ISS-565 (PLAN_ENG_REVIEW) — 143시간",
+          "🟡 장기 대기: ISS-571 (INFRA_TUNE) — 123시간",
+          "🟡 장기 대기: ISS-578 (PLAN_ENG_REVIEW) — 80시간",
+          "🟡 장기 대기: ISS-579 (PLAN_ENG_REVIEW) — 80시간",
+          "🟡 장기 대기: ISS-580 (FEATURE_PLAN) — 57시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 331,
+          "done": 123,
+          "in_progress": 0,
+          "ready": 23,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1520,
+        "timestamp": "2026-10-10T18:34:05.094718",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 1511시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 1113시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 1111시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 1089시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 963시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 801시간",
+          "🟡 장기 대기: ISS-548 (PLAN_CEO_REVIEW) — 289시간",
+          "🟡 장기 대기: ISS-549 (PLAN_ENG_REVIEW) — 289시간",
+          "🟡 장기 대기: ISS-561 (FEATURE_PLAN) — 151시간",
+          "🟡 장기 대기: ISS-563 (SECURITY) — 144시간",
+          "🟡 장기 대기: ISS-564 (FIX_BUG) — 143시간",
+          "🟡 장기 대기: ISS-565 (PLAN_ENG_REVIEW) — 143시간",
+          "🟡 장기 대기: ISS-571 (INFRA_TUNE) — 123시간",
+          "🟡 장기 대기: ISS-578 (PLAN_ENG_REVIEW) — 80시간",
+          "🟡 장기 대기: ISS-579 (PLAN_ENG_REVIEW) — 80시간",
+          "🟡 장기 대기: ISS-580 (FEATURE_PLAN) — 57시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 331,
+          "done": 123,
+          "in_progress": 0,
+          "ready": 23,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1521,
+        "timestamp": "2026-10-10T19:25:52.100871",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 1511시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 1113시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 1112시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 1090시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 964시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 802시간",
+          "🟡 장기 대기: ISS-548 (PLAN_CEO_REVIEW) — 290시간",
+          "🟡 장기 대기: ISS-549 (PLAN_ENG_REVIEW) — 290시간",
+          "🟡 장기 대기: ISS-561 (FEATURE_PLAN) — 152시간",
+          "🟡 장기 대기: ISS-563 (SECURITY) — 144시간",
+          "🟡 장기 대기: ISS-564 (FIX_BUG) — 144시간",
+          "🟡 장기 대기: ISS-565 (PLAN_ENG_REVIEW) — 144시간",
+          "🟡 장기 대기: ISS-571 (INFRA_TUNE) — 124시간",
+          "🟡 장기 대기: ISS-578 (PLAN_ENG_REVIEW) — 81시간",
+          "🟡 장기 대기: ISS-579 (PLAN_ENG_REVIEW) — 81시간",
+          "🟡 장기 대기: ISS-580 (FEATURE_PLAN) — 58시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 331,
+          "done": 123,
+          "in_progress": 0,
+          "ready": 23,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1522,
+        "timestamp": "2026-10-11T08:47:45.756553",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 1525시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 1127시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 1126시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 1104시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 978시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 816시간",
+          "🟡 장기 대기: ISS-548 (PLAN_CEO_REVIEW) — 303시간",
+          "🟡 장기 대기: ISS-549 (PLAN_ENG_REVIEW) — 303시간",
+          "🟡 장기 대기: ISS-561 (FEATURE_PLAN) — 165시간",
+          "🟡 장기 대기: ISS-563 (SECURITY) — 158시간",
+          "🟡 장기 대기: ISS-564 (FIX_BUG) — 158시간",
+          "🟡 장기 대기: ISS-565 (PLAN_ENG_REVIEW) — 158시간",
+          "🟡 장기 대기: ISS-571 (INFRA_TUNE) — 138시간",
+          "🟡 장기 대기: ISS-578 (PLAN_ENG_REVIEW) — 94시간",
+          "🟡 장기 대기: ISS-579 (PLAN_ENG_REVIEW) — 94시간",
+          "🟡 장기 대기: ISS-580 (FEATURE_PLAN) — 72시간",
+          "🟡 장기 대기: ISS-619 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-624 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-626 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-628 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-630 (PLAN_ENG_REVIEW) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 332,
+          "done": 123,
+          "in_progress": 0,
+          "ready": 23,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1523,
+        "timestamp": "2026-10-11T08:47:46.964040",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 1525시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 1127시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 1126시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 1104시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 978시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 816시간",
+          "🟡 장기 대기: ISS-548 (PLAN_CEO_REVIEW) — 303시간",
+          "🟡 장기 대기: ISS-549 (PLAN_ENG_REVIEW) — 303시간",
+          "🟡 장기 대기: ISS-561 (FEATURE_PLAN) — 165시간",
+          "🟡 장기 대기: ISS-563 (SECURITY) — 158시간",
+          "🟡 장기 대기: ISS-564 (FIX_BUG) — 158시간",
+          "🟡 장기 대기: ISS-565 (PLAN_ENG_REVIEW) — 158시간",
+          "🟡 장기 대기: ISS-571 (INFRA_TUNE) — 138시간",
+          "🟡 장기 대기: ISS-578 (PLAN_ENG_REVIEW) — 94시간",
+          "🟡 장기 대기: ISS-579 (PLAN_ENG_REVIEW) — 94시간",
+          "🟡 장기 대기: ISS-580 (FEATURE_PLAN) — 72시간",
+          "🟡 장기 대기: ISS-619 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-624 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-626 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-628 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-630 (PLAN_ENG_REVIEW) — 14시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 332,
+          "done": 123,
+          "in_progress": 0,
+          "ready": 23,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1524,
+        "timestamp": "2026-10-11T09:04:20.527417",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 1525시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 1127시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 1126시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 1104시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 978시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 816시간",
+          "🟡 장기 대기: ISS-548 (PLAN_CEO_REVIEW) — 303시간",
+          "🟡 장기 대기: ISS-549 (PLAN_ENG_REVIEW) — 303시간",
+          "🟡 장기 대기: ISS-561 (FEATURE_PLAN) — 166시간",
+          "🟡 장기 대기: ISS-563 (SECURITY) — 158시간",
+          "🟡 장기 대기: ISS-564 (FIX_BUG) — 158시간",
+          "🟡 장기 대기: ISS-565 (PLAN_ENG_REVIEW) — 158시간",
+          "🟡 장기 대기: ISS-571 (INFRA_TUNE) — 138시간",
+          "🟡 장기 대기: ISS-578 (PLAN_ENG_REVIEW) — 95시간",
+          "🟡 장기 대기: ISS-579 (PLAN_ENG_REVIEW) — 95시간",
+          "🟡 장기 대기: ISS-580 (FEATURE_PLAN) — 72시간",
+          "🟡 장기 대기: ISS-619 (PLAN_ENG_REVIEW) — 16시간",
+          "🟡 장기 대기: ISS-624 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-626 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-628 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-630 (PLAN_ENG_REVIEW) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 333,
+          "done": 123,
+          "in_progress": 1,
+          "ready": 23,
+          "failed": 0,
+          "escalated": 0
+        }
+      },
+      {
+        "cycle": 1525,
+        "timestamp": "2026-10-11T09:04:21.897268",
+        "findings": [
+          "🟡 장기 대기: ISS-398 (FEATURE_PLAN) — 1525시간",
+          "🟡 장기 대기: ISS-480 (FEATURE_PLAN) — 1127시간",
+          "🟡 장기 대기: ISS-483 (FEATURE_PLAN) — 1126시간",
+          "🟡 장기 대기: ISS-488 (FEATURE_PLAN) — 1104시간",
+          "🟡 장기 대기: ISS-495 (FEATURE_PLAN) — 978시간",
+          "🟡 장기 대기: ISS-522 (FEATURE_PLAN) — 816시간",
+          "🟡 장기 대기: ISS-548 (PLAN_CEO_REVIEW) — 303시간",
+          "🟡 장기 대기: ISS-549 (PLAN_ENG_REVIEW) — 303시간",
+          "🟡 장기 대기: ISS-561 (FEATURE_PLAN) — 166시간",
+          "🟡 장기 대기: ISS-563 (SECURITY) — 158시간",
+          "🟡 장기 대기: ISS-564 (FIX_BUG) — 158시간",
+          "🟡 장기 대기: ISS-565 (PLAN_ENG_REVIEW) — 158시간",
+          "🟡 장기 대기: ISS-571 (INFRA_TUNE) — 138시간",
+          "🟡 장기 대기: ISS-578 (PLAN_ENG_REVIEW) — 95시간",
+          "🟡 장기 대기: ISS-579 (PLAN_ENG_REVIEW) — 95시간",
+          "🟡 장기 대기: ISS-580 (FEATURE_PLAN) — 72시간",
+          "🟡 장기 대기: ISS-619 (PLAN_ENG_REVIEW) — 16시간",
+          "🟡 장기 대기: ISS-624 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-626 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-628 (PLAN_ENG_REVIEW) — 15시간",
+          "🟡 장기 대기: ISS-630 (PLAN_ENG_REVIEW) — 15시간"
+        ],
+        "issues_created": [],
+        "stats_snapshot": {
+          "total": 333,
+          "done": 123,
+          "in_progress": 1,
+          "ready": 23,
+          "failed": 0,
+          "escalated": 0
+        }
       }
     ]
   },
   "stats": {
-    "total_issues": 264,
-    "completed": 157,
+    "total_issues": 267,
+    "completed": 159,
     "failed": 16,
-    "evolved": 1518
+    "evolved": 1525
   },
   "hermes_state": {
     "invocations_by_issue": {},
@@ -42584,8 +42942,8 @@
     "demotion_active": false
   },
   "issue_budget": {
-    "date": "2026-10-10",
-    "created_today": 4
+    "date": "2026-10-11",
+    "created_today": 0
   },
   "proactive_scan_state": {
     "date": "2026-05-10",
@@ -42936,16 +43294,10 @@
     "ISS-488:READY": 104,
     "ISS-495:READY": 58,
     "ISS-522:READY": 30,
-    "ISS-548:READY": 13,
-    "ISS-549:READY": 10,
-    "ISS-563:READY": 32,
-    "ISS-565:READY": 4,
+    "ISS-563:READY": 35,
     "ISS-561:READY": 4,
     "ISS-564:READY": 3,
-    "ISS-571:READY": 31,
-    "ISS-567:READY": 5,
-    "ISS-580:READY": 14,
-    "ISS-578:READY": 2,
-    "ISS-579:READY": 2
+    "ISS-571:READY": 35,
+    "ISS-580:READY": 16
   }
 }
