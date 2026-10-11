@@ -9,6 +9,7 @@
     "IN_PROGRESS": "started",
     "AWAITING_USER": "In Review",
     "HANDED_OFF": "In Review",
+    "BLOCKED_USER": "In Review",
     "PARTIAL": "In Review",
     "COMPLETED": "completed",
     "DONE": "completed",

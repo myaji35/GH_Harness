@@ -167,6 +167,37 @@ class SyncTests(unittest.TestCase):
         self.assertNotIn("raw_prompt", text)
         self.assertNotIn("SECRET", text)
 
+    def test_description_includes_progress(self):
+        local = issue(1)
+        local["payload"]["progress"] = {"done": "설계 완료", "next": "구현", "at": "2026-10-05T10:00:00+09:00"}
+        details = sync.description(local)
+        self.assertIn("마지막 진행: 설계 완료\n다음 할 일: 구현\n기록 시각: 2026-10-05T10:00:00+09:00", details)
+
+    def test_user_label_covers_blocked_handed_off_and_decision_tags(self):
+        for status, title in (("AWAITING_USER", "작업"), ("BLOCKED_USER", "작업"),
+                              ("HANDED_OFF", "작업"), ("READY", "[결정필요] 작업"),
+                              ("PARTIAL", "[T2] 작업"), ("BACKLOG", "[CONFIRM] 작업")):
+            with self.subTest(status=status, title=title):
+                local = issue(1, status)
+                local["title"] = title
+                self.assertIn(sync.USER_LABEL, sync.desired_label_names(local, {}))
+        self.assertNotIn(sync.USER_LABEL, sync.desired_label_names(issue(1), {}))
+
+    def test_progress_change_updates_description(self):
+        local = self.linked(issue(1))
+        self.save([local])
+        fake = FakeClient({"linear-1": self.matching_remote(1)})
+        self.assertEqual(sync.run(CONFIG, self.path, fake, apply=True, now=NOW)["counts"]["unchanged"], 1)
+        changed = self.read()[0]
+        previous_hash = changed["payload"]["linear"]["synced_description_hash"]
+        changed["payload"]["progress"] = {"done": "설계", "next": "구현", "at": "2026-10-05T01:00:00Z"}
+        changed["updated_at"] = "2026-10-05T01:00:00Z"
+        self.save([changed])
+        result = sync.run(CONFIG, self.path, fake, apply=True, now=NOW + dt.timedelta(hours=2))
+        self.assertEqual(result["counts"]["update"], 1)
+        self.assertIn("마지막 진행: 설계", fake.mutations[0]["input"]["description"])
+        self.assertNotEqual(self.read()[0]["payload"]["linear"]["synced_description_hash"], previous_hash)
+
     def test_display_title_strips_leading_tags_and_marks_user_turn(self):
         local = issue(21)
         for title in ("[ISS-021] [Plan:Eng검토]  설계   검토", "[지시] 설계 검토",

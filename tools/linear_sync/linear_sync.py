@@ -3,6 +3,7 @@
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -16,7 +17,7 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 REGISTRY = ROOT / ".claude/issue-db/registry.json"
-OPEN = {"BACKLOG", "READY", "IN_PROGRESS", "AWAITING_USER", "HANDED_OFF", "PARTIAL"}
+OPEN = {"BACKLOG", "READY", "IN_PROGRESS", "AWAITING_USER", "BLOCKED_USER", "HANDED_OFF", "PARTIAL"}
 DONE = {"COMPLETED", "DONE"}
 PRIORITY_DEFAULT = {"P0": 1, "P1": 2, "P2": 3, "P3": 4}
 REVERSE_PRIORITY = {1: "P0", 2: "P1", 3: "P2", 4: "P3"}
@@ -140,7 +141,7 @@ def find_state(status, states, config):
 
 def reverse_state(linear_state, old_status):
     kind = linear_state["type"].lower()
-    if kind == "started" and linear_state["name"].lower() in ("in review", "검토 중") and old_status in {"AWAITING_USER", "HANDED_OFF", "PARTIAL"}:
+    if kind == "started" and linear_state["name"].lower() in ("in review", "검토 중") and old_status in {"AWAITING_USER", "HANDED_OFF", "BLOCKED_USER", "PARTIAL"}:
         return old_status
     return {"completed": "COMPLETED", "canceled": "CLOSED", "started": "IN_PROGRESS", "unstarted": "READY", "backlog": "BACKLOG"}.get(kind, old_status)
 
@@ -165,7 +166,11 @@ def original_title(issue):
 def description(issue):
     payload = issue.get("payload") or {}
     fields = (("원제목", f"[{issue['id']}] {issue.get('title', '')}"), ("type", issue.get("type")), ("priority", issue.get("priority")), ("ref", payload.get("ref")), ("origin", payload.get("origin")), ("created_at", issue.get("created_at")), ("registry", ".claude/issue-db/registry.json"))
-    return "\n".join(f"{name}: {value}" for name, value in fields if isinstance(value, (str, int, float, bool)))
+    lines = [f"{name}: {value}" for name, value in fields if isinstance(value, (str, int, float, bool))]
+    progress = payload.get("progress")
+    if isinstance(progress, dict):
+        lines.extend((f"마지막 진행: {progress.get('done', '')}", f"다음 할 일: {progress.get('next', '')}", f"기록 시각: {progress.get('at', '')}"))
+    return "\n".join(lines)
 
 
 class LinearError(Exception):
@@ -267,7 +272,8 @@ def desired_label_names(issue, ctx):
     names = []
     if issue.get("type"):
         names.append(ctx.get("label_names_ko", {}).get(issue["type"], issue["type"]))
-    if issue.get("status") == "AWAITING_USER":
+    if (issue.get("status") in {"AWAITING_USER", "BLOCKED_USER", "HANDED_OFF"}
+            or (issue.get("status") in OPEN and any(tag in (issue.get("title") or "") for tag in ("[결정필요]", "[T2]", "[CONFIRM]")))):
         names.append(USER_LABEL)
     return names
 
@@ -300,7 +306,7 @@ def mutate_issue(client, issue, item, ctx):
     return data["issue"]
 
 
-SYNC_FIELDS = ("synced_state", "synced_state_type", "synced_priority", "synced_title", "synced_labels", "synced_project")
+SYNC_FIELDS = ("synced_state", "synced_state_type", "synced_priority", "synced_title", "synced_labels", "synced_project", "synced_description_hash")
 
 
 def desired_snapshot(issue, state, level, ctx):
@@ -311,7 +317,8 @@ def desired_snapshot(issue, state, level, ctx):
             labels.append(label["id"] if label else "name:" + name)
     return {"synced_state": state["id"], "synced_state_type": state["type"],
             "synced_priority": level, "synced_title": display_title(issue),
-            "synced_labels": sorted(labels), "synced_project": (ctx.get("project") or {}).get("id") if ctx else None}
+            "synced_labels": sorted(labels), "synced_project": (ctx.get("project") or {}).get("id") if ctx else None,
+            "synced_description_hash": hashlib.sha1(redact(description(issue)).encode("utf-8")).hexdigest()[:12]}
 
 
 def remote_snapshot(remote):
@@ -378,7 +385,8 @@ def plan_issue(issue, remote, ctx, config):
         local_changed = timestamp(issue.get("updated_at")) and timestamp(issue["updated_at"]) > synced
         return ("conflict" if local_changed else "pull"), state, level
     desired = desired_snapshot(issue, state, level, ctx)
-    baseline = remote_snapshot(remote) if any(key not in linear for key in SYNC_FIELDS) else {key: linear[key] for key in SYNC_FIELDS}
+    baseline = remote_snapshot(remote) if any(key not in linear for key in SYNC_FIELDS if key != "synced_description_hash") else {key: linear[key] for key in SYNC_FIELDS if key != "synced_description_hash"}
+    baseline["synced_description_hash"] = linear.get("synced_description_hash", desired["synced_description_hash"])
     if ready_backlog and remote["state"]["id"] == state["id"] and baseline["synced_state_type"].lower() in ("unstarted", "backlog"):
         baseline["synced_state"] = state["id"]
         baseline["synced_state_type"] = state["type"]

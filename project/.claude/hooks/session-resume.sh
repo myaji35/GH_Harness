@@ -388,3 +388,6 @@ if sp + fp + mo > 0:
 
 print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 PYEOF
+
+# ── 대표님 결정 목록 (ISS-632) ──
+python3 "$SCRIPT_DIR/owner-digest.py" 2>/dev/null || true

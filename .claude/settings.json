@@ -145,6 +145,11 @@
             "timeout": 30,
             "statusMessage": "Meta Agent reviewing...",
             "asyncRewake": true
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/progress-guard.sh",
+            "timeout": 10
           }
         ]
       }
