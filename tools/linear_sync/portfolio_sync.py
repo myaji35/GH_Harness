@@ -130,7 +130,9 @@ def localize_team(client, ctx, config, apply, warnings):
             warnings.append("팀 이름 한글화 예정")
     for state in ctx["states"]:
         target = wanted_state_name(state, config["state_names_ko"])
-        if not target or state["name"] == target:
+        if (not target or state["name"].casefold() == target.casefold()
+                or any(other["id"] != state["id"] and other["name"].casefold() == target.casefold()
+                       for other in ctx["states"])):
             continue
         if apply:
             try:

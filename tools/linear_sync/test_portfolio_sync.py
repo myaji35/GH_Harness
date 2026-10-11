@@ -142,6 +142,22 @@ class PortfolioTests(unittest.TestCase):
         self.assertEqual([variables["id"] for query, variables in fake.mutations if "workflowStateUpdate(" in query], ["b"])
         self.assertEqual(ctx["states"][0]["name"], "Duplicate")
 
+    def test_existing_target_state_skips_rename_without_warning(self):
+        states = [{"id": "found", "name": "발견", "type": "backlog"},
+                  {"id": "backlog", "name": "백로그", "type": "backlog"},
+                  {"id": "refine", "name": "다듬음", "type": "unstarted"},
+                  {"id": "todo", "name": "할 일", "type": "unstarted"},
+                  {"id": "extra", "name": "Extra", "type": "triage"},
+                  {"id": "target", "name": "rEvIeW", "type": "triage"}]
+        config = {**self.config, "state_names_ko": {**self.config["state_names_ko"], "triage": "Review"}}
+        fake = FakeClient(states=states)
+        ctx = portfolio.metadata(fake, config)
+        warnings = []
+        portfolio.localize_team(fake, ctx, config, False, warnings)
+        portfolio.localize_team(fake, ctx, config, True, warnings)
+        self.assertEqual(fake.mutations, [])
+        self.assertEqual(warnings, [])
+
     def test_workspace_label_renames_dry_run_apply_and_repeat(self):
         labels = [{"id": "w", "name": "Feature", "team": None},
                   {"id": "t", "name": "Bug", "team": {"id": "team"}},
