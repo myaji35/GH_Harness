@@ -1,4 +1,5 @@
 #!/bin/bash
+[ "${FACTORY_RUNNER:-}" = "1" ] && exit 0
 # user-input-mark.sh — v5/A2
 # UserPromptSubmit 시점에 호출. .user-input-pending 파일 생성 → dispatch-ready가 큐 보류.
 # Claude가 응답하는 동안만 유효. on-agent-complete.sh 끝에서 자동 제거.

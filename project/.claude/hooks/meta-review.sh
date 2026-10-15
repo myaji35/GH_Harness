@@ -1,4 +1,6 @@
 #!/bin/bash
+[ "${FACTORY_RUNNER:-}" = "1" ] && exit 0
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # meta-review.sh — Meta Agent 관찰 주기 실행
 # 30분마다 또는 수동으로 호출됨
 #
@@ -18,7 +20,13 @@ fi
 
 python3 << 'PYEOF'
 import json, datetime, sys, os
-sys.path.insert(0, os.path.join(".claude", "hooks", "lib"))
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 from issue_id import next_id
 
 try:
@@ -325,10 +333,8 @@ try:
     with _txn(".claude/issue-db/registry.json") as _r:
         _r.clear(); _r.update(registry)
 except Exception as _e:
-    # 락 실패 시에도 데이터는 남겨야 한다 — 단, 조용히 넘어가지 않고 알린다
-    print(f"[meta-review] 락 실패({_e}) — 비원자적 저장으로 폴백", file=_s.stderr)
-    with open(".claude/issue-db/registry.json", 'w') as f:
-        json.dump(registry, f, indent=2, ensure_ascii=False)
+    print(f"[meta-review] registry 저장 실패: {_e}", file=_s.stderr)
+    raise
 
 # 새 이슈가 생성되었으면 exit 2 (asyncRewake)
 if new_issues:

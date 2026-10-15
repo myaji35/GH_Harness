@@ -1,4 +1,6 @@
 #!/bin/bash
+[ "${FACTORY_RUNNER:-}" = "1" ] && exit 0
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # intent-gate.sh — v5.3 / 지시 분류 게이트
 # UserPromptSubmit 시점 호출. 대표님의 단순 프롬프트를 3분류:
 #   실작업형 → registry.json에 이슈 자동 생성 + 검증루프 안내(stdout 컨텍스트 주입)
@@ -45,6 +47,13 @@ esac
 # 실작업형(이슈화 강제): 코드 산출물을 만들거나 바꾸는 동사
 python3 - "$SCRIPT_DIR" "$PROMPT" "$SESSION_ID" <<'PY'
 import sys, re, json, datetime, os
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 
 __file__ = os.path.join(sys.argv[1], "intent-gate.sh")
 sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
@@ -195,7 +204,7 @@ if is_idea():
                                     '검토 후 READY로 올려야 실행된다.'},
             })
             reg_i.setdefault('stats', {})['total_issues'] = reg_i['stats'].get('total_issues', 0) + 1
-            json.dump(reg_i, open(REG_I, 'w'), indent=2, ensure_ascii=False)
+            atomic_write_json(REG_I, reg_i)
             print(f"[아이디어 포착] {iid_i} BACKLOG 등재 — 유실 방지. "
                   f"지금 실행할지는 대표님 지시를 따르되, 기록은 남았다.")
     except Exception:
@@ -270,7 +279,7 @@ reg['issues'].append({
                 'session_id': session_id},
 })
 reg.setdefault('stats', {})['total_issues'] = reg['stats'].get('total_issues',0)+1
-json.dump(reg, open(REG,'w'), ensure_ascii=False, indent=2)
+atomic_write_json(REG, reg)
 
 # stdout → Claude 컨텍스트 주입(검증 루프 강제 안내 + 즉시 실행 명령)
 print(f"[지시 분류 게이트] 이 지시를 실작업으로 분류 → {iid}({itype}/{prio}) 자동 생성.")

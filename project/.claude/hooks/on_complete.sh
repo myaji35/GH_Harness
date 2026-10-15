@@ -1,4 +1,5 @@
 #!/bin/bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # on_complete Hook 핸들러
 # 이슈 완료 시: 결과 분석 → Plan 수립 → 파생 이슈 자동 생성 → 디스패치
 #
@@ -37,6 +38,13 @@ fi
 
 python3 - "$SCRIPT_DIR" "$REGISTRY" "$ISSUE_ID" "$ISSUE_TYPE" "$RESULT" << 'PYEOF'
 import json, datetime, re, sys, os
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 
 # 인자는 argv로 받는다 (heredoc 보간 금지 — RCE 차단, 2026-07-15)
 __file__ = os.path.join(sys.argv[1], "on_complete.sh")
@@ -55,6 +63,13 @@ except:
 
 now = datetime.datetime.now().isoformat()
 new_issues = []
+factory_runner = os.environ.get('FACTORY_RUNNER') == '1'
+factory_verification_types = {
+    'LINT_CHECK', 'RUN_TESTS', 'RETEST', 'TYPE_CHECK', 'SCORE',
+    'DEPLOY_READY', 'DOMAIN_ANALYZE', 'UI_REVIEW', 'DESIGN_REVIEW',
+    'JOURNEY_VALIDATE', 'BROWSER_QA', 'BIZ_VALIDATE', 'SCENARIO_PLAY',
+    'PLAN_CEO_REVIEW', 'PLAN_ENG_REVIEW', 'IMPROVE_COVERAGE',
+}
 
 def _verify_evidence(paths, since_ts=None):
     ok_list = []
@@ -74,6 +89,8 @@ def _verify_evidence(paths, since_ts=None):
     return ok_list, bad_list
 
 def add_issue(title, itype, priority, assign_to, payload=None):
+    if factory_runner and itype in factory_verification_types:
+        return
     payload = payload or {}
     src = payload.get('source_issue')
 
@@ -220,6 +237,8 @@ try:
 except:
     result = {'raw': result_raw}
 
+if factory_runner:
+    result['factory_inline_verification'] = True
 target_issue['result'] = result
 
 evidence_rejected = False
@@ -1070,8 +1089,7 @@ try:
         _r.clear(); _r.update(registry)
 except Exception as _e:
     print(f'[on_complete] 락 실패({_e}) — 비원자적 저장으로 폴백', file=sys.stderr)
-    with open(_REG, 'w') as f:
-        json.dump(registry, f, indent=2, ensure_ascii=False)
+    atomic_write_json(_REG, registry)
 
 print(f"[on_complete] 처리 완료")
 PYEOF
@@ -1089,9 +1107,11 @@ done
 SCRIPT_DIR="$(cd -P "$(dirname "$_src")" && pwd)"
 echo "[on_complete] → dispatch-ready 실행"
 bash "$SCRIPT_DIR/dispatch-ready.sh" "$REGISTRY"
-echo ""
-echo "[자동 진행 지시] 질문하지 마라. dispatch-ready 결과에 따라 다음 에이전트를 즉시 스폰하라."
-echo "  '다음 단계로 진행하시겠습니까?' 같은 질문은 금지. 바로 실행하라."
+if [ "${FACTORY_RUNNER:-}" != "1" ]; then
+  echo ""
+  echo "[자동 진행 지시] 질문하지 마라. dispatch-ready 결과에 따라 다음 에이전트를 즉시 스폰하라."
+  echo "  '다음 단계로 진행하시겠습니까?' 같은 질문은 금지. 바로 실행하라."
+fi
 
 # 처리결과 누락 감지용 완료 기록 — 기록 실패는 기존 훅 동작에 영향을 주지 않는다.
 if [ "$_archify_complete_status" -eq 0 ]; then

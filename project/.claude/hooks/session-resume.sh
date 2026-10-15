@@ -1,4 +1,6 @@
 #!/bin/bash
+[ "${FACTORY_RUNNER:-}" = "1" ] && exit 0
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # session-resume.sh — 새 세션 시작 시 registry.json 상태 요약
 # SessionStart hook에서 호출됨
 #
@@ -51,6 +53,13 @@ import json, os
 __file__ = os.path.join(_ARGV[0], "session-resume.sh")
 sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
 from issue_id import next_id
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 
 try:
     with open(_ARGV[1], 'r') as f:
@@ -88,7 +97,7 @@ try:
                     "payload": {"origin": "session-resume", "action": "draft_brand_dna"},
                 })
                 _reg.setdefault("stats", {})["total_issues"] = _reg["stats"].get("total_issues", 0)+1
-                json.dump(_reg, open(_REG, "w"), ensure_ascii=False, indent=2)
+                atomic_write_json(_REG, _reg)
                 print(f"⚠️  brand-dna.json 미초기화 → BRAND_DEFINE 이슈 {_new_id} 자동 생성 (brand-guardian)")
             else:
                 print("⚠️  brand-dna.json 미초기화 — BRAND_DEFINE 이슈 이미 존재")
@@ -235,6 +244,13 @@ import json, sys, os
 __file__ = os.path.join(sys.argv[1], "session-resume.sh")
 sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
 from issue_id import next_id
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 
 try:
     with open(".claude/issue-db/registry.json", 'r') as f:
@@ -279,8 +295,7 @@ if os.environ.get("CICD_GAP_VERDICT", "OK") == "GAP":
         registry.setdefault("stats", {})["total_issues"] = registry["stats"].get("total_issues", 0) + 1
         cb_state["last_date"] = today
         try:
-            with open(".claude/issue-db/registry.json", "w") as wf:
-                json.dump(registry, wf, ensure_ascii=False, indent=2)
+            atomic_write_json(".claude/issue-db/registry.json", registry)
             print(f"\n🔧 [CI/CD] 워크플로 부재 감지 — {new_id} (CICD_BOOTSTRAP) 자동 생성. cicd-harness가 GitHub Actions 골격을 깐다.")
         except Exception as e:
             print(f"[CICD_BOOTSTRAP 주입 실패: {e}]")
@@ -388,6 +403,5 @@ if sp + fp + mo > 0:
 
 print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 PYEOF
-
 # ── 대표님 결정 목록 (ISS-632) ──
 python3 "$SCRIPT_DIR/owner-digest.py" 2>/dev/null || true

@@ -1,4 +1,5 @@
 #!/bin/bash
+[ "${FACTORY_RUNNER:-}" = "1" ] && exit 0
 # fleet-scan.sh — v5.3 / 전 프로젝트(fleet) 방치 이슈 크로스 스캐너
 # 근본문제: 각 프로젝트가 격리돼, 한 프로젝트 세션에서 다른 프로젝트의 방치
 #   READY/IN_PROGRESS 이슈를 알 수 없음 → "지시받은 적 없다는 듯 딴말" 발생.
