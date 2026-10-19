@@ -95,7 +95,7 @@
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/secret-guard.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/secret-guard.sh\"",
             "timeout": 30,
             "statusMessage": "Scanning for leaked secrets...",
             "onFailure": "block"
@@ -127,7 +127,7 @@
           },
           {
             "type": "command",
-            "command": "bash .claude/hooks/secret-guard.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/secret-guard.sh\"",
             "timeout": 8,
             "statusMessage": "Checking for hardcoded secrets..."
           }
