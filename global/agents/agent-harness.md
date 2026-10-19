@@ -69,21 +69,21 @@ bash .claude/hooks/post-generate-verify.sh
 - [ ] **환경 변수**: 새 ENV 추가 시 `.env.example` 업데이트
 - [ ] **DB 마이그레이션**: 스키마 변경 시 마이그레이션 파일 존재 확인
 
-### 검증 결과 기록
-on_complete 호출 시 result JSON에 반드시 포함:
+### 검증 결과 기록 — prove-it-works (on_complete 가 강제)
+"통과했다"는 자기 신고(true/false)는 근거가 아니다. **실제로 실행한 명령과 그 출력**을 `proof` 배열로 남긴다:
 ```json
 {
-  "pre_delivery": {
-    "lint_passed": true,
-    "http_check": true,
-    "css_loaded": true,
-    "hangul_ok": true,
-    "verify_method": "post-generate-verify.sh"  
-  }
+  "proof": [
+    {"cmd": "npx tsc --noEmit", "exit_code": 0, "output": "(출력 없음 — 타입 에러 0)"},
+    {"cmd": "curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/new", "exit_code": 0, "output": "200"},
+    {"cmd": "npm test -- auth", "exit_code": 0, "output": "Tests: 12 passed, 12 total"}
+  ]
 }
 ```
-
-**pre_delivery 필드 없이 on_complete 호출 시 → NEEDS_VERIFICATION 상태로 강등.**
+- `cmd` 는 실제 실행한 명령, `output` 은 실제 출력 발췌(지어내지 않는다). `echo`/`true` 는 증거로 인정되지 않는다.
+- `exit_code 0` 인 항목이 하나 이상 있어야 한다. 버그 수정이면 **고친 증상을 재현하던 명령**을 다시 돌린 결과를 넣는다.
+- `proof` 가 없거나 형식이 틀리면 `on_complete.sh` 가 **exit 3 으로 완료를 거부**하고 이슈는 IN_PROGRESS 로 남는다 → 실행해서 확인한 뒤 다시 호출한다.
+- 대상 타입: GENERATE_CODE, FIX_BUG, BIZ_FIX, REFACTOR, STYLE_FIX, UX_FIX, DESIGN_FIX, SCENARIO_FIX, QUALITY_IMPROVEMENT.
 
 ## 파생 이슈 생성 규칙
 ```

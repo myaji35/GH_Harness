@@ -373,8 +373,8 @@ DESIGN_REVIEW   → check-harness:design
 # 테스트 에이전트 예시
 bash .claude/hooks/on_complete.sh ISS-003 RUN_TESTS '{"passed":true,"total":42,"failed_count":0,"coverage":84}'
 
-# 코드 에이전트 예시
-bash .claude/hooks/on_complete.sh ISS-001 GENERATE_CODE '{"files_created":["src/auth.py"]}'
+# 코드 에이전트 예시 — 코드 변경 타입은 proof(실행 증거) 필수, 없으면 exit 3 거부 (prove-it-works)
+bash .claude/hooks/on_complete.sh ISS-001 GENERATE_CODE '{"files_created":["src/auth.py"],"proof":[{"cmd":"pytest tests/test_auth.py","exit_code":0,"output":"5 passed"}]}'
 
 # Eval 에이전트 예시
 bash .claude/hooks/on_complete.sh ISS-005 SCORE '{"score":82,"prev_score":79,"breakdown":{"quality":85,"coverage":80,"performance":78,"docs":85}}'

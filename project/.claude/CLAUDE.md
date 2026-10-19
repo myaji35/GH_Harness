@@ -12,6 +12,7 @@
   - 규칙성 메타지시("앞으로 ~하게") → 작업이 아니라 규칙 저장.
   - 의문문 메타("반영되고 있나?") → 답변만.
 - 구현 후 `bash .claude/hooks/on_complete.sh ISS-NNN <type> '<result JSON>'` 로 완료 처리한다.
+- **prove-it-works**: 코드를 바꾼 이슈는 result 에 `"proof":[{"cmd","exit_code","output"}]` — 실제 실행한 명령과 실제 출력 — 이 있어야 DONE 이 된다. 없으면 on_complete 가 exit 3 으로 거부한다. "통과했다"는 자기 신고는 근거가 아니다.
 
 ## 2. 자율 실행
 지시받은 범위 안에서는 되묻지 않고 끝까지 실행한다. 보고는 실행 후에 한다.

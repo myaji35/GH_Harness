@@ -241,6 +241,65 @@ if factory_runner:
     result['factory_inline_verification'] = True
 target_issue['result'] = result
 
+# ── prove-it-works (pstack 원칙, 2026-10-18) ──
+# 코드를 바꾼 이슈는 "실제로 돌려 봤다"는 실행 증거(result.proof) 없이는 DONE 이 되지 않는다.
+#   proof: [{"cmd": "npm test -- auth", "exit_code": 0, "output": "Tests: 12 passed"}]
+# 근거(2026-10-18, 0000_master 공장 관제실): 스위치는 "개발 중", 카드는 "양호"였지만 실행기는
+# 시작 즉시 죽고 있었다 — 아무도 실제 실행 결과를 보지 않았다.
+# HARNESS_PROOF_MODE=warn 이면 거부 대신 경고만(2주 모니터링 후 판단용 탈출구).
+PROOF_TYPES = {
+    'GENERATE_CODE', 'FIX_BUG', 'BIZ_FIX', 'REFACTOR', 'STYLE_FIX', 'UX_FIX',
+    'DESIGN_FIX', 'SCENARIO_FIX', 'QUALITY_IMPROVEMENT',
+}
+TRIVIAL_CMD = re.compile(r'^\s*(echo|true|printf|:|cat\s+<<)\b')
+
+def _check_proof(proof):
+    if not isinstance(proof, list) or not proof:
+        return ['proof 없음 — 실행한 명령·종료코드·출력 발췌를 result.proof 배열로 남겨라']
+    problems = []
+    for idx, item in enumerate(proof):
+        if not isinstance(item, dict):
+            problems.append(f'proof[{idx}] 객체 아님'); continue
+        cmd = str(item.get('cmd') or '').strip()
+        if not cmd:
+            problems.append(f'proof[{idx}].cmd 비어 있음')
+        elif TRIVIAL_CMD.match(cmd):
+            problems.append(f'proof[{idx}].cmd "{cmd[:30]}" 는 실행 증거가 아님')
+        if not isinstance(item.get('exit_code'), int):
+            problems.append(f'proof[{idx}].exit_code 정수 아님')
+        if not str(item.get('output') or '').strip():
+            problems.append(f'proof[{idx}].output 비어 있음 — 실제 출력 발췌 필요')
+    if not problems and not any(item.get('exit_code') == 0 for item in proof):
+        problems.append('exit_code 0 인 proof 없음 — 동작이 확인된 실행이 하나도 없다')
+    return problems
+
+def _proof_metric(outcome, problems):
+    try:
+        _mpath = os.path.join('.claude', 'knowledge-db', 'proof-metrics.jsonl')
+        os.makedirs(os.path.dirname(_mpath), exist_ok=True)
+        with open(_mpath, 'a') as _mf:
+            _mf.write(json.dumps({'ts': now, 'issue': issue_id, 'type': issue_type, 'outcome': outcome,
+                                  'factory': factory_runner, 'problems': problems}, ensure_ascii=False) + '\n')
+    except Exception:
+        pass
+
+if issue_type in PROOF_TYPES and target_issue.get('status') != 'AWAITING_USER':
+    _proof_problems = _check_proof(result.get('proof'))
+    if not _proof_problems:
+        _proof_metric('ok', [])
+    elif os.environ.get('HARNESS_PROOF_MODE') == 'warn':
+        _proof_metric('warn', _proof_problems)
+        print(f'[prove-it-works] 경고(warn 모드): {issue_id} — ' + '; '.join(_proof_problems), file=sys.stderr)
+    else:
+        _proof_metric('rejected', _proof_problems)
+        print(f'[prove-it-works] {issue_id} 완료 거부 — 상태 유지({target_issue.get("status")})', file=sys.stderr)
+        for _p in _proof_problems:
+            print(f'  - {_p}', file=sys.stderr)
+        print('  → 실제로 실행해 확인한 뒤 다시 호출: '
+              "on_complete.sh ISS-NNN TYPE '{\"proof\":[{\"cmd\":\"...\",\"exit_code\":0,\"output\":\"...\"}]}'",
+              file=sys.stderr)
+        sys.exit(3)  # registry 미기록 — 이슈는 그대로 남는다
+
 evidence_rejected = False
 if issue_type in ('SCENARIO_PLAY', 'E2E_VERIFY', 'FLOW_REPLAY', 'UI_REVIEW', 'JOURNEY_VALIDATE'):
     evidence_paths = list(result.get('evidence', []))
@@ -1094,6 +1153,8 @@ except Exception as _e:
 print(f"[on_complete] 처리 완료")
 PYEOF
 _archify_complete_status=$?
+# prove-it-works 거부(3): 완료가 아니므로 파생·디스패치도 하지 않는다.
+[ "$_archify_complete_status" -eq 3 ] && exit 3
 
 # Plan 생성 후 자동 디스패치 — 질문 없이 즉시 실행
 # 심볼릭 링크 설치(프로젝트 .claude/hooks/ → harness-core/hooks/) 대응:
