@@ -96,8 +96,9 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/secret-guard.sh",
-            "timeout": 8,
-            "statusMessage": "Scanning for leaked secrets..."
+            "timeout": 30,
+            "statusMessage": "Scanning for leaked secrets...",
+            "onFailure": "block"
           },
           {
             "type": "command",
