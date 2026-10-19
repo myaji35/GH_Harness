@@ -18,38 +18,41 @@ description: Use when 대표님이 옵시디언에 지식화된 유튜브 노트
 - **요약 아닌 재요약**: 노트 자체가 이미 요약본이므로, 원문 재해석이 아니라 **여러 노트를 관통하는 메시지·중복·상충점**을 뽑아 대표님 관점 인사이트로 재정리한다.
 
 ## 권장 모델 (경제성 기준)
-- **노트 읽기·요약 (핵심 작업)**: **Sonnet 5** (`claude-sonnet-5`). 이미 정제된 요약 노트를 읽는 작업이라 Opus 불필요, Haiku는 관통 메시지 추출 깊이 부족 → Sonnet이 균형점. 서브에이전트 위임 시 `model: sonnet` 고정.
+- **노트 읽기·요약 (핵심 작업)**: **Sonnet** (현행 Sonnet 5.5). 이미 정제된 요약 노트를 읽는 작업이라 Opus 불필요, Haiku는 관통 메시지 추출 깊이 부족 → Sonnet이 균형점. 서브에이전트 위임 시 `model: sonnet` 고정.
 - **파일 탐색·정렬·필터**: 셸 명령(mtime 정렬 + grep), AI 불필요.
 
 ## 사전 요구
 - 옵시디언 볼트: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian`
-- 유튜브 노트 폴더: `📥아카이브/유튜브/` (한글 이모지 경로 — 셸에서 따옴표 필수)
+- 유튜브 노트 폴더 **2곳** (한글 이모지 경로 — 셸에서 따옴표 필수):
+  - `08-Scraps/유튜브/` — `scrap-youtube` 가 쓰는 **현행** 위치 (2026-10~, 섹션: `## 한 줄` / `## 핵심 내용` / `## 써먹을 곳`)
+  - `📥아카이브/유튜브/` — `youtube-archiver` 가 쓰던 **구** 위치 (~2026-07, 섹션: `📌 핵심 요약` / `💡 의미있는 포인트`)
+  - 한쪽만 보면 최근 영상이 빠진다(2026-10-20 발견: 구 위치만 스캔해 7/27 이후 노트 누락).
 - 별도 설치 도구 없음. `find`/`stat`/`grep`만 사용.
 
 ## 인자
 - (없음) → 최근 추가 노트 훑어 Claude 관련 상위 브리핑 (기본 최근 15개 스캔)
 - `--recent N` → 최근 N개 노트만 스캔 (기본 15)
-- `--all` → 폴더 전체(현재 ~200개) 스캔 후 Claude 관련 전부 (대량 → Sonnet 서브에이전트 병렬 권장)
+- `--all` → 두 폴더 전체(~570개) 스캔 후 Claude 관련 전부 (대량 → Sonnet 서브에이전트 병렬 권장)
 
 ## 워크플로우
 
 ### 1. 볼트 경로 확정 + Claude 관련 노트 목록 추출 (셸, 읽기전용)
 ```bash
-DIR="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian/📥아카이브/유튜브"
-# 폴더 존재 확인 (없으면 볼트 재탐색: find ~/Library -type d -iname '*유튜브*')
-[ -d "$DIR" ] || echo "폴더 없음 → 볼트 경로 재확인 필요"
+VAULT="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian"
+DIRS=("$VAULT/08-Scraps/유튜브" "$VAULT/📥아카이브/유튜브")
+# 폴더 존재 확인 (없으면 볼트 재탐색: find "$VAULT" -type d -iname '*유튜브*')
+for d in "${DIRS[@]}"; do [ -d "$d" ] || echo "폴더 없음: $d → 볼트 경로 재확인 필요"; done
 
-# 최근 추가순(mtime) 정렬 → 상위 N개
-N=15   # --recent 인자로 대체, --all이면 이 줄 제거하고 전체
-find "$DIR" -type f -name "*.md" -exec stat -f "%m %N" {} \; | sort -rn | head -$N
+# 두 폴더를 합쳐 최근 추가순(mtime) 정렬 → 상위 N개
+N=15   # --recent 인자로 대체, --all이면 head 제거하고 전체
+find "${DIRS[@]}" -type f -name "*.md" -exec stat -f "%m %N" {} \; 2>/dev/null | sort -rn | head -$N
 ```
 
 ### 2. Claude 관련 필터링 (셸 grep)
 frontmatter/본문에 Claude 계열 키워드가 있는 파일만 남긴다.
 ```bash
-DIR="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian/📥아카이브/유튜브"
-# 1단계에서 뽑은 파일들에 대해 (파일명 + 내용 모두 검사)
-grep -liE "claude|anthropic|\bopus\b|\bsonnet\b|\bhaiku\b|\bfable\b" "$DIR"/*.md
+# 1단계에서 뽑은 파일들에 대해 (파일명 + 내용 모두 검사) — 두 폴더 모두
+grep -rliE "claude|anthropic|\bopus\b|\bsonnet\b|\bhaiku\b|\bfable\b" --include='*.md' "${DIRS[@]}"
 # 파일명 자체에 Claude가 있으면 내용 grep 없이도 포함
 ```
 → 1단계(mtime 정렬)와 2단계(키워드) 교집합 = **최근 추가된 Claude 관련 노트 목록**.
@@ -63,7 +66,7 @@ grep -liE "claude|anthropic|\bopus\b|\bsonnet\b|\bhaiku\b|\bfable\b" "$DIR"/*.md
 서브에이전트 프롬프트 템플릿 (Agent 도구, `model: sonnet`):
 ```
 아래 옵시디언 유튜브 노트 파일들을 Read로 읽고, 각각을 3~5줄로 요약하라.
-각 노트의 "📌 핵심 요약"과 "💡 의미있는 포인트"를 근거로, Claude 관련 내용만 뽑아라.
+각 노트의 요약 섹션을 근거로 Claude 관련 내용만 뽑아라 — 신형 노트는 "## 한 줄"·"## 핵심 내용"·"## 써먹을 곳", 구형 노트는 "📌 핵심 요약"·"💡 의미있는 포인트".
 출력 형식(노트당):
 ### {영상 제목} ({채널})
 - (핵심 3~5줄, Claude 관련 포인트 중심)
@@ -90,7 +93,7 @@ grep -liE "claude|anthropic|\bopus\b|\bsonnet\b|\bhaiku\b|\bfable\b" "$DIR"/*.md
 ```
 
 ## youtube-archiver 와의 관계
-- `youtube-archiver`: 유튜브 목록 → 자막 추출 → **노트 생성** → 목록 삭제 (쓰기, 지식화)
+- `scrap-youtube`(현행) / `youtube-archiver`(구): 유튜브 → 자막 추출 → **노트 생성** (쓰기, 지식화)
 - `obsidian-claude-brief`(본 스킬): 생성된 노트 → **조회·요약** (읽기, 브리핑)
 - 두 스킬은 볼트 경로/폴더 규칙을 공유하되 역할이 배타적이다.
 
