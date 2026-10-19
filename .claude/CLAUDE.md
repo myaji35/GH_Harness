@@ -1,5 +1,8 @@
 # Self-Evolving Harness System
 
+## 완료의 정의 (2026-10-18 대표님 지시) ⭐⭐
+**"완료"는 사용자에게 전달되어 운영에서 문제없음이 확인된 상태다.** 개발 완료(status DONE) → 사용자 테스트 통과(`payload.user_test_passed_at`) → 배포됨(`payload.deployed_at`, deploy-verify 통과) → 운영 관찰 7일 → **완료(확정, `payload.confirmed_at`)**. 보고에서 "완료"는 확정만 가리키고, DONE 은 "개발 완료"라고 부른다. 배포 카드는 실제 배포 기록 없이 닫지 않는다. 관찰 중 재발·장애·롤백이 있으면 확정하지 않고 다시 연다. (상세: `project/.claude/CLAUDE.md` §4)
+
 ## 지시 분류 게이트 (v5.3, 2026-06-29~) ⭐⭐ 이슈생성 ≠ 작업완료
 
 `UserPromptSubmit` hook의 `intent-gate.sh`가 사용자 프롬프트를 자동 분류한다:
