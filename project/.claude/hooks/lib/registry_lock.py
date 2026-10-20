@@ -39,6 +39,31 @@ class RegistryLockTimeout(Exception):
     """락 획득 실패. 조용히 덮어쓰느니 명시적으로 실패한다."""
 
 
+def atomic_write_json(path, data):
+    """Serialize JSON beside *path* and replace it only after a durable write."""
+    if data is None or data == {}:
+        raise ValueError("empty registry data cannot be written")
+
+    directory = os.path.dirname(os.path.abspath(path))
+    tmp_fd, tmp_path = tempfile.mkstemp(dir=directory, prefix=".registry.", suffix=".tmp")
+    try:
+        with os.fdopen(tmp_fd, "w", encoding="utf-8") as stream:
+            json.dump(data, stream, indent=2, ensure_ascii=False)
+            stream.flush()
+            if stream.tell() == 0:
+                raise ValueError("empty JSON output cannot be written")
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(tmp_path, path)
+    except BaseException:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+        raise
+
+
 @contextmanager
 def registry_txn(path, timeout=10.0, poll=0.05):
     """registry.json을 락 걸고 읽어서 yield → 블록 종료 시 원자적 저장.
@@ -68,21 +93,7 @@ def registry_txn(path, timeout=10.0, poll=0.05):
 
         yield registry
 
-        # 원자적 쓰기: 같은 디렉터리 tmp → os.replace (POSIX 원자성 보장)
-        d = os.path.dirname(os.path.abspath(path))
-        tmp_fd, tmp_path = tempfile.mkstemp(dir=d, prefix=".registry.", suffix=".tmp")
-        try:
-            with os.fdopen(tmp_fd, "w", encoding="utf-8") as tf:
-                json.dump(registry, tf, indent=2, ensure_ascii=False)
-                tf.flush()
-                os.fsync(tf.fileno())
-            os.replace(tmp_path, path)
-        except Exception:
-            try:
-                os.unlink(tmp_path)
-            except OSError:
-                pass
-            raise
+        atomic_write_json(path, registry)
     finally:
         try:
             fcntl.flock(fd, fcntl.LOCK_UN)

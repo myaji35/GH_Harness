@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # ============================================================
 # daily-dream.sh — Anthropic Dreaming 컨셉 기반 학습 증류 스크립트
 # 유휴 시간에 최근 7일 이슈를 복기하며 성공/실패 패턴을 증류한다.
@@ -81,6 +82,13 @@ init_json_if_missing "$FAILURE_FILE" "failure_patterns"
 # ── 통계 기반 패턴 추출 (Python3 — LLM 없는 fallback 경로) ──
 PYTHON_SCRIPT=$(cat <<'PYEOF'
 import json, sys, datetime, os, re
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 
 registry_path = sys.argv[1]
 success_path  = sys.argv[2]
@@ -108,21 +116,45 @@ failure_patterns = load_patterns(failure_path, "failure_patterns")
 
 issues = reg.get("issues", [])
 
-# ── 최근 7일 이슈 필터링 ─────────────────────────────────────
-recent = []
-for iss in issues:
-    ts_str = iss.get("completed_at") or iss.get("created_at") or ""
+# ── 최근 이슈 필터링 ─────────────────────────────────────────
+# 상태 이름은 프로젝트·시기마다 다르다(COMPLETED → DONE 전환 등). 이름 하나만 세면
+# 완료·실패가 0건으로 집계돼 학습이 멈춘다(ISS-714).
+DONE_STATUSES = {"DONE", "COMPLETED", "CLOSED_DONE", "RESOLVED", "VERIFIED",
+                 "CLOSED_FIXED", "CLOSED_SUCCESS", "CLOSED_RESOLVED"}
+FAILED_STATUSES = {"FAILED", "ESCALATED", "CLOSED_BLOCKED", "BLOCKED",
+                   "DONE_PARTIAL", "PARTIAL", "PARTIAL_DONE"}
+# 다른 이슈의 결과물을 고치려고 파생된 이슈 — 원 이슈가 한 번에 끝나지 않았다는 신호
+FIX_TYPES = {"FIX_BUG", "STYLE_FIX", "BIZ_FIX", "UX_FIX", "DESIGN_FIX",
+             "SCENARIO_FIX", "QUALITY_IMPROVEMENT"}
+# 실패 신호는 드물어서 7일로는 반복이 안 보인다
+fail_cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=30)
+
+def ts_of(iss):
+    ts_str = (iss.get("completed_at") or iss.get("closed_at")
+              or iss.get("updated_at") or iss.get("created_at") or "")
     try:
-        ts = datetime.datetime.strptime(ts_str[:19], "%Y-%m-%dT%H:%M:%S")
-        if ts >= cutoff:
-            recent.append(iss)
+        return datetime.datetime.strptime(str(ts_str)[:19], "%Y-%m-%dT%H:%M:%S")
     except Exception:
-        pass
+        return None
 
-completed = [i for i in recent if i.get("status") == "COMPLETED"]
-failed    = [i for i in recent if i.get("status") == "FAILED"]
+def as_dict(v):
+    return v if isinstance(v, dict) else {}
 
-print(f"[stats] recent_7d={len(recent)} completed={len(completed)} failed={len(failed)}", flush=True)
+recent, recent_fail = [], []
+for iss in issues:
+    ts = ts_of(iss)
+    if ts is None:
+        continue
+    if ts >= cutoff:
+        recent.append(iss)
+    if ts >= fail_cutoff:
+        recent_fail.append(iss)
+
+completed = [i for i in recent if i.get("status") in DONE_STATUSES]
+failed    = [i for i in recent_fail if i.get("status") in FAILED_STATUSES]
+
+print(f"[stats] recent_7d={len(recent)} completed={len(completed)} "
+      f"recent_30d={len(recent_fail)} failed={len(failed)}", flush=True)
 
 # ── 휴리스틱 패턴 도출 함수 ──────────────────────────────────
 def find_or_create(patterns_list, pattern_str):
@@ -131,13 +163,14 @@ def find_or_create(patterns_list, pattern_str):
             return p
     return None
 
+# frequency 는 근거 이슈 수다. 같은 근거로 매일 다시 돌려도 늘지 않는다.
 def merge_success(patterns, pattern_str, evidence_id, now):
     existing = find_or_create(patterns, pattern_str)
     if existing:
-        existing["frequency"] = existing.get("frequency", 1) + 1
         existing["last_seen"] = now
         if evidence_id not in existing.get("evidence_issues", []):
             existing.setdefault("evidence_issues", []).append(evidence_id)
+        existing["frequency"] = len(existing["evidence_issues"])
     else:
         patterns.append({
             "pattern": pattern_str,
@@ -147,25 +180,31 @@ def merge_success(patterns, pattern_str, evidence_id, now):
             "last_seen": now
         })
 
-def merge_failure(patterns, pattern_str, evidence_id, now, hint=""):
+def merge_failure(patterns, pattern_str, evidence_id, now, hint="", issue_type=None):
     existing = find_or_create(patterns, pattern_str)
     if existing:
-        existing["frequency"] = existing.get("frequency", 1) + 1
+        existing["last_seen"] = now
         if evidence_id not in existing.get("evidence_issues", []):
             existing.setdefault("evidence_issues", []).append(evidence_id)
+        existing["frequency"] = len(existing["evidence_issues"])
     else:
-        patterns.append({
+        existing = {
             "pattern": pattern_str,
             "evidence_issues": [evidence_id],
             "frequency": 1,
             "root_cause_hint": hint,
-            "incident_doc_ref": None
-        })
+            "incident_doc_ref": None,
+            "first_seen": now,
+            "last_seen": now
+        }
+        patterns.append(existing)
+    if issue_type:
+        existing["issue_type"] = issue_type
 
 # ── 성공 패턴 도출 ────────────────────────────────────────────
-# 패턴 1: REFACTOR + scope_dir 명시 → COMPLETED
+# 패턴 1: REFACTOR + scope_dir 명시 → 완료
 refactor_completed = [i for i in completed if i.get("type") == "REFACTOR"
-                      and i.get("payload", {}).get("scope_dir")]
+                      and as_dict(i.get("payload")).get("scope_dir")]
 if refactor_completed:
     pstr = "REFACTOR + scope_dir 명시 → COMPLETED (범위 한정 리팩토링 성공률 높음)"
     for iss in refactor_completed:
@@ -173,7 +212,7 @@ if refactor_completed:
 
 # 패턴 2: rubric 4/4 충족 이슈 (rubric_score == "4/4")
 rubric_full = [i for i in completed
-               if str(i.get("result", {}).get("rubric_score","")) == "4/4"]
+               if str(as_dict(i.get("result")).get("rubric_score","")) == "4/4"]
 if rubric_full:
     pstr = "rubric 4/4 충족 이슈는 100% COMPLETED (명시적 성공 기준 효과)"
     for iss in rubric_full:
@@ -182,7 +221,7 @@ if rubric_full:
 # 패턴 3: blocked_by 해소 후 즉시 완료 (깊이 0)
 depth0_completed = [i for i in completed
                     if i.get("depth", 0) == 0
-                    and i.get("payload", {}).get("blocked_by")]
+                    and as_dict(i.get("payload")).get("blocked_by")]
 if depth0_completed:
     pstr = "blocked_by 의존성 해소 후 depth-0 이슈 즉시 COMPLETED"
     for iss in depth0_completed:
@@ -198,7 +237,7 @@ if p0_completed:
 # 패턴 5: 배치 일괄 주입 패턴 (REFACTOR + injected_count 존재)
 batch_inject = [i for i in completed
                 if i.get("type") == "REFACTOR"
-                and "injected_count" in i.get("result", {})]
+                and "injected_count" in as_dict(i.get("result"))]
 if batch_inject:
     pstr = "배치 일괄 주입(injected_count 필드) 패턴 — 반복 수정보다 일괄 처리가 효율적"
     for iss in batch_inject:
@@ -211,12 +250,38 @@ for iss in completed:
     if not agent:
         continue
     agent_success.setdefault(agent, []).append(iss["id"])
+# 예전에는 건수를 문구에 넣어 건수가 바뀔 때마다 같은 패턴이 새로 쌓였다 — 하나로 합친다
+_agent_pat = re.compile(r"^에이전트 '(.+)' 완료율 높음 \(\d+건 COMPLETED\)$")
+_merged = []
+for p in success_patterns:
+    m = _agent_pat.match(p.get("pattern", ""))
+    if m:
+        p = dict(p, pattern=f"에이전트 '{m.group(1)}' 완료율 높음")
+    same = find_or_create(_merged, p["pattern"])
+    if same:
+        for e in p.get("evidence_issues", []):
+            if e not in same.setdefault("evidence_issues", []):
+                same["evidence_issues"].append(e)
+        same["frequency"] = len(same["evidence_issues"])
+        same["last_seen"] = max(str(same.get("last_seen") or ""), str(p.get("last_seen") or "")) or None
+    else:
+        _merged.append(p)
+success_patterns[:] = _merged
 for agent, ids in agent_success.items():
     if len(ids) >= 2:
-        pstr = f"에이전트 '{agent}' 완료율 높음 ({len(ids)}건 COMPLETED)"
-        merge_success(success_patterns, pstr, ids[0], now_iso)
+        pstr = f"에이전트 '{agent}' 완료율 높음"
+        for iid in ids:
+            merge_success(success_patterns, pstr, iid, now_iso)
 
 # ── 실패 패턴 도출 ────────────────────────────────────────────
+# 패턴 문자열·힌트는 여기 정한 문구만 쓴다. 이슈 제목·사유 같은 자유 텍스트는
+# 공장 프롬프트에 그대로 주입되므로 넣지 않는다(사용자 피드백 원문 유입 차단).
+def by_type(items):
+    groups = {}
+    for iss in items:
+        groups.setdefault(iss.get("type") or "UNKNOWN", []).append(iss)
+    return groups
+
 # 패턴 F1: depth 3 이슈 실패 경향
 depth3_failed = [i for i in failed if i.get("depth", 0) >= 3]
 if depth3_failed:
@@ -229,23 +294,98 @@ if depth3_failed:
 agent_fail = {}
 for iss in failed:
     agent = iss.get("agent") or iss.get("assign_to")
-    if not agent:
+    if not agent or agent == "none":
         continue
     agent_fail.setdefault(agent, []).append(iss["id"])
 for agent, ids in agent_fail.items():
     if len(ids) >= 2:
-        pstr = f"에이전트 '{agent}' 반복 실패 ({len(ids)}건)"
-        merge_failure(failure_patterns, pstr, ids[0], now_iso,
-                      f"에이전트 프롬프트 또는 이슈 스펙 점검 필요 (에이전트: {agent})")
+        pstr = f"에이전트 '{agent}' 반복 실패"
+        for iid in ids:
+            merge_failure(failure_patterns, pstr, iid, now_iso,
+                          f"에이전트 프롬프트 또는 이슈 스펙 점검 필요 (에이전트: {agent})")
 
 # 패턴 F3: scope_dir 미명시 실패
 no_scope_failed = [i for i in failed
-                   if not i.get("payload", {}).get("scope_dir")]
-if no_scope_failed:
+                   if not as_dict(i.get("payload")).get("scope_dir")]
+if len(no_scope_failed) >= 2:
     pstr = "scope_dir 미명시 이슈 → 실패율 증가"
     for iss in no_scope_failed:
         merge_failure(failure_patterns, pstr, iss["id"], now_iso,
                       "이슈 생성 시 scope_dir 필드 필수 명시 필요")
+
+# 패턴 F4: 유형별 막힘·중단 반복
+for itype, items in by_type(failed).items():
+    if len(items) >= 2:
+        pstr = f"{itype} 이슈가 막힘·중단으로 끝남"
+        for iss in items:
+            merge_failure(failure_patterns, pstr, iss["id"], now_iso,
+                          "착수 전 선행 조건(권한·외부 상태·의존 카드)을 먼저 확인하고, 막히면 이유를 남겨라",
+                          itype)
+
+# 패턴 F5: 유형별 재시도 반복 (on_fail 이 retry_count 를 올린다)
+retried = [i for i in recent_fail if (i.get("retry_count") or 0) > 0]
+for itype, items in by_type(retried).items():
+    if len(items) >= 2:
+        pstr = f"{itype} 이슈가 첫 시도에 실패해 재시도됨"
+        for iss in items:
+            merge_failure(failure_patterns, pstr, iss["id"], now_iso,
+                          "첫 시도 전에 실패 원인이 됐던 검증(테스트·빌드)을 직접 돌려 보고 마감하라",
+                          itype)
+
+# 패턴 F6: 완료 후 후속 수정 파생 (재작업) — 근거는 원 이슈
+by_id = {i.get("id"): i for i in issues}
+rework = {}
+for fix in recent_fail:
+    if fix.get("type") not in FIX_TYPES:
+        continue
+    src = by_id.get(as_dict(fix.get("payload")).get("source_issue"))
+    if not src or src.get("type") in FIX_TYPES:
+        continue
+    rework.setdefault((src.get("type") or "UNKNOWN", fix.get("type")), []).append(src)
+for (stype, ftype), srcs in rework.items():
+    ids = sorted({s["id"] for s in srcs})
+    if len(ids) >= 2:
+        pstr = f"{stype} 완료 뒤 {ftype} 후속 수정이 파생됨 (한 번에 안 끝남)"
+        for iid in ids:
+            merge_failure(failure_patterns, pstr, iid, now_iso,
+                          f"마감 전에 {ftype} 검사가 잡던 문제(테스트·린트·화면)를 먼저 확인하라",
+                          stype)
+
+# 패턴 F7: 실행 증거 없이 완료 시도 (prove-it-works 거부 기록)
+proof_log = os.path.join(os.path.dirname(failure_path), "proof-metrics.jsonl")
+proof_rejects = {}
+try:
+    with open(proof_log) as f:
+        for line in f:
+            try:
+                rec = json.loads(line)
+            except Exception:
+                continue
+            if rec.get("outcome") == "ok" or not rec.get("issue"):
+                continue
+            try:
+                rts = datetime.datetime.strptime(str(rec.get("ts", ""))[:19], "%Y-%m-%dT%H:%M:%S")
+            except Exception:
+                continue
+            if rts >= fail_cutoff:
+                proof_rejects.setdefault(rec.get("type") or "UNKNOWN", set()).add(rec["issue"])
+except FileNotFoundError:
+    pass
+for itype, ids in proof_rejects.items():
+    pstr = f"{itype} 이슈를 실행 증거(proof) 없이 마감하려다 거부됨"
+    for iid in sorted(ids):
+        merge_failure(failure_patterns, pstr, iid, now_iso,
+                      "on_complete 전에 실제로 실행한 명령·exit code·출력 발췌를 result.proof 에 넣어라",
+                      itype)
+
+# 패턴 F8: 지시 분류 게이트가 만든 이슈가 무효 처리됨 (오분류)
+gate_invalid = [i for i in recent_fail if i.get("status") == "CLOSED_INVALID"
+                and str(as_dict(i.get("payload")).get("origin", "")).startswith("intent-gate")]
+if len(gate_invalid) >= 3:
+    pstr = "지시 분류 게이트가 작업이 아닌 발화로 이슈를 만들어 무효 처리됨"
+    for iss in gate_invalid:
+        merge_failure(failure_patterns, pstr, iss["id"], now_iso,
+                      "intent-gate 분류 규칙(의견·질문형 판정) 점검 필요")
 
 # ── dry-run: 출력만, 파일 미변경 ─────────────────────────────
 if dry_run:
@@ -264,9 +404,7 @@ def save_patterns(path, key, patterns):
         d = {}
     d["_last_updated"] = now_iso
     d[key] = patterns
-    with open(path, "w") as f:
-        json.dump(d, f, ensure_ascii=False, indent=2)
-        f.write("\n")
+    atomic_write_json(path, d)
 
 save_patterns(success_path, "success_patterns", success_patterns)
 save_patterns(failure_path, "failure_patterns", failure_patterns)
@@ -276,9 +414,7 @@ knowledge = reg.setdefault("knowledge", {})
 knowledge["success_patterns"] = success_patterns
 knowledge["failure_patterns"] = failure_patterns
 
-with open(registry_path, "w") as f:
-    json.dump(reg, f, ensure_ascii=False, indent=2)
-    f.write("\n")
+atomic_write_json(registry_path, reg)
 
 print(f"[dream] success={len(success_patterns)} failure={len(failure_patterns)}", flush=True)
 PYEOF
