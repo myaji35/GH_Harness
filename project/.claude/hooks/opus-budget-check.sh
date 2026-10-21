@@ -1,4 +1,5 @@
 #!/bin/bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # opus-budget-check.sh — Opus 예산 상태 체크 및 자동 강등 판정
 #
 # 사용법:
@@ -37,6 +38,13 @@ import sys as _sa
 _ARGV = (_sa.argv[1:3] + ['']*2)[:2]
 
 import json, datetime, sys
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 
 REGISTRY_PATH = _ARGV[0]
 AGENT = _ARGV[1]
@@ -84,11 +92,18 @@ except Exception:
 
 today = datetime.date.today().isoformat()
 month = today[:7]
-budget = registry.setdefault("opus_budget_state", {
-    "daily": {"date": today, "cost_usd": 0.0, "calls": 0},
-    "monthly": {"month": month, "cost_usd": 0.0, "calls": 0},
-    "demotion_active": False
-})
+# 마이그레이션이 남긴 빈 dict({})·부분 상태도 정상화한다.
+# 종전 setdefault는 {}를 그대로 받아 budget["daily"] KeyError로 죽었고,
+# dispatch-ready가 예외를 삼켜 예산이 한 번도 기록되지 않았다(2026-10-21).
+budget = registry.get("opus_budget_state")
+if not isinstance(budget, dict):
+    budget = {}
+registry["opus_budget_state"] = budget
+if not isinstance(budget.get("daily"), dict):
+    budget["daily"] = {"date": today, "cost_usd": 0.0, "calls": 0}
+if not isinstance(budget.get("monthly"), dict):
+    budget["monthly"] = {"month": month, "cost_usd": 0.0, "calls": 0}
+budget.setdefault("demotion_active", False)
 
 # 일자/월 롤오버
 if budget["daily"].get("date") != today:
@@ -96,6 +111,14 @@ if budget["daily"].get("date") != today:
     budget["demotion_active"] = False  # 새 날 리셋
 if budget["monthly"].get("month") != month:
     budget["monthly"] = {"month": month, "cost_usd": 0.0, "calls": 0}
+budget["daily"].setdefault("cost_usd", 0.0)
+budget["daily"].setdefault("calls", 0)
+budget["monthly"].setdefault("cost_usd", 0.0)
+budget["monthly"].setdefault("calls", 0)
+# 한도는 정책 상수 그대로 기록한다(상태줄 등 읽기 측이 추정하지 않도록).
+budget["daily"]["limit_usd"] = HARD_CAP_DAILY
+budget["daily"]["soft_cap_usd"] = SOFT_CAP_DAILY
+budget["monthly"]["limit_usd"] = MONTHLY_CAP
 
 base_model = AGENT_MODEL.get(AGENT, "opus")
 expected_cost = AGENT_COST[AGENT]
@@ -113,16 +136,14 @@ if projected_daily >= HARD_CAP_DAILY or projected_monthly >= MONTHLY_CAP:
             budget["daily"]["calls"] += 1
             budget["monthly"]["cost_usd"] = round(budget["monthly"]["cost_usd"] + opus_cost, 4)
             budget["monthly"]["calls"] += 1
-            with open(REGISTRY_PATH, 'w') as f:
-                json.dump(registry, f, indent=2, ensure_ascii=False)
+            atomic_write_json(REGISTRY_PATH, registry)
             print("opus", flush=True)
             print(f"[opus-budget] {AGENT} fable→opus 자동 강등 (예상 일일 ${projected_daily:.2f} ≥ ${HARD_CAP_DAILY})", file=sys.stderr)
             sys.exit(0)
     # 2차 강등: 가능 에이전트면 sonnet으로
     if AGENT in DEMOTABLE:
         budget["demotion_active"] = True
-        with open(REGISTRY_PATH, 'w') as f:
-            json.dump(registry, f, indent=2, ensure_ascii=False)
+        atomic_write_json(REGISTRY_PATH, registry)
         print("sonnet", flush=True)
         print(f"[opus-budget] {AGENT} 자동 강등 (예상 일일 ${projected_daily:.2f} ≥ ${HARD_CAP_DAILY})", file=sys.stderr)
         sys.exit(0)
@@ -142,8 +163,7 @@ budget["daily"]["calls"] += 1
 budget["monthly"]["cost_usd"] = round(projected_monthly, 4)
 budget["monthly"]["calls"] += 1
 
-with open(REGISTRY_PATH, 'w') as f:
-    json.dump(registry, f, indent=2, ensure_ascii=False)
+atomic_write_json(REGISTRY_PATH, registry)
 
 print(base_model)
 PYEOF

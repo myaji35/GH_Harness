@@ -15,8 +15,8 @@
     {
       "name": "harness-status",
       "source": "./harness-status",
-      "description": "Read-only harness issue, budget, context, and nightly status",
-      "version": "0.1.0"
+      "description": "Read-only harness model, issue, budget, context, and nightly status",
+      "version": "0.1.1"
     }
   ]
 }
