@@ -361,22 +361,26 @@ try:
                 rec = json.loads(line)
             except Exception:
                 continue
-            if rec.get("outcome") == "ok" or not rec.get("issue"):
+            # rejected = 증거 없음, criteria-rejected = 완료 조건 없음·미충족 (ok/warn 류는 실패 아님)
+            if rec.get("outcome") not in ("rejected", "criteria-rejected") or not rec.get("issue"):
                 continue
             try:
                 rts = datetime.datetime.strptime(str(rec.get("ts", ""))[:19], "%Y-%m-%dT%H:%M:%S")
             except Exception:
                 continue
             if rts >= fail_cutoff:
-                proof_rejects.setdefault(rec.get("type") or "UNKNOWN", set()).add(rec["issue"])
+                proof_rejects.setdefault((rec.get("type") or "UNKNOWN", rec["outcome"]), set()).add(rec["issue"])
 except FileNotFoundError:
     pass
-for itype, ids in proof_rejects.items():
-    pstr = f"{itype} 이슈를 실행 증거(proof) 없이 마감하려다 거부됨"
+for (itype, outcome), ids in proof_rejects.items():
+    if outcome == "criteria-rejected":
+        pstr = f"{itype} 이슈를 완료 조건 없이 또는 미충족 상태로 마감하려다 거부됨"
+        hint = "착수 전에 payload.acceptance_criteria 를 적고, 마감 때 기준마다 criteria_check 로 확인하라"
+    else:
+        pstr = f"{itype} 이슈를 실행 증거(proof) 없이 마감하려다 거부됨"
+        hint = "on_complete 전에 실제로 실행한 명령·exit code·출력 발췌를 result.proof 에 넣어라"
     for iid in sorted(ids):
-        merge_failure(failure_patterns, pstr, iid, now_iso,
-                      "on_complete 전에 실제로 실행한 명령·exit code·출력 발췌를 result.proof 에 넣어라",
-                      itype)
+        merge_failure(failure_patterns, pstr, iid, now_iso, hint, itype)
 
 # 패턴 F8: 지시 분류 게이트가 만든 이슈가 무효 처리됨 (오분류)
 gate_invalid = [i for i in recent_fail if i.get("status") == "CLOSED_INVALID"

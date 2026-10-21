@@ -300,6 +300,44 @@ if issue_type in PROOF_TYPES and target_issue.get('status') != 'AWAITING_USER':
               file=sys.stderr)
         sys.exit(3)  # registry 미기록 — 이슈는 그대로 남는다
 
+# ── 완료 조건 게이트 (공장 실행 한정, ISS-717) ──
+# 공장이 집은 코드 카드는 payload.acceptance_criteria(사용자 입장에서 확인할 수 있는 기준)가 있어야 하고,
+# result.criteria_check 로 기준마다 충족 여부를 남겨야 DONE 이 된다. 기준 없는 카드는 "다 했다"를 판단할 수 없다.
+#   criteria_check: [{"criterion": "...", "met": true, "how": "확인 방법"}]
+# 근거(2026-10-21): 전체 카드 8,768건 중 완료 조건이 있는 카드 2.5%.
+# HARNESS_CRITERIA_MODE=warn 이면 거부 대신 경고만.
+def _check_criteria(payload, result):
+    ac = payload.get('acceptance_criteria') if isinstance(payload, dict) else None
+    if isinstance(ac, str):
+        ac = [ac] if ac.strip() else []
+    if not isinstance(ac, list) or not [a for a in ac if str(a).strip()]:
+        return ['payload.acceptance_criteria 없음 — 착수 전에 사용자 입장 완료 기준 2~5개를 적어라']
+    check = result.get('criteria_check')
+    if not isinstance(check, list) or not check:
+        return ['result.criteria_check 없음 — 기준마다 {"criterion","met","how"} 를 남겨라']
+    problems = []
+    if len(check) < len(ac):
+        problems.append(f'criteria_check {len(check)}건 < 완료 기준 {len(ac)}건 — 모든 기준을 확인하라')
+    unmet = [str(c.get('criterion', '?'))[:40] for c in check if not isinstance(c, dict) or c.get('met') is not True]
+    if unmet:
+        problems.append('충족되지 않은 기준: ' + ' / '.join(unmet))
+    return problems
+
+if (factory_runner and issue_type in PROOF_TYPES
+        and target_issue.get('status') != 'AWAITING_USER'):
+    _crit_problems = _check_criteria(target_issue.get('payload') or {}, result)
+    if not _crit_problems:
+        _proof_metric('criteria-ok', [])
+    elif os.environ.get('HARNESS_CRITERIA_MODE') == 'warn':
+        _proof_metric('criteria-warn', _crit_problems)
+        print(f'[criteria-gate] 경고(warn 모드): {issue_id} — ' + '; '.join(_crit_problems), file=sys.stderr)
+    else:
+        _proof_metric('criteria-rejected', _crit_problems)
+        print(f'[criteria-gate] {issue_id} 완료 거부 — 상태 유지({target_issue.get("status")})', file=sys.stderr)
+        for _p in _crit_problems:
+            print(f'  - {_p}', file=sys.stderr)
+        sys.exit(3)
+
 evidence_rejected = False
 if issue_type in ('SCENARIO_PLAY', 'E2E_VERIFY', 'FLOW_REPLAY', 'UI_REVIEW', 'JOURNEY_VALIDATE'):
     evidence_paths = list(result.get('evidence', []))

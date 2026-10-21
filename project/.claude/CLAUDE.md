@@ -13,6 +13,7 @@
   - 의문문 메타("반영되고 있나?") → 답변만.
 - 구현 후 `bash .claude/hooks/on_complete.sh ISS-NNN <type> '<result JSON>'` 로 완료 처리한다.
 - **prove-it-works**: 코드를 바꾼 이슈는 result 에 `"proof":[{"cmd","exit_code","output"}]` — 실제 실행한 명령과 실제 출력 — 이 있어야 DONE 이 된다. 없으면 on_complete 가 exit 3 으로 거부한다. "통과했다"는 자기 신고는 근거가 아니다.
+- **완료 조건(공장 실행 한정)**: 공장(`FACTORY_RUNNER=1`)이 집은 코드 카드는 `payload.acceptance_criteria` 와 기준마다 `result.criteria_check:[{"criterion","met":true,"how"}]` 가 있어야 DONE 이 된다. 배포 전 사용자 판정은 숨긴 시나리오(`0000_master/scripts/holdout-judge.sh`)로 하고, 공장은 시나리오 보관소를 열 수 없다.
 
 ## 2. 자율 실행
 지시받은 범위 안에서는 되묻지 않고 끝까지 실행한다. 보고는 실행 후에 한다.
