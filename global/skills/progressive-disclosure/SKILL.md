@@ -1,3 +1,8 @@
+---
+name: progressive-disclosure
+description: 컨텍스트 단계적 로딩 전략 — 이슈 처리 전 필요한 파일·지식만 순서대로 읽어 컨텍스트 오염을 막는다. 큰 저장소에서 작업을 시작하거나 무엇을 먼저 읽을지 정할 때 사용.
+---
+
 # Progressive Disclosure
 
 ## 역할

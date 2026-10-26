@@ -281,6 +281,14 @@ sync_harness_core() {
       changed=$((changed+1))
     fi
   done
+  # 저장소에서 빠진 에이전트(2026-10-26 모드 파일로 접은 20개 등)는 harness-core 에서도 지운다
+  for core_agent in "$HARNESS_CORE_DIR/agents/"*.md; do
+    [ -f "$core_agent" ] || continue
+    if [ ! -f "$SCRIPT_DIR/global/agents/$(basename "$core_agent")" ]; then
+      rm -f "$core_agent"
+      changed=$((changed+1))
+    fi
+  done
 
   # skills
   # 스킬 디렉터리 전체를 동기화한다.
@@ -380,6 +388,12 @@ ensure_global_symlinks() {
     fi
     [ -e "$link" ] && rm -f "$link"
     ln -s "$core_agent" "$link"
+  done
+  # 대상이 사라진 harness-core 에이전트 링크 정리(내가 만든 링크만 — 사용자 파일은 건드리지 않는다)
+  for link in "$GLOBAL_DIR/agents/"*.md; do
+    if [ -L "$link" ] && [ ! -e "$link" ] && [[ "$(readlink "$link")" == "$HARNESS_CORE_DIR/agents/"* ]]; then
+      rm -f "$link"
+    fi
   done
 
   for core_skill_dir in "$HARNESS_CORE_DIR/skills/"*/; do

@@ -1,3 +1,8 @@
+---
+name: issue-registry
+description: 하네스 이슈 저장소(.claude/issue-db/registry.json) 관리 규칙 — 이슈 생성·조회·상태 전이·파생·완료 처리. 이슈를 만들거나 다음 READY 이슈를 찾거나 상태를 바꿀 때 사용.
+---
+
 # Issue Registry
 
 ## 역할

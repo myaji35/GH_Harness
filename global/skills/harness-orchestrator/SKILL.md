@@ -1,3 +1,8 @@
+---
+name: harness-orchestrator
+description: Self-Evolving Harness 진입점 — 프로젝트 분석·아키텍처 패턴 선택·하네스 초기화. "harness 시작/init/업데이트/업그레이드", "brand 정의해줘", "비즈니스 로직 점검하자", "점검해/코드 스캔", "화면 갭 스캔", "레이스 모드로 해줘" 발화나 에이전트 팀 재구성이 필요할 때 사용. 상세 정책은 reference.md.
+---
+
 # Harness Orchestrator
 
 ## 역할

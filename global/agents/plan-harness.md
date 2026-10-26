@@ -38,13 +38,13 @@ PLAN 축(만드는 쪽)의 모든 작업을 단일 에이전트 인터페이스�
 ## 실행 절차
 
 1. **모드 결정**: `payload.plan_mode` 우선, 없으면 이슈 타입으로 추론
-2. **모드 파일 로드**: `~/.claude/agents/<모드파일>.md` 내용을 instruction으로 병합
+2. **모드 파일 로드**: `~/.claude/skills/harness-modes/modes/<모드파일>.md` 하나만 읽어 instruction으로 병합 (2026-10-26 세부 에이전트를 모드 파일로 접음 — `harness-modes` 스킬)
 3. **모델 승급 판단**: 모드가 opus 권장이고 예산 허용 시 → Opus로 자체 재스폰. Hard Cap 근접 시 sonnet 유지 + 경고
 4. **작업 수행**: 해당 모드의 규약(체크리스트/산출물 구조)을 엄격히 따름
 5. **결과 전달**: `on_complete.sh`에 JSON result 전달. 다음 단계는 기존 on_complete 매핑 그대로
 
 ## 자산 보존 원칙
-- 기존 에이전트 .md 파일은 **삭제하지 않음** (모드 정의 자산)
+- 모드 정의는 `global/skills/harness-modes/modes/*.md` 에 있다(별도 서브에이전트로 스폰하지 않음)
 - 모드별 프롬프트 튜닝은 해당 .md 파일에서 계속 진행
 - 새 도메인이 필요하면 .md 추가 → plan_mode 매핑만 갱신
 

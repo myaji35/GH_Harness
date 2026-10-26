@@ -1,3 +1,8 @@
+---
+name: hook-registry
+description: 하네스 이벤트 브로커 규칙 — 에이전트가 서로를 직접 호출하지 않고 hook 이벤트(on_complete·on_fail·on_learn 등)로 협력하게 하는 구독·발행 방식. hook 추가·이벤트 흐름 설계·hook 디버깅 때 사용.
+---
+
 # Hook Registry
 
 ## 역할

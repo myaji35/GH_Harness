@@ -1,0 +1,41 @@
+{
+  "_about": "GH_Harness 골든 평가 세트 (2026-10-26). 실제 대표님 발화·사고 사례에서 뽑았다. 사례를 추가할 때는 출처(source)를 남긴다. 판정 기준: global/policy/REVIEW.md §5",
+  "intent": [
+    {"prompt": "광고 소재 A안으로 3개를 만들어서 예산 분배해서 진행하자.", "issue": true, "source": "insuPro 10/23 실작업 지시"},
+    {"prompt": "프로필, 이미지 설정부터 수정해", "issue": true, "source": "insuPro 10/23"},
+    {"prompt": "어제 오후 E_SSD가 마운트가 끊기는 상황이 있었어. 원인과 근본 조치해.", "issue": true, "source": "insuPro 10/26"},
+    {"prompt": "게시 다시 진행해서 조치해줘.", "issue": true, "source": "insuPro 10/23 — '조치' 실작업"},
+    {"prompt": "공장 url 알려줘.", "issue": false, "source": "insuPro 10/23 조회형"},
+    {"prompt": "광고 성과가 기대되는 예산인가?", "issue": false, "source": "insuPro 10/23 의문문"},
+    {"prompt": "github 권한 다시 했어.", "issue": false, "source": "insuPro 10/26 상태 알림"},
+    {"prompt": "만들었던 대시보드 링크 다시 보여줘.", "issue": false, "source": "insuPro 10/25 조회형"},
+    {"prompt": "<task-notification><task-id>x</task-id><status>completed</status></task-notification>", "issue": false, "source": "2026-07-15 Bloomberg 무한 루프 사고"},
+    {"prompt": "마케이팅 정핵관점에서 의견줘.", "issue": false, "source": "insuPro 10/23 보고 요청"},
+    {"prompt": "앞으로 제작할 컨텐츠 대본에 이런내용이 신입설계사분께 제동됩니다. 해도 좋아", "issue": false, "source": "insuPro 10/23 규칙성 메타지시 — 작업이 아니라 규칙 저장"}
+  ],
+  "route": [
+    {"type": "FEATURE_PLAN", "expect": "plan-harness:product"},
+    {"type": "PLAN_CEO_REVIEW", "expect": "plan-harness:ceo-review"},
+    {"type": "FIX_BUG", "expect": "plan-harness:code"},
+    {"type": "LINT_CHECK", "expect": "check-harness:code"},
+    {"type": "RUN_TESTS", "expect": "check-harness:test"},
+    {"type": "BRAND_GUARD", "expect": "check-harness:brand"},
+    {"type": "HERMES_CONSULT", "expect": "hermes:-"},
+    {"type": "NO_SUCH_TYPE", "expect": "hermes:unknown-type"}
+  ],
+  "fold": [
+    {"assign_to": "code-quality", "type": "LINT_CHECK", "agent": "check-harness", "mode_key": "check_mode", "mode": "code"},
+    {"assign_to": "plan-ceo-reviewer", "type": "PLAN_CEO_REVIEW", "agent": "plan-harness", "mode_key": "plan_mode", "mode": "ceo-review", "model": "fable"},
+    {"assign_to": "agent-harness", "type": "GENERATE_CODE", "agent": "plan-harness", "mode_key": "plan_mode", "mode": "code"},
+    {"assign_to": "hermes", "type": "HERMES_CONSULT", "no_fold": true}
+  ],
+  "review_tier": [
+    {"paths": ["README.md", "docs/plan/x.md"], "expect": "low"},
+    {"paths": ["app/views/landings/show.html.erb"], "expect": "medium"},
+    {"paths": ["app/views/landings/show.html.erb", "config/deploy.yml"], "expect": "high"},
+    {"paths": ["db/migrate/20261021000000_create_pilot_self_reports.rb"], "expect": "high"},
+    {"paths": ["app/controllers/sessions_controller.rb"], "expect": "high"},
+    {"paths": ["project/.claude/hooks/dispatch-ready.sh"], "expect": "high"},
+    {"paths": ["test/integration/seo_test.rb"], "expect": "low"}
+  ]
+}

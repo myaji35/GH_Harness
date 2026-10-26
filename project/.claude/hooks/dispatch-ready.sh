@@ -50,6 +50,7 @@ MODEL_MAP = {
     "advisor":        "opus",
     "audience-researcher": "sonnet",
     "journey-validator": "sonnet",
+    "review-triage":  "sonnet",
 }
 
 # 에이전트 → 이슈 타입 매핑 (유효성 검증용)
@@ -174,14 +175,51 @@ ready_issues.sort(key=lambda x: (
 issue = ready_issues[0]
 agent = issue.get("assign_to", "agent-harness")
 model = MODEL_MAP.get(agent, "sonnet")
+budget_agent = agent  # 예산·모델 판정은 접기 전 이름(모드 권장 모델) 기준
 issue_id = issue.get("id", "UNKNOWN")
+
+# ── 서브에이전트 접기 (2026-10-26, Anthropic "When to fold subagents into your main agent loop") ──
+# 세부 에이전트 20개는 별도 에이전트가 아니라 plan/check-harness 의 모드 파일(skills/harness-modes/modes/)이다.
+# 옛 assign_to 이름이 와도 축 에이전트 + 모드로 바꿔 스폰한다. 모델은 원래 모드 권장값(MODEL_MAP)을 유지.
+# HARNESS_AXIS_MODE=legacy 면 접지 않는다(되돌리기용).
+FOLDED = {
+    "product-manager": ("plan-harness", "product"),
+    "plan-ceo-reviewer": ("plan-harness", "ceo-review"),
+    "plan-eng-reviewer": ("plan-harness", "eng-review"),
+    "opportunity-scout": ("plan-harness", "opportunity"),
+    "domain-analyst": ("plan-harness", "domain"),
+    "audience-researcher": ("plan-harness", "audience"),
+    "agent-harness": ("plan-harness", "code"),
+    "cicd-harness": ("plan-harness", "deploy"),
+    "code-quality": ("check-harness", "code"),
+    "test-harness": ("check-harness", "test"),
+    "eval-harness": ("check-harness", "eval"),
+    "biz-validator": ("check-harness", "biz"),
+    "journey-validator": ("check-harness", "journey"),
+    "scenario-player": ("check-harness", "scenario"),
+    "design-critic": ("check-harness", "design"),
+    "brand-guardian": ("check-harness", "brand"),
+    "qa-reviewer": ("check-harness", "qa"),
+    "meta-agent": ("check-harness", "meta"),
+    "ux-harness": ("check-harness", "ux-review"),
+    "hook-router": ("check-harness", "meta"),
+}
+import os as _osF
+if agent in FOLDED and _osF.environ.get("HARNESS_AXIS_MODE", "2axis") != "legacy":
+    _axis, _mode = FOLDED[agent]
+    _key = "plan_mode" if _axis == "plan-harness" else "check_mode"
+    if not isinstance(issue.get("payload"), dict):
+        issue["payload"] = {}
+    issue["payload"].setdefault(_key, _mode)
+    print(f"🔀 [Fold] {agent} → {_axis} ({_key}={issue['payload'][_key]})")
+    agent = _axis
 
 # ── 상위 모델(fable/opus) 예산 체크 + 자동 강등 ─────────────────────
 if model in ("opus", "fable"):
     import subprocess as _sp
     try:
         br = _sp.run(
-            ["bash", ".claude/hooks/opus-budget-check.sh", agent],
+            ["bash", ".claude/hooks/opus-budget-check.sh", budget_agent],
             capture_output=True, text=True, timeout=5
         )
         budget_model = (br.stdout or "").strip().splitlines()[-1] if br.stdout else model

@@ -52,7 +52,7 @@ CHECK 축(보는 쪽)의 모든 검증/평가 작업을 단일 에이전트 인�
    - `claude` → 현재 에이전트가 직접 수행
    - `codex` → `.claude/hooks/codex-check.sh` 호출 (현재 비활성, 스켈레톤만 존재)
    - `hybrid` → 양쪽 병렬 실행 후 결과 비교 (advisor가 중재)
-3. **모드 파일 로드**: `~/.claude/agents/<모드파일>.md` 내용을 instruction으로 병합
+3. **모드 파일 로드**: `~/.claude/skills/harness-modes/modes/<모드파일>.md` 하나만 읽어 instruction으로 병합 (2026-10-26 세부 에이전트를 모드 파일로 접음 — `harness-modes` 스킬)
 4. **검증 수행**: 해당 모드의 체크리스트/판정 기준 적용
 5. **결과 전달**: `on_complete.sh`에 JSON result 전달. 필수 필드:
    - `passed` (boolean)
@@ -71,7 +71,7 @@ CHECK 축(보는 쪽)의 모든 검증/평가 작업을 단일 에이전트 인�
 각 단계 전환은 대표님 명시 지시 후에만 적용 (T2 EXPLICIT).
 
 ## 자산 보존 원칙
-- 기존 에이전트 .md 파일은 **삭제하지 않음** (모드 정의 자산)
+- 모드 정의는 `global/skills/harness-modes/modes/*.md` 에 있다(별도 서브에이전트로 스폰하지 않음)
 - 모드별 체크리스트/판정 기준은 해당 .md 파일에서 계속 진화
 - 새 검증 영역은 .md 추가 → check_mode 매핑만 갱신
 

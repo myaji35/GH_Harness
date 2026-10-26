@@ -127,6 +127,20 @@ def add_issue(title, itype, priority, assign_to, payload=None):
                 print(f"[skip-dup:completed] src={src} type={itype} — 이미 완료된 후속 → skip")
                 return
 
+    # 리뷰 반복 상한 3회 (2026-10-26, Anthropic "How the Claude Code team does code review":
+    # 3라운드가 넘으면 같은 지적을 또 고치게 하지 말고 접근 방식을 다시 보게 한다 — policy/REVIEW.md)
+    if src and itype.endswith('_FIX'):
+        _rounds = sum(1 for iss in registry['issues']
+                      if iss.get('payload', {}).get('source_issue') == src and str(iss.get('type', '')).endswith('_FIX'))
+        if _rounds >= 3:
+            _t = f"[리뷰 상한] {src} — 수정 {_rounds}회 뒤에도 검증 실패, 접근 방식 재검토"
+            if not any(iss.get('title') == _t for iss in registry['issues']):
+                add_issue(_t, 'HERMES_CONSULT', 'P1', 'hermes',
+                          {'source_issue': f"{src}#review-cap", 'blocked_fix': itype, 'blocked_title': title,
+                           'reason': 'review_round_cap', 'rounds': _rounds})
+            print(f"[ReviewCap] src={src} 수정 {_rounds}회 — {itype} 생성 중단, 접근 재검토로 전환")
+            return
+
     # [v4.1 Gate] SCORE/DEPLOY_READY는 LINT_CHECK gate 통과 후에만 READY
     initial_status = 'READY'
     if itype in ('SCORE', 'DEPLOY_READY') and src:

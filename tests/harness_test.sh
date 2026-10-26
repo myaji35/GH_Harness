@@ -76,7 +76,10 @@ if [ ! -f "$DR" ]; then
 else
   map_names=$(grep -oE '"[a-z-]+":[[:space:]]*"(sonnet|opus|fable|haiku)"' "$DR" \
               | sed -E 's/^"([a-z-]+)".*/\1/' | sort -u)
-  file_names=$(for f in $agents; do basename "$f" .md; done | sort -u)
+  # 2026-10-26: 세부 에이전트는 harness-modes 스킬의 모드 파일로 접었다. 그 이름은 dispatch-ready 의 FOLDED 가
+  # 축 에이전트로 바꿔 스폰하므로, 모드 파일이 있으면 "실제로 존재"로 본다.
+  file_names=$( { for f in $agents; do basename "$f" .md; done; \
+                  for f in global/skills/harness-modes/modes/*.md; do [ -f "$f" ] && basename "$f" .md; done; } | grep -v '^\._' | sort -u)
 
   only_map=$(comm -23 <(echo "$map_names") <(echo "$file_names"))
   [ -z "$only_map" ] && ok "MODEL_MAP의 모든 에이전트가 실제 파일로 존재" \
