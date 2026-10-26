@@ -597,7 +597,7 @@ GraphRAG/Knowledge Graph를 구현하는 모든 코드는 **`docs/graphrag-princ
 3. **SLDS 기본** — 전역 `~/.claude/CLAUDE.md`의 SLDS 섹션 (최후 기본값)
 
 ### 충돌 시 우선순위
-`brand-dna.json` (프로젝트 값) > `harness-ui-trends-2026.md` (공통 트렌드) > SLDS 기본값.
+`brand-dna.json` (프로젝트 값) > `harness-ui-trends-2026.md` (공통 트렌드) > `ui-ux-pro-max` 스킬(업종별 팔레트·폰트·UX 가이드 검색, 참고 데이터) > SLDS 기본값.
 
 ### `brand-dna.json` 자동 반영 매핑
 | 필드 | UI 반영 지점 |
