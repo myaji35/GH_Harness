@@ -314,6 +314,98 @@ if issue_type in PROOF_TYPES and target_issue.get('status') != 'AWAITING_USER':
               file=sys.stderr)
         sys.exit(3)  # registry 미기록 — 이슈는 그대로 남는다
 
+# ── 검증 실패 잔존 게이트 (2026-10-21, 프로젝트 opt-in) ──
+# 프로젝트에 .claude/verify-gate.enforce 파일이 있을 때만 작동한다.
+# result 에 "867/870" 같은 검증 비율이 있는데 분자<분모이거나, 최상위 문자열 값에 FAIL 이 있으면 DONE 이 되지 않는다.
+# 남기는 실패를 대표님이 승인했으면 result.accepted_failures: [{"item": "...", "why": "...", "approved_by": "대표님"}].
+# 근거(2026-10-21, 0001_NURI 누리셀 ISS-287): verify 867/870·gripper_path FAIL 인 채 DONE → 그림·3D 갱신이 23일간 막힌 걸 아무도 몰랐다.
+# HARNESS_VERIFY_GATE_MODE=warn 이면 거부 대신 경고만.
+VERIFY_RATIO = re.compile(r'^\s*(\d+)\s*/\s*(\d+)\s*$')
+
+def _check_residual_failures(result):
+    problems = []
+    for key, value in result.items():
+        if not isinstance(value, str):
+            continue
+        m = VERIFY_RATIO.match(value)
+        if m and int(m.group(1)) < int(m.group(2)):
+            problems.append(f'{key}={value} — 검증 {int(m.group(2)) - int(m.group(1))}건 실패 잔존')
+        elif re.search(r'\bFAIL', value):
+            problems.append(f'{key}="{value[:40]}" — FAIL 잔존')
+    accepted = result.get('accepted_failures')
+    if problems and isinstance(accepted, list) and accepted and all(
+            isinstance(a, dict) and a.get('why') and a.get('approved_by') for a in accepted):
+        return []
+    return problems
+
+if (os.path.exists(os.path.join('.claude', 'verify-gate.enforce'))
+        and target_issue.get('status') != 'AWAITING_USER'):
+    _residual = _check_residual_failures(result)
+    if _residual and os.environ.get('HARNESS_VERIFY_GATE_MODE') == 'warn':
+        print(f'[verify-gate] 경고(warn 모드): {issue_id} — ' + '; '.join(_residual), file=sys.stderr)
+    elif _residual:
+        print(f'[verify-gate] {issue_id} 완료 거부 — 검증 실패가 남아 있다', file=sys.stderr)
+        for _p in _residual:
+            print(f'  - {_p}', file=sys.stderr)
+        print('  → 실패를 해소하거나, 대표님 승인을 받아 result.accepted_failures '
+              '[{"item","why","approved_by"}] 로 남긴 뒤 다시 호출', file=sys.stderr)
+        sys.exit(3)  # registry 미기록 — 이슈는 그대로 남는다
+
+# ── 장부 밖 결정 게이트 (2026-10-31, scripts/check_unledgered.py 가 있는 프로젝트만) ──
+# 대표님 결정이 필요한 보고서가 BOM_결정.tsv 에 안 올라간 채 DONE 이 되면 공장에 안 뜬다.
+# 근거: 0001_NURI 누리셀 결함뷰어·컨펌 2건이 _check/ 에만 있어 대표님이 존재를 몰랐다.
+_unledgered_script = os.path.join('scripts', 'check_unledgered.py')
+if (os.path.exists(os.path.join('.claude', 'verify-gate.enforce')) and os.path.exists(_unledgered_script)
+        and target_issue.get('status') != 'AWAITING_USER'):
+    import subprocess as _sp
+    _ul = _sp.run([sys.executable, _unledgered_script], capture_output=True, text=True, timeout=60)
+    if _ul.returncode == 1 and os.environ.get('HARNESS_VERIFY_GATE_MODE') == 'warn':
+        print(f'[ledger-gate] 경고(warn 모드): {issue_id}\n{_ul.stdout}', file=sys.stderr)
+    elif _ul.returncode == 1:
+        print(f'[ledger-gate] {issue_id} 완료 거부 — 대표님 결정이 장부 밖에 있다\n{_ul.stdout}', file=sys.stderr)
+        print('  → 결정은 해당 bom/BOM_결정.tsv 에 대기로 올리고 보고서에 `장부: DR-xxx` 를 적은 뒤 다시 호출', file=sys.stderr)
+        sys.exit(3)
+
+# ── explain-the-number (pstack 원칙, 2026-11-03, ISS-345) ──
+# 수치 검증 이슈의 result 최상위 숫자에는 측정 명령이나 결과 파일 출처를 남겨야 한다.
+#   number_sources: {"score": "npm run eval > eval.json"}
+# HARNESS_NUMBER_MODE 기본값은 warn(처음 2주 측정)이며, enforce 일 때만 완료를 거부한다.
+NUMBER_TYPES = {
+    'SCORE', 'RUN_TESTS', 'COVERAGE_CHECK', 'IMPROVE_COVERAGE', 'REGRESSION_CHECK',
+    'BIZ_VALIDATE', 'JOURNEY_VALIDATE', 'BENCHMARK', 'PERF_CHECK',
+}
+NUMBER_KEYS = (
+    'score', 'prev_score', 'coverage', 'pass_rate', 'speedup', 'latency_ms',
+    'throughput', 'duration_sec', 'error_rate',
+)
+
+if issue_type in NUMBER_TYPES and target_issue.get('status') != 'AWAITING_USER':
+    _number_keys = [key for key in NUMBER_KEYS
+                    if isinstance(result.get(key), (int, float))
+                    and not isinstance(result.get(key), bool)]
+    if _number_keys:
+        _number_sources = result.get('number_sources')
+        _number_problems = []
+        for _key in _number_keys:
+            _source = _number_sources.get(_key) if isinstance(_number_sources, dict) else None
+            if not isinstance(_source, str) or not _source.strip():
+                _number_problems.append(
+                    f'{_key}={result[_key]} 의 출처 없음 — result.number_sources.{_key} 에 측정 명령이나 결과 파일을 적어라')
+        if not _number_problems:
+            _proof_metric('number-ok', [])
+        elif os.environ.get('HARNESS_NUMBER_MODE', 'warn') == 'enforce':
+            _proof_metric('number-rejected', _number_problems)
+            print(f'[explain-the-number] {issue_id} 완료 거부 — 상태 유지({target_issue.get("status")})', file=sys.stderr)
+            for _p in _number_problems:
+                print(f'  - {_p}', file=sys.stderr)
+            print('  → 측정 출처를 적은 뒤 다시 호출: '
+                  "on_complete.sh ISS-NNN TYPE '{\"score\":82,\"number_sources\":{\"score\":\"npm run eval > eval.json\"}}'",
+                  file=sys.stderr)
+            sys.exit(3)
+        else:
+            _proof_metric('number-warn', _number_problems)
+            print(f'[explain-the-number] 경고(warn 모드): {issue_id} — ' + '; '.join(_number_problems), file=sys.stderr)
+
 # ── 완료 조건 게이트 (공장 실행 한정, ISS-717) ──
 # 공장이 집은 코드 카드는 payload.acceptance_criteria(사용자 입장에서 확인할 수 있는 기준)가 있어야 하고,
 # result.criteria_check 로 기준마다 충족 여부를 남겨야 DONE 이 된다. 기준 없는 카드는 "다 했다"를 판단할 수 없다.
