@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # ============================================================
 # race-judge.sh — RACE_MODE 아티팩트를 읽어 자동 점수화 + 승자 선정
 #
@@ -42,6 +43,13 @@ info "판정 시작: $ISSUE_ID"
 # 점수화 파이썬 블록
 python3 - "$ART_DIR" "$PAYLOAD_FILE" "$REGISTRY" "$ISSUE_ID" "$PROJECT_NAME" <<'PYEOF'
 import json, os, sys, subprocess, re, shutil, datetime, pathlib
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 
 art_dir, payload_file, reg_path, issue_id, project_name = sys.argv[1:6]
 
@@ -281,8 +289,7 @@ if winner:
         "at": datetime.datetime.now().isoformat(),
     })
 
-with open(reg_path, "w") as f:
-    json.dump(reg, f, indent=2, ensure_ascii=False)
+atomic_write_json(reg_path, reg)
 
 print(f"\n📝 결과: {report_path}")
 PYEOF

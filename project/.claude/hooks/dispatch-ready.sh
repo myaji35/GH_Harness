@@ -1,4 +1,5 @@
 #!/bin/bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # dispatch-ready.sh — READY 이슈를 감지하여 다음 에이전트 스폰 지시를 출력
 # on_complete.sh 또는 on_fail.sh 실행 후 자동 호출됨
 #
@@ -13,6 +14,13 @@ fi
 
 python3 << 'PYEOF'
 import json, sys
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 
 registry_path = sys.argv[1] if len(sys.argv) > 1 else ".claude/issue-db/registry.json"
 
@@ -126,8 +134,7 @@ for (_t, _s), _grp in _groups.items():
 
 if _pingpong_blocked > 0:
     # 변경사항 즉시 저장
-    with open(registry_path, 'w') as _rf:
-        json.dump(registry, _rf, indent=2, ensure_ascii=False)
+    atomic_write_json(registry_path, registry)
     # ready_issues 재필터
     ready_issues = [iss for iss in registry.get("issues", []) if iss.get("status") == "READY"]
     if not ready_issues:
@@ -219,7 +226,7 @@ if model in ("opus", "fable"):
     import subprocess as _sp
     try:
         br = _sp.run(
-            ["bash", ".claude/hooks/opus-budget-check.sh", budget_agent],
+            ["bash", ".claude/hooks/opus-budget-check.sh", budget_agent, "--peek"],  # 기록은 스폰 시 budget-track-agent.sh
             capture_output=True, text=True, timeout=5
         )
         budget_model = (br.stdout or "").strip().splitlines()[-1] if br.stdout else model
@@ -311,8 +318,7 @@ if issue_type == "RACE_MODE":
         pass
     issue["last_dispatched_at"] = datetime.now().isoformat(timespec="seconds")
     try:
-        with open(registry_path, 'w') as _rf:
-            json.dump(registry, _rf, indent=2, ensure_ascii=False)
+        atomic_write_json(registry_path, registry)
     except Exception:
         pass
     sys.exit(2)
@@ -416,8 +422,7 @@ _n = _rw.get(_key, 0) + 1
 _rw[_key] = _n
 issue["last_dispatched_at"] = datetime.now().isoformat(timespec="seconds")
 try:
-    with open(registry_path, 'w') as _rf:
-        json.dump(registry, _rf, indent=2, ensure_ascii=False)
+    atomic_write_json(registry_path, registry)
 except Exception:
     pass
 
@@ -467,8 +472,7 @@ else:
 
 # background_state stale 정리 결과 저장 (ISS-349)
 try:
-    with open(registry_path, 'w') as _bf:
-        json.dump(registry, _bf, indent=2, ensure_ascii=False)
+    atomic_write_json(registry_path, registry)
 except Exception:
     pass
 

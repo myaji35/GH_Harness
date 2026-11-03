@@ -1,4 +1,5 @@
 #!/bin/bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # on_fail Hook 핸들러
 # 이슈 실패 시 재시도 또는 에스컬레이션 처리
 
@@ -14,6 +15,14 @@ import sys as _sysargv
 _REGISTRY, _ISSUE_ID, _ERROR_MSG = (_sysargv.argv[1:4] + ['']*3)[:3]
 
 import json, datetime, sys
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
+from issue_id import next_id as _alloc_id
 
 try:
     with open(_REGISTRY, 'r') as f:
@@ -36,7 +45,7 @@ for issue in registry['issues']:
         else:
             # 에스컬레이션
             issue['status'] = 'ESCALATED'
-            next_id = f"ISS-{registry['stats']['total_issues'] + 1:03d}"
+            next_id = _alloc_id(registry)  # 카드 수+1 은 기존 번호와 겹칠 수 있다
             escalation = {
                 'id': next_id,
                 'title': f"[에스컬레이션] {issue['title']} 반복 실패",
@@ -65,8 +74,7 @@ for issue in registry['issues']:
         })
         break
 
-with open(_REGISTRY, 'w') as f:
-    json.dump(registry, f, indent=2, ensure_ascii=False)
+atomic_write_json(_REGISTRY, registry)
 
 print(f"[on_fail] 처리 완료")
 EOF

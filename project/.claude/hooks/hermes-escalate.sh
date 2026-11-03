@@ -1,4 +1,5 @@
 #!/bin/bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # hermes-escalate.sh — executor 에이전트의 막힘 신호를 Hermes로 에스컬레이션
 #
 # 사용법:
@@ -61,6 +62,13 @@ import sys as _sa
 _ARGV = (_sa.argv[1:6] + ['']*5)[:5]
 
 import json, datetime, sys, os
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 
 __file__ = os.path.join(_ARGV[0], "hermes-escalate.sh")
 sys.path.insert(0, os.path.join(os.path.dirname(__file__),'lib'))
@@ -163,8 +171,7 @@ if breaker_reason:
     registry["issues"].append(escalation)
     registry["stats"]["total_issues"] += 1
 
-    with open(REGISTRY_PATH, 'w') as f:
-        json.dump(registry, f, indent=2, ensure_ascii=False)
+    atomic_write_json(REGISTRY_PATH, registry)
 
     print(f"[Circuit Breaker] {breaker_reason}")
     print(f"[Circuit Breaker] → {new_issue_id} SYSTEMIC_ISSUE 생성 (meta-agent로 인계)")
@@ -216,8 +223,7 @@ for iss in registry["issues"]:
         iss.setdefault("hermes_consults", []).append(new_issue_id)
         break
 
-with open(REGISTRY_PATH, 'w') as f:
-    json.dump(registry, f, indent=2, ensure_ascii=False)
+atomic_write_json(REGISTRY_PATH, registry)
 
 # ── Mutex Lock 파일 생성 (meta-agent 레이스 방어) ───
 lock_path = f"/tmp/harness-hermes-{EXECUTOR_ID}.lock"

@@ -1,4 +1,5 @@
 #!/bin/bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # background-track.sh — background 서브에이전트 동시 실행 카운터 관리 (ISS-349)
 #
 # 용도: dispatch가 background 승인 → 스폰 측이 claim, 완료 시 on_complete가 release.
@@ -20,47 +21,52 @@ BG_MAX="${BG_MAX:-2}"
 
 python3 - "$ACTION" "$ISSUE_ID" "$REGISTRY" "$BG_MAX" <<'PY'
 import json, sys
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import registry_txn
 action, issue_id, reg_path, bg_max = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4])
-d = json.load(open(reg_path))
-st = d.setdefault("background_state", {"active": 0, "issues": []})
+rejected = False
+with registry_txn(reg_path) as d:
+    st = d.setdefault("background_state", {"active": 0, "issues": []})
 
-# stale 정리: 살아있는 background 이슈만 유지
-alive = []
-for bid in st.get("issues", []):
-    bi = next((x for x in d.get("issues", []) if x.get("id") == bid), None)
-    if bi and bi.get("status") in ("IN_PROGRESS", "BACKGROUND_RUNNING"):
-        alive.append(bid)
-st["issues"] = alive
+    # stale 정리: 살아있는 background 이슈만 유지
+    alive = []
+    for bid in st.get("issues", []):
+        bi = next((x for x in d.get("issues", []) if x.get("id") == bid), None)
+        if bi and bi.get("status") in ("IN_PROGRESS", "BACKGROUND_RUNNING"):
+            alive.append(bid)
+    st["issues"] = alive
 
-if action == "claim":
-    if issue_id in st["issues"]:
-        pass  # 이미 claim됨 (idempotent)
-    elif len(st["issues"]) >= bg_max:
-        st["active"] = len(st["issues"])
-        json.dump(d, open(reg_path, "w"), ensure_ascii=False, indent=2)
-        print(f"REJECT (동시 {len(st['issues'])}/{bg_max} 한도 도달)")
-        sys.exit(1)
-    else:
-        st["issues"].append(issue_id)
+    if action == "claim":
+        if issue_id in st["issues"]:
+            pass  # 이미 claim됨 (idempotent)
+        elif len(st["issues"]) >= bg_max:
+            rejected = True
+        else:
+            st["issues"].append(issue_id)
+            for x in d.get("issues", []):
+                if x.get("id") == issue_id:
+                    x["status"] = "BACKGROUND_RUNNING"
+    elif action == "release":
+        st["issues"] = [b for b in st["issues"] if b != issue_id]
+        # BACKGROUND_RUNNING → IN_PROGRESS 환원 (on_complete가 최종 status 결정)
         for x in d.get("issues", []):
-            if x.get("id") == issue_id:
-                x["status"] = "BACKGROUND_RUNNING"
+            if x.get("id") == issue_id and x.get("status") == "BACKGROUND_RUNNING":
+                x["status"] = "IN_PROGRESS"
     st["active"] = len(st["issues"])
-    json.dump(d, open(reg_path, "w"), ensure_ascii=False, indent=2)
-    print(f"CLAIM ok ({st['active']}/{bg_max})")
+    active, issue_ids = st["active"], list(st["issues"])
 
+if rejected:
+    print(f"REJECT (동시 {active}/{bg_max} 한도 도달)")
+    sys.exit(1)
+if action == "claim":
+    print(f"CLAIM ok ({active}/{bg_max})")
 elif action == "release":
-    st["issues"] = [b for b in st["issues"] if b != issue_id]
-    st["active"] = len(st["issues"])
-    # BACKGROUND_RUNNING → IN_PROGRESS 환원 (on_complete가 최종 status 결정)
-    for x in d.get("issues", []):
-        if x.get("id") == issue_id and x.get("status") == "BACKGROUND_RUNNING":
-            x["status"] = "IN_PROGRESS"
-    json.dump(d, open(reg_path, "w"), ensure_ascii=False, indent=2)
-    print(f"RELEASE ok ({st['active']}/{bg_max})")
-
-else:  # status
-    st["active"] = len(st["issues"])
-    json.dump(d, open(reg_path, "w"), ensure_ascii=False, indent=2)
-    print(f"active={st['active']}/{bg_max} issues={st['issues']}")
+    print(f"RELEASE ok ({active}/{bg_max})")
+else:
+    print(f"active={active}/{bg_max} issues={issue_ids}")
 PY

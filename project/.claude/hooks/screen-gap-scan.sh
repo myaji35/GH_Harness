@@ -1,4 +1,5 @@
 #!/bin/bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # screen-gap-scan.sh — Screen Gap Scanner (화면 갭 스캐너)
 #
 # 프로젝트의 라우트/메뉴 구조를 스캔하여 "화면은 있는데 빠진 상식적 비즈니스 기능"을
@@ -32,6 +33,14 @@ fi
 
 python3 << 'PYEOF'
 import json, os, re, subprocess, sys, datetime, glob
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
+from issue_id import next_id as _alloc_id
 
 REGISTRY = ".claude/issue-db/registry.json"
 
@@ -335,8 +344,7 @@ for r in routes:
 if not classified_routes:
     print("[ScreenGap] 라우트를 찾을 수 없음 — 스캔 종료")
     scan_state["count"] -= 1  # 실패는 횟수 차감
-    with open(REGISTRY, 'w') as f:
-        json.dump(registry, f, indent=2, ensure_ascii=False)
+    atomic_write_json(REGISTRY, registry)
     sys.exit(0)
 
 print(f"[ScreenGap] {len(classified_routes)}개 화면 감지")
@@ -407,8 +415,7 @@ for route in classified_routes:
 if not gaps:
     print("[ScreenGap] 모든 화면에 상식적 기능 구비 — 갭 없음")
     scan_state["last_routes"] = [r["path"] for r in classified_routes]
-    with open(REGISTRY, 'w') as f:
-        json.dump(registry, f, indent=2, ensure_ascii=False)
+    atomic_write_json(REGISTRY, registry)
     sys.exit(0)
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -444,7 +451,7 @@ for route_path, route_gaps in grouped.items():
     screen_label = route_gaps[0]["screen_label"]
     missing_names = [g["missing_feature"] for g in route_gaps]
 
-    next_id = f"ISS-{registry['stats']['total_issues'] + 1:03d}"
+    next_id = _alloc_id(registry)  # 카드 수+1 은 기존 번호와 겹칠 수 있다
     issue = {
         "id": next_id,
         "title": f"[Screen Gap] {route_path} ({screen_label}) — {', '.join(missing_names[:3])}{'...' if len(missing_names) > 3 else ''}",
@@ -475,8 +482,7 @@ for route_path, route_gaps in grouped.items():
 
 # 저장
 scan_state["last_routes"] = [r["path"] for r in classified_routes]
-with open(REGISTRY, 'w') as f:
-    json.dump(registry, f, indent=2, ensure_ascii=False)
+atomic_write_json(REGISTRY, registry)
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 출력

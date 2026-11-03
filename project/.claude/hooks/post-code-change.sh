@@ -1,4 +1,5 @@
 #!/bin/bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # post-code-change.sh — 코드 변경(Write|Edit) 감지 후 처리
 # PostToolUse hook에서 Write|Edit 매처로 호출됨
 #
@@ -24,6 +25,13 @@ import sys as _sysargv
 _REGISTRY, _CHANGED_FILE = (_sysargv.argv[1:3] + ['']*2)[:2]
 
 import json, datetime, sys
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 
 try:
     with open(_REGISTRY, 'r') as f:
@@ -42,6 +50,5 @@ for issue in registry.get('issues', []):
             issue['payload']['files_changed'].append(changed_file)
         break
 
-with open(_REGISTRY, 'w') as f:
-    json.dump(registry, f, indent=2, ensure_ascii=False)
+atomic_write_json(_REGISTRY, registry)
 PYEOF

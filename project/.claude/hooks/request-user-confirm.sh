@@ -1,4 +1,5 @@
 #!/bin/bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # request-user-confirm.sh — T2 컨펌 요청 표준 출력
 #
 # 사용법:
@@ -49,6 +50,13 @@ import sys as _sysargv
 _REGISTRY, _ISSUE_ID, _CATEGORY, _QUESTION = (_sysargv.argv[1:5] + ['']*4)[:4]
 
 import json, datetime, sys
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
 
 REGISTRY_PATH = _REGISTRY
 ISSUE_ID = _ISSUE_ID
@@ -80,8 +88,7 @@ if not found:
     print(f"[request-user-confirm] 이슈 {ISSUE_ID} 없음")
     sys.exit(1)
 
-with open(REGISTRY_PATH, 'w') as f:
-    json.dump(registry, f, indent=2, ensure_ascii=False)
+atomic_write_json(REGISTRY_PATH, registry)
 
 print(f"[request-user-confirm] {ISSUE_ID} → AWAITING_USER")
 PYEOF

@@ -113,6 +113,17 @@
             "statusMessage": "Health score check..."
           }
         ]
+      },
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/budget-track-agent.sh",
+            "timeout": 10,
+            "statusMessage": "Recording model budget..."
+          }
+        ]
       }
     ],
     "PostToolUse": [

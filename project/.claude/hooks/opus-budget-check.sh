@@ -3,7 +3,9 @@ export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # opus-budget-check.sh — Opus 예산 상태 체크 및 자동 강등 판정
 #
 # 사용법:
-#   bash .claude/hooks/opus-budget-check.sh <agent_name>
+#   bash .claude/hooks/opus-budget-check.sh <agent_name> [--peek]
+#   --peek: 판정만 하고 기록하지 않는다(dispatch-ready 추천 단계용).
+#           실제 비용 기록은 서브에이전트 스폰 시점의 budget-track-agent.sh 가 한다.
 #
 # 동작:
 #   - registry.json의 opus_budget_state 조회/갱신
@@ -32,10 +34,10 @@ if [ ! -f "$REGISTRY" ]; then
   exit 0
 fi
 
-python3 - "$REGISTRY" "$AGENT" << 'PYEOF'
+python3 - "$REGISTRY" "$AGENT" "$2" << 'PYEOF'
 import sys as _sa
 # heredoc 보간 금지 — argv로 수신 (RCE 차단, 2026-07-15)
-_ARGV = (_sa.argv[1:3] + ['']*2)[:2]
+_ARGV = (_sa.argv[1:4] + ['']*3)[:3]
 
 import json, datetime, sys
 import os as _atomic_os, sys as _atomic_sys
@@ -48,6 +50,7 @@ from registry_lock import atomic_write_json
 
 REGISTRY_PATH = _ARGV[0]
 AGENT = _ARGV[1]
+PEEK = _ARGV[2] == "--peek"
 
 # ── 예산 정책 (v2+ 균형) ────────────────────────────
 SOFT_CAP_DAILY = 10.0
@@ -105,6 +108,10 @@ if not isinstance(budget.get("monthly"), dict):
     budget["monthly"] = {"month": month, "cost_usd": 0.0, "calls": 0}
 budget.setdefault("demotion_active", False)
 
+def _save():
+    if not PEEK:
+        atomic_write_json(REGISTRY_PATH, registry)
+
 # 일자/월 롤오버
 if budget["daily"].get("date") != today:
     budget["daily"] = {"date": today, "cost_usd": 0.0, "calls": 0}
@@ -136,14 +143,14 @@ if projected_daily >= HARD_CAP_DAILY or projected_monthly >= MONTHLY_CAP:
             budget["daily"]["calls"] += 1
             budget["monthly"]["cost_usd"] = round(budget["monthly"]["cost_usd"] + opus_cost, 4)
             budget["monthly"]["calls"] += 1
-            atomic_write_json(REGISTRY_PATH, registry)
+            _save()
             print("opus", flush=True)
             print(f"[opus-budget] {AGENT} fable→opus 자동 강등 (예상 일일 ${projected_daily:.2f} ≥ ${HARD_CAP_DAILY})", file=sys.stderr)
             sys.exit(0)
     # 2차 강등: 가능 에이전트면 sonnet으로
     if AGENT in DEMOTABLE:
         budget["demotion_active"] = True
-        atomic_write_json(REGISTRY_PATH, registry)
+        _save()
         print("sonnet", flush=True)
         print(f"[opus-budget] {AGENT} 자동 강등 (예상 일일 ${projected_daily:.2f} ≥ ${HARD_CAP_DAILY})", file=sys.stderr)
         sys.exit(0)
@@ -163,7 +170,7 @@ budget["daily"]["calls"] += 1
 budget["monthly"]["cost_usd"] = round(projected_monthly, 4)
 budget["monthly"]["calls"] += 1
 
-atomic_write_json(REGISTRY_PATH, registry)
+_save()
 
 print(base_model)
 PYEOF

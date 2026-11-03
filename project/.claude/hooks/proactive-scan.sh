@@ -1,4 +1,5 @@
 #!/bin/bash
+export HARNESS_HOOK_LIB="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/lib"
 # proactive-scan.sh — 능동적 코드베이스 스캔
 # 이슈가 없을 때 자동으로 코드베이스를 스캔하여 새 이슈를 발견한다.
 # session-resume.sh에서 "이슈 없음" 상태일 때 호출됨.
@@ -20,6 +21,14 @@ fi
 
 python3 << 'PYEOF'
 import json, subprocess, os, sys, datetime
+import os as _atomic_os, sys as _atomic_sys
+for _atomic_lib in (_atomic_os.environ.get("HARNESS_HOOK_LIB", ""),
+                    _atomic_os.path.join(_atomic_os.environ.get("HOME", ""), ".claude/harness-core/hooks/lib"),
+                    _atomic_os.path.realpath(".claude/hooks/lib")):
+    if _atomic_os.path.isdir(_atomic_lib) and _atomic_lib not in _atomic_sys.path:
+        _atomic_sys.path.insert(0, _atomic_lib)
+from registry_lock import atomic_write_json
+from issue_id import next_id as _alloc_id
 
 REGISTRY = ".claude/issue-db/registry.json"
 
@@ -257,6 +266,7 @@ try:
                           "--exclude-dir=tmp", "--exclude-dir=storage",
                           "--exclude-dir=log", "--exclude-dir=public",
                           "--exclude-dir=.bkit", "--exclude-dir=.claude",
+                          "--exclude-dir=.node_modules.partial-factory", "--exclude-dir=.tmp-jest",
                           "--exclude=*.test.*", "--exclude=*.spec.*"],
                         capture_output=True, text=True, timeout=15)
     console_lines = [l for l in (console_err.stdout or "").split("\n") if l.strip()]
@@ -377,7 +387,6 @@ if not findings:
     sys.exit(0)
 
 # ── 이슈 자동 생성 ──────────────────────────────────
-next_id = registry["stats"].get("total_issues", 0) + 1
 created = 0
 
 for f in findings:
@@ -393,7 +402,7 @@ for f in findings:
         continue
 
     issue = {
-        "id": f"ISS-{next_id:03d}",
+        "id": _alloc_id(registry),  # 카드 수+1 은 기존 번호와 겹칠 수 있다
         "type": f["type"],
         "title": f["title"],
         "priority": f["priority"],
@@ -406,15 +415,13 @@ for f in findings:
         "parent": None
     }
     registry["issues"].append(issue)
-    next_id += 1
     created += 1
     print(f"\n  📌 이슈 생성: {issue['id']} [{issue['priority']}] {issue['title']}")
     print(f"     → {issue['assign_to']}")
 
-registry["stats"]["total_issues"] = next_id - 1
+registry["stats"]["total_issues"] = registry["stats"].get("total_issues", 0) + created
 
-with open(REGISTRY, 'w') as f:
-    json.dump(registry, f, indent=2, ensure_ascii=False)
+atomic_write_json(REGISTRY, registry)
 
 print(f"\n📊 새 이슈 {created}개 생성됨")
 if created > 0:
