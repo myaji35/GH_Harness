@@ -33,8 +33,15 @@ except:
 
 issue_id = _ISSUE_ID
 
+active_issue = next((issue for status in ('IN_PROGRESS', 'READY')
+                     for issue in registry['issues']
+                     if issue['id'] == issue_id and issue.get('status') == status), None)
+if active_issue is None:
+    print(f"[on_fail] {issue_id} 활성 이슈 없음 — 건너뜀")
+    sys.exit(0)
+
 for issue in registry['issues']:
-    if issue['id'] == issue_id:
+    if issue is active_issue:
         issue['retry_count'] = issue.get('retry_count', 0) + 1
         registry['stats']['failed'] += 1
 
@@ -45,26 +52,33 @@ for issue in registry['issues']:
         else:
             # 에스컬레이션
             issue['status'] = 'ESCALATED'
-            next_id = _alloc_id(registry)  # 카드 수+1 은 기존 번호와 겹칠 수 있다
-            escalation = {
-                'id': next_id,
-                'title': f"[에스컬레이션] {issue['title']} 반복 실패",
-                'type': 'SYSTEMIC_ISSUE',
-                'status': 'READY',
-                'priority': 'P0',
-                'assign_to': 'meta-agent',
-                'depth': issue.get('depth', 0) + 1,
-                'retry_count': 0,
-                'parent_id': issue_id,
-                'depends_on': [],
-                'created_at': datetime.datetime.now().isoformat(),
-                'payload': {'original_issue': issue_id, 'error': _ERROR_MSG},
-                'result': None,
-                'spawn_rules': []
-            }
-            registry['issues'].append(escalation)
-            registry['stats']['total_issues'] += 1
-            print(f"[에스컬레이션] {next_id} 생성 → meta-agent")
+            existing_escalation = next((candidate for candidate in registry['issues']
+                                        if candidate.get('parent_id') == issue_id
+                                        and candidate.get('type') == 'SYSTEMIC_ISSUE'
+                                        and candidate.get('status') in ('READY', 'IN_PROGRESS')), None)
+            if existing_escalation is not None:
+                print(f"[에스컬레이션] 기존 {existing_escalation['id']} 가 열려 있어 새로 만들지 않음")
+            else:
+                next_id = _alloc_id(registry)  # 카드 수+1 은 기존 번호와 겹칠 수 있다
+                escalation = {
+                    'id': next_id,
+                    'title': f"[에스컬레이션] {issue['title']} 반복 실패",
+                    'type': 'SYSTEMIC_ISSUE',
+                    'status': 'READY',
+                    'priority': 'P0',
+                    'assign_to': 'meta-agent',
+                    'depth': issue.get('depth', 0) + 1,
+                    'retry_count': 0,
+                    'parent_id': issue_id,
+                    'depends_on': [],
+                    'created_at': datetime.datetime.now().isoformat(),
+                    'payload': {'original_issue': issue_id, 'error': _ERROR_MSG},
+                    'result': None,
+                    'spawn_rules': []
+                }
+                registry['issues'].append(escalation)
+                registry['stats']['total_issues'] += 1
+                print(f"[에스컬레이션] {next_id} 생성 → meta-agent")
 
         # Hook 이력 기록
         registry['hooks']['on_fail'].append({
